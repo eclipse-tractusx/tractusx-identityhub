@@ -92,7 +92,7 @@ identityhub:
       # -- authentication key, must be attached to each 'X-Api-Key' request header
       authKeyAlias: "sup3r$3cr3t"
     # -- DCP Presentation API endpoint
-    presentation:
+    credentials:
       # -- port for incoming api calls
       port: 8083
       # -- path for incoming api calls

@@ -58,3 +58,15 @@ data:
   edc.datasource.stsclient.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
   edc.datasource.stsclient.user: {{ .Values.postgresql.auth.username | quote }}
   edc.datasource.stsclient.password: {{ .Values.postgresql.auth.password | quote }}
+
+  # HolderCredentialRequests
+  edc.sql.store.credentialrequest.datasource: "credentialrequest"
+  edc.datasource.credentialrequest.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
+  edc.datasource.credentialrequest.user: {{ .Values.postgresql.auth.username | quote }}
+  edc.datasource.credentialrequest.password: {{ .Values.postgresql.auth.password | quote }}
+
+  # VerifiableCredentialResources
+  edc.sql.store.credentials.datasource: "credentials"
+  edc.datasource.credentials.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
+  edc.datasource.credentials.user: {{ .Values.postgresql.auth.username | quote }}
+  edc.datasource.credentials.password: {{ .Values.postgresql.auth.password | quote }}

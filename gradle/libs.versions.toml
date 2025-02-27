@@ -31,7 +31,7 @@ edc-ih-account-remote = { module = "org.eclipse.edc:sts-account-service-remote",
 edc-ih-spi = { module = "org.eclipse.edc:identity-hub-spi", version.ref = "ih" }
 
 # IdentityHub BOM modules
-bom-ih = { module = "org.eclipse.edc:identityhub-with-sts-bom", version.ref = "ih" }
+bom-ih = { module = "org.eclipse.edc:identityhub-bom", version.ref = "ih" }
 bom-ih-sql = { module = "org.eclipse.edc:identityhub-feature-sql-bom", version.ref = "ih" }
 
 

@@ -62,7 +62,7 @@ abstract class AbstractPostgresqlMigrationExtension implements ServiceExtension 
     }
 
     @Override
-    public void initialize(final ServiceExtensionContext context) {
+    public void initialize(ServiceExtensionContext context) {
         var config = context.getConfig();
         monitor = context.getMonitor().withPrefix("Migration");
 

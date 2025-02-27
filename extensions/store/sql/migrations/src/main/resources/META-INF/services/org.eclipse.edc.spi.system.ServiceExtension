@@ -23,3 +23,5 @@ org.eclipse.tractusx.identityhub.postgresql.migration.ParticipantContextMigratio
 org.eclipse.tractusx.identityhub.postgresql.migration.KeyPairResourceMigrationExtension
 org.eclipse.tractusx.identityhub.postgresql.migration.DidResourceMigrationExtension
 org.eclipse.tractusx.identityhub.postgresql.migration.StsClientMigrationExtension
+org.eclipse.tractusx.identityhub.postgresql.migration.CredentialResourceMigrationExtension
+org.eclipse.tractusx.identityhub.postgresql.migration.HolderCredentialRequestMigrationExtension
