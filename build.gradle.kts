@@ -30,12 +30,14 @@ plugins {
 
 buildscript {
     dependencies {
-        val edcVersion: String by project
-        classpath("org.eclipse.edc.edc-build:org.eclipse.edc.edc-build.gradle.plugin:${edcVersion}")
+        classpath(libs.edc.build.plugin)
     }
 }
 
-val edcVersion: String by project
+val txScmConnection: String by project
+val txWebsiteUrl: String by project
+val txScmUrl: String by project
+val edcVersion = libs.versions.edc
 
 allprojects {
     apply(plugin = "org.eclipse.edc.edc-build")
@@ -44,6 +46,17 @@ allprojects {
     configure<org.eclipse.edc.plugins.autodoc.AutodocExtension> {
         outputDirectory.set(project.layout.buildDirectory.asFile)
         processorVersion.set(edcVersion)
+    }
+    configure<org.eclipse.edc.plugins.edcbuild.extensions.BuildExtension> {
+        pom {
+            // this is actually important, so we can publish under the correct GID
+            groupId = project.group.toString()
+            projectName.set(project.name)
+            description.set("edc :: ${project.name}")
+            projectUrl.set(txWebsiteUrl)
+            scmConnection.set(txScmConnection)
+            scmUrl.set(txScmUrl)
+        }
     }
 }
 // the "dockerize" task is added to all projects that use the `shadowJar` plugin, e.g. runtimes
