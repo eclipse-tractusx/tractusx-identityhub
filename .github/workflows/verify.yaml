@@ -1,0 +1,50 @@
+name: Verify
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  Checkstyle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-java
+      - name: Run Checkstyle
+        run: |
+          ./gradlew checkstyleMain checkstyleTest
+
+  Javadoc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-java
+      - name: Run Javadoc
+        run: ./gradlew javadoc
+
+  Unit-Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-java
+      - name: 'Unit and system tests'
+        run: ./gradlew test
+
+  Integration-Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: eclipse-edc/.github/.github/actions/setup-build@main
+
+      - name: Component Tests
+        run: ./gradlew compileJava compileTestJava test -DincludeTags="ComponentTest,ApiTest,EndToEndTest"
+
+  Postgresql-Integration-Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: eclipse-edc/.github/.github/actions/setup-build@main
+
+      - name: Postgresql Tests
+        run: ./gradlew compileJava compileTestJava test -DincludeTags="PostgresqlIntegrationTest"

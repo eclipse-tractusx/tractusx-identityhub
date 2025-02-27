@@ -30,7 +30,6 @@ dependencies {
     runtimeOnly(libs.bom.ih)
     runtimeOnly(libs.bom.ih.sql)
     runtimeOnly(libs.edc.vault.hashicorp)
-    runtimeOnly(libs.edc.sql.stsstore.sql)
     runtimeOnly(project(":extensions:store:sql:migrations"))
 
     // used for custom extensions
