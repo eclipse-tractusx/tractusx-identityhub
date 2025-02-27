@@ -1,0 +1,9 @@
+dependencies:
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 15.2.1
+- name: vault
+  repository: https://helm.releases.hashicorp.com
+  version: 0.29.1
+digest: sha256:2edeaa6830fad8bfa9e491314b1876a9e5b01e3291889db8f3dcbabaef39ff57
+generated: "2025-01-27T11:58:07.713286+01:00"

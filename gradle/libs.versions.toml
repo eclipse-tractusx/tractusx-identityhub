@@ -1,0 +1,44 @@
+[metadata]
+format.version = "1.1"
+
+[versions]
+edc = "0.12.0-SNAPSHOT"
+ih = "0.12.0-SNAPSHOT"
+opentelemetry = "2.11.0"
+flyway = "11.2.0"
+
+
+[libraries]
+# upstream EDC dependencies
+edc-spi-core = { module = "org.eclipse.edc:core-spi", version.ref = "edc" }
+
+# EDC modules
+edc-core-connector = { module = "org.eclipse.edc:connector-core", version.ref = "edc" }
+edc-core-sql = { module = "org.eclipse.edc:sql-core", version.ref = "edc" }
+edc-junit = { module = "org.eclipse.edc:junit", version.ref = "edc" }
+edc-lib-crypto = { module = "org.eclipse.edc:crypto-common-lib", version.ref = "edc" }
+edc-lib-keys = { module = "org.eclipse.edc:keys-lib", version.ref = "edc" }
+edc-lib-sql = { module = "org.eclipse.edc:sql-lib", version.ref = "edc" }
+edc-vault-hashicorp = { module = "org.eclipse.edc:vault-hashicorp", version.ref = "edc" }
+edc-sql-stsstore-sql = { module = "org.eclipse.edc:sts-client-store-sql", version.ref = "edc" }
+
+# EDC SPIs
+edc-spi-transaction = { module = "org.eclipse.edc:transaction-spi", version.ref = "edc" }
+edc-spi-transaction-datasource = { module = "org.eclipse.edc:transaction-datasource-spi", version.ref = "edc" }
+
+# IdentityHub modules
+edc-ih-account-remote = { module = "org.eclipse.edc:sts-account-service-remote", version.ref = "ih" }
+edc-ih-spi = { module = "org.eclipse.edc:identity-hub-spi", version.ref = "ih" }
+
+# IdentityHub BOM modules
+bom-ih = { module = "org.eclipse.edc:identityhub-with-sts-bom", version.ref = "ih" }
+bom-ih-sql = { module = "org.eclipse.edc:identityhub-feature-sql-bom", version.ref = "ih" }
+
+
+# Third party libs
+opentelemetry-javaagent = { module = "io.opentelemetry.javaagent:opentelemetry-javaagent", version.ref = "opentelemetry" }
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
+flyway-database-postgres = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
+
+[plugins]
+shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
