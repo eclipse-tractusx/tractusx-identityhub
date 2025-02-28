@@ -115,7 +115,6 @@ maven/mavencentral/org.eclipse.edc/api-core/0.12.0-SNAPSHOT, Apache-2.0, approve
 maven/mavencentral/org.eclipse.edc/api-lib/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/api-observability/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/auth-spi/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
-maven/mavencentral/org.eclipse.edc/auth-tokenbased/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/autodoc-processor/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/boot-lib/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/boot-spi/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
@@ -154,17 +153,12 @@ maven/mavencentral/org.eclipse.edc/identity-hub-participantcontext-store-sql/0.1
 maven/mavencentral/org.eclipse.edc/identity-hub-participants/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/identity-hub-spi/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/identity-trust-spi/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
-maven/mavencentral/org.eclipse.edc/identity-trust-sts-accounts-api/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
-maven/mavencentral/org.eclipse.edc/identity-trust-sts-api/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
-maven/mavencentral/org.eclipse.edc/identity-trust-sts-core/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
-maven/mavencentral/org.eclipse.edc/identity-trust-sts-embedded/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
-maven/mavencentral/org.eclipse.edc/identity-trust-sts-spi/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/identity-trust-transform/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/identityhub-api-authentication/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/identityhub-api-authorization/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/identityhub-base-bom/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
+maven/mavencentral/org.eclipse.edc/identityhub-bom/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/identityhub-feature-sql-bom/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
-maven/mavencentral/org.eclipse.edc/identityhub-with-sts-bom/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/issuerservice-participant-spi/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/jersey-core/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/jersey-providers-lib/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
@@ -210,7 +204,9 @@ maven/mavencentral/org.eclipse.edc/storage-api/0.12.0-SNAPSHOT, Apache-2.0, appr
 maven/mavencentral/org.eclipse.edc/store-lib/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/sts-account-provisioner/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/sts-account-service-local/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
+maven/mavencentral/org.eclipse.edc/sts-api/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/sts-client-store-sql/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
+maven/mavencentral/org.eclipse.edc/sts-core/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/sts-spi/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/token-core/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/token-lib/0.12.0-SNAPSHOT, Apache-2.0, approved, technology.edc
