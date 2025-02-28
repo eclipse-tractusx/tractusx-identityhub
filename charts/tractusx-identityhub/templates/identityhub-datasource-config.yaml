@@ -70,3 +70,9 @@ data:
   edc.datasource.credentials.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
   edc.datasource.credentials.user: {{ .Values.postgresql.auth.username | quote }}
   edc.datasource.credentials.password: {{ .Values.postgresql.auth.password | quote }}
+
+  # JTI validation
+  edc.sql.store.jti.datasource: "jti"
+  edc.datasource.jti.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
+  edc.datasource.jti.user: {{ .Values.postgresql.auth.username | quote }}
+  edc.datasource.jti.password: {{ .Values.postgresql.auth.password | quote }}

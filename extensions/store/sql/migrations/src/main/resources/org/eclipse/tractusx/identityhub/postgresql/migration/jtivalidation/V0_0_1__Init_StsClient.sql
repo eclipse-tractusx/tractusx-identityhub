@@ -18,26 +18,10 @@
  *
  */
 
-package org.eclipse.tractusx.identityhub.postgresql.migration;
 
-import org.eclipse.edc.runtime.metamodel.annotation.Extension;
-import org.eclipse.edc.runtime.metamodel.annotation.Inject;
-import org.eclipse.edc.spi.security.Vault;
-
-@Extension("HolderCredentialRequest Migration Extension")
-public class HolderCredentialRequestMigrationExtension extends AbstractPostgresqlMigrationExtension {
-    private static final String NAME_SUBSYSTEM = "credentialrequest";
-
-    @Inject
-    private Vault vault;
-
-    @Override
-    protected Vault getVault() {
-        return vault;
-    }
-
-    @Override
-    protected String getSubsystemName() {
-        return NAME_SUBSYSTEM;
-    }
-}
+-- only intended for and tested with Postgres!
+CREATE TABLE IF NOT EXISTS edc_jti_validation
+(
+    token_id   VARCHAR NOT NULL PRIMARY KEY,
+    expires_at BIGINT -- expiry time in epoch millis
+);

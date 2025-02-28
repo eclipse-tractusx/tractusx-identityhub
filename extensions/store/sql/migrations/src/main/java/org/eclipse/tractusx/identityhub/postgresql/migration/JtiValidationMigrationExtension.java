@@ -24,9 +24,9 @@ import org.eclipse.edc.runtime.metamodel.annotation.Extension;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
 import org.eclipse.edc.spi.security.Vault;
 
-@Extension("HolderCredentialRequest Migration Extension")
-public class HolderCredentialRequestMigrationExtension extends AbstractPostgresqlMigrationExtension {
-    private static final String NAME_SUBSYSTEM = "credentialrequest";
+@Extension("Jti Validation Migration Extension")
+public class JtiValidationMigrationExtension extends AbstractPostgresqlMigrationExtension {
+    private static final String NAME_SUBSYSTEM = "jtivalidation";
 
     @Inject
     private Vault vault;
