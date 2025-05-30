@@ -3,6 +3,11 @@
 | [!WARNING] this project is under heavy development, expect bugs, problems and radical changes! |
 |------------------------------------------------------------------------------------------------|
 
+Welcome Contributor! Feel free to join our EDC Weeklys if you want to contibute, or our office hours.
+You will find the links here: https://eclipse-tractusx.github.io/community/open-meetings#EDC%20Weekly%20|%20Extended
+
+We are working at the moment to bring the current implemented functionalities from the upstream identity hub, test and integrate them here to offer a deployment in Helm Charts and publish our images in docker hub, so you can use also this wallet.
+
 
 ## About The Project
 
