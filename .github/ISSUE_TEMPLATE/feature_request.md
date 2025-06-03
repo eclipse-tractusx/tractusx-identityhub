@@ -24,5 +24,4 @@ implemented. "Because we need it" is not a sufficient reason!
 // anything else you want to outline
 
 _Please be sure to take a look at
-our [contribution guidelines](https://github.com/eclipse-tractusx/tractusx-edc/blob/main/CONTRIBUTING.md) and
-our [PR etiquette](https://github.com/eclipse-tractusx/tractusx-edc/blob/main/pr_etiquette.md)._
+our [contribution guidelines](../../CONTRIBUTING.md)
