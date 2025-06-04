@@ -1,4 +1,4 @@
-# Contributing to Eclipse Tractus-X IssuerService
+# Contributing to Eclipse Tractus-X IdentityHub
 
 Thanks for your interest in this project.
 

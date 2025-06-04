@@ -54,7 +54,9 @@ jobs:
       matrix:
         variant: [
           { dir: runtimes, img: issuerservice },
-          { dir: runtimes, img: issuerservice-memory }
+          { dir: runtimes, img: issuerservice-memory },
+          { dir: runtimes, img: identityhub },
+          { dir: runtimes, img: identityhub-memory }
         ]
     permissions:
       contents: write

@@ -18,7 +18,7 @@
 #################################################################################
 
 
-fullnameOverride: tx-is
+fullnameOverride: tx-ih
 ################################
 issuerservice:
   debug:
@@ -33,11 +33,32 @@ issuerservice:
     # avoids some errors in the log: cannot write temp files of large multipart requests when R/O
     readOnlyRootFilesystem: false
 
+identityhub:
+  debug:
+    enabled: true
+    port: 1044
+    suspendOnStart: false
+  endpoints:
+    identity:
+      authKey: password
+  image:
+    pullPolicy: Never
+    tag: "latest"
+    repository: "identityhub"
+  securityContext:
+    # avoids some errors in the log: cannot write temp files of large multipart requests when R/O
+    readOnlyRootFilesystem: false
+
 postgresql:
-  jdbcUrl: jdbc:postgresql://{{ .Release.Name }}-postgresql:5432/issuer
-  auth:
-    username: user
-    password: password
+  jdbcUrl: jdbc:postgresql://{{ .Release.Name }}-postgresql:5432/
+  databases:
+    - name: issuer
+      username: user
+      password: password
+    - name: ih
+      username: user
+      password: password
+
 vault:
   hashicorp:
     url: http://{{ .Release.Name }}-vault:8200
