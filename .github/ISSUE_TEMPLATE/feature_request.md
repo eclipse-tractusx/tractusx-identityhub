@@ -24,4 +24,4 @@ implemented. "Because we need it" is not a sufficient reason!
 // anything else you want to outline
 
 _Please be sure to take a look at
-our [contribution guidelines](../../CONTRIBUTING.md)
+our [contribution guidelines](https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/CONTRIBUTING.md)
