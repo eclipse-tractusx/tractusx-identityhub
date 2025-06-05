@@ -5,6 +5,7 @@ format.version = "1.1"
 edc = "0.12.0-SNAPSHOT"
 ih = "0.12.0-SNAPSHOT"
 opentelemetry = "2.11.0"
+postgres = "42.7.5"
 flyway = "11.2.0"
 
 
@@ -27,6 +28,10 @@ edc-build-plugin = { module = "org.eclipse.edc.edc-build:org.eclipse.edc.edc-bui
 edc-spi-transaction = { module = "org.eclipse.edc:transaction-spi", version.ref = "edc" }
 edc-spi-transaction-datasource = { module = "org.eclipse.edc:transaction-datasource-spi", version.ref = "edc" }
 
+# BOM modules
+bom-issuer = { module = "org.eclipse.edc:issuerservice-bom", version.ref = "ih" }
+bom-issuer-sql = { module = "org.eclipse.edc:issuerservice-feature-sql-bom", version.ref = "ih" }
+
 # IdentityHub modules
 edc-ih-account-remote = { module = "org.eclipse.edc:sts-account-service-remote", version.ref = "ih" }
 edc-ih-spi = { module = "org.eclipse.edc:identity-hub-spi", version.ref = "ih" }
@@ -35,11 +40,11 @@ edc-ih-spi = { module = "org.eclipse.edc:identity-hub-spi", version.ref = "ih" }
 bom-ih = { module = "org.eclipse.edc:identityhub-bom", version.ref = "ih" }
 bom-ih-sql = { module = "org.eclipse.edc:identityhub-feature-sql-bom", version.ref = "ih" }
 
-
 # Third party libs
 opentelemetry-javaagent = { module = "io.opentelemetry.javaagent:opentelemetry-javaagent", version.ref = "opentelemetry" }
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
 flyway-database-postgres = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
+postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
 
 [plugins]
 shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }

@@ -1,3 +1,4 @@
+
 # Tractus-X IdentityHub - a comprehensive DCP Wallet
 
 | [!WARNING] this project is under heavy development, expect bugs, problems and radical changes! |
@@ -7,7 +8,6 @@ Welcome Contributor! Feel free to join our EDC Weeklys if you want to contibute,
 You will find the links here: https://eclipse-tractusx.github.io/community/open-meetings#EDC%20Weekly%20|%20Extended
 
 We are working at the moment to bring the current implemented functionalities from the upstream identity hub, test and integrate them here to offer a deployment in Helm Charts and publish our images in docker hub, so you can use also this wallet.
-
 
 ## About The Project
 
@@ -25,6 +25,16 @@ As all Tractus-X applications, IdentityHub is distributed as helm chart, of whic
    only use this for demo or testing purposes!**
 
 Please refer to the respective [documentation](./charts/tractusx-identityhub/README.md) for more information on how to
+run it.
+
+As all Tractus-X applications, IssuerService is distributed as helm chart, of which there are two variants:
+
+1. `tractusx-issuerservice`: the recommended, production-ready version that uses PostgreSQL as database and Hashicorp
+   Vault as secret storage.
+2. `tractusx-issuerservice-memory`: an ephemeral, memory-only version that stores data and secrets in memory. **Please
+   only use this for demo or testing purposes!**
+
+Please refer to the respective [documentation](./charts/tractusx-issuerservice/README.md) for more information on how to
 run it.
 
 > Note that running the application natively as Java process, or directly as Docker image is possible, but is not
