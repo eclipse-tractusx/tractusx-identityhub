@@ -79,7 +79,7 @@ jobs:
           k8sversion: ${{ matrix.k8s-version }}
           helm_command: |-
             helm install tx-is charts/tractusx-issuerservice \
-             -f tests/deployment/test-helm-values.yaml \
+             -f tests/deployment/test-helm-values-is.yaml \
              --dependency-update \
              --wait-for-jobs --timeout=120s    
 
@@ -110,7 +110,7 @@ jobs:
           k8sversion: ${{ matrix.k8s-version }}
           helm_command: |-
             helm install tx-ih charts/tractusx-identityhub \
-            -f tests/deployment/test-helm-values.yaml \
+            -f tests/deployment/test-helm-values-ih.yaml \
             --dependency-update \
             --wait-for-jobs --timeout=120s    
 
