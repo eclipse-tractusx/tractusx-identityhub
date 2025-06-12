@@ -2,8 +2,7 @@
 format.version = "1.1"
 
 [versions]
-edc = "0.12.0-SNAPSHOT"
-ih = "0.12.0-SNAPSHOT"
+edc = "0.14.0-20250607-SNAPSHOT"
 opentelemetry = "2.11.0"
 flyway = "11.2.0"
 
@@ -28,12 +27,12 @@ edc-spi-transaction = { module = "org.eclipse.edc:transaction-spi", version.ref 
 edc-spi-transaction-datasource = { module = "org.eclipse.edc:transaction-datasource-spi", version.ref = "edc" }
 
 # IdentityHub modules
-edc-ih-account-remote = { module = "org.eclipse.edc:sts-account-service-remote", version.ref = "ih" }
-edc-ih-spi = { module = "org.eclipse.edc:identity-hub-spi", version.ref = "ih" }
+edc-ih-account-remote = { module = "org.eclipse.edc:sts-account-service-remote", version.ref = "edc" }
+edc-ih-spi = { module = "org.eclipse.edc:identity-hub-spi", version.ref = "edc" }
 
 # IdentityHub BOM modules
-bom-ih = { module = "org.eclipse.edc:identityhub-bom", version.ref = "ih" }
-bom-ih-sql = { module = "org.eclipse.edc:identityhub-feature-sql-bom", version.ref = "ih" }
+bom-ih = { module = "org.eclipse.edc:identityhub-bom", version.ref = "edc" }
+bom-ih-sql = { module = "org.eclipse.edc:identityhub-feature-sql-bom", version.ref = "edc" }
 
 
 # Third party libs
