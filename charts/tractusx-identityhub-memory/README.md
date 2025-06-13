@@ -32,6 +32,11 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 
 * <https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub>
 
+## Prerequisites
+
+- Kubernetes 1.29.8+
+- Helm 3.14.0+
+
 ## Values
 
 | Key | Type | Default | Description |
