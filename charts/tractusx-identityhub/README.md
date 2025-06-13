@@ -39,6 +39,11 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 | https://charts.bitnami.com/bitnami | postgresql(postgresql) | 16.3.5 |
 | https://helm.releases.hashicorp.com | vault(vault) | 0.29.1 |
 
+## Prerequisites
+
+- Kubernetes 1.29.8+
+- Helm 3.14.0+
+
 ## Values
 
 | Key | Type | Default | Description |
