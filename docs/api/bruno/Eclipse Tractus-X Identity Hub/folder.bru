@@ -1,0 +1,20 @@
+meta {
+  name: Tractus-X Identity-Hub
+  seq: 5
+}
+
+auth {
+  mode: inherit
+}
+
+vars:pre-request {
+  IDENTITY_PATH: http://localhost:8182/api/identity
+  CREDENTIAL_PATH: http://localhost:10001/api/credentials
+  PATH: http://localhost:8181/api
+  API_KEY: ****APIKEY****
+  PARTICIPANT_CONTEXT_ID: super-user
+  HOLDER_PID: 
+  CREDENTIAL_ID: 
+  DID: did:web:super-user
+  KEY_PAIR_ID: 5f136376-c34a-407d-bd63-3cfc22c491b4
+}

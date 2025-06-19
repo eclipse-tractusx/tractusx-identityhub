@@ -1,0 +1,58 @@
+meta {
+  name: Creates a new ParticipantContext object.
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{IDENTITY_PATH}}/v1alpha/participants
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "active": true,
+    "additionalProperties": {
+      "additionalProp1": {},
+      "additionalProp2": {},
+      "additionalProp3": {}
+    },
+    "did": "string",
+    "key": {
+      "active": true,
+      "keyGeneratorParams": {
+        "additionalProp1": {},
+        "additionalProp2": {},
+        "additionalProp3": {}
+      },
+      "keyId": "string",
+      "privateKeyAlias": "string",
+      "publicKeyJwk": {
+        "additionalProp1": {},
+        "additionalProp2": {},
+        "additionalProp3": {}
+      },
+      "publicKeyPem": "string",
+      "resourceId": "string",
+      "type": "string"
+    },
+    "participantId": "string",
+    "roles": [
+      "string"
+    ],
+    "serviceEndpoints": [
+      {
+        "id": "string",
+        "serviceEndpoint": "string",
+        "type": "string"
+      }
+    ]
+  }
+}

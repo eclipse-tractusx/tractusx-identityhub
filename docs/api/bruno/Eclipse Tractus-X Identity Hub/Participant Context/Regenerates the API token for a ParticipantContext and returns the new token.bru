@@ -1,0 +1,58 @@
+meta {
+  name: Regenerates the API token for a ParticipantContext and returns the new token.
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/state
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "active": true,
+    "additionalProperties": {
+      "additionalProp1": {},
+      "additionalProp2": {},
+      "additionalProp3": {}
+    },
+    "did": "string",
+    "key": {
+      "active": true,
+      "keyGeneratorParams": {
+        "additionalProp1": {},
+        "additionalProp2": {},
+        "additionalProp3": {}
+      },
+      "keyId": "string",
+      "privateKeyAlias": "string",
+      "publicKeyJwk": {
+        "additionalProp1": {},
+        "additionalProp2": {},
+        "additionalProp3": {}
+      },
+      "publicKeyPem": "string",
+      "resourceId": "string",
+      "type": "string"
+    },
+    "participantId": "string",
+    "roles": [
+      "string"
+    ],
+    "serviceEndpoints": [
+      {
+        "id": "string",
+        "serviceEndpoint": "string",
+        "type": "string"
+      }
+    ]
+  }
+}

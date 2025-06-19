@@ -1,0 +1,33 @@
+meta {
+  name: Query for DID documents.
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/query
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "filterExpression": [
+      {
+        "operandLeft": {},
+        "operandRight": {},
+        "operator": "string"
+      }
+    ],
+    "limit": 0,
+    "offset": 0,
+    "sortField": "string",
+    "sortOrder": "ASC"
+  }
+}

@@ -1,0 +1,42 @@
+meta {
+  name: Adds a new key pair to a ParticipantContext. Note that the key pair is either generated, or the private key is expected to be found in the vault.
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs
+  body: json
+  auth: apikey
+}
+
+params:query {
+  ~makeDefault: true
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "active": true,
+    "keyGeneratorParams": {
+      "additionalProp1": {},
+      "additionalProp2": {},
+      "additionalProp3": {}
+    },
+    "keyId": "string",
+    "privateKeyAlias": "string",
+    "publicKeyJwk": {
+      "additionalProp1": {},
+      "additionalProp2": {},
+      "additionalProp3": {}
+    },
+    "publicKeyPem": "string",
+    "resourceId": "string",
+    "type": "string"
+  }
+}
