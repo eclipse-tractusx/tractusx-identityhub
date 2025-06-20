@@ -5,13 +5,13 @@ meta {
 }
 
 post {
-  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/revoke
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/rotate?duration=999
   body: json
   auth: apikey
 }
 
 params:query {
-  ~duration: 999
+  duration: 999
 }
 
 auth:apikey {
@@ -23,20 +23,15 @@ auth:apikey {
 body:json {
   {
     "active": true,
+    "keyId": "my-new-key3",
+    "privateKeyAlias": "my-new-private-key3-alias",
+    "type": "Ed25519VerificationKey2020",
     "keyGeneratorParams": {
-      "additionalProp1": {},
-      "additionalProp2": {},
-      "additionalProp3": {}
+      "algorithm": "EdDSA",
+      "curve": "Ed25519"
     },
-    "keyId": "string",
-    "privateKeyAlias": "string",
-    "publicKeyJwk": {
-      "additionalProp1": {},
-      "additionalProp2": {},
-      "additionalProp3": {}
-    },
-    "publicKeyPem": "string",
-    "resourceId": "string",
-    "type": "string"
+    "publicKeyJwk": null,
+    "publicKeyPem": null,
+    "resourceId": "resource-new-key3"
   }
 }

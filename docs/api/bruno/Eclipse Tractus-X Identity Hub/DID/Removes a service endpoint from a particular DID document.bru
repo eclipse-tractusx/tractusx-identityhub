@@ -5,13 +5,13 @@ meta {
 }
 
 delete {
-  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/{{DID}}/endpoints
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/{{DID}}/endpoints?serviceId=string
   body: none
   auth: apikey
 }
 
 params:query {
-  ~serviceId: string
+  serviceId: string
   ~autoPublish: true
 }
 

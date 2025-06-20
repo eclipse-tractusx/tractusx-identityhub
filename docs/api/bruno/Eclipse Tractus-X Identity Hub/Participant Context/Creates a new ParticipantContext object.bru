@@ -19,40 +19,19 @@ auth:apikey {
 body:json {
   {
     "active": true,
-    "additionalProperties": {
-      "additionalProp1": {},
-      "additionalProp2": {},
-      "additionalProp3": {}
-    },
-    "did": "string",
+    "did": "did:web:eclipse-tractus-x",
+  
     "key": {
-      "active": true,
       "keyGeneratorParams": {
-        "additionalProp1": {},
-        "additionalProp2": {},
-        "additionalProp3": {}
+        "algorithm": "EdDSA",
+        "curve": "Ed25519"
       },
-      "keyId": "string",
-      "privateKeyAlias": "string",
-      "publicKeyJwk": {
-        "additionalProp1": {},
-        "additionalProp2": {},
-        "additionalProp3": {}
-      },
-      "publicKeyPem": "string",
-      "resourceId": "string",
-      "type": "string"
+      "keyId": "eclipse-tractus-x-key",
+      "privateKeyAlias": "eclipse-tractus-x-alias"
     },
-    "participantId": "string",
+    "participantId": "eclipse-tractus-x",
     "roles": [
-      "string"
-    ],
-    "serviceEndpoints": [
-      {
-        "id": "string",
-        "serviceEndpoint": "string",
-        "type": "string"
-      }
+      "ROLE_ADMIN"
     ]
   }
 }

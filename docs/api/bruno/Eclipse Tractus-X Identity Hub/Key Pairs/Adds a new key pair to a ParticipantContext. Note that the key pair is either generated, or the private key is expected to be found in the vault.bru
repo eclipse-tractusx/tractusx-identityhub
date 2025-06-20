@@ -23,20 +23,15 @@ auth:apikey {
 body:json {
   {
     "active": true,
+    "keyId": "my-new-key",
+    "privateKeyAlias": "my-new-private-key-alias",
+    "type": "Ed25519VerificationKey2020",
     "keyGeneratorParams": {
-      "additionalProp1": {},
-      "additionalProp2": {},
-      "additionalProp3": {}
+      "algorithm": "EdDSA",
+      "curve": "Ed25519"
     },
-    "keyId": "string",
-    "privateKeyAlias": "string",
-    "publicKeyJwk": {
-      "additionalProp1": {},
-      "additionalProp2": {},
-      "additionalProp3": {}
-    },
-    "publicKeyPem": "string",
-    "resourceId": "string",
-    "type": "string"
+    "publicKeyJwk": null,
+    "publicKeyPem": null,
+    "resourceId": "resource-new-key"
   }
 }

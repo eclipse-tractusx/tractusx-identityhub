@@ -6,7 +6,7 @@ meta {
 
 post {
   url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/activate
-  body: none
+  body: json
   auth: apikey
 }
 
@@ -14,25 +14,4 @@ auth:apikey {
   key: X-Api-Key
   value: {{API_KEY}}
   placement: header
-}
-
-body:json {
-  {
-    "active": true,
-    "keyGeneratorParams": {
-      "additionalProp1": {},
-      "additionalProp2": {},
-      "additionalProp3": {}
-    },
-    "keyId": "string",
-    "privateKeyAlias": "string",
-    "publicKeyJwk": {
-      "additionalProp1": {},
-      "additionalProp2": {},
-      "additionalProp3": {}
-    },
-    "publicKeyPem": "string",
-    "resourceId": "string",
-    "type": "string"
-  }
 }
