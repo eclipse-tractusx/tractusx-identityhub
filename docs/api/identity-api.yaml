@@ -1,0 +1,2045 @@
+openapi: 3.0.1
+info:
+  title: identity-api
+  description: REST API documentation for the identity-api
+  version: 1.0.0-alpha
+servers:
+  - url: /
+paths:
+  /v1alpha/credentials:
+    get:
+      tags:
+        - Verifiable Credentials
+      description: Get all VerifiableCredentials across all Participant Contexts.
+        Requires elevated access.
+      operationId: getAllCredentials
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            default: 50
+      responses:
+        "200":
+          description: The list of VerifiableCredential resources.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VerifiableCredentialResource"
+        "400":
+          description: The query was malformed or was not understood by the server.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/dids:
+    get:
+      tags:
+        - DID
+      description: Get all DID documents across all Participant Contexts. Requires
+        elevated access.
+      operationId: getAllDids
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            default: 50
+      responses:
+        "200":
+          description: The list of DID Documents.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DidDocument"
+        "400":
+          description: The query was malformed or was not understood by the server.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/keypairs:
+    get:
+      tags:
+        - Key Pairs
+      description: Get all KeyPair resources across all Participant Contexts. Requires
+        elevated access.
+      operationId: getAllKeyPairs
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            default: 50
+      responses:
+        "200":
+          description: The list of KeyPair resources.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/KeyPairResource"
+        "400":
+          description: The query was malformed or was not understood by the server.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants:
+    get:
+      tags:
+        - Participant Context
+      description: Get all DID documents across all Participant Contexts. Requires
+        elevated access.
+      operationId: getAllParticipants
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            default: 50
+      responses:
+        "200":
+          description: The list of ParticipantContexts.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ParticipantContext"
+        "400":
+          description: The query was malformed or was not understood by the server.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+    post:
+      tags:
+        - Participant Context
+      description: Creates a new ParticipantContext object.
+      operationId: createParticipant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ParticipantManifest"
+      responses:
+        "200":
+          description: "The ParticipantContext was created successfully, its API token\
+            \ is returned in the response body."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateParticipantContextResponse"
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "409":
+          description: "Can't create the ParticipantContext, because a object with\
+            \ the same ID already exists"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}:
+    get:
+      tags:
+        - Participant Context
+      description: Gets ParticipantContexts by ID.
+      operationId: getParticipant
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The list of ParticipantContexts.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParticipantContext"
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: A ParticipantContext with the given ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+    delete:
+      tags:
+        - Participant Context
+      description: Delete a ParticipantContext.
+      operationId: deleteParticipant
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The ParticipantContext was deleted successfully
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: A ParticipantContext with the given ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/credentials:
+    get:
+      tags:
+        - Verifiable Credentials
+      description: Query VerifiableCredentials by type.
+      operationId: queryCredentialsByType
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: type
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The list of VerifiableCredentials.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VerifiableCredentialResource"
+        "400":
+          description: The query was malformed or was not understood by the server.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "403":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+    put:
+      tags:
+        - Verifiable Credentials
+      description: Update an existing VerifiableCredential.
+      operationId: updateCredential
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifiableCredentialManifest"
+      responses:
+        "204":
+          description: The VerifiableCredential was updated successfully.
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "403":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: VerifiableCredential could not be updated because it does not
+            exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+    post:
+      tags:
+        - Verifiable Credentials
+      description: Adds a new VerifiableCredential into the system.
+      operationId: addCredential
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifiableCredentialManifest"
+      responses:
+        "204":
+          description: The VerifiableCredential was successfully created.
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "403":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "409":
+          description: "Could not create VerifiableCredential, because a VerifiableCredential\
+            \ with that ID already exists"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/credentials/request:
+    post:
+      tags:
+        - Verifiable Credentials
+      description: Triggers a credential request that is send to the issuer via the
+        DCP protocol.
+      operationId: requestCredential
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CredentialRequestDto"
+      responses:
+        "201":
+          description: The request was processed and sent to the issuer. The issuer-created
+            ID ("issuerPid") is returned in the response.
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "403":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "409":
+          description: "Could not create a credential request, because a credential\
+            \ request with that ID already exists"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/credentials/request/{holderPid}:
+    get:
+      tags:
+        - Verifiable Credentials
+      description: Finds a credential request by ID.
+      operationId: getCredentialRequest
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: holderPid
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The VerifiableCredential.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerifiableCredentialResource"
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "403":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: A VerifiableCredential with the given ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/credentials/{credentialId}:
+    get:
+      tags:
+        - Verifiable Credentials
+      description: Finds a VerifiableCredential by ID.
+      operationId: getCredential
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: credentialId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The VerifiableCredential.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerifiableCredentialResource"
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "403":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: A VerifiableCredential with the given ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+    delete:
+      tags:
+        - Verifiable Credentials
+      description: Delete a VerifiableCredential.
+      operationId: deleteCredential
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: credentialId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The VerifiableCredential was deleted successfully
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "403":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: A VerifiableCredential with the given ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/dids/publish:
+    post:
+      tags:
+        - DID
+      description: Publish an (existing) DID document. The DID is expected to exist
+        in the database.
+      operationId: publishDid
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DidRequestPayload"
+      responses:
+        "200":
+          description: The DID document was successfully published.
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: The DID could not be published because it does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/dids/query:
+    post:
+      tags:
+        - DID
+      description: Query for DID documents.
+      operationId: queryDids
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuerySpec"
+      responses:
+        "200":
+          description: The list of DID Documents.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DidDocument"
+        "400":
+          description: The query was malformed or was not understood by the server.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/dids/state:
+    post:
+      tags:
+        - DID
+      description: Get state of a DID document
+      operationId: getDidState
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DidRequestPayload"
+      responses:
+        "200":
+          description: The DID state was successfully obtained
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: The DID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/dids/unpublish:
+    post:
+      tags:
+        - DID
+      description: Un-Publish an (existing) DID document. The DID is expected to exist
+        in the database.
+      operationId: unpublishDid
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DidRequestPayload"
+      responses:
+        "200":
+          description: The DID document was successfully un-published.
+        "400":
+          description: The DID could not be unpublished because the underlying VDR
+            does not support un-publishing.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: The DID could not be un-published because it does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/dids/{did}/endpoints:
+    post:
+      tags:
+        - DID
+      description: Adds a service endpoint to a particular DID document.
+      operationId: addDidEndpoint
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: did
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: autoPublish
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Service"
+      responses:
+        "200":
+          description: The DID document was successfully updated.
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: The service endpoint could not be added because the DID does
+            not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "409":
+          description: "The DID document could not be updated, because a service endpoint\
+            \ with the same ID already exists."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+    delete:
+      tags:
+        - DID
+      description: Removes a service endpoint from a particular DID document.
+      operationId: deleteDidEndpoint
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: did
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: serviceId
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: autoPublish
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: The DID document was successfully updated.
+        "400":
+          description: "The DID document could not be updated, because a service endpoint\
+            \ with the same ID already exists."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: The service endpoint could not be added because the DID does
+            not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+    patch:
+      tags:
+        - DID
+      description: Replaces a service endpoint of a particular DID document.
+      operationId: replaceDidEndpoint
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: did
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: autoPublish
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Service"
+      responses:
+        "200":
+          description: The DID document was successfully updated.
+        "400":
+          description: "The DID document could not be updated, because a service endpoint\
+            \ with the given ID does not exist."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: The service endpoint could not be replaced because the DID
+            does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/keypairs:
+    get:
+      tags:
+        - Key Pairs
+      description: Finds all KeyPairResources for a particular ParticipantContext.
+      operationId: queryKeyPairByParticipantId
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The KeyPairResource.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/KeyPairResource"
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: A KeyPairResource with the given ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+    put:
+      tags:
+        - Key Pairs
+      description: "Adds a new key pair to a ParticipantContext. Note that the key\
+        \ pair is either generated, or the private key is expected to be found in\
+        \ the vault."
+      operationId: addKeyPair
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: makeDefault
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KeyDescriptor"
+      responses:
+        "200":
+          description: The KeyPairResource was successfully created and linked to
+            the participant.
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: A KeyPairResource with the given ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/keypairs/{keyPairId}:
+    get:
+      tags:
+        - Key Pairs
+      description: Finds a KeyPairResource by ID.
+      operationId: getKeyPair
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: keyPairId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The KeyPairResource.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KeyPairResource"
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: A KeyPairResource with the given ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/keypairs/{keyPairId}/activate:
+    post:
+      tags:
+        - Key Pairs
+      description: Sets a KeyPairResource to the ACTIVE state. Will fail if the current
+        state is anything other than ACTIVE or CREATED.
+      operationId: activateKeyPair
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: keyPairId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The KeyPairResource.
+        "400":
+          description: "Request body was malformed, or the request could not be processed."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: A KeyPairResource with the given ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/keypairs/{keyPairId}/revoke:
+    post:
+      tags:
+        - Key Pairs
+      description: "Revokes (=removes) a particular key pair, identified by their\
+        \ ID and create a new successor key."
+      operationId: revokeKeyPair
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: keyPairId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KeyDescriptor"
+      responses:
+        "200":
+          description: The KeyPairResource was successfully rotated and linked to
+            the participant.
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: A KeyPairResource with the given ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/keypairs/{keyPairId}/rotate:
+    post:
+      tags:
+        - Key Pairs
+      description: "Rotates (=retires) a particular key pair, identified by their\
+        \ ID and optionally create a new successor key."
+      operationId: rotateKeyPair
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: keyPairId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: duration
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KeyDescriptor"
+      responses:
+        "200":
+          description: The KeyPairResource was successfully rotated and linked to
+            the participant.
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: A KeyPairResource with the given ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/roles:
+    put:
+      tags:
+        - Participant Context
+      description: "Updates a ParticipantContext's roles. Note that this is an absolute\
+        \ update, that means all roles that the Participant should have must be submitted\
+        \ in the body. Requires elevated privileges."
+      operationId: updateParticipantRoles
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        "200":
+          description: The ParticipantContext was updated successfully
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: A ParticipantContext with the given ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/state:
+    post:
+      tags:
+        - Participant Context
+      description: "Activates a ParticipantContext. This operation is idempotent,\
+        \ i.e. activating an already active ParticipantContext is a NOOP."
+      operationId: activateParticipant
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: isActive
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ParticipantManifest"
+      responses:
+        "200":
+          description: The ParticipantContext was activated/deactivated successfully
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: A ParticipantContext with the given ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+  /v1alpha/participants/{participantContextId}/token:
+    post:
+      tags:
+        - Participant Context
+      description: Regenerates the API token for a ParticipantContext and returns
+        the new token.
+      operationId: regenerateParticipantToken
+      parameters:
+        - name: participantContextId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ParticipantManifest"
+      responses:
+        "200":
+          description: The API token was regenerated successfully
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: "Request body was malformed, or the request could not be processed"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "401":
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+        "404":
+          description: A ParticipantContext with the given ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+components:
+  schemas:
+    Action:
+      type: object
+      properties:
+        constraint:
+          $ref: "#/components/schemas/Constraint"
+        includedIn:
+          type: string
+        type:
+          type: string
+    ApiErrorDetail:
+      type: object
+      properties:
+        invalidValue:
+          type: object
+        message:
+          type: string
+        path:
+          type: string
+        type:
+          type: string
+    Constraint:
+      required:
+        - edctype
+      type: object
+      properties:
+        edctype:
+          type: string
+      discriminator:
+        propertyName: edctype
+    CreateParticipantContextResponse:
+      type: object
+      properties:
+        apiKey:
+          type: string
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+    CredentialDescriptor:
+      type: object
+      properties:
+        format:
+          type: string
+        id:
+          type: string
+        type:
+          type: string
+    CredentialRequestDto:
+      required:
+        - credentials
+        - issuerDid
+      type: object
+      properties:
+        credentials:
+          type: array
+          items:
+            $ref: "#/components/schemas/CredentialDescriptor"
+        holderPid:
+          type: string
+        issuerDid:
+          type: string
+    CredentialSchema:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+    CredentialStatus:
+      type: object
+      properties:
+        additionalProperties:
+          type: object
+          additionalProperties:
+            type: object
+        id:
+          type: string
+        type:
+          type: string
+    CredentialSubject:
+      type: object
+      properties:
+        claims:
+          type: object
+          additionalProperties:
+            type: object
+        id:
+          type: string
+    Criterion:
+      type: object
+      properties:
+        operandLeft:
+          type: object
+        operandRight:
+          type: object
+        operator:
+          type: string
+    DidDocument:
+      type: object
+      properties:
+        '@context':
+          type: array
+          items:
+            type: object
+        authentication:
+          type: array
+          items:
+            type: string
+        id:
+          type: string
+        service:
+          type: array
+          items:
+            $ref: "#/components/schemas/Service"
+        verificationMethod:
+          type: array
+          items:
+            $ref: "#/components/schemas/VerificationMethod"
+    DidRequestPayload:
+      type: object
+      properties:
+        did:
+          type: string
+    Duty:
+      type: object
+      properties:
+        action:
+          $ref: "#/components/schemas/Action"
+        constraints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Constraint"
+    HolderCredentialRequestDto:
+      type: object
+      properties:
+        holderPid:
+          type: string
+        issuerDid:
+          type: string
+        issuerPid:
+          type: string
+        status:
+          type: string
+        typesAndFormats:
+          type: array
+          items:
+            $ref: "#/components/schemas/RequestedCredential"
+    Issuer:
+      type: object
+      properties:
+        additionalProperties:
+          type: object
+          additionalProperties:
+            type: object
+        id:
+          type: string
+    KeyDescriptor:
+      type: object
+      properties:
+        active:
+          type: boolean
+        keyGeneratorParams:
+          type: object
+          additionalProperties:
+            type: object
+        keyId:
+          type: string
+        privateKeyAlias:
+          type: string
+        publicKeyJwk:
+          type: object
+          additionalProperties:
+            type: object
+        publicKeyPem:
+          type: string
+        resourceId:
+          type: string
+        type:
+          type: string
+    KeyPairResource:
+      type: object
+      properties:
+        defaultPair:
+          type: boolean
+        groupName:
+          type: string
+        id:
+          type: string
+        keyContext:
+          type: string
+        keyId:
+          type: string
+        participantContextId:
+          type: string
+        privateKeyAlias:
+          type: string
+        rotationDuration:
+          type: integer
+          format: int64
+        serializedPublicKey:
+          type: string
+        state:
+          type: integer
+          format: int32
+        timestamp:
+          type: integer
+          format: int64
+        useDuration:
+          type: integer
+          format: int64
+    ParticipantContext:
+      type: object
+      properties:
+        apiTokenAlias:
+          type: string
+        createdAt:
+          type: integer
+          format: int64
+        did:
+          type: string
+        lastModified:
+          type: integer
+          format: int64
+        participantContextId:
+          type: string
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        roles:
+          type: array
+          items:
+            type: string
+        state:
+          type: integer
+          format: int32
+    ParticipantManifest:
+      type: object
+      properties:
+        active:
+          type: boolean
+        additionalProperties:
+          type: object
+          additionalProperties:
+            type: object
+        did:
+          type: string
+        key:
+          $ref: "#/components/schemas/KeyDescriptor"
+        participantId:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+        serviceEndpoints:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/Service"
+    Permission:
+      type: object
+      properties:
+        action:
+          $ref: "#/components/schemas/Action"
+        constraints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Constraint"
+        duties:
+          type: array
+          items:
+            $ref: "#/components/schemas/Duty"
+    Policy:
+      type: object
+      properties:
+        '@type':
+          type: string
+          enum:
+            - SET
+            - OFFER
+            - CONTRACT
+        assignee:
+          type: string
+        assigner:
+          type: string
+        extensibleProperties:
+          type: object
+          additionalProperties:
+            type: object
+        inheritsFrom:
+          type: string
+        obligations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Duty"
+        permissions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Permission"
+        profiles:
+          type: array
+          items:
+            type: string
+        prohibitions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Prohibition"
+        target:
+          type: string
+    Prohibition:
+      type: object
+      properties:
+        action:
+          $ref: "#/components/schemas/Action"
+        constraints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Constraint"
+        remedies:
+          type: array
+          items:
+            $ref: "#/components/schemas/Duty"
+    QuerySpec:
+      type: object
+      properties:
+        filterExpression:
+          type: array
+          items:
+            $ref: "#/components/schemas/Criterion"
+        limit:
+          type: integer
+          format: int32
+        offset:
+          type: integer
+          format: int32
+        sortField:
+          type: string
+        sortOrder:
+          type: string
+          enum:
+            - ASC
+            - DESC
+    RequestedCredential:
+      type: object
+      properties:
+        credentialType:
+          type: string
+        format:
+          type: string
+        id:
+          type: string
+    Service:
+      type: object
+      properties:
+        id:
+          type: string
+        serviceEndpoint:
+          type: string
+        type:
+          type: string
+    VerifiableCredential:
+      type: object
+      properties:
+        credentialSchema:
+          type: array
+          items:
+            $ref: "#/components/schemas/CredentialSchema"
+        credentialStatus:
+          type: array
+          items:
+            $ref: "#/components/schemas/CredentialStatus"
+        credentialSubject:
+          type: array
+          items:
+            $ref: "#/components/schemas/CredentialSubject"
+        dataModelVersion:
+          type: string
+          enum:
+            - V_1_1
+            - V_2_0
+        description:
+          type: string
+        expirationDate:
+          type: string
+          format: date-time
+        id:
+          type: string
+        issuanceDate:
+          type: string
+          format: date-time
+        issuer:
+          $ref: "#/components/schemas/Issuer"
+        name:
+          type: string
+        type:
+          type: array
+          items:
+            type: string
+    VerifiableCredentialContainer:
+      type: object
+      properties:
+        credential:
+          $ref: "#/components/schemas/VerifiableCredential"
+        format:
+          type: string
+          enum:
+            - JSON_LD
+            - JWT
+            - VC1_0_LD
+            - VC1_0_JWT
+            - VC2_0_JOSE
+            - VC2_0_SD_JWT
+            - VC2_0_COSE
+        rawVc:
+          type: string
+    VerifiableCredentialManifest:
+      type: object
+      properties:
+        id:
+          type: string
+        issuancePolicy:
+          $ref: "#/components/schemas/Policy"
+        participantContextId:
+          type: string
+        reissuancePolicy:
+          $ref: "#/components/schemas/Policy"
+        verifiableCredentialContainer:
+          $ref: "#/components/schemas/VerifiableCredentialContainer"
+    VerifiableCredentialResource:
+      type: object
+      properties:
+        credentialStatus:
+          type: string
+          writeOnly: true
+          enum:
+            - INITIAL
+            - REQUESTING
+            - REQUESTED
+            - ISSUING
+            - ISSUED
+            - REVOKED
+            - SUSPENDED
+            - EXPIRED
+            - NOT_YET_VALID
+            - ERROR
+        holderId:
+          type: string
+        id:
+          type: string
+        issuancePolicy:
+          $ref: "#/components/schemas/Policy"
+        issuerId:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: object
+        participantContextId:
+          type: string
+        reissuancePolicy:
+          $ref: "#/components/schemas/Policy"
+        state:
+          type: integer
+          format: int32
+        timeOfLastStatusUpdate:
+          type: string
+          format: date-time
+        timestamp:
+          type: integer
+          format: int64
+        verifiableCredential:
+          $ref: "#/components/schemas/VerifiableCredentialContainer"
+    VerificationMethod:
+      type: object
+      properties:
+        controller:
+          type: string
+        id:
+          type: string
+        publicKeyJwk:
+          type: object
+          additionalProperties:
+            type: object
+        publicKeyMultibase:
+          type: string
+        type:
+          type: string
