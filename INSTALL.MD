@@ -58,9 +58,6 @@ chmod 700 get_helm.sh
 
 ## Launching the application in localhost
 
-> [!WARNING]
-> The Docker image tags are written in this format to deploy with helm chart in localhost
-
 This section prepares and builds the application directly from localhost with no use of Docker Hub to pull images from the cloud.
 That means we generate the artifact, build the docker image and load it into kubernetes and deploy with helm charts.
 
@@ -91,39 +88,56 @@ java -Dweb.http.credentials.port=10001 \
      -Dweb.http.issueradmin.path="/api/issueradmin" \
      -Dweb.http.statuslist.port=9999 \
      -Dweb.http.statuslist.path="/statuslist" \
-     -jar launcher/identityhub/build/libs/identity-hub.jar
+     -jar runtimes/identityhub-memory/build/libs/identity-hub.jar
 ```
 
 ### Create Docker Image
 
-Build the docker image from the module runtime/identityhub-memory.
+Build the docker image
 
 ```shell
-docker build . -t tratusx/identityhub-memory:0.1.0
+# Path: tractusx-identityhub/
+docker build runtimes/identityhub-memory/ -t identityhub-memory:latest -f runtimes/identityhub-memory/Dockerfile
+```
+
+Or build the image going to the runtime/identityhub-memory module
+```shell
+# Path: tractusx-identityhub/runtime/identotyhub-memory/
+docker build . -t identityhub-memory:latest
 ```
 
 ### Run Docker Image
 
 ```shell
 docker run -d --rm --name identityhub \
-            -e "WEB_HTTP_IDENTITY_PORT=8182" \
-            -e "WEB_HTTP_IDENTITY_PATH=/api/identity" \
-            -e "WEB_HTTP_PRESENTATION_PORT=10001" \
-            -e "WEB_HTTP_PRESENTATION_PATH=/api/presentation" \
-            -e "EDC_IAM_STS_PRIVATEKEY_ALIAS=privatekey-alias" \
-            -e "EDC_IAM_STS_PUBLICKEY_ID=publickey-id" \
-            -p 8182:8182 \
-            -p 10001:10001\
-            tractusx/identityhub-memory:0.1.0
+    -e "WEB_HTTP_IDENTITY_PORT=8182" \
+    -e "WEB_HTTP_IDENTITY_PATH=/api/identity" \
+    -e "WEB_HTTP_PRESENTATION_PORT=10001" \
+    -e "WEB_HTTP_PRESENTATION_PATH=/api/presentation" \
+    -e "EDC_IAM_STS_PRIVATEKEY_ALIAS=privatekey-alias" \
+    -e "EDC_IAM_STS_PUBLICKEY_ID=publickey-id" \
+    -p 8182:8182 \
+    -p 10001:10001\
+    identityhub-memory:latest
 ```
 
 ### Load Docker Image into Minikube
 ```shell
-minikube image load tractusx/identityhub-memory:0.1.0
+minikube image load identityhub-memory:latest
 ```
 
 ### Deploy IdentityHub-memory with Helm Charts
 
 ```shell
-helm install identityhub-memory ./ --wait-for-jobs --timeout=120s --dependency-update
+# Path: tractusx-identityhub/
+helm install identityhub-memory charts/tractusx-identityhub-memory/ \
+    --set "identityhub.endpoints.identity.authKey=password" \
+    --set "identityhub.securityContext.readOnlyRootFilesystem=false" \
+    --set "fullnameOverride=identityhub" \
+    --set "identityhub.image.pullPolicy=Never" \
+    --set "identityhub.image.tag=latest" \
+    --set "identityhub.image.repository=identityhub-memory" \
+    --wait-for-jobs \
+    --timeout=120s \
+    --dependency-update
 ```
