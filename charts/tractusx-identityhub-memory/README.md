@@ -4,7 +4,7 @@
 
 A Helm chart for Tractus-X IdentityHub, a comprehensive DCP CredentialService solution
 
-**Homepage:** <https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub>
+**Homepage:** <https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub-memory>
 
 # Configure the chart
 
@@ -30,7 +30,7 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 
 ## Source Code
 
-* <https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub>
+* <https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub-memory>
 
 ## Prerequisites
 
