@@ -1,6 +1,11 @@
-# Tools Needed to Deplot IdentityHub
+# Deploying identityhub in localhost
+
+This section shows a step by step process in order to successfully deploy identityhub with a helm chart using a locally built docker image.
+The steps will go from how to install the required tools to deploy the final helm to being able to deploy the identityhub module with java, docker or helm commands.
 
 ## Prerequisites
+
+This section describes the tools necessary to deploy the final helm chart and the versions that have been tested for the localhost deployment.
 
 - Docker v28.2.2
 - Minikube v1.31.2
@@ -56,7 +61,7 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 ```
 
-## Launching the application in localhost
+## Launching the application with helm in localhost
 
 This section prepares and builds the application directly from localhost with no use of Docker Hub to pull images from the cloud.
 That means we generate the artifact, build the docker image and load it into kubernetes and deploy with helm charts.
@@ -68,9 +73,47 @@ You can generate the artifact with the following command.
 ./gradlew clean build
 ```
 
-### Run IdentityHub as Java
+### Create Docker Image
 
-Once the jar is built, you can try to run it with the following command, or build it into a docker image in the next step.
+Build the docker image
+
+```shell
+# Path: tractusx-identityhub/
+docker build runtimes/identityhub-memory/ -t identityhub-memory:test -f runtimes/identityhub-memory/Dockerfile
+```
+
+Or build the image going to the runtime/identityhub-memory module
+```shell
+# Path: tractusx-identityhub/runtime/identotyhub-memory/
+docker build . -t identityhub-memory:test
+```
+
+### Load Docker Image into Minikube
+```shell
+minikube image load identityhub-memory:test
+```
+
+### Deploy IdentityHub-memory with Helm Charts
+
+```shell
+# Path: tractusx-identityhub/
+helm install identityhub-memory charts/tractusx-identityhub-memory/ \
+    --set "identityhub.endpoints.identity.authKey=password" \
+    --set "identityhub.securityContext.readOnlyRootFilesystem=false" \
+    --set "fullnameOverride=identityhub" \
+    --set "identityhub.image.pullPolicy=Never" \
+    --set "identityhub.image.tag=test" \
+    --set "identityhub.image.repository=identityhub-memory" \
+    --wait-for-jobs \
+    --timeout=120s \
+    --dependency-update
+```
+## Alternative ways to deploy identityhub in localhost
+
+In case you don't want to deploy the helm chart, here are other ways to deploy the application.
+
+### Java application
+
 ```shell
 java -Dweb.http.credentials.port=10001 \
      -Dweb.http.credentials.path="/api/credentials" \
@@ -91,22 +134,7 @@ java -Dweb.http.credentials.port=10001 \
      -jar runtimes/identityhub-memory/build/libs/identity-hub.jar
 ```
 
-### Create Docker Image
-
-Build the docker image
-
-```shell
-# Path: tractusx-identityhub/
-docker build runtimes/identityhub-memory/ -t identityhub-memory:latest -f runtimes/identityhub-memory/Dockerfile
-```
-
-Or build the image going to the runtime/identityhub-memory module
-```shell
-# Path: tractusx-identityhub/runtime/identotyhub-memory/
-docker build . -t identityhub-memory:latest
-```
-
-### Run Docker Image
+### Run docker image
 
 ```shell
 docker run -d --rm --name identityhub \
@@ -118,26 +146,5 @@ docker run -d --rm --name identityhub \
     -e "EDC_IAM_STS_PUBLICKEY_ID=publickey-id" \
     -p 8182:8182 \
     -p 10001:10001\
-    identityhub-memory:latest
-```
-
-### Load Docker Image into Minikube
-```shell
-minikube image load identityhub-memory:latest
-```
-
-### Deploy IdentityHub-memory with Helm Charts
-
-```shell
-# Path: tractusx-identityhub/
-helm install identityhub-memory charts/tractusx-identityhub-memory/ \
-    --set "identityhub.endpoints.identity.authKey=password" \
-    --set "identityhub.securityContext.readOnlyRootFilesystem=false" \
-    --set "fullnameOverride=identityhub" \
-    --set "identityhub.image.pullPolicy=Never" \
-    --set "identityhub.image.tag=latest" \
-    --set "identityhub.image.repository=identityhub-memory" \
-    --wait-for-jobs \
-    --timeout=120s \
-    --dependency-update
+    identityhub-memory:test
 ```
