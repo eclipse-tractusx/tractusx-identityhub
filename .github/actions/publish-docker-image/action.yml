@@ -92,7 +92,7 @@ runs:
       uses: docker/build-push-action@v3
       with:
         context: ${{ inputs.rootDir }}
-        file: ${{ inputs.rootDir }}/src/main/docker/Dockerfile
+        file: ${{ inputs.rootDir }}/Dockerfile
         build-args: |
           JAR=build/libs/${{ inputs.imagename }}.jar
           OTEL_JAR=build/resources/otel/opentelemetry-javaagent.jar
