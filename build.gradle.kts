@@ -64,7 +64,7 @@ allprojects {
 subprojects {
     afterEvaluate {
         if (project.plugins.hasPlugin("com.github.johnrengelman.shadow") &&
-            file("${project.projectDir}/src/main/docker/Dockerfile").exists()
+            file("${project.projectDir}/Dockerfile").exists()
         ) {
 
             val downloadOpentelemetryAgent = tasks.register("downloadOpentelemetryAgent", Copy::class) {
@@ -100,7 +100,7 @@ subprojects {
             // configure the "dockerize" task
             val dockerTask = tasks.register("dockerize", DockerBuildImage::class) {
                 val dockerContextDir = project.projectDir
-                dockerFile.set(file("$dockerContextDir/src/main/docker/Dockerfile"))
+                dockerFile.set(file("$dockerContextDir/Dockerfile"))
                 images.add("${project.name}:${project.version}")
                 images.add("${project.name}:latest")
                 // specify platform with the -Dplatform flag:
