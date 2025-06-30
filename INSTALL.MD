@@ -1,10 +1,11 @@
 # Deploying identityhub-memory in localhost
 
 > [!NOTE]
-> This guide has been tested with Linux OS
+> This guide has been tested with Linux OS distribution,
 
 > [!WARNING]
-> As of now, this guide ensured the deployment of the application but it does not ensure the correct configuration of the deployment.
+> As of now, this guide ensures the deployment of the application but it does not ensure the correct configuration of the deployment.
+> The documentation is being worked on to be able to understand and catch all possible configurations for a proper application launch in localhost.
 
 This section shows a step by step process in order to successfully deploy identityhub-memory with a helm chart using a locally built docker image.
 The steps will go from how to install the required tools to deploy the final helm to being able to deploy the identityhub-memory module with java, docker or helm commands.
