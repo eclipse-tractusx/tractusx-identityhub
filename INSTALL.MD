@@ -1,7 +1,13 @@
-# Deploying identityhub in localhost
+# Deploying identityhub-memory in localhost
 
-This section shows a step by step process in order to successfully deploy identityhub with a helm chart using a locally built docker image.
-The steps will go from how to install the required tools to deploy the final helm to being able to deploy the identityhub module with java, docker or helm commands.
+> [!NOTE]
+> This guide has been tested with Linux OS
+
+> [!WARNING]
+> As of now, this guide ensured the deployment of the application but it does not ensure the correct configuration of the deployment.
+
+This section shows a step by step process in order to successfully deploy identityhub-memory with a helm chart using a locally built docker image.
+The steps will go from how to install the required tools to deploy the final helm to being able to deploy the identityhub-memory module with java, docker or helm commands.
 
 ## Prerequisites
 
@@ -84,7 +90,7 @@ docker build runtimes/identityhub-memory/ -t identityhub-memory:test -f runtimes
 
 Or build the image going to the runtime/identityhub-memory module
 ```shell
-# Path: tractusx-identityhub/runtime/identotyhub-memory/
+# Path: tractusx-identityhub/runtime/identityhub-memory/
 docker build . -t identityhub-memory:test
 ```
 
@@ -93,7 +99,7 @@ docker build . -t identityhub-memory:test
 minikube image load identityhub-memory:test
 ```
 
-### Deploy IdentityHub-memory with Helm Charts
+### Deploy Identityhub-memory with Helm Charts
 
 ```shell
 # Path: tractusx-identityhub/
@@ -108,7 +114,7 @@ helm install identityhub-memory charts/tractusx-identityhub-memory/ \
     --timeout=120s \
     --dependency-update
 ```
-## Alternative ways to deploy identityhub in localhost
+## Alternative ways to deploy identityhub-memory in localhost
 
 In case you don't want to deploy the helm chart, here are other ways to deploy the application.
 
