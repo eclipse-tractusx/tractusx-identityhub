@@ -46,3 +46,5 @@ rootProject.name = "tractusx-identityhub"
 include(":extensions:store:sql:migrations")
 include(":runtimes:identityhub")
 include(":runtimes:identityhub-memory")
+include(":runtimes:issuerservice")
+include(":runtimes:issuerservice-memory")
