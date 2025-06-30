@@ -19,7 +19,7 @@
 #################################################################################
 
 FROM eclipse-temurin:23_37-jre-alpine
-ARG JAR
+ARG JAR=build/libs/issuerservice-memory.jar
 ARG OTEL_JAR
 ARG ADDITIONAL_FILES
 
