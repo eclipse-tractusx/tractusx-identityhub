@@ -14,61 +14,11 @@ The steps will go from how to install the required tools to deploy the final hel
 
 This section describes the tools necessary to deploy the final helm chart and the versions that have been tested for the localhost deployment.
 
-- Docker v28.2.2
-- Minikube v1.31.2
-- Helm v3.18.1
+- [Docker](https://docs.docker.com/engine/install/ubuntu/)
+- [Minikube](https://minikube.sigs.k8s.io/docs/start/)
+- [Helm](https://helm.sh/docs/intro/install/)
 
-## Install tools
-
-### Docker
-```shell
-# Add Docker's official GPG key:
-sudo apt-get update
-sudo apt-get install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-# Add the repository to Apt sources:
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-```
-#### Install specific docker version
-```shell
-# List the available versions:
-apt-cache madison docker-ce | awk '{ print $3 }'
-
-# Install specific version
-VERSION_STRING=5:28.2.2-1~ubuntu.24.04~noble
-sudo apt-get install docker-ce=$VERSION_STRING docker-ce-cli=$VERSION_STRING containerd.io docker-buildx-plugin docker-compose-plugin
-```
-
-#### Install latest docker version
-```shell
-# Install latest version
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-```
-### Minikube
-
-```shell
-# Latest minikube stable release
-curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
-sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
-```
-
-### Helm
-
-```shell
-# Get latest version
-curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-chmod 700 get_helm.sh
-./get_helm.sh
-```
-
-## Launching the application with helm in localhost
+## Launching the identityhub-memory with helm in localhost
 
 This section prepares and builds the application directly from localhost with no use of Docker Hub to pull images from the cloud.
 That means we generate the artifact, build the docker image and load it into kubernetes and deploy with helm charts.
@@ -115,6 +65,8 @@ helm install identityhub-memory charts/tractusx-identityhub-memory/ \
     --timeout=120s \
     --dependency-update
 ```
+For helm chart options and configuration, see [Helm chart documentation](https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/charts/tractusx-identityhub-memory/README.md)
+
 ## Alternative ways to deploy identityhub-memory in localhost
 
 In case you don't want to deploy the helm chart, here are other ways to deploy the application.
