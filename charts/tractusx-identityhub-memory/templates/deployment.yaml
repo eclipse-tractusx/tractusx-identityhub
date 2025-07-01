@@ -93,7 +93,7 @@ spec:
           {{- if .Values.identityhub.image.repository }}
           image: "{{ .Values.identityhub.image.repository }}:{{ .Values.identityhub.image.tag | default .Chart.AppVersion }}"
           {{- else }}
-          image: "tractusx/identityhub:{{ .Values.identityhub.image.tag | default .Chart.AppVersion }}"
+          image: "tractusx/identityhub-memory:{{ .Values.identityhub.image.tag | default .Chart.AppVersion }}"
           {{- end }}
 
           imagePullPolicy: {{ .Values.identityhub.image.pullPolicy }}

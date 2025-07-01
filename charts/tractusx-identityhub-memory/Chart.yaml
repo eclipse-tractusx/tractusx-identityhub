@@ -21,7 +21,7 @@
 
 ---
 apiVersion: v2
-name: tractusx-identityhub
+name: tractusx-identityhub-memory
 description: A Helm chart for Tractus-X IdentityHub, a comprehensive DCP CredentialService solution
 
 # A chart can be either an 'application' or a 'library' chart.
@@ -42,8 +42,8 @@ version: 0.1.0
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "0.1.0"
-home: https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub
+home: https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub-memory
 sources:
-  - https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub
+  - https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub-memory
 
 # no dependencies here
