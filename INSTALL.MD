@@ -90,7 +90,7 @@ java -Dweb.http.credentials.port=10001 \
      -Dweb.http.issueradmin.path="/api/issueradmin" \
      -Dweb.http.statuslist.port=9999 \
      -Dweb.http.statuslist.path="/statuslist" \
-     -jar runtimes/identityhub-memory/build/libs/identity-hub.jar
+     -jar runtimes/identityhub-memory/build/libs/identityhub-memory.jar
 ```
 
 ### Run docker image
