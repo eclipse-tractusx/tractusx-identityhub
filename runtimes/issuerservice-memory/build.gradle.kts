@@ -27,6 +27,9 @@ plugins {
 dependencies {
     // used for the runtime
     runtimeOnly(libs.bom.issuer)
+
+    // used for custom extensions
+    implementation(libs.edc.ih.spi)
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
