@@ -1,0 +1,25 @@
+meta {
+  name: Updates holder data.
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/holders
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "did": "string",
+    "holderId": "string",
+    "name": "string"
+  }
+}
