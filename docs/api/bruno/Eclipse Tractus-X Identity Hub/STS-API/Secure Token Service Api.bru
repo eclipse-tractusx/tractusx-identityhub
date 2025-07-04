@@ -7,14 +7,18 @@ meta {
 post {
   url: {{STS_PATH}}/token
   body: formUrlEncoded
-  auth: inherit
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
 }
 
 body:form-urlencoded {
-  grant_type: asd
+  grant_type: client_credentials
   client_id: super-user
-  audience: ad
-  bearer_access_scope: asd
-  token: asd
-  client_secret: ads
+  audience: super-user
+  client_secret: {{API_KEY}}
 }
