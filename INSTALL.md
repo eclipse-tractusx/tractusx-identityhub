@@ -74,23 +74,8 @@ In case you don't want to deploy the helm chart, here are other ways to deploy t
 ### Java application
 
 ```shell
-java -Dweb.http.credentials.port=10001 \
-     -Dweb.http.credentials.path="/api/credentials" \
-     -Dweb.http.port=8180 \
-     -Dweb.http.path="/api" \
-     -Dweb.http.did.port=8181 \
-     -Dweb.http.did.path="/api/did" \
-     -Dweb.http.identity.port=8182 \
-     -Dweb.http.identity.path="/api/identity" \
-     -Dweb.http.sts.port=8183 \
-     -Dweb.http.sts.path="/api/sts" \
-     -Dweb.http.issuance.port=8184 \
-     -Dweb.http.issuance.path="/api/issuance" \
-     -Dweb.http.issueradmin.port=8185 \
-     -Dweb.http.issueradmin.path="/api/issueradmin" \
-     -Dweb.http.statuslist.port=9999 \
-     -Dweb.http.statuslist.path="/statuslist" \
-     -jar runtimes/identityhub-memory/build/libs/identityhub-memory.jar
+java -Dedc.fs.config=runtimes/identityhub-memory/build/resources/main/application.properties
+    -jar runtimes/identityhub-memory/build/libs/identityhub-memory.jar
 ```
 
 ### Run docker image
