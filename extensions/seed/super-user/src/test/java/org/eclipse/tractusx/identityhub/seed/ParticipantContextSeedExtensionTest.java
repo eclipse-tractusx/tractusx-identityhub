@@ -59,6 +59,7 @@ class ParticipantContextSeedExtensionTest {
         context.registerService(Vault.class, vault);
         context.registerService(Monitor.class, monitor);
         when(participantContextService.getParticipantContext(eq(SUPER_USER))).thenReturn(ServiceResult.notFound("foobar"));
+        when(context.getMonitor().withPrefix(SuperUserSeedExtension.class.getSimpleName())).thenReturn(monitor);
     }
 
     @Test
