@@ -39,7 +39,7 @@ import java.util.Map;
 import static java.util.Optional.ofNullable;
 
 public class SuperUserSeedExtension implements ServiceExtension {
-    public static final String NAME = "MVD ParticipantContext Seed Extension";
+    public static final String NAME = "SUPER USER Seed Extension";
     public static final String DEFAULT_SUPER_USER_PARTICIPANT_ID = "super-user";
 
     @Setting(value = "Explicitly set the initial API key for the Super-User")
@@ -64,7 +64,7 @@ public class SuperUserSeedExtension implements ServiceExtension {
     public void initialize(ServiceExtensionContext context) {
         superUserParticipantId = context.getSetting(SUPERUSER_PARTICIPANT_ID_PROPERTY, DEFAULT_SUPER_USER_PARTICIPANT_ID);
         superUserApiKey = context.getSetting(SUPERUSER_APIKEY_PROPERTY, null);
-        monitor = context.getMonitor();
+        monitor = context.getMonitor().withPrefix(SuperUserSeedExtension.class.getSimpleName());
     }
 
     @Override
