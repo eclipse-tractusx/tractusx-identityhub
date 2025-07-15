@@ -1,0 +1,40 @@
+meta {
+  name: Requests status information about an issuance request from an issuer
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{ISSUANCE_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/requests/{{CREDENTIAL_REQUEST_ID}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer asdas
+}
+
+body:json {
+  {
+    "@context": [
+      "https://w3id.org/dspace-dcp/v1.0/dcp.jsonld"
+    ],
+    "type": "CredentialMessage",
+    "credentials": [
+      {
+        "credentialType": "MembershipCredential",
+        "payload": "",
+        "format": "jwt"
+      },
+      {
+        "credentialType": "OrganizationCredential",
+        "payload": "",
+        "format": "json-ld"
+      }
+    ],
+    "issuerPid": "BPN",
+    "holderPid": "BPN",
+    "status": "ISSUED",
+    "requestId": "requestId"
+  }
+}

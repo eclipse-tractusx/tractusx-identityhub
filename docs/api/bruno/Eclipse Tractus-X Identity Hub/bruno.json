@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Eclipse Tractus-X Identity Hub",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

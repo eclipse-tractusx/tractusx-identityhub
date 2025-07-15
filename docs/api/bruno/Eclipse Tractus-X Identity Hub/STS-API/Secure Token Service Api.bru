@@ -1,0 +1,18 @@
+meta {
+  name: Secure Token Service Api
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{STS_PATH}}/token
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  grant_type: client_credentials
+  client_id: did:web:super-user
+  audience: did:web:super-user
+  client_secret: client_secret
+}

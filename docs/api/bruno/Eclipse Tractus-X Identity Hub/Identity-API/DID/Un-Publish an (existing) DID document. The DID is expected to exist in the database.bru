@@ -1,0 +1,23 @@
+meta {
+  name: Un-Publish an (existing) DID document. The DID is expected to exist in the database.
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/unpublish
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "did": "did:web:super-user"
+  }
+}

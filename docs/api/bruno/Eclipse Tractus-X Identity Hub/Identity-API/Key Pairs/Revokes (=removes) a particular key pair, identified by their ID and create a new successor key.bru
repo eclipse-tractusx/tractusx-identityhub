@@ -1,0 +1,33 @@
+meta {
+  name: Revokes (=removes) a particular key pair, identified by their ID and create a new successor key.
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/revoke
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "active": true,
+    "keyId": "my-new-key2",
+    "privateKeyAlias": "my-new-private-key2-alias",
+    "type": "Ed25519VerificationKey2020",
+    "keyGeneratorParams": {
+      "algorithm": "EdDSA",
+      "curve": "Ed25519"
+    },
+    "publicKeyJwk": null,
+    "publicKeyPem": null,
+    "resourceId": "resource-new-key2"
+  }
+}

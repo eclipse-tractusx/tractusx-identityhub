@@ -1,0 +1,17 @@
+meta {
+  name: Gets ParticipantContexts by ID.
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}
+  body: none
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}

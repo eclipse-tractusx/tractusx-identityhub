@@ -1,0 +1,33 @@
+meta {
+  name: Gets all issuance processes for a certain query.
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/issuanceprocesses/query
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    //"filterExpression": [
+    //  {
+    //    "operandLeft": {},
+    //    "operandRight": {},
+    //    "operator": "string"
+    //  }
+    //],
+    "limit": 10,
+    "offset": 0,
+    //"sortField": "string",
+    "sortOrder": "ASC"
+  }
+}

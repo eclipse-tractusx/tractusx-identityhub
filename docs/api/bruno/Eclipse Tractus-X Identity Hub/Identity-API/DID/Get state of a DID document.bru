@@ -1,0 +1,23 @@
+meta {
+  name: Get state of a DID document
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/state
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "did": "did:web:super-user"
+  }
+}
