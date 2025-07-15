@@ -30,6 +30,7 @@ dependencies {
     runtimeOnly(libs.bom.issuer.sql)
     runtimeOnly(libs.edc.vault.hashicorp)
     runtimeOnly(project(":extensions:store:sql:migrations"))
+    runtimeOnly(project(":extensions:seed:super-user"))
     runtimeOnly(libs.postgres)
 
     // used for custom extensions

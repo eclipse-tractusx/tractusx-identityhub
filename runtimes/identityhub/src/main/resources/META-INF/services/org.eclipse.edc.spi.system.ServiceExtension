@@ -20,4 +20,3 @@
 #
 
 org.eclipse.edc.identityhub.demo.IdentityHubExtension
-org.eclipse.edc.identityhub.seed.SuperUserSeedExtension
