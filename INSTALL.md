@@ -92,3 +92,21 @@ docker run -d --rm --name identityhub \
     -p 10001:10001\
     identityhub-memory:test
 ```
+
+# Deploying issuerservice-memory in localhost
+
+This section builds the application and deploys in localhost with java command.
+
+### Build the Jar File
+You can generate the artifact with the following command.
+
+```shell
+./gradlew clean build
+```
+
+### Run the java application
+
+```shell
+java -Dedc.fs.config=runtimes/issuerservice-memory/build/resources/main/application.properties
+    -jar runtimes/issuerservice-memory/build/libs/issuerservice-memory.jar
+```
