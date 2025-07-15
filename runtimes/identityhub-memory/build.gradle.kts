@@ -29,6 +29,7 @@ dependencies {
 
     // used for the runtime
     runtimeOnly(libs.bom.ih)
+    runtimeOnly(project(":extensions:seed:super-user"))
 
     // used for custom extensions
     implementation(libs.edc.core.connector)

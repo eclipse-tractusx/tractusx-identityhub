@@ -27,6 +27,7 @@ plugins {
 dependencies {
     // used for the runtime
     runtimeOnly(libs.bom.issuer)
+    runtimeOnly(project(":extensions:seed:super-user"))
 
     // used for custom extensions
     implementation(libs.edc.ih.spi)
