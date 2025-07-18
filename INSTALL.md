@@ -95,7 +95,7 @@ docker run -d --rm --name identityhub \
 
 # Deploying issuerservice-memory in localhost
 
-This section builds the application and deploys in localhost with java command.
+This section builds the application and deploys in localhost.
 
 ### Build the Jar File
 You can generate the artifact with the following command.
@@ -103,6 +103,46 @@ You can generate the artifact with the following command.
 ```shell
 ./gradlew clean build
 ```
+
+### Create Docker Image
+
+Build the docker image
+
+```shell
+# Path: tractusx-issuerservice/
+docker build runtimes/issuerservice-memory/ -t issuerservice-memory:test -f runtimes/issuerservice-memory/Dockerfile
+```
+
+Or build the image going to the runtime/issuerservice-memory module
+```shell
+# Path: tractusx-issuerservice/runtime/issuerservice-memory/
+docker build . -t issuerservice-memory:test
+```
+
+### Load Docker Image into Minikube
+```shell
+minikube image load issuerservice-memory:test
+```
+
+### Deploy Issuerservice-memory with Helm Charts
+
+```shell
+# Path: tractusx-issuerservice/
+helm install issuerservice-memory charts/tractusx-issuerservice-memory/ \
+    --set "issuerservice.securityContext.readOnlyRootFilesystem=false" \
+    --set "fullnameOverride=issuerservice" \
+    --set "issuerservice.image.pullPolicy=Never" \
+    --set "issuerservice.image.tag=test" \
+    --set "issuerservice.image.repository=issuerservice-memory" \
+    --wait-for-jobs \
+    --timeout=120s \
+    --dependency-update
+```
+For helm chart options and configuration, see [Helm chart documentation](https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/charts/tractusx-issuerservice-memory/README.md)
+
+## Alternative ways to deploy issuerservice-memory in localhost
+
+In case you don't want to deploy the helm chart, here are other ways to deploy the application.
 
 ### Run the java application
 
