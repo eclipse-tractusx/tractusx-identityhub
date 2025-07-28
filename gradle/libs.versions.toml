@@ -5,7 +5,7 @@ format.version = "1.1"
 edc = "0.14.0-20250607-SNAPSHOT"
 opentelemetry = "2.11.0"
 postgres = "42.7.5"
-flyway = "11.9.1"
+flyway = "11.10.4"
 
 
 [libraries]
