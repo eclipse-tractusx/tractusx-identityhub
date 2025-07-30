@@ -1,0 +1,17 @@
+meta {
+  name: Sets a KeyPairResource to the ACTIVE state. Will fail if the current state is anything other than ACTIVE or CREATED.
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/activate
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}

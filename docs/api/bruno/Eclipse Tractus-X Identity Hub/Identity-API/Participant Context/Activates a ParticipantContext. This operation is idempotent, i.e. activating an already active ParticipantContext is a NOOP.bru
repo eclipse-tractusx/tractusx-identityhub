@@ -1,0 +1,21 @@
+meta {
+  name: Activates a ParticipantContext. This operation is idempotent, i.e. activating an already active ParticipantContext is a NOOP.
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/state
+  body: json
+  auth: apikey
+}
+
+params:query {
+  ~isActive: true
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}

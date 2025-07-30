@@ -1,0 +1,22 @@
+meta {
+  name: Get all DID documents across all Participant Contexts. Requires elevated access.
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{IDENTITY_PATH}}/v1alpha/participants
+  body: none
+  auth: apikey
+}
+
+params:query {
+  ~offset: 0
+  ~limit: 50
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}

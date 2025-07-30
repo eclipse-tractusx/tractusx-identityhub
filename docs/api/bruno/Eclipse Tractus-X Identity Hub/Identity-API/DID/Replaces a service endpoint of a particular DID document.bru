@@ -1,0 +1,29 @@
+meta {
+  name: Replaces a service endpoint of a particular DID document.
+  type: http
+  seq: 8
+}
+
+patch {
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/{{DID}}/endpoints
+  body: json
+  auth: apikey
+}
+
+params:query {
+  ~autoPublish: true
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "id": "did:web:super-user#service-1",
+    "serviceEndpoint": "http://localhost:8182/api/identity",
+    "type": "Service"
+  }
+}
