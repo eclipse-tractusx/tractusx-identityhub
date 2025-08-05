@@ -189,7 +189,7 @@ identityhub:
       annotations: {}
       # -- EDC endpoints exposed by this ingress resource
       endpoints:
-        - directory
+        - credentials
       # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
       className: ""
       # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
@@ -212,7 +212,7 @@ identityhub:
       annotations: {}
       # -- EDC endpoints exposed by this ingress resource
       endpoints:
-        - management
+        - identity
       # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
       className: ""
       # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
