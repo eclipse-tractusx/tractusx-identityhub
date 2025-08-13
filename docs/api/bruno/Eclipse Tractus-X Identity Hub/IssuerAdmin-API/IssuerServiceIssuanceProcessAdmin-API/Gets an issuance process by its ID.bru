@@ -1,0 +1,33 @@
+meta {
+  name: Gets an issuance process by its ID.
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/issuanceprocesses/{{ISSUANCE_PROCESS_ID}}
+  body: none
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "filterExpression": [
+      {
+        "operandLeft": {},
+        "operandRight": {},
+        "operator": "string"
+      }
+    ],
+    "limit": 0,
+    "offset": 0,
+    "sortField": "string",
+    "sortOrder": "ASC"
+  }
+}

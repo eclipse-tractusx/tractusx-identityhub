@@ -1,0 +1,37 @@
+meta {
+  name: Rotates (=retires) a particular key pair, identified by their ID and optionally create a new successor key.
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/rotate?duration=999
+  body: json
+  auth: apikey
+}
+
+params:query {
+  duration: 999
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "active": true,
+    "keyId": "my-new-key3",
+    "privateKeyAlias": "my-new-private-key3-alias",
+    "type": "Ed25519VerificationKey2020",
+    "keyGeneratorParams": {
+      "algorithm": "EdDSA",
+      "curve": "Ed25519"
+    },
+    "publicKeyJwk": null,
+    "publicKeyPem": null,
+    "resourceId": "resource-new-key3"
+  }
+}

@@ -1,0 +1,37 @@
+meta {
+  name: Creates a new ParticipantContext object.
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{IDENTITY_PATH}}/v1alpha/participants
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "active": true,
+    "did": "did:web:eclipse-tractus-x",
+  
+    "key": {
+      "keyGeneratorParams": {
+        "algorithm": "EdDSA",
+        "curve": "Ed25519"
+      },
+      "keyId": "eclipse-tractus-x-key",
+      "privateKeyAlias": "eclipse-tractus-x-alias"
+    },
+    "participantId": "eclipse-tractus-x",
+    "roles": [
+      "ROLE_ADMIN"
+    ]
+  }
+}

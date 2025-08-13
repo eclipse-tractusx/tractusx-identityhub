@@ -1,0 +1,17 @@
+meta {
+  name: Deletes an attestation definition.
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/attestations/{{ATTESTATION_DEFINITION_ID}}
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
