@@ -30,6 +30,7 @@ on:
       - 'charts/tractusx-identityhub-memory'
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   release:
