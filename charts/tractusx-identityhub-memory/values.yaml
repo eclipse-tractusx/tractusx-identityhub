@@ -104,6 +104,19 @@ identityhub:
       port: 8083
       # -- path for incoming api calls
       path: /
+    # -- STS Accounts API, used to manipulate STS accounts
+    accounts:
+      port: 8085
+      path: /api/accounts
+      authKeyAlias: "sup3r$3cr3t"
+    # -- Version API, used to obtain exact version information about all APIs at runtime
+    version:
+      port: 8086
+      path: /.well-known/api
+    # -- STS Endpoint, used to obtain tokens
+    sts:
+      port: 8087
+      path: /api/sts
 
 
   service:
@@ -176,7 +189,9 @@ identityhub:
       annotations: {}
       # -- EDC endpoints exposed by this ingress resource
       endpoints:
-        - directory
+        - presentation
+        - did
+        - sts
       # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
       className: ""
       # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
@@ -199,7 +214,9 @@ identityhub:
       annotations: {}
       # -- EDC endpoints exposed by this ingress resource
       endpoints:
-        - management
+        - identity
+        - version
+        - accounts
       # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
       className: ""
       # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
