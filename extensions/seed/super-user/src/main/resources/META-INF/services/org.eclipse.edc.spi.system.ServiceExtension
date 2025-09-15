@@ -19,4 +19,4 @@
 #
 #
 
-org.eclipse.edc.identityhub.demo.IdentityHubExtension
+org.eclipse.tractusx.identityhub.seed.SuperUserSeedExtension

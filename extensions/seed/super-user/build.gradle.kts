@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) 2025 Cofinity-X
+ *   Copyright (c) 2025 LKS NEXT
  *   Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  *   See the NOTICE file(s) distributed with this work for additional
@@ -19,35 +19,13 @@
  *
  */
 
+
 plugins {
     `java-library`
-    id("application")
-    alias(libs.plugins.shadow)
 }
 
 dependencies {
-
-    // used for the runtime
-    runtimeOnly(libs.bom.ih)
-    runtimeOnly(libs.bom.ih.sql)
-    runtimeOnly(libs.edc.vault.hashicorp)
-    runtimeOnly(project(":extensions:store:sql:migrations"))
-    runtimeOnly(project(":extensions:seed:super-user"))
-
-    // used for custom extensions
-    implementation(libs.edc.core.connector)
     implementation(libs.edc.ih.spi)
 
-    testImplementation(libs.edc.lib.crypto)
-    testImplementation(libs.edc.lib.keys)
     testImplementation(libs.edc.junit)
-}
-
-tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
-    mergeServiceFiles()
-    archiveFileName.set("${project.name}.jar")
-}
-
-application {
-    mainClass.set("org.eclipse.edc.boot.system.runtime.BaseRuntime")
 }
