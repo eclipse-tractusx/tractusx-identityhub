@@ -1,0 +1,2855 @@
+{
+  "info": {
+    "name": "Eclipse Tractus-X Identity Hub",
+    "description": "",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Credentials-API",
+      "item": [
+        {
+          "name": "Credential Offer",
+          "item": [
+            {
+              "name": "Notifies the holder about the availability of a particular credential for issuance",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer ads",
+                    "disabled": false,
+                    "type": "default"
+                  }
+                ],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{CREDENTIAL_PATH}}/v1/participants/{{PARTICIPANT_CONTEXT_ID}}/offers",
+                  "protocol": "",
+                  "host": [
+                    "{{CREDENTIAL_PATH}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "offers"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"@context\": [\n    \"https://w3id.org/dspace-dcp/v1.0/dcp.jsonld\"\n  ],\n  \"type\": \"CredentialOfferMessage\",\n  \"@id\": \"das\",\n  \"issuer\": \"BPN\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Presentation",
+          "item": [
+            {
+              "name": "Issues a new presentation query, that contains either a DIF presentation definition, or a list of scopes",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer ads",
+                    "disabled": false,
+                    "type": "default"
+                  }
+                ],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{CREDENTIAL_PATH}}/v1/participants/{{PARTICIPANT_CONTEXT_ID}}/presentations/query",
+                  "protocol": "",
+                  "host": [
+                    "{{CREDENTIAL_PATH}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "presentations",
+                    "query"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"@context\": [\n    \"https://w3id.org/tractusx-trust/v0.8\",\n    \"https://identity.foundation/presentation-exchange/submission/v1\"\n  ],\n  \"type\": \"PresentationQueryMessage\",\n  \"presentationDefinition\": null,\n  \"scope\": [\n    \"org.eclipse.edc.vc.type:SomeCredential_0.3.5:write\",\n    \"org.eclipse.edc.vc.type:SomeOtherCredential:read\",\n    \"org.eclipse.edc.vc.type:ThirdCredential:*\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Storage",
+          "item": [
+            {
+              "name": "Writes a set of credentials into storage",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer asdas",
+                    "disabled": false,
+                    "type": "default"
+                  }
+                ],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{CREDENTIAL_PATH}}/v1/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials",
+                  "protocol": "",
+                  "host": [
+                    "{{CREDENTIAL_PATH}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"@context\": [\n    \"https://w3id.org/dspace-dcp/v1.0/dcp.jsonld\"\n  ],\n  \"type\": \"CredentialMessage\",\n  \"credentials\": [\n    {\n      \"credentialType\": \"MembershipCredential\",\n      \"payload\": \"\",\n      \"format\": \"jwt\"\n    },\n    {\n      \"credentialType\": \"OrganizationCredential\",\n      \"payload\": \"\",\n      \"format\": \"json-ld\"\n    }\n  ],\n  \"issuerPid\": \"BPN\",\n  \"holderPid\": \"BPN\",\n  \"status\": \"ISSUED\",\n  \"requestId\": \"requestId\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DID-API",
+      "item": [
+        {
+          "name": "DID Web Resolver",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{DID_PATH}}/did:web:super-user",
+              "protocol": "",
+              "host": [
+                "{{DID_PATH}}"
+              ],
+              "path": [
+                "did:web:super-user"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Identity-API",
+      "item": [
+        {
+          "name": "DID",
+          "item": [
+            {
+              "name": "Adds a service endpoint to a particular DID document.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/{{DID}}/endpoints",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "dids",
+                    "{{DID}}",
+                    "endpoints"
+                  ],
+                  "query": [
+                    {
+                      "key": "autoPublish",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"did:web:super-user#service-1\",\n  \"serviceEndpoint\": \"http://localhost:8182/api/identity\",\n  \"type\": \"Service\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Get all DID documents across all Participant Contexts. Requires elevated access.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/dids",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "dids"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Get state of a DID document",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/state",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "dids",
+                    "state"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"did\": \"did:web:super-user\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Publish an (existing) DID document. The DID is expected to exist in the database.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/publish",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "dids",
+                    "publish"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"did\": \"did:web:super-user\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Query for DID documents.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/query",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "dids",
+                    "query"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"limit\": 0,\n  \"offset\": 50\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Removes a service endpoint from a particular DID document.",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/{{DID}}/endpoints?serviceId=string",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "dids",
+                    "{{DID}}",
+                    "endpoints?serviceId=string"
+                  ],
+                  "query": [
+                    {
+                      "key": "serviceId",
+                      "value": "string"
+                    },
+                    {
+                      "key": "autoPublish",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Replaces a service endpoint of a particular DID document.",
+              "event": [],
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/{{DID}}/endpoints",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "dids",
+                    "{{DID}}",
+                    "endpoints"
+                  ],
+                  "query": [
+                    {
+                      "key": "autoPublish",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"did:web:super-user#service-1\",\n  \"serviceEndpoint\": \"http://localhost:8182/api/identity\",\n  \"type\": \"Service\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Un-Publish an (existing) DID document. The DID is expected to exist in the database.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/unpublish",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "dids",
+                    "unpublish"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"did\": \"did:web:super-user\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Key Pairs",
+          "item": [
+            {
+              "name": "Adds a new key pair to a ParticipantContext. Note that the key pair is either generated, or the private key is expected to be found in the vault.",
+              "event": [],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "keypairs"
+                  ],
+                  "query": [
+                    {
+                      "key": "makeDefault",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"my-new-key\",\n  \"privateKeyAlias\": \"my-new-private-key-alias\",\n  \"type\": \"Ed25519VerificationKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Finds a KeyPairResource by ID.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "keypairs",
+                    "{{KEY_PAIR_ID}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Finds all KeyPairResources for a particular ParticipantContext.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "keypairs"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Get all KeyPair resources across all Participant Contexts. Requires elevated access.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/keypairs",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "keypairs"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Revokes (=removes) a particular key pair, identified by their ID and create a new successor key.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/revoke",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "keypairs",
+                    "{{KEY_PAIR_ID}}",
+                    "revoke"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"my-new-key2\",\n  \"privateKeyAlias\": \"my-new-private-key2-alias\",\n  \"type\": \"Ed25519VerificationKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Rotates (=retires) a particular key pair, identified by their ID and optionally create a new successor key.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/rotate?duration=999",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "keypairs",
+                    "{{KEY_PAIR_ID}}",
+                    "rotate?duration=999"
+                  ],
+                  "query": [
+                    {
+                      "key": "duration",
+                      "value": "999"
+                    }
+                  ],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"my-new-key3\",\n  \"privateKeyAlias\": \"my-new-private-key3-alias\",\n  \"type\": \"Ed25519VerificationKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key3\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Sets a KeyPairResource to the ACTIVE state. Will fail if the current state is anything other than ACTIVE or CREATED.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/activate",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "keypairs",
+                    "{{KEY_PAIR_ID}}",
+                    "activate"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Participant Context",
+          "item": [
+            {
+              "name": "Activates a ParticipantContext. This operation is idempotent, i.e. activating an already active ParticipantContext is a NOOP.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/state",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "state"
+                  ],
+                  "query": [
+                    {
+                      "key": "isActive",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Creates a new ParticipantContext object.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"active\": true,\n  \"did\": \"did:web:eclipse-tractus-x\",\n\n  \"key\": {\n    \"keyGeneratorParams\": {\n      \"algorithm\": \"EdDSA\",\n      \"curve\": \"Ed25519\"\n    },\n    \"keyId\": \"eclipse-tractus-x-key\",\n    \"privateKeyAlias\": \"eclipse-tractus-x-alias\"\n  },\n  \"participantId\": \"eclipse-tractus-x\",\n  \"roles\": [\n    \"ROLE_ADMIN\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Delete a ParticipantContext.",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Get all DID documents across all Participant Contexts. Requires elevated access.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    }
+                  ],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Gets ParticipantContexts by ID.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Regenerates the API token for a ParticipantContext and returns the new token.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/token",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "token"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Updates a ParticipantContext's roles. Note that this is an absolute update, that means all roles that the Participant should have must be submitted in the body. Requires elevated privileges.",
+              "event": [],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/roles",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "roles"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  \"admin\"\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verifiable Credentials",
+          "item": [
+            {
+              "name": "Adds a new VerifiableCredential into the system.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"1f36af58-0fc0-4b24-9b1c-e37d59668089\",\n  \"participantContextId\": \"BPNL000000001\",\n  \"verifiableCredentialContainer\": {\n    \"credential\": {\n      \"credentialSchema\": [\n        {\n          \"id\": \"https://example.com/schema\",\n          \"type\": \"JsonSchemaValidator\"\n        }\n      ],\n      \"credentialStatus\": [\n        {\n          \"id\": \"https://example.com/status/1\",\n          \"type\": \"CredentialStatusList2021\"\n        }\n      ],\n      \"credentialSubject\": [\n        {\n          \"id\": \"did:web:super-user\",\n          \"holderIdentifier\": \"BPNL000000001\"\n        }\n      ],\n      \"@context\": [\n        \"https://www.w3.org/2018/credentials/v1\",\n        \"https://w3id.org/catenax/credentials/v1.0.0\"\n      ],\n      \"id\": \"1f36af58-0fc0-4b24-9b1c-e37d59668089\",\n      \"type\": [\n        \"VerifiableCredential\",\n        \"MembershipCredential\"\n      ],\n      \"issuer\": \"did:web:super-user\",\n      \"issuanceDate\": \"2021-06-16T18:56:59Z\",\n      \"expirationDate\": \"2022-06-16T18:56:59Z\"\n    }\n  }\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Delete a VerifiableCredential.",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials",
+                    "{{CREDENTIAL_ID}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Finds a VerifiableCredential by ID.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials",
+                    "{{CREDENTIAL_ID}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Finds a credential request by ID.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/request/{{HOLDER_PID}}",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials",
+                    "request",
+                    "{{HOLDER_PID}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Get all VerifiableCredentials across all Participant Contexts. Requires elevated access.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/credentials",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "credentials"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Query VerifiableCredentials by type.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Triggers a credential request that is send to the issuer via the DCP protocol.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/request",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials",
+                    "request"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"credentials\": [\n    {\n      \"format\": \"ldp_vc\",\n      \"id\": \"1f36af58-0fc0-4b24-9b1c-e37d59668089\",\n      \"type\": \"MembershipCredential\"\n    }\n  ],\n  \"holderPid\": \"did:web:super-user\",\n  \"issuerDid\": \"did:web:super-user\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Update an existing VerifiableCredential.",
+              "event": [],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials",
+                  "protocol": "",
+                  "host": [
+                    "{{IDENTITY_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"1f36af58-0fc0-4b24-9b1c-e37d59668089\",\n  \"participantContextId\": \"BPNL0000000012\",\n  \"verifiableCredentialContainer\": {\n    \"credential\": {\n      \"credentialSchema\": [\n        {\n          \"id\": \"https://example.com/schema\",\n          \"type\": \"JsonSchemaValidator\"\n        }\n      ],\n      \"credentialStatus\": [\n        {\n          \"id\": \"https://example.com/status/1\",\n          \"type\": \"CredentialStatusList2021\"\n        }\n      ],\n      \"credentialSubject\": [\n        {\n          \"id\": \"did:web:super-user\",\n          \"holderIdentifier\": \"BPNL000000001\"\n        }\n      ],\n      \"@context\": [\n        \"https://www.w3.org/2018/credentials/v1\",\n        \"https://w3id.org/catenax/credentials/v1.0.0\"\n      ],\n      \"id\": \"1f36af58-0fc0-4b24-9b1c-e37d59668089\",\n      \"type\": [\n        \"VerifiableCredential\",\n        \"MembershipCredential\"\n      ],\n      \"issuer\": \"did:web:super-user\",\n      \"issuanceDate\": \"2021-06-16T18:56:59Z\",\n      \"expirationDate\": \"2022-06-16T18:56:59Z\"\n    }\n  }\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Issuance-API",
+      "item": [
+        {
+          "name": "CredentialRequest-API",
+          "item": [
+            {
+              "name": "Requests the issuance of one or several verifiable credentials from an issuer",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer asdas",
+                    "disabled": false,
+                    "type": "default"
+                  }
+                ],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUANCE_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUANCE_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"@context\": [\n    \"https://w3id.org/dspace-dcp/v1.0/dcp.jsonld\"//,\n    //\"https://w3id.org/dspace-dcp/v1.0/credentials\",\n    //\"https://w3id.org/dspace-dcp/v1.0/holderPid\"\n  ],\n  \"type\": \"CredentialRequestMessage\",\n  \"credentials\": [\n    {\n      \"id\": \"string\"\n    }\n  ],\n  \"issuerPid\": \"BPN\",\n  \"holderPid\": \"BPN\",\n  \"status\": \"ISSUED\",\n  \"requestId\": \"requestId\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "CredentialRequestStatus-API",
+          "item": [
+            {
+              "name": "Requests status information about an issuance request from an issuer",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer asdas",
+                    "disabled": false,
+                    "type": "default"
+                  }
+                ],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUANCE_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/requests/{{CREDENTIAL_REQUEST_ID}}",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUANCE_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "requests",
+                    "{{CREDENTIAL_REQUEST_ID}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "IssuerMetadata-API",
+          "item": [
+            {
+              "name": "Requests information about the capabilities of this issuer.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer asdas",
+                    "disabled": false,
+                    "type": "default"
+                  }
+                ],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUANCE_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/metadata",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUANCE_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "metadata"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "IssuerAdmin-API",
+      "item": [
+        {
+          "name": "IssuerServiceAttestationAdmin-API",
+          "item": [
+            {
+              "name": "Creates an attestation definition in the runtime.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/attestations",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "attestations"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attestationType\": \"presentation\",\n  \"configuration\": {\n    \"credentialType\": \"\",\n    \"outputClaim\": {},\n    \"additionalProp2\": {},\n    \"additionalProp3\": {}\n  },\n  \"id\": \"string\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Deletes an attestation definition.",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/attestations/{{ATTESTATION_DEFINITION_ID}}",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "attestations",
+                    "{{ATTESTATION_DEFINITION_ID}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Query attestation definitions",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/attestations/query",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "attestations",
+                    "query"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  //\"filterExpression\": [\n   // {\n   //   \"operandLeft\": {},\n   //   \"operandRight\": {},\n   //   \"operator\": \"string\"\n   // }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "IssuerServiceCredentialDefinitionAdmin-API",
+          "item": [
+            {
+              "name": "Adds a new credential definition.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentialdefinitions"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attestations\": [],\n  \"credentialType\": \"string\",\n  \"format\": \"VC1_0_JWT\",\n  \"id\": \"string\",\n  \"jsonSchema\": \"string\",\n  \"jsonSchemaUrl\": \"string\",\n  \"mappings\": [\n    {\n      \"input\": \"string\",\n      \"output\": \"string\",\n      \"required\": true\n    }\n  ],\n  //\"rules\": [\n  //  {\n  //    \"configuration\": {\n  //      \"additionalProp1\": {},\n  //      \"additionalProp2\": {},\n  //      \"additionalProp3\": {}\n  //    },\n  //    \"type\": \"string\"\n  //  }\n  //],\n  \"validity\": 0\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Deletes a credential definition by its ID.",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions/{{CREDENTIAL_DEFINITION_ID}}",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentialdefinitions",
+                    "{{CREDENTIAL_DEFINITION_ID}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Gets a credential definition by its ID.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions/{{CREDENTIAL_DEFINITION_ID}}",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentialdefinitions",
+                    "{{CREDENTIAL_DEFINITION_ID}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Gets all credential definitions for a certain query.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions/query",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentialdefinitions",
+                    "query"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  //\"filterExpression\": [\n  //  {\n  //    \"operandLeft\": {},\n  //    \"operandRight\": {},\n  //    \"operator\": \"string\"\n  //  }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Updates credential definition.",
+              "event": [],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentialdefinitions"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attestations\": [],\n  \"credentialType\": \"string\",\n  \"format\": \"VC1_0_JWT\",\n  \"id\": \"string\",\n  \"jsonSchema\": \"string\",\n  \"jsonSchemaUrl\": \"string\",\n  \"mappings\": [\n    {\n      \"input\": \"string\",\n      \"output\": \"string\",\n      \"required\": true\n    }\n  ],\n  //\"rules\": [\n  //  {\n  //    \"configuration\": {\n  //      \"additionalProp1\": {},\n  //      \"additionalProp2\": {},\n  //      \"additionalProp3\": {}\n  //    },\n  //    \"type\": \"string\"\n  //  }\n  //],\n  \"validity\": 10\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "IssuerServiceCredentialsAdmin-API",
+          "item": [
+            {
+              "name": "Checks the revocation status of a credential with the given ID for the given participant.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}/status",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials",
+                    "{{CREDENTIAL_ID}}",
+                    "status"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Query credentials, possibly across multiple participants.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/query",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials",
+                    "query"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  //\"filterExpression\": [\n  //  {\n  //    \"operandLeft\": {},\n  //    \"operandRight\": {},\n  //    \"operator\": \"string\"\n  //  }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Resumes a credential with the given ID for the given participant. Resumed credentials will be removed from the Revocation List.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}/resume",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials",
+                    "{{CREDENTIAL_ID}}",
+                    "resume"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Revokes a credential with the given ID for the given participant. Revoked credentials will be added to the Revocation List",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}/revoke",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials",
+                    "{{CREDENTIAL_ID}}",
+                    "revoke"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Suspends a credential with the given ID for the given participant. Suspended credentials will be added to the Revocation List. Suspension is reversible.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}/suspend",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials",
+                    "{{CREDENTIAL_ID}}",
+                    "suspend"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Triggers a DCP CredentialOffer message being sent to the holder.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/offer",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "credentials",
+                    "offer"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"credentials\": [\n    \"string\"\n  ],\n  \"holderId\": \"string\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "IssuerServiceHolderAdmin-API",
+          "item": [
+            {
+              "name": "Adds a new holder.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/holders",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "holders"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"did\": \"string\",\n  \"holderId\": \"string\",\n  \"name\": \"string\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Gets all holders for a certain query.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/holders/query",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "holders",
+                    "query"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  //\"filterExpression\": [\n  //  {\n  //    \"operandLeft\": {},\n  //    \"operandRight\": {},\n  //    \"operator\": \"string\"\n  //  }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Gets metadata for a certain holder.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/holders/{{HOLDER_ID}}",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "holders",
+                    "{{HOLDER_ID}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "Updates holder data.",
+              "event": [],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/holders",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "holders"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"did\": \"did:web:webhook.site:dbdd9b07-f1cf-4586-b2e2-fc8e8c5515da\",\n  \"holderId\": \"string\",\n  \"name\": \"string1\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "IssuerServiceIssuanceProcessAdmin-API",
+          "item": [
+            {
+              "name": "Gets all issuance processes for a certain query.",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/issuanceprocesses/query",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "issuanceprocesses",
+                    "query"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  //\"filterExpression\": [\n  //  {\n  //    \"operandLeft\": {},\n  //    \"operandRight\": {},\n  //    \"operator\": \"string\"\n  //  }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Gets an issuance process by its ID.",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "key",
+                      "value": "X-Api-Key",
+                      "type": "string"
+                    },
+                    {
+                      "key": "value",
+                      "value": "{{API_KEY}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "description": "",
+                "url": {
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/issuanceprocesses/{{ISSUANCE_PROCESS_ID}}",
+                  "protocol": "",
+                  "host": [
+                    "{{ISSUER_ADMIN_PATH}}"
+                  ],
+                  "path": [
+                    "v1alpha",
+                    "participants",
+                    "{{PARTICIPANT_CONTEXT_ID}}",
+                    "issuanceprocesses",
+                    "{{ISSUANCE_PROCESS_ID}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "STS-API",
+      "item": [
+        {
+          "name": "Secure Token Service Api",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{STS_PATH}}/token",
+              "protocol": "",
+              "host": [
+                "{{STS_PATH}}"
+              ],
+              "path": [
+                "token"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials",
+                  "disabled": false,
+                  "type": "default"
+                },
+                {
+                  "key": "client_id",
+                  "value": "did:web:super-user",
+                  "disabled": false,
+                  "type": "default"
+                },
+                {
+                  "key": "audience",
+                  "value": "did:web:super-user",
+                  "disabled": false,
+                  "type": "default"
+                },
+                {
+                  "key": "client_secret",
+                  "value": "client_secret",
+                  "disabled": false,
+                  "type": "default"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "StatusList-API",
+      "item": [
+        {
+          "name": "Resolves and returns a verifiable credential by ID",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{STATUS_LIST_PATH}}/{{CREDENTIAL_ID}}",
+              "protocol": "",
+              "host": [
+                "{{STATUS_LIST_PATH}}"
+              ],
+              "path": [
+                "{{CREDENTIAL_ID}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "CREDENTIAL_PATH",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "PARTICIPANT_CONTEXT_ID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "DID_PATH",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "IDENTITY_PATH",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "DID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "KEY_PAIR_ID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "CREDENTIAL_ID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "HOLDER_PID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "ISSUANCE_PATH",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "CREDENTIAL_REQUEST_ID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "ISSUER_ADMIN_PATH",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "ATTESTATION_DEFINITION_ID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "CREDENTIAL_DEFINITION_ID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "HOLDER_ID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "ISSUANCE_PROCESS_ID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "STS_PATH",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "STATUS_LIST_PATH",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
