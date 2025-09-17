@@ -17,6 +17,12 @@ This [directory](./bruno/Eclipse%20Tractus-X%20Identity%20Hub/) contains a [Brun
 3. Navigate to this directory (`/docs/api/bruno`) and select it
 4. The collection will be loaded with all available API endpoints
 
+## API Documentation
+
+### OpenAPI Specification
+
+A comprehensive OpenAPI specification is available at [openApi.yaml](./openApi.yaml), which documents all available endpoints, request/response schemas, and authentication requirements.
+
 ## Additional Information
 
 There is an upstream OpenAPI collection available:
