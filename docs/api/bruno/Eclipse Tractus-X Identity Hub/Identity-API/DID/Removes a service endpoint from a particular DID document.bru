@@ -1,0 +1,30 @@
+meta {
+  name: Removes a service endpoint from a particular DID document.
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/{{DID}}/endpoints?serviceId=string
+  body: none
+  auth: apikey
+}
+
+params:query {
+  serviceId: string
+  ~autoPublish: true
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "id": "string",
+    "serviceEndpoint": "string",
+    "type": "string"
+  }
+}
