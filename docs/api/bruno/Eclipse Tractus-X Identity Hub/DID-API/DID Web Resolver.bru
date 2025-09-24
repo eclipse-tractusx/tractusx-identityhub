@@ -1,0 +1,11 @@
+meta {
+  name: DID Web Resolver
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{DID_PATH}}/did:web:super-user
+  body: json
+  auth: inherit
+}

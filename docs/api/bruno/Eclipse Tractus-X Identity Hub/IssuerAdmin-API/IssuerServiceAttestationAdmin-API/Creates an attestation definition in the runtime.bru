@@ -1,0 +1,30 @@
+meta {
+  name: Creates an attestation definition in the runtime.
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/attestations
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "attestationType": "presentation",
+    "configuration": {
+      "credentialType": "",
+      "outputClaim": {},
+      "additionalProp2": {},
+      "additionalProp3": {}
+    },
+    "id": "string"
+  }
+}
