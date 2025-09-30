@@ -40,8 +40,8 @@ data:
   web.http.identity.port: {{ .Values.identityhub.endpoints.identity.port | quote }}
   web.http.identity.path: {{ .Values.identityhub.endpoints.identity.path | quote }}
   web.http.identity.auth.alias: {{ .Values.identityhub.endpoints.identity.authKeyAlias | required ".Values.identityhub.endpoints.identity.authKeyAlias is required" | quote }}
-  web.http.presentation.port: {{ .Values.identityhub.endpoints.presentation.port | quote }}
-  web.http.presentation.path: {{ .Values.identityhub.endpoints.presentation.path | quote }}
+  web.http.credentials.port: {{ .Values.identityhub.endpoints.credentials.port | quote }}
+  web.http.credentials.path: {{ .Values.identityhub.endpoints.credentials.path | quote }}
   web.http.did.port: {{ .Values.identityhub.endpoints.did.port | quote }}
   web.http.did.path: {{ .Values.identityhub.endpoints.did.path | quote }}
   web.http.accounts.port: {{ .Values.identityhub.endpoints.accounts.port | quote}}
