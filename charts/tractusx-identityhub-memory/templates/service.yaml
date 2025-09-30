@@ -45,5 +45,13 @@ spec:
       targetPort: credentials
       protocol: TCP
       name: credentials
+    - port: {{ .Values.identityhub.endpoints.version.port }}
+      targetPort: version
+      protocol: TCP
+      name: version
+    - port: {{ .Values.identityhub.endpoints.sts.port }}
+      targetPort: sts
+      protocol: TCP
+      name: sts
   selector:
     {{- include "identityhub.server.selectorLabels" . | nindent 4 }}
