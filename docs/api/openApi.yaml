@@ -1,0 +1,2208 @@
+#################################################################################
+# Eclipse Tractus-X - Identity Hub
+#
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0.
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the
+# License for the specific language govern in permissions and limitations
+# under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+#################################################################################
+
+openapi: 3.0.0
+info:
+  title: Eclipse Tractus-X Identity Hub
+  version: 1.0.0
+  description: ''
+servers:
+  - url: '{{CREDENTIAL_PATH}}'
+  - url: '{{DID_PATH}}'
+  - url: '{{IDENTITY_PATH}}'
+  - url: '{{ISSUANCE_PATH}}'
+  - url: '{{ISSUER_ADMIN_PATH}}'
+  - url: '{{STS_PATH}}'
+  - url: '{{STATUS_LIST_PATH}}'
+paths:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/offers:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: >-
+        Notifies the holder about the availability of a particular credential
+        for issuance
+      tags:
+        - Credentials-API
+        - Credential Offer
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          example: Bearer ads
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Credential offer sent successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                '@context':
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+                type:
+                  type: string
+                '@id':
+                  type: string
+                issuer:
+                  type: string
+            example:
+              '@context':
+                - https://w3id.org/dspace-dcp/v1.0/dcp.jsonld
+              type: CredentialOfferMessage
+              '@id': das
+              issuer: BPN
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/presentations/query:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: >-
+        Issues a new presentation query, that contains either a DIF presentation
+        definition, or a list of scopes
+      tags:
+        - Credentials-API
+        - Presentation
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          example: Bearer ads
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Presentation query issued successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                '@context':
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+                type:
+                  type: string
+                presentationDefinition:
+                  nullable: true
+                scope:
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+            example:
+              '@context':
+                - https://w3id.org/tractusx-trust/v0.8
+                - >-
+                  https://identity.foundation/presentation-exchange/submission/v1
+              type: PresentationQueryMessage
+              presentationDefinition: null
+              scope:
+                - org.eclipse.edc.vc.type:SomeCredential_0.3.5:write
+                - org.eclipse.edc.vc.type:SomeOtherCredential:read
+                - org.eclipse.edc.vc.type:ThirdCredential:*
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/credentials:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Writes a set of credentials into storage
+      tags:
+        - Credentials-API
+        - Storage
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          example: Bearer asdas
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Credentials stored successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                '@context':
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+                type:
+                  type: string
+                credentials:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      credentialType:
+                        type: string
+                      payload:
+                        type: string
+                      format:
+                        type: string
+                issuerPid:
+                  type: string
+                holderPid:
+                  type: string
+                status:
+                  type: string
+                requestId:
+                  type: string
+            example:
+              '@context':
+                - https://w3id.org/dspace-dcp/v1.0/dcp.jsonld
+              type: CredentialMessage
+              credentials:
+                - credentialType: MembershipCredential
+                  payload: ''
+                  format: jwt
+                - credentialType: OrganizationCredential
+                  payload: ''
+                  format: json-ld
+              issuerPid: BPN
+              holderPid: BPN
+              status: ISSUED
+              requestId: requestId
+  /did:web:super-user:
+    parameters: []
+    get:
+      summary: DID Web Resolver
+      tags:
+        - DID-API
+      parameters: []
+      responses:
+        '200':
+          description: DID document retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: DID not found
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/dids/{DID}/endpoints:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: DID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Adds a service endpoint to a particular DID document.
+      tags: &ref_0
+        - Identity-API
+        - DID
+      parameters:
+        - name: autoPublish
+          in: query
+          required: false
+          example: 'true'
+          schema:
+            type: boolean
+      responses:
+        '201':
+          description: Service endpoint added successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: DID not found
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uri
+                serviceEndpoint:
+                  type: string
+                  format: uri
+                type:
+                  type: string
+            example:
+              id: did:web:super-user#service-1
+              serviceEndpoint: http://localhost:8182/api/identity
+              type: Service
+    delete:
+      summary: Removes a service endpoint from a particular DID document.
+      tags: *ref_0
+      parameters:
+        - name: serviceId
+          in: query
+          required: false
+          example: string
+          schema:
+            type: string
+        - name: autoPublish
+          in: query
+          required: false
+          example: 'true'
+          schema:
+            type: boolean
+      responses:
+        '204':
+          description: Service endpoint removed successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Service endpoint not found
+        '500':
+          description: Internal server error
+    patch:
+      summary: Replaces a service endpoint of a particular DID document.
+      tags: *ref_0
+      parameters:
+        - name: autoPublish
+          in: query
+          required: false
+          example: 'true'
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Service endpoint updated successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Service endpoint not found
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uri
+                serviceEndpoint:
+                  type: string
+                  format: uri
+                type:
+                  type: string
+            example:
+              id: did:web:super-user#service-1
+              serviceEndpoint: http://localhost:8182/api/identity
+              type: Service
+  /v1alpha/dids:
+    parameters: []
+    get:
+      summary: >-
+        Get all DID documents across all Participant Contexts. Requires elevated
+        access.
+      tags: *ref_0
+      parameters: []
+      responses:
+        '200':
+          description: DID documents retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - requires elevated access
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/dids/state:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Get state of a DID document
+      tags: *ref_0
+      parameters: []
+      responses:
+        '200':
+          description: DID state retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: DID not found
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                did:
+                  type: string
+                  format: uri
+            example:
+              did: did:web:super-user
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/dids/publish:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: >-
+        Publish an (existing) DID document. The DID is expected to exist in the
+        database.
+      tags: *ref_0
+      parameters: []
+      responses:
+        '200':
+          description: DID published successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: DID not found
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                did:
+                  type: string
+                  format: uri
+            example:
+              did: did:web:super-user
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/dids/query:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Query for DID documents.
+      tags: *ref_0
+      parameters: []
+      responses:
+        '200':
+          description: DID documents query results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                limit:
+                  type: integer
+                offset:
+                  type: integer
+            example:
+              limit: 0
+              offset: 50
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/dids/unpublish:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: >-
+        Un-Publish an (existing) DID document. The DID is expected to exist in
+        the database.
+      tags: *ref_0
+      parameters: []
+      responses:
+        '200':
+          description: DID unpublished successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: DID not found
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                did:
+                  type: string
+                  format: uri
+            example:
+              did: did:web:super-user
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/keypairs:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      summary: >-
+        Adds a new key pair to a ParticipantContext. Note that the key pair is
+        either generated, or the private key is expected to be found in the
+        vault.
+      tags: &ref_1
+        - Identity-API
+        - Key Pairs
+      parameters:
+        - name: makeDefault
+          in: query
+          required: false
+          example: 'true'
+          schema:
+            type: boolean
+      responses:
+        '201':
+          description: Key pair created successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '409':
+          description: Key pair already exists
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                active:
+                  type: boolean
+                keyId:
+                  type: string
+                privateKeyAlias:
+                  type: string
+                type:
+                  type: string
+                keyGeneratorParams:
+                  type: object
+                  properties:
+                    algorithm:
+                      type: string
+                    curve:
+                      type: string
+                publicKeyJwk:
+                  nullable: true
+                publicKeyPem:
+                  nullable: true
+                resourceId:
+                  type: string
+            example:
+              active: true
+              keyId: my-new-key
+              privateKeyAlias: my-new-private-key-alias
+              type: Ed25519VerificationKey2020
+              keyGeneratorParams:
+                algorithm: EdDSA
+                curve: Ed25519
+              publicKeyJwk: null
+              publicKeyPem: null
+              resourceId: resource-new-key
+    get:
+      summary: Finds all KeyPairResources for a particular ParticipantContext.
+      tags: *ref_1
+      parameters: []
+      responses:
+        '200':
+          description: Key pairs retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: KEY_PAIR_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Finds a KeyPairResource by ID.
+      tags: *ref_1
+      parameters: []
+      responses:
+        '200':
+          description: Key pair retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Key pair not found
+        '500':
+          description: Internal server error
+  /v1alpha/keypairs:
+    parameters: []
+    get:
+      summary: >-
+        Get all KeyPair resources across all Participant Contexts. Requires
+        elevated access.
+      tags: *ref_1
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          example: '0'
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          example: '50'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: All key pairs retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - requires elevated access
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}/revoke:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: KEY_PAIR_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: >-
+        Revokes (=removes) a particular key pair, identified by their ID and
+        create a new successor key.
+      tags: *ref_1
+      parameters: []
+      responses:
+        '200':
+          description: Key pair revoked successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Key pair not found
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                active:
+                  type: boolean
+                keyId:
+                  type: string
+                privateKeyAlias:
+                  type: string
+                type:
+                  type: string
+                keyGeneratorParams:
+                  type: object
+                  properties:
+                    algorithm:
+                      type: string
+                    curve:
+                      type: string
+                publicKeyJwk:
+                  nullable: true
+                publicKeyPem:
+                  nullable: true
+                resourceId:
+                  type: string
+            example:
+              active: true
+              keyId: my-new-key2
+              privateKeyAlias: my-new-private-key2-alias
+              type: Ed25519VerificationKey2020
+              keyGeneratorParams:
+                algorithm: EdDSA
+                curve: Ed25519
+              publicKeyJwk: null
+              publicKeyPem: null
+              resourceId: resource-new-key2
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}/rotate:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: KEY_PAIR_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: >-
+        Rotates (=retires) a particular key pair, identified by their ID and
+        optionally create a new successor key.
+      tags: *ref_1
+      parameters:
+        - name: duration
+          in: query
+          required: false
+          example: '999'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Key pair rotated successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Key pair not found
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                active:
+                  type: boolean
+                keyId:
+                  type: string
+                privateKeyAlias:
+                  type: string
+                type:
+                  type: string
+                keyGeneratorParams:
+                  type: object
+                  properties:
+                    algorithm:
+                      type: string
+                    curve:
+                      type: string
+                publicKeyJwk:
+                  nullable: true
+                publicKeyPem:
+                  nullable: true
+                resourceId:
+                  type: string
+            example:
+              active: true
+              keyId: my-new-key3
+              privateKeyAlias: my-new-private-key3-alias
+              type: Ed25519VerificationKey2020
+              keyGeneratorParams:
+                algorithm: EdDSA
+                curve: Ed25519
+              publicKeyJwk: null
+              publicKeyPem: null
+              resourceId: resource-new-key3
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}/activate:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: KEY_PAIR_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: >-
+        Sets a KeyPairResource to the ACTIVE state. Will fail if the current
+        state is anything other than ACTIVE or CREATED.
+      tags: *ref_1
+      parameters: []
+      responses:
+        '200':
+          description: Key pair activated successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Key pair not found
+        '409':
+          description: Key pair cannot be activated in current state
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            example: {}
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/state:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: >-
+        Activates a ParticipantContext. This operation is idempotent, i.e.
+        activating an already active ParticipantContext is a NOOP.
+      tags: &ref_2
+        - Identity-API
+        - Participant Context
+      parameters:
+        - name: isActive
+          in: query
+          required: false
+          example: 'true'
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Participant context state updated successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Participant context not found
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            example: {}
+  /v1alpha/participants:
+    parameters: []
+    post:
+      summary: Creates a new ParticipantContext object.
+      tags: *ref_2
+      parameters: []
+      responses:
+        '201':
+          description: Participant context created successfully
+        '400':
+          description: Bad request
+        '409':
+          description: Participant context already exists
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                active:
+                  type: boolean
+                did:
+                  type: string
+                  format: uri
+                key:
+                  type: object
+                  properties:
+                    keyGeneratorParams:
+                      type: object
+                      properties:
+                        algorithm:
+                          type: string
+                        curve:
+                          type: string
+                    keyId:
+                      type: string
+                    privateKeyAlias:
+                      type: string
+                participantId:
+                  type: string
+                roles:
+                  type: array
+                  items:
+                    type: string
+            example:
+              active: true
+              did: did:web:eclipse-tractus-x
+              key:
+                keyGeneratorParams:
+                  algorithm: EdDSA
+                  curve: Ed25519
+                keyId: eclipse-tractus-x-key
+                privateKeyAlias: eclipse-tractus-x-alias
+              participantId: eclipse-tractus-x
+              roles:
+                - ROLE_ADMIN
+    get:
+      summary: >-
+        Get all DID documents across all Participant Contexts. Requires elevated
+        access.
+      tags: *ref_2
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          example: '0'
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          example: '50'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Participant contexts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - requires elevated access
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    delete:
+      summary: Delete a ParticipantContext.
+      tags: *ref_2
+      parameters: []
+      responses:
+        '204':
+          description: Participant context deleted successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Participant context not found
+        '500':
+          description: Internal server error
+    get:
+      summary: Gets ParticipantContexts by ID.
+      tags: *ref_2
+      parameters: []
+      responses:
+        '200':
+          description: Participant context retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Participant context not found
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/token:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: >-
+        Regenerates the API token for a ParticipantContext and returns the new
+        token.
+      tags: *ref_2
+      parameters: []
+      responses:
+        '200':
+          description: API token regenerated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Unauthorized
+        '404':
+          description: Participant context not found
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/roles:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      summary: >-
+        Updates a ParticipantContext's roles. Note that this is an absolute
+        update, that means all roles that the Participant should have must be
+        submitted in the body. Requires elevated privileges.
+      tags: *ref_2
+      parameters: []
+      responses:
+        '200':
+          description: Roles updated successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - requires elevated privileges
+        '404':
+          description: Participant context not found
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+            example:
+              - admin
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Adds a new VerifiableCredential into the system.
+      tags: &ref_3
+        - Identity-API
+        - Verifiable Credentials
+      parameters: []
+      responses:
+        '201':
+          description: Verifiable credential added successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                participantContextId:
+                  type: string
+                verifiableCredentialContainer:
+                  type: object
+                  properties:
+                    credential:
+                      type: object
+                      properties:
+                        credentialSchema:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                format: uri
+                              type:
+                                type: string
+                        credentialStatus:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                format: uri
+                              type:
+                                type: string
+                        credentialSubject:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                format: uri
+                              holderIdentifier:
+                                type: string
+                        '@context':
+                          type: array
+                          items:
+                            type: string
+                            format: uri
+                        id:
+                          type: string
+                        type:
+                          type: array
+                          items:
+                            type: string
+                        issuer:
+                          type: string
+                          format: uri
+                        issuanceDate:
+                          type: string
+                          format: date-time
+                        expirationDate:
+                          type: string
+                          format: date-time
+            example:
+              id: 1f36af58-0fc0-4b24-9b1c-e37d59668089
+              participantContextId: BPNL000000001
+              verifiableCredentialContainer:
+                credential:
+                  credentialSchema:
+                    - id: https://example.com/schema
+                      type: JsonSchemaValidator
+                  credentialStatus:
+                    - id: https://example.com/status/1
+                      type: CredentialStatusList2021
+                  credentialSubject:
+                    - id: did:web:super-user
+                      holderIdentifier: BPNL000000001
+                  '@context':
+                    - https://www.w3.org/2018/credentials/v1
+                    - https://w3id.org/catenax/credentials/v1.0.0
+                  id: 1f36af58-0fc0-4b24-9b1c-e37d59668089
+                  type:
+                    - VerifiableCredential
+                    - MembershipCredential
+                  issuer: did:web:super-user
+                  issuanceDate: '2021-06-16T18:56:59Z'
+                  expirationDate: '2022-06-16T18:56:59Z'
+    get:
+      summary: Query VerifiableCredentials by type.
+      tags: *ref_3
+      parameters: []
+      responses:
+        '200':
+          description: Verifiable credentials query results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+    put:
+      summary: Update an existing VerifiableCredential.
+      tags: *ref_3
+      parameters: []
+      responses:
+        '200':
+          description: Verifiable credential updated successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Verifiable credential not found
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                participantContextId:
+                  type: string
+                verifiableCredentialContainer:
+                  type: object
+                  properties:
+                    credential:
+                      type: object
+                      properties:
+                        credentialSchema:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                format: uri
+                              type:
+                                type: string
+                        credentialStatus:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                format: uri
+                              type:
+                                type: string
+                        credentialSubject:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                format: uri
+                              holderIdentifier:
+                                type: string
+                        '@context':
+                          type: array
+                          items:
+                            type: string
+                            format: uri
+                        id:
+                          type: string
+                        type:
+                          type: array
+                          items:
+                            type: string
+                        issuer:
+                          type: string
+                          format: uri
+                        issuanceDate:
+                          type: string
+                          format: date-time
+                        expirationDate:
+                          type: string
+                          format: date-time
+            example:
+              id: 1f36af58-0fc0-4b24-9b1c-e37d59668089
+              participantContextId: BPNL0000000012
+              verifiableCredentialContainer:
+                credential:
+                  credentialSchema:
+                    - id: https://example.com/schema
+                      type: JsonSchemaValidator
+                  credentialStatus:
+                    - id: https://example.com/status/1
+                      type: CredentialStatusList2021
+                  credentialSubject:
+                    - id: did:web:super-user
+                      holderIdentifier: BPNL000000001
+                  '@context':
+                    - https://www.w3.org/2018/credentials/v1
+                    - https://w3id.org/catenax/credentials/v1.0.0
+                  id: 1f36af58-0fc0-4b24-9b1c-e37d59668089
+                  type:
+                    - VerifiableCredential
+                    - MembershipCredential
+                  issuer: did:web:super-user
+                  issuanceDate: '2021-06-16T18:56:59Z'
+                  expirationDate: '2022-06-16T18:56:59Z'
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: CREDENTIAL_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    delete:
+      summary: Delete a VerifiableCredential.
+      tags: *ref_3
+      parameters: []
+      responses:
+        '204':
+          description: Verifiable credential deleted successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Verifiable credential not found
+        '500':
+          description: Internal server error
+    get:
+      summary: Finds a VerifiableCredential by ID.
+      tags: *ref_3
+      parameters: []
+      responses:
+        '200':
+          description: Verifiable credential retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Verifiable credential not found
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/request/{HOLDER_PID}:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: HOLDER_PID
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Finds a credential request by ID.
+      tags: *ref_3
+      parameters: []
+      responses:
+        '200':
+          description: Credential request retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Credential request not found
+        '500':
+          description: Internal server error
+  /v1alpha/credentials:
+    parameters: []
+    get:
+      summary: >-
+        Get all VerifiableCredentials across all Participant Contexts. Requires
+        elevated access.
+      tags: *ref_3
+      parameters: []
+      responses:
+        '200':
+          description: All verifiable credentials retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - requires elevated access
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/request:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: >-
+        Triggers a credential request that is send to the issuer via the DCP
+        protocol.
+      tags: *ref_3
+      parameters: []
+      responses:
+        '200':
+          description: Credential request triggered successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                credentials:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      format:
+                        type: string
+                      id:
+                        type: string
+                      type:
+                        type: string
+                holderPid:
+                  type: string
+                  format: uri
+                issuerDid:
+                  type: string
+                  format: uri
+            example:
+              credentials:
+                - format: ldp_vc
+                  id: 1f36af58-0fc0-4b24-9b1c-e37d59668089
+                  type: MembershipCredential
+              holderPid: did:web:super-user
+              issuerDid: did:web:super-user
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/requests/{CREDENTIAL_REQUEST_ID}:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: CREDENTIAL_REQUEST_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Requests status information about an issuance request from an issuer
+      tags:
+        - Issuance-API
+        - CredentialRequestStatus-API
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          example: Bearer asdas
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Credential request status retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Credential request not found
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/metadata:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Requests information about the capabilities of this issuer.
+      tags:
+        - Issuance-API
+        - IssuerMetadata-API
+      parameters:
+        - name: Authorization
+          in: header
+          required: false
+          example: Bearer asdas
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Issuer metadata retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/attestations:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Creates an attestation definition in the runtime.
+      tags: &ref_4
+        - IssuerAdmin-API
+        - IssuerServiceAttestationAdmin-API
+      parameters: []
+      responses:
+        '201':
+          description: Attestation definition created successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attestationType:
+                  type: string
+                configuration:
+                  type: object
+                  properties:
+                    credentialType:
+                      type: string
+                    outputClaim:
+                      type: object
+                    additionalProp2:
+                      type: object
+                    additionalProp3:
+                      type: object
+                id:
+                  type: string
+            example:
+              attestationType: presentation
+              configuration:
+                credentialType: ''
+                outputClaim: {}
+                additionalProp2: {}
+                additionalProp3: {}
+              id: string
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/attestations/{ATTESTATION_DEFINITION_ID}:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ATTESTATION_DEFINITION_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    delete:
+      summary: Deletes an attestation definition.
+      tags: *ref_4
+      parameters: []
+      responses:
+        '204':
+          description: Attestation definition deleted successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Attestation definition not found
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/attestations/query:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Query attestation definitions
+      tags: *ref_4
+      parameters: []
+      responses:
+        '200':
+          description: Attestation definitions query results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            example: null
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Adds a new credential definition.
+      tags: &ref_5
+        - IssuerAdmin-API
+        - IssuerServiceCredentialDefinitionAdmin-API
+      parameters: []
+      responses:
+        '201':
+          description: Credential definition created successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            example: null
+    put:
+      summary: Updates credential definition.
+      tags: *ref_5
+      parameters: []
+      responses:
+        '200':
+          description: Credential definition updated successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Credential definition not found
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            example: null
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions/{CREDENTIAL_DEFINITION_ID}:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: CREDENTIAL_DEFINITION_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    delete:
+      summary: Deletes a credential definition by its ID.
+      tags: *ref_5
+      parameters: []
+      responses:
+        '204':
+          description: Credential definition deleted successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Credential definition not found
+        '500':
+          description: Internal server error
+    get:
+      summary: Gets a credential definition by its ID.
+      tags: *ref_5
+      parameters: []
+      responses:
+        '200':
+          description: Credential definition retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Credential definition not found
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions/query:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Gets all credential definitions for a certain query.
+      tags: *ref_5
+      parameters: []
+      responses:
+        '200':
+          description: Credential definitions query results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            example: null
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/status:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: CREDENTIAL_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: >-
+        Checks the revocation status of a credential with the given ID for the
+        given participant.
+      tags: &ref_6
+        - IssuerAdmin-API
+        - IssuerServiceCredentialsAdmin-API
+      parameters: []
+      responses:
+        '200':
+          description: Credential status retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [active, revoked, suspended]
+        '401':
+          description: Unauthorized
+        '404':
+          description: Credential not found
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/query:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Query credentials, possibly across multiple participants.
+      tags: *ref_6
+      parameters: []
+      responses:
+        '200':
+          description: Credentials query results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            example: null
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/resume:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: CREDENTIAL_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: >-
+        Resumes a credential with the given ID for the given participant.
+        Resumed credentials will be removed from the Revocation List.
+      tags: *ref_6
+      parameters: []
+      responses:
+        '200':
+          description: Credential resumed successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Credential not found
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/revoke:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: CREDENTIAL_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: >-
+        Revokes a credential with the given ID for the given participant.
+        Revoked credentials will be added to the Revocation List
+      tags: *ref_6
+      parameters: []
+      responses:
+        '200':
+          description: Credential revoked successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Credential not found
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/suspend:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: CREDENTIAL_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: >-
+        Suspends a credential with the given ID for the given participant.
+        Suspended credentials will be added to the Revocation List. Suspension
+        is reversible.
+      tags: *ref_6
+      parameters: []
+      responses:
+        '200':
+          description: Credential suspended successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Credential not found
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/offer:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Triggers a DCP CredentialOffer message being sent to the holder.
+      tags: *ref_6
+      parameters: []
+      responses:
+        '200':
+          description: Credential offer sent successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                credentials:
+                  type: array
+                  items:
+                    type: string
+                holderId:
+                  type: string
+            example:
+              credentials:
+                - string
+              holderId: string
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/holders:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Adds a new holder.
+      tags: &ref_7
+        - IssuerAdmin-API
+        - IssuerServiceHolderAdmin-API
+      parameters: []
+      responses:
+        '201':
+          description: Holder created successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '409':
+          description: Holder already exists
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                did:
+                  type: string
+                holderId:
+                  type: string
+                name:
+                  type: string
+            example:
+              did: string
+              holderId: string
+              name: string
+    put:
+      summary: Updates holder data.
+      tags: *ref_7
+      parameters: []
+      responses:
+        '200':
+          description: Holder updated successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Holder not found
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                did:
+                  type: string
+                  format: uri
+                holderId:
+                  type: string
+                name:
+                  type: string
+            example:
+              did: did:web:webhook.site:dbdd9b07-f1cf-4586-b2e2-fc8e8c5515da
+              holderId: string
+              name: string1
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/holders/query:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Gets all holders for a certain query.
+      tags: *ref_7
+      parameters: []
+      responses:
+        '200':
+          description: Holders query results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            example: null
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/holders/{HOLDER_ID}:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: HOLDER_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Gets metadata for a certain holder.
+      tags: *ref_7
+      parameters: []
+      responses:
+        '200':
+          description: Holder metadata retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Holder not found
+        '500':
+          description: Internal server error
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/issuanceprocesses/query:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Gets all issuance processes for a certain query.
+      tags: &ref_8
+        - IssuerAdmin-API
+        - IssuerServiceIssuanceProcessAdmin-API
+      parameters: []
+      responses:
+        '200':
+          description: Issuance processes query results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            example: null
+  /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/issuanceprocesses/{ISSUANCE_PROCESS_ID}:
+    parameters:
+      - name: PARTICIPANT_CONTEXT_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ISSUANCE_PROCESS_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Gets an issuance process by its ID.
+      tags: *ref_8
+      parameters: []
+      responses:
+        '200':
+          description: Issuance process retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Issuance process not found
+        '500':
+          description: Internal server error
+  /token:
+    parameters: []
+    post:
+      summary: Secure Token Service Api
+      tags:
+        - STS-API
+      parameters: []
+      responses:
+        '200':
+          description: Token issued successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                  expires_in:
+                    type: integer
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /{CREDENTIAL_ID}:
+    parameters:
+      - name: CREDENTIAL_ID
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Resolves and returns a verifiable credential by ID
+      tags:
+        - StatusList-API
+      parameters: []
+      responses:
+        '200':
+          description: Verifiable credential retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Credential not found
+        '500':
+          description: Internal server error

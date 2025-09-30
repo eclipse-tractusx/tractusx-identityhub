@@ -1,0 +1,76 @@
+#################################################################################
+# Eclipse Tractus-X - Identity Hub
+#
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
+# Copyright (c) 2025 LKS Next
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0.
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the
+# License for the specific language govern in permissions and limitations
+# under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+#################################################################################
+
+name: Release Chart Identity Hub
+
+on:
+  push:
+    paths:
+      - 'charts/tractusx-identityhub'
+      - 'charts/tractusx-identityhub-memory'
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  release:
+    # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
+    # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@b9e51907a09c216f16ebe8536097933489208112 # v4.3.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update identityhub helm dependencies
+        run: |
+          cd charts/tractusx-identityhub
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add runix https://helm.runix.net
+          helm dependency update
+
+      - name: Update identityhub-memory helm dependencies
+        run: |
+          cd charts/tractusx-identityhub-memory
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add runix https://helm.runix.net
+          helm dependency update
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@cae68fefc6b5f367a0275617c9f83181ba54714f # v1.7.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_SKIP_EXISTING: "true"
