@@ -44,3 +44,9 @@ data:
   web.http.presentation.path: {{ .Values.identityhub.endpoints.presentation.path | quote }}
   web.http.did.port: {{ .Values.identityhub.endpoints.did.port | quote }}
   web.http.did.path: {{ .Values.identityhub.endpoints.did.path | quote }}
+  web.http.accounts.port: {{ .Values.identityhub.endpoints.accounts.port | quote}}
+  web.http.accounts.path: {{ .Values.identityhub.endpoints.accounts.path | quote}}
+  web.http.version.port: {{ .Values.identityhub.endpoints.version.port | quote}}
+  web.http.version.path: {{ .Values.identityhub.endpoints.version.path | quote}}
+  web.http.sts.port: {{ .Values.identityhub.endpoints.sts.port | quote}}
+  web.http.sts.path: {{ .Values.identityhub.endpoints.sts.path | quote}}
