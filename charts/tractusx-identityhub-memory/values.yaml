@@ -93,11 +93,11 @@ identityhub:
       # -- authentication key, must be attached to each 'X-Api-Key' request header
       authKeyAlias: "sup3r$3cr3t"
     # -- DCP Presentation API endpoint
-    presentation:
+    credentials:
       # -- port for incoming api calls
       port: 8082
       # -- path for incoming api calls
-      path: /api/presentation
+      path: /api/credentials
     # -- DID service endpoint. DID documents can be resolved from here.
     did:
       # -- port for incoming api calls
@@ -189,7 +189,7 @@ identityhub:
       annotations: {}
       # -- EDC endpoints exposed by this ingress resource
       endpoints:
-        - presentation
+        - credentials
         - did
         - sts
       # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
