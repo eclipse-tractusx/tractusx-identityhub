@@ -41,9 +41,9 @@ spec:
       targetPort: did
       protocol: TCP
       name: did
-    - port: {{ .Values.identityhub.endpoints.presentation.port }}
-      targetPort: presentation
+    - port: {{ .Values.identityhub.endpoints.credentials.port }}
+      targetPort: credentials
       protocol: TCP
-      name: presentation
+      name: credentials
   selector:
     {{- include "identityhub.server.selectorLabels" . | nindent 4 }}
