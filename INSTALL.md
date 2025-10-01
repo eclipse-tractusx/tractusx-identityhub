@@ -134,6 +134,7 @@ helm install issuerservice-memory charts/tractusx-issuerservice-memory/ \
     --set "issuerservice.image.pullPolicy=Never" \
     --set "issuerservice.image.tag=test" \
     --set "issuerservice.image.repository=issuerservice-memory" \
+    --set "statuslist.signing_key.alias=test" \
     --wait-for-jobs \
     --timeout=120s \
     --dependency-update
