@@ -30,11 +30,12 @@ dependencies {
     // used for the runtime
     runtimeOnly(libs.bom.ih)
     runtimeOnly(project(":extensions:seed:super-user"))
+    runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
 
     // used for custom extensions
     implementation(libs.edc.core.connector)
     implementation(libs.edc.ih.spi)
-
+//    implementation("org.eclipse.edc:monitor-jdk-logger:0.14.0")
     testImplementation(libs.edc.lib.crypto)
     testImplementation(libs.edc.lib.keys)
     testImplementation(libs.edc.junit)
