@@ -65,7 +65,7 @@ In case you don't want to deploy the helm chart, here are other ways to deploy t
 ### Java application
 
 ```shell
-java -Dedc.fs.config=runtimes/identityhub-memory/build/resources/main/application.properties
+java -Dedc.fs.config=runtimes/identityhub-memory/build/resources/main/application.properties \
     -jar runtimes/identityhub-memory/build/libs/identityhub-memory.jar
 ```
 
