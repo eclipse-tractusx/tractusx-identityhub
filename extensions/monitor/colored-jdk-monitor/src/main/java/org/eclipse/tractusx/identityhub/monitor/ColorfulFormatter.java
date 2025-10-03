@@ -23,6 +23,8 @@ public class ColorfulFormatter extends Formatter {
     private static final String YELLOW = "\033[0;33m";
     private static final String BLUE = "\033[0;34m";
 
+    private final String format;
+
     public ColorfulFormatter() {
         LogManager manager = LogManager.getLogManager();
         String cname = getClass().getName();
@@ -38,11 +40,6 @@ public class ColorfulFormatter extends Formatter {
         return (val != null) ? val : DEFAULT_FORMAT;
     }
 
-    static String getLoggingProperty(String name) {
-        return LogManager.getLogManager().getProperty(name);
-    }
-
-    private final String format;
 
     private String getColorCode(Level level) {
         return switch (level.toString()) {

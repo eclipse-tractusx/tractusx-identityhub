@@ -33,6 +33,7 @@ dependencies {
     runtimeOnly(libs.edc.vault.hashicorp)
     runtimeOnly(project(":extensions:store:sql:migrations"))
     runtimeOnly(project(":extensions:seed:super-user"))
+    runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
 
     // used for custom extensions
     implementation(libs.edc.core.connector)
