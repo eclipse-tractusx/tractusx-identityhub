@@ -49,6 +49,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["java", \
 #     "-javaagent:/app/opentelemetry-javaagent.jar", \
 #     "-Dotel.javaagent.configuration-file=/app/opentelemetry.properties", \
+     "-Djava.util.logging.config.file=/app/logging.properties", \
      "-Dedc.fs.config=/app/configuration.properties", \
      "-Djava.security.egd=file:/dev/urandom", \
      "-jar", \

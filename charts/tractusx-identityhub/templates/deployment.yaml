@@ -171,6 +171,11 @@ spec:
             {{- end }}
             - name: "tmp"
               mountPath: "/tmp"
+            - name : configuration
+              mountPath: /app/logging.properties
+              subPath: logging.properties
+            - name: logs
+              mountPath: /logs
       volumes:
         - name: "configuration"
           configMap:
@@ -188,6 +193,8 @@ spec:
             sizeLimit: 1Mi
         {{- end }}
         - name: "tmp"
+          emptyDir: { }
+        - name: logs # aim for persistent volume in localhost
           emptyDir: { }
       {{- with .Values.identityhub.nodeSelector }}
       nodeSelector:
