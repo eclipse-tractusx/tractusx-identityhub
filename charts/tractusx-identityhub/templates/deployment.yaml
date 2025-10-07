@@ -175,7 +175,7 @@ spec:
               mountPath: /app/logging.properties
               subPath: logging.properties
             - name: logs
-              mountPath: /logs
+              mountPath: {{ .Values.identityhub.logging.path }}
       volumes:
         - name: "configuration"
           configMap:
@@ -195,7 +195,12 @@ spec:
         - name: "tmp"
           emptyDir: { }
         - name: logs # aim for persistent volume in localhost
+        {{- if .Values.identityhub.logging.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "identityhub.fullname" . }}-pvc-logs
+        {{- else }}
           emptyDir: { }
+        {{- end }}
       {{- with .Values.identityhub.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

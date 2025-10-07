@@ -40,9 +40,12 @@ RUN adduser \
 USER "$APP_USER"
 WORKDIR /app
 
+RUN mkdir /app/logs && \
+    chmod 775 /app/logs;
+
 COPY ${JAR} identityhub.jar
-COPY ${OTEL_JAR} opentelemetry-javaagent.jar
-COPY ${ADDITIONAL_FILES} ./
+#COPY ${OTEL_JAR} opentelemetry-javaagent.jar
+#COPY ${ADDITIONAL_FILES} ./
 
 HEALTHCHECK NONE
 

@@ -30,7 +30,7 @@ metadata:
 data:
   logging.properties: |-
 {{- if .Values.identityhub.logging.enabled }}
-{{ .Files.Get .Values.identityhub.logging.properties | indent 4 }}
+{{ tpl (.Files.Get .Values.identityhub.logging.properties) . | indent 4 }}
 {{- else }}
 {{ .Values.identityhub.logging.default | indent 4 }}
 {{- end }}
