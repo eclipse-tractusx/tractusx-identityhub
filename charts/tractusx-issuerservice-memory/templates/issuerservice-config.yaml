@@ -48,4 +48,4 @@ data:
   #################
   ## APPLICATION ##
   #################
-  edc.issuer.statuslist.signing.key.alias: {{ .Values.statuslist.signing_key.alias | required ".Values.statuslist.signing.key.alias is required" | quote }}
+  edc.issuer.statuslist.signing.key.alias: {{ .Values.statuslist.signing_key.alias | required ".Values.statuslist.signing_key.alias is required" | quote }}
