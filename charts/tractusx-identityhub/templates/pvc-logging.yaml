@@ -1,4 +1,4 @@
-{{- if .Values.identityhub.logging.persistence.enabled }}
+{{- if and .Values.identityhub.logging.enabled .Values.identityhub.logging.persistence.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

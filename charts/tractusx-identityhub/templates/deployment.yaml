@@ -195,7 +195,7 @@ spec:
         - name: "tmp"
           emptyDir: { }
         - name: logs # aim for persistent volume in localhost
-        {{- if .Values.identityhub.logging.persistence.enabled }}
+        {{- if and .Values.identityhub.logging.enabled .Values.identityhub.logging.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ include "identityhub.fullname" . }}-pvc-logs
         {{- else }}
