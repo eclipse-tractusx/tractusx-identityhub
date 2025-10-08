@@ -1,0 +1,35 @@
+{{- if and .Values.identityhub.logging.enabled .Values.identityhub.logging.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "identityhub.fullname" . }}-pvc-logs
+  namespace: {{ .Release.Namespace | default "default" | quote }}
+  labels:
+    {{- include "identityhub.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.identityhub.logging.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.identityhub.logging.persistence.size | quote }}
+  {{- if .Values.identityhub.logging.persistence.storageClass }}
+  storageClassName: {{ .Values.identityhub.logging.persistence.storageClass }}
+  {{- end }}
+#  volumeName: logs-pv
+#---
+#apiVersion: v1
+#kind: PersistentVolume
+#metadata:
+#  name: logs-pv
+#spec:
+#  capacity:
+#    storage: {{ .Values.identityhub.logging.persistence.size | quote }}
+#  accessModes:
+#    - {{ .Values.identityhub.logging.persistence.accessMode | quote }}
+#  persistentVolumeReclaimPolicy: Retain
+#  {{- if .Values.identityhub.logging.persistence.storageClass }}
+#  storageClassName: {{ .Values.identityhub.logging.persistence.storageClass }}
+#  {{- end }}
+#  hostPath:
+#    path: /data/logs/
+{{- end }}
