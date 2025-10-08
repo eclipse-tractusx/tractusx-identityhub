@@ -255,7 +255,7 @@ identityhub:
   logging: # enable logging to create .log files
     enabled: true
     persistence: # allow .log files to persist in local machine
-      enabled: true
+      enabled: false
       accessMode: ReadWriteOnce
       size: 1Gi
       storageClass: "test"
