@@ -53,7 +53,7 @@ helm install identityhub-memory charts/tractusx-identityhub-memory/ \
     --set "identityhub.image.repository=identityhub-memory" \
     --wait-for-jobs \
     --timeout=120s \
-    --dependency-update \
+    --dependency-update
 ```
 
 For helm chart options and configuration, see [Helm chart documentation](https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/charts/tractusx-identityhub-memory/README.md)
