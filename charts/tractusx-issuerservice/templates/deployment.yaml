@@ -175,6 +175,11 @@ spec:
             {{- end }}
             - name: "tmp"
               mountPath: "/tmp"
+            - name: configuration
+              mountPath: /app/logging.properties
+              subPath: logging.properties
+            - name: logs
+              mountPath: {{ .Values.issuerservice.logging.path }}
       volumes:
         - name: "configuration"
           configMap:
@@ -192,6 +197,12 @@ spec:
             sizeLimit: 1Mi
         {{- end }}
         - name: "tmp"
+          emptyDir: { }
+        - name: logs # aim for persistent volume in localhost
+        {{- if and .Values.issuerservice.logging.enabled .Values.issuerservice.logging.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "issuerservice.fullname" . }}-pvc-logs
+          {{- else }}
           emptyDir: { }
       {{- with .Values.issuerservice.nodeSelector }}
       nodeSelector:
