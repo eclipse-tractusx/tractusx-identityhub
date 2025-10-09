@@ -202,8 +202,9 @@ spec:
         {{- if and .Values.issuerservice.logging.enabled .Values.issuerservice.logging.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ include "issuerservice.fullname" . }}-pvc-logs
-          {{- else }}
+        {{- else }}
           emptyDir: { }
+        {{- end }}
       {{- with .Values.issuerservice.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
