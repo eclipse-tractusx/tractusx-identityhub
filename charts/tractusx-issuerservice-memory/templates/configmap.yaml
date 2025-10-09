@@ -29,4 +29,8 @@ metadata:
     {{- include "issuerservice.labels" . | nindent 4 }}
 data:
   logging.properties: |-
-    {{- .Values.issuerservice.logging | nindent 4 }}
+{{- if .Values.issuerservice.logging.enabled }}
+{{ tpl (.Files.Get .Values.issuerservice.logging.properties) . | indent 4 }}
+{{- else }}
+{{ .Values.issuerservice.logging.default | indent 4 }}
+{{- end }}

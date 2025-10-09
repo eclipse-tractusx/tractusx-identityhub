@@ -108,11 +108,11 @@ issuerservice:
       # -- Restrict a Container's Syscalls with seccomp
       type: RuntimeDefault
     # -- Runs all processes within a pod with a special uid
-    runAsUser: 10001
+    runAsUser: 10100
     # -- Processes within a pod will belong to this guid
-    runAsGroup: 10001
+    runAsGroup: 10100
     # -- The owner for volumes and any files created within volumes will belong to this guid
-    fsGroup: 10001
+    fsGroup: 10100
   # The [container security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container) defines privilege and access control settings for a Container within a pod
   securityContext:
     capabilities:
@@ -128,7 +128,7 @@ issuerservice:
     # -- Requires the container to run without root privileges
     runAsNonRoot: true
     # -- The container's process will run with the specified uid
-    runAsUser: 10001
+    runAsUser: 10100
   # Extra environment variables that will be pass onto deployment pods
   env: {}
   #  ENV_NAME: value
@@ -227,13 +227,24 @@ issuerservice:
     # -- targetAverageUtilization of memory provided to a pod
     targetMemoryUtilizationPercentage: 80
   # -- configuration of the [Java Util Logging Facade](https://docs.oracle.com/javase/7/docs/technotes/guides/logging/overview.html)
-  logging: |-
-    .level=INFO
-    org.eclipse.edc.level=INFO
-    handlers=java.util.logging.ConsoleHandler
-    java.util.logging.ConsoleHandler.formatter=java.util.logging.SimpleFormatter
-    java.util.logging.ConsoleHandler.level=ALL
-    java.util.logging.SimpleFormatter.format=[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$-7s] %5$s%6$s%n
+  logging: # enable logging to create .log files
+    enabled: true
+    persistence: # allow .log files to persist in local machine
+      enabled: false
+      accessMode: ReadWriteOnce
+      size: 1Gi
+      storageClass: "test"
+    properties: logging.properties
+    file: issuerservice.log
+    path: /app/logs
+    # default logging properties if logging is not enabled
+    default: |-
+      .level=INFO
+      org.eclipse.edc.level=INFO
+      handlers=java.util.logging.ConsoleHandler
+      java.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter
+      java.util.logging.ConsoleHandler.level=ALL
+      org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s
   # [node selector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector) to constrain pods to nodes
   nodeSelector: {}
   # [tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) to configure preferred nodes
