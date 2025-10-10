@@ -44,7 +44,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "tractusx-identityhub"
 include(":extensions:store:sql:migrations")
-include("extensions:seed:super-user")
+include(":extensions:seed:super-user")
+include(":extensions:monitor:colored-jdk-monitor")
 include(":runtimes:identityhub")
 include(":runtimes:identityhub-memory")
 include(":runtimes:issuerservice")

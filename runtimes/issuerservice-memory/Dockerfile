@@ -37,18 +37,22 @@ RUN adduser \
      --uid "$APP_UID" \
      "$APP_USER"
 
-USER "$APP_USER"
 WORKDIR /app
 
+RUN mkdir /app/logs
+
+USER "$APP_USER"
+
 COPY ${JAR} issuerservice.jar
-COPY ${OTEL_JAR} opentelemetry-javaagent.jar
-COPY ${ADDITIONAL_FILES} ./
+#COPY ${OTEL_JAR} opentelemetry-javaagent.jar
+#COPY ${ADDITIONAL_FILES} ./
 
 HEALTHCHECK NONE
 
 ENTRYPOINT ["java", \
 #     "-javaagent:/app/opentelemetry-javaagent.jar", \
 #     "-Dotel.javaagent.configuration-file=/app/opentelemetry.properties", \
+     "-Djava.util.logging.config.file=/app/logging.properties", \
      "-Dedc.fs.config=/app/configuration.properties", \
      "-Djava.security.egd=file:/dev/urandom", \
      "-jar", \

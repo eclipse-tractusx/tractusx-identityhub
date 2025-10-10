@@ -100,7 +100,15 @@ helm install my-release tractusx-issuerservice/issuerservice --version 0.1.0 \
 | issuerservice.livenessProbe.periodSeconds | int | `5` | this fields specifies that kubernetes should perform a liveness check every 5 seconds |
 | issuerservice.livenessProbe.successThreshold | int | `1` | number of consecutive successes for the probe to be considered successful after having failed |
 | issuerservice.livenessProbe.timeoutSeconds | int | `5` | number of seconds after which the probe times out |
-| issuerservice.logging | string | `".level=INFO\norg.eclipse.edc.level=INFO\nhandlers=java.util.logging.ConsoleHandler\njava.util.logging.ConsoleHandler.formatter=java.util.logging.SimpleFormatter\njava.util.logging.ConsoleHandler.level=ALL\njava.util.logging.SimpleFormatter.format=[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$-7s] %5$s%6$s%n"` | configuration of the [Java Util Logging Facade](https://docs.oracle.com/javase/7/docs/technotes/guides/logging/overview.html) |
+| issuerservice.logging.enabled | bool | `true` | Enables logging custom configuration and files |
+| issuerservice.logging.persistence.enabled | bool | `false` | Enables persistence of `.log` files |
+| issuerservice.logging.persistence.accessMode | string | `ReadWriteOnce` | Access mode for the PersistentVolumeClaim |
+| issuerservice.logging.persistence.size | string | `1Gi` | Size of the PersistentVolumeClaim |
+| issuerservice.logging.persistence.storageClass | string | `test` | Storage class for the PersistentVolumeClaim |
+| issuerservice.logging.properties | string | `logging.properties` | Filename of the logging properties file |
+| issuerservice.logging.file | string | `issuerservice.log` | Name of the log file |
+| issuerservice.logging.path | string | `/app/logs` | Path where the log files will be stored |
+| issuerservice.logging.default | string | `.level=INFO  org.eclipse.edc.level=INFO  handlers=java.util.logging.ConsoleHandler  java.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.issuerservice.monitor.ColorfulFormatter  java.util.logging.ConsoleHandler.level=ALL  org.eclipse.tractusx.issuerservice.monitor.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s` | Default logging configuration of the [Java Util Logging Facade](https://docs.oracle.com/javase/7/docs/technotes/guides/logging/overview.html) |
 | issuerservice.nodeSelector | object | `{}` |  |
 | issuerservice.podAnnotations | object | `{}` | additional annotations for the pod |
 | issuerservice.podLabels | object | `{}` | additional labels for the pod |
