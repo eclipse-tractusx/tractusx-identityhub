@@ -53,7 +53,7 @@ helm install identityhub-memory charts/tractusx-identityhub-memory/ \
     --set "identityhub.image.repository=identityhub-memory" \
     --wait-for-jobs \
     --timeout=120s \
-    --dependency-update
+    --dependency-update \
 ```
 
 For helm chart options and configuration, see [Helm chart documentation](https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/charts/tractusx-identityhub-memory/README.md)
@@ -62,14 +62,14 @@ For helm chart options and configuration, see [Helm chart documentation](https:/
 
 In case you don't want to deploy the helm chart, here are other ways to deploy the application.
 
-### Java application
+#### Java application
 
 ```shell
 java -Dedc.fs.config=runtimes/identityhub-memory/build/resources/main/application.properties \
     -jar runtimes/identityhub-memory/build/libs/identityhub-memory.jar
 ```
 
-### Run docker image
+#### Run docker image
 
 ```shell
 docker run -d --rm --name identityhub \
@@ -148,11 +148,11 @@ helm install issuerservice-memory charts/tractusx-issuerservice-memory/ \
 ```
 For helm chart options and configuration, see [Helm chart documentation](https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/charts/tractusx-issuerservice-memory/README.md)
 
-## Alternative ways to deploy issuerservice-memory
+### Alternative ways to deploy issuerservice-memory
 
 In case you don't want to deploy the helm chart, here are other ways to deploy the application.
 
-### Run the java application
+#### Run the java application
 
 ```shell
 java -Dedc.fs.config=runtimes/issuerservice-memory/build/resources/main/application.properties
@@ -191,3 +191,16 @@ helm install issuerservice charts/tractusx-issuerservice/ \
     --dependency-update
 ```
 For helm chart options and configuration, see [Helm chart documentation](https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/charts/tractusx-issuerservice-memory/README.md)
+
+# Licenses
+
+- Apache-2.0 for code
+- CC-BY-4.0 for non-code
+
+# NOTICE
+
+This work is licensed under the CC-BY-4.0.
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/tractusx-identityhub
