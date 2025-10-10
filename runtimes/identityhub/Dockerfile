@@ -37,10 +37,11 @@ RUN adduser \
      --uid "$APP_UID" \
      "$APP_USER"
 
+WORKDIR /app
+
 RUN mkdir /app/logs
 
 USER "$APP_USER"
-WORKDIR /app
 
 COPY ${JAR} identityhub.jar
 #COPY ${OTEL_JAR} opentelemetry-javaagent.jar
