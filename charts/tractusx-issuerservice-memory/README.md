@@ -2,13 +2,13 @@
 
 ![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
-A Helm chart for Tractus-X IssuerService, a comprehensive DCP CredentialService solution
+A Helm chart for Tractus-X IssuerService-Memory, a comprehensive DCP CredentialService solution
 
-**Homepage:** <https://github.com/eclipse-tractusx/tractusx-issuerservice/tree/main/charts/tractusx-issuerservice>
+**Homepage:** <https://github.com/eclipse-tractusx/tractusx-issuerservice-memory/tree/main/charts/tractusx-issuerservice-memory>
 
 # Configure the chart
 
-Optionally provide the following configuration entries to your Tractus-X IssuerService Helm chart, either by directly setting them (`--set`)
+Optionally provide the following configuration entries to your Tractus-X IssuerService-Memory Helm chart, either by directly setting them (`--set`)
 or by supplying an additional yaml file:
 - `server.endpoints.default.[port|path]`: the port and base path for the Observability API. This API is **not** supposed to be reachable
    via the internet!
@@ -30,7 +30,7 @@ helm install my-release tractusx-issuerservice/issuerservice --version 0.1.0 \
 
 ## Source Code
 
-* <https://github.com/eclipse-tractusx/tractusx-issuerservice/tree/main/charts/tractusx-issuerservice>
+* <https://github.com/eclipse-tractusx/tractusx-issuerservice-memory/tree/main/charts/tractusx-issuerservice-memory>
 
 ## Values
 
