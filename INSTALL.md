@@ -191,3 +191,16 @@ helm install issuerservice charts/tractusx-issuerservice/ \
     --dependency-update
 ```
 For helm chart options and configuration, see [Helm chart documentation](https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/charts/tractusx-issuerservice-memory/README.md)
+
+# Licenses
+
+    Apache-2.0 for code
+    CC-BY-4.0 for non-code
+
+# NOTICE
+
+This work is licensed under the CC-BY-4.0.
+
+    SPDX-License-Identifier: CC-BY-4.0
+    SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
+    Source URL: https://github.com/eclipse-tractusx/tractusx-identityhub
