@@ -263,4 +263,4 @@ tests:
 
 statuslist:
   signing_key:
-    alias:
+    alias: default
