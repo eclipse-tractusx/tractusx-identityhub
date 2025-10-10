@@ -249,9 +249,11 @@ issuerservice:
     # -- targetAverageUtilization of memory provided to a pod
     targetMemoryUtilizationPercentage: 80
   # -- configuration of the [Java Util Logging Facade](https://docs.oracle.com/javase/7/docs/technotes/guides/logging/overview.html)
-  logging: # enable logging to create .log files
+  # enable logging to create .log files
+  logging:
     enabled: true
-    persistence: # allow .log files to persist in local machine
+    # allow .log files to persist in local machine
+    persistence:
       enabled: false
       accessMode: ReadWriteOnce
       size: 1Gi
