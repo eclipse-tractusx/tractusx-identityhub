@@ -114,7 +114,7 @@ helm install identityhub charts/tractusx-identityhub/ \
     --dependency-update
 ```
 
-# Deploying issuerservice-memory
+## Deploying issuerservice-memory
 
 ### Build the Jar File
 
@@ -159,7 +159,7 @@ java -Dedc.fs.config=runtimes/issuerservice-memory/build/resources/main/applicat
     -jar runtimes/issuerservice-memory/build/libs/issuerservice-memory.jar
 ```
 
-# Deploying issuerservice
+## Deploying issuerservice
 
 ### Build the Jar File
 
