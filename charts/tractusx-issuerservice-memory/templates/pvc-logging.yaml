@@ -35,21 +35,4 @@ spec:
   {{- if .Values.issuerservice.logging.persistence.storageClass }}
   storageClassName: {{ .Values.issuerservice.logging.persistence.storageClass }}
   {{- end }}
-#  volumeName: logs-pv
-#---
-#apiVersion: v1
-#kind: PersistentVolume
-#metadata:
-#  name: logs-pv
-#spec:
-#  capacity:
-#    storage: {{ .Values.issuerservice.logging.persistence.size | quote }}
-#  accessModes:
-#    - {{ .Values.issuerservice.logging.persistence.accessMode | quote }}
-#  persistentVolumeReclaimPolicy: Retain
-#  {{- if .Values.issuerservice.logging.persistence.storageClass }}
-#  storageClassName: {{ .Values.issuerservice.logging.persistence.storageClass }}
-#  {{- end }}
-#  hostPath:
-#    path: /data/logs/
 {{- end }}

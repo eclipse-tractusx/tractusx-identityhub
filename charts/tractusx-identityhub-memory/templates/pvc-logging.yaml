@@ -35,21 +35,4 @@ spec:
   {{- if .Values.identityhub.logging.persistence.storageClass }}
   storageClassName: {{ .Values.identityhub.logging.persistence.storageClass }}
   {{- end }}
-#  volumeName: logs-pv
-#---
-#apiVersion: v1
-#kind: PersistentVolume
-#metadata:
-#  name: logs-pv
-#spec:
-#  capacity:
-#    storage: {{ .Values.identityhub.logging.persistence.size | quote }}
-#  accessModes:
-#    - {{ .Values.identityhub.logging.persistence.accessMode | quote }}
-#  persistentVolumeReclaimPolicy: Retain
-#  {{- if .Values.identityhub.logging.persistence.storageClass }}
-#  storageClassName: {{ .Values.identityhub.logging.persistence.storageClass }}
-#  {{- end }}
-#  hostPath:
-#    path: /data/logs/
 {{- end }}
