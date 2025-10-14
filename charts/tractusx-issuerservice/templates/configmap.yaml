@@ -30,8 +30,31 @@ metadata:
     {{- include "issuerservice.labels" . | nindent 4 }}
 data:
   logging.properties: |-
-{{- if .Values.issuerservice.logging.enabled }}
-{{ tpl (.Files.Get .Values.issuerservice.logging.properties) . | indent 4 }}
-{{- else }}
-{{ .Values.issuerservice.logging.default | indent 4 }}
-{{- end }}
+  {{- if .Values.issuerservice.logging.enabled }}
+    handlers={{- join "," .Values.issuerservice.logging.handlers }}
+    {{- $console := "java.util.logging.ConsoleHandler" }}
+    {{- $file := "java.util.logging.FileHandler" }}
+    {{- if has $console .Values.issuerservice.logging.handlers }}
+    # Console Handler Config
+    {{- range $key, $value := index .Values.issuerservice.logging.handlersConfig $console }}
+    {{ $console }}.{{ $key }} = {{ $value }}
+    {{- end }}
+    {{- end }}
+    {{- if has $file .Values.issuerservice.logging.handlers }}
+    # File Handler Config
+    {{- range $key, $value := index .Values.issuerservice.logging.handlersConfig $file }}
+    {{ $file }}.{{ $key }} = {{ $value }}
+    {{- end }}
+    {{- end }}
+    # Formatter Configs
+    {{- range $formatter, $config := .Values.issuerservice.logging.formatters }}
+    {{ $formatter }}.format = {{ $config.format }}
+    {{- end }}
+    # Root level and Package level control
+    .level={{- .Values.issuerservice.logging.level }}
+    {{- range $pkg, $level := .Values.issuerservice.logging.logLevels }}
+    {{ $pkg }}.level = {{ $level }}
+    {{- end }}
+  {{- else }}
+    {{ .Values.issuerservice.logging.default | indent 4 }}
+  {{- end }}

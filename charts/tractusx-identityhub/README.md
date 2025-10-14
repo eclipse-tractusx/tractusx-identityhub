@@ -114,8 +114,11 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 | identityhub.logging.persistence.accessMode | string | `ReadWriteOnce` | Access mode for the PersistentVolumeClaim |
 | identityhub.logging.persistence.size | string | `1Gi` | Size of the PersistentVolumeClaim |
 | identityhub.logging.persistence.storageClass | string | `test` | Storage class for the PersistentVolumeClaim |
-| identityhub.logging.properties | string | `logging.properties` | Filename of the logging properties file |
-| identityhub.logging.file | string | `identityhub.log` | Name of the log file |
+| identityhub.logging.handlers | list | `["java.util.logging.ConsoleHandler", "java.util.logging.FileHandler"]` | List of handlers to use in the logger |
+| identityhub.logging.handlersConfig | object | See values.yaml | Configuration for each logging handler (level, formatter, pattern, etc.) |
+| identityhub.logging.formatters | object | See values.yaml | Configuration for log formatters |
+| identityhub.logging.logLevels | object | See values.yaml | Package-level log level control |
+| identityhub.logging.level | string | `INFO` | Root log level control |
 | identityhub.logging.path | string | `/app/logs` | Path where the log files will be stored |
 | identityhub.logging.default | string | `.level=INFO  org.eclipse.edc.level=INFO  handlers=java.util.logging.ConsoleHandler  java.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter  java.util.logging.ConsoleHandler.level=ALL  org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s` | Default logging configuration of the [Java Util Logging Facade](https://docs.oracle.com/javase/7/docs/technotes/guides/logging/overview.html) |
 | identityhub.nodeSelector | object | `{}` |  |

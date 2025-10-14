@@ -259,8 +259,40 @@ issuerservice:
       accessMode: ReadWriteOnce
       size: 1Gi
       storageClass: "test"
-    properties: logging.properties
-    file: issuerservice.log
+    # list of handlers to use in the logger
+    handlers:
+      - java.util.logging.ConsoleHandler
+      - java.util.logging.FileHandler
+    handlersConfig:
+      # configuration of consoleHandler
+      java.util.logging.ConsoleHandler:
+        level: FINE
+        formatter: org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter
+      # configuration of fileHandler
+      java.util.logging.FileHandler:
+        level: FINE
+        formatter: org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter
+        pattern: /app/logs/identityhub.log
+        limit: 0
+        count: 1
+        append: true
+    # configuration of the formatters
+    formatters:
+      org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter:
+        format: "%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"
+    # root level control
+    level: INFO
+    # package level control
+    logLevels:
+      org.glassfish: OFF
+      jdk.event: OFF
+      jakarta.json: OFF
+      org.jvnet: OFF
+      okhttp3.internal: OFF
+      org.flywaydb: OFF
+      org.postgresql: OFF
+      org.eclipse.edc: FINE
+    # path where the log resides, must be the same path as the fileHandler pattern
     path: /app/logs
     # default logging properties if logging is not enabled
     default: |-
