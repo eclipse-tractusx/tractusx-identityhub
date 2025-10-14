@@ -105,10 +105,13 @@ helm install my-release tractusx-issuerservice/issuerservice --version 0.1.0 \
 | issuerservice.logging.persistence.accessMode | string | `ReadWriteOnce` | Access mode for the PersistentVolumeClaim |
 | issuerservice.logging.persistence.size | string | `1Gi` | Size of the PersistentVolumeClaim |
 | issuerservice.logging.persistence.storageClass | string | `test` | Storage class for the PersistentVolumeClaim |
-| issuerservice.logging.properties | string | `logging.properties` | Filename of the logging properties file |
-| issuerservice.logging.file | string | `issuerservice.log` | Name of the log file |
+| issuerservice.logging.handlers | list | `["java.util.logging.ConsoleHandler", "java.util.logging.FileHandler"]` | List of handlers to use in the logger |
+| issuerservice.logging.handlersConfig | object | `{" java.util.logging.ConsoleHandler": {"level": "FINE", "formatter": "org.eclipse.tractusx.identityhub.monitor.ColorfullFormatter"}}` | Configuration for each logging handler (level, formatter, pattern, etc.) |
+| issuerservice.logging.formatters | object | `{"org.eclipse.tractusx.identityhub.monitor.ColorfullFormatter":{"format": "%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"}}` | Configuration for log formatters |
+| issuerservice.logging.logLevels | object | `{"org.eclipse.edc":"FINE", "org.glassfish":"OFF"}` | Package-level log level control |
+| issuerservice.logging.level | string | `INFO` | Root log level control |
 | issuerservice.logging.path | string | `/app/logs` | Path where the log files will be stored |
-| issuerservice.logging.default | string | `.level=INFO  org.eclipse.edc.level=INFO  handlers=java.util.logging.ConsoleHandler  java.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.issuerservice.monitor.ColorfulFormatter  java.util.logging.ConsoleHandler.level=ALL  org.eclipse.tractusx.issuerservice.monitor.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s` | Default logging configuration of the [Java Util Logging Facade](https://docs.oracle.com/javase/7/docs/technotes/guides/logging/overview.html) |
+| issuerservice.logging.default | string | `.level=INFO  org.eclipse.edc.level=INFO  handlers=java.util.logging.ConsoleHandler  java.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter  java.util.logging.ConsoleHandler.level=ALL  org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s` | Default logging configuration of the [Java Util Logging Facade](https://docs.oracle.com/javase/7/docs/technotes/guides/logging/overview.html) |
 | issuerservice.nodeSelector | object | `{}` |  |
 | issuerservice.podAnnotations | object | `{}` | additional annotations for the pod |
 | issuerservice.podLabels | object | `{}` | additional labels for the pod |
