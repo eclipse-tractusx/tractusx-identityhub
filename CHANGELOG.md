@@ -11,6 +11,7 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 
 ### Added
 
+- Add CHANGELOG.md file following TRG 1.03 standards by @CDiezRodriguez in [#151](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/151)
 - Add installation and deployment documentation, enhance documentation structure, fix header and list formatting, add license headers and NOTICE files, set key signing alias default configuration by @AYaoZhan in [#147](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/147)
 - Add helm charts release by @AYaoZhan in [#119](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/119)
 - Add Tractus-X specific configurations by @matbmoser in [#113](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/113)
