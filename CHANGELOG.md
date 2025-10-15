@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog](https://eclipse-tractusx.github.io/changelog).
+For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog](https://github.com/eclipse-tractusx/tractus-x-release/blob/main/CHANGELOG.md).
 
 ## [Unreleased]
 
@@ -47,12 +47,3 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 ### Fixed
 
 - Gitflow trigger dockerfile publish by @AYaoZhan in [#91](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/91)
-
----
-
-**Note:** This changelog will be updated with each release. For detailed technical changes, please refer to the individual pull requests and issues in the [GitHub repository](https://github.com/eclipse-tractusx/tractusx-identityhub).
-
-**Links:**
-
-- [Eclipse Tractus-X Changelog](https://github.com/eclipse-tractusx/tractus-x-release/blob/main/CHANGELOG.md)
-- [TRG 1.03](https://eclipse-tractusx.github.io/docs/release/trg-1/trg-1-3)
