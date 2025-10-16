@@ -2,7 +2,8 @@
 format.version = "1.1"
 
 [versions]
-edc = "0.14.0-20250607-SNAPSHOT"
+edc = "0.14.0"
+edc-build = "1.0.0"
 opentelemetry = "2.11.0"
 postgres = "42.7.8"
 flyway = "11.9.1"
@@ -21,7 +22,7 @@ edc-lib-keys = { module = "org.eclipse.edc:keys-lib", version.ref = "edc" }
 edc-lib-sql = { module = "org.eclipse.edc:sql-lib", version.ref = "edc" }
 edc-vault-hashicorp = { module = "org.eclipse.edc:vault-hashicorp", version.ref = "edc" }
 edc-sql-stsstore-sql = { module = "org.eclipse.edc:sts-client-store-sql", version.ref = "edc" }
-edc-build-plugin = { module = "org.eclipse.edc.edc-build:org.eclipse.edc.edc-build.gradle.plugin", version.ref = "edc" }
+edc-build-plugin = { module = "org.eclipse.edc.edc-build:org.eclipse.edc.edc-build.gradle.plugin", version.ref = "edc-build" }
 
 # EDC SPIs
 edc-spi-transaction = { module = "org.eclipse.edc:transaction-spi", version.ref = "edc" }
