@@ -1,0 +1,17 @@
+meta {
+  name: Regenerates the API token for a ParticipantContext and returns the new token.
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/token
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}

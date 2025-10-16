@@ -15,7 +15,7 @@ or by supplying an additional yaml file:
 - `server.endpoints.identity.[port|path]`: the port and base path for the IdentityAPI API. This API is **not** supposed to be reachable
    via the internet!
 - `server.endpoints.did.[port|path]`: the port and base path for the DID Document resolution. This API is supposed to be internet-facing.
-- `server.endpoints.presentation.[port|path]`: the port and base path for the DCP Presentation API. This API is supposed to be internet-facing.
+- `server.endpoints.credentials.[port|path]`: the port and base path for the DCP Presentation API. This API is supposed to be internet-facing.
 
 ### Launching the application
 
@@ -60,7 +60,7 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 | identityhub.debug.enabled | bool | `false` |  |
 | identityhub.debug.port | int | `1044` |  |
 | identityhub.debug.suspendOnStart | bool | `false` |  |
-| identityhub.endpoints | object | `{"default":{"path":"/api","port":8080},"did":{"path":"/","port":8083},"identity":{"authKeyAlias":"sup3r$3cr3t","path":"/api/identity","port":8081},"presentation":{"path":"/api/presentation","port":8082}}` | endpoints of the control plane |
+| identityhub.endpoints | object | `{"default":{"path":"/api","port":8080},"did":{"path":"/","port":8083},"identity":{"authKeyAlias":"sup3r$3cr3t","path":"/api/identity","port":8081},"credentials":{"path":"/api/credentials","port":8082}}` | endpoints of the control plane |
 | identityhub.endpoints.default | object | `{"path":"/api","port":8080}` | default api for health checks, should not be added to any ingress |
 | identityhub.endpoints.default.path | string | `"/api"` | path for incoming api calls |
 | identityhub.endpoints.default.port | int | `8080` | port for incoming api calls |
@@ -71,9 +71,9 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 | identityhub.endpoints.identity.authKeyAlias | string | `"sup3r$3cr3t"` | authentication key, must be attached to each 'X-Api-Key' request header |
 | identityhub.endpoints.identity.path | string | `"/api/identity"` | path for incoming api calls |
 | identityhub.endpoints.identity.port | int | `8081` | port for incoming api calls |
-| identityhub.endpoints.presentation | object | `{"path":"/api/presentation","port":8082}` | DCP Presentation API endpoint |
-| identityhub.endpoints.presentation.path | string | `"/api/presentation"` | path for incoming api calls |
-| identityhub.endpoints.presentation.port | int | `8082` | port for incoming api calls |
+| identityhub.endpoints.credentials | object | `{"path":"/api/credentials","port":8082}` | DCP Presentation API endpoint |
+| identityhub.endpoints.credentials.path | string | `"/api/credentials"` | path for incoming api calls |
+| identityhub.endpoints.credentials.port | int | `8082` | port for incoming api calls |
 | identityhub.env | object | `{}` |  |
 | identityhub.envConfigMapNames[0] | string | `"identityhub-config"` |  |
 | identityhub.envConfigMapNames[1] | string | `"identityhub-datasource-config"` |  |
