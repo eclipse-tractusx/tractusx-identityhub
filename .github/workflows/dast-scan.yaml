@@ -31,7 +31,7 @@ jobs:
     name: OWASP ZAP API Scan
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-memory-runtime
 
       - name: Fetch SI TOKEN
@@ -95,7 +95,7 @@ jobs:
     runs-on: ubuntu-latest
     name: OWASP ZAP FULL Scan
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-memory-runtime
 
       - name: Generating report skeletons
