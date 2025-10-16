@@ -1,0 +1,40 @@
+meta {
+  name: Requests information about the capabilities of this issuer.
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{ISSUANCE_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/metadata
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer asdas
+}
+
+body:json {
+  {
+    "@context": [
+      "https://w3id.org/dspace-dcp/v1.0/dcp.jsonld"
+    ],
+    "type": "CredentialMessage",
+    "credentials": [
+      {
+        "credentialType": "MembershipCredential",
+        "payload": "",
+        "format": "jwt"
+      },
+      {
+        "credentialType": "OrganizationCredential",
+        "payload": "",
+        "format": "json-ld"
+      }
+    ],
+    "issuerPid": "BPN",
+    "holderPid": "BPN",
+    "status": "ISSUED",
+    "requestId": "requestId"
+  }
+}
