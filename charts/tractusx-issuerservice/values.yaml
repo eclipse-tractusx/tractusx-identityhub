@@ -284,6 +284,11 @@ tests:
   hookDeletePolicy: before-hook-creation,hook-succeeded
 
 postgresql:
+  image:
+    # -- workaround to use bitnamilegacy chart for version 12.12.x till committers align on new postgresql charts
+    repository: bitnamilegacy/postgresql
+    # -- workaround to use bitnamilegacy chart for version 12.12.x till committers align on new postgresql charts
+    tag: 15.4.0-debian-11-r45
   jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-postgresql:5432/issuer"
   primary:
     persistence:
@@ -331,4 +336,4 @@ vault:
 
 statuslist:
   signing_key:
-    alias:
+    alias: default
