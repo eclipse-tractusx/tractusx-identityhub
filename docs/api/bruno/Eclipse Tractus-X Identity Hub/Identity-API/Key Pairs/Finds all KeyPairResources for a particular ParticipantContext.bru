@@ -1,0 +1,17 @@
+meta {
+  name: Finds all KeyPairResources for a particular ParticipantContext.
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs
+  body: none
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
