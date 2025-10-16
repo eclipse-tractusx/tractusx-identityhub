@@ -43,11 +43,6 @@ val edcVersion = libs.versions.edc
 allprojects {
     apply(plugin = "org.eclipse.edc.edc-build")
 
-    // configure which version of the annotation processor to use. defaults to the same version as the plugin
-    configure<org.eclipse.edc.plugins.autodoc.AutodocExtension> {
-        outputDirectory.set(project.layout.buildDirectory.asFile)
-        processorVersion.set(edcVersion)
-    }
     configure<org.eclipse.edc.plugins.edcbuild.extensions.BuildExtension> {
         pom {
             // this is actually important, so we can publish under the correct GID
