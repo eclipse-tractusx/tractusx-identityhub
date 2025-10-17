@@ -12,6 +12,7 @@ The following table links you to the respective documentations.
     - [Migration](admin/migration-guide.md)
 - [Architecture](architecture)
     - [Decision Records](architecture/decision-records)
+    - [Developers](architecture/developers)
 
 ## NOTICE
 

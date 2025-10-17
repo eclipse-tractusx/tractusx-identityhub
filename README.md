@@ -42,6 +42,9 @@ run it.
 > Note that running the application natively as Java process, or directly as Docker image is possible, but is not
 > supported by the Tractus-X IdentityHub team. Please use the official Helm chart.
 
+## Documentation
+Detailed documentation and guides are available in `docs/README.md`: [View documentation](./docs/README.md)
+
 ## NOTICE
 
 This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
