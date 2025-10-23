@@ -259,6 +259,8 @@ issuerservice:
       accessMode: ReadWriteOnce
       size: 1Gi
       storageClass: "test"
+      reclaimPolicy: Retain
+      path: /data/logs/
     # list of handlers to use in the logger
     handlers:
       - java.util.logging.ConsoleHandler
