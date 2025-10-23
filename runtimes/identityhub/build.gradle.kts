@@ -1,5 +1,6 @@
 /*
  *   Copyright (c) 2025 Cofinity-X
+ *   Copyright (c) 2025 LKS NEXT
  *   Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  *   See the NOTICE file(s) distributed with this work for additional
@@ -33,9 +34,11 @@ dependencies {
     runtimeOnly(libs.edc.vault.hashicorp)
     runtimeOnly(project(":extensions:store:sql:migrations"))
     runtimeOnly(project(":extensions:seed:super-user"))
+    runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
 
     // used for custom extensions
     implementation(libs.edc.core.connector)
+    implementation(libs.edc.jdk.monitor)
     implementation(libs.edc.ih.spi)
 
     testImplementation(libs.edc.lib.crypto)
