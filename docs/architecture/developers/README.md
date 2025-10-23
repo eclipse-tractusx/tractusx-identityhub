@@ -23,11 +23,50 @@ Identity Hub supports **machine-to-machine trust**, not end-user authentication 
 > [!NOTE] If your're new in this topic, please refer to the  [DCP](https://eclipse-dataspace-dcp.github.io/decentralized-claims-protocol/v1.0-RC4/) protocol.
 ## Deployment Topologies
 
-Two deployment topologies are supported:
+One deployment topologies is supported:
 
-1. **Embedded**: The Identity Hub can be embedded in an EDC control-plane runtime
-2. **Standalone**: The Identity Hub can be deployed as a single or clustered standalone runtime
+1. **Standalone**: The Identity Hub is deployed as a single or clustered standalone runtime
 
+## How it Works
+```mermaid
+flowchart TB
+
+    subgraph Dataspace
+        direction TB
+        
+        subgraph Connector1 [Connector]
+        end
+        IH1[(Identity Hub)]
+
+        subgraph Connector2 [Connector]
+        end
+        IH2[(Identity Hub)]
+
+        subgraph IssuerEntity [Issuer entity]
+            IS[Issuer service]
+        end
+
+      
+        Connector1 -->|1- Request / credential request| IH1
+        Connector2 -->|1- Request / credential request| IH2
+
+        IH1 -->|2- Forward request to Issuer| IS
+        IH2 -->|2- Forward request to Issuer| IS
+
+        IS -->|3- CredentialOffer / VC response| IH1
+        IS -->|3- CredentialOffer / VC response| IH2
+       
+    end
+
+    %% color
+    style Connector1 fill:#E0E0E0,stroke:#999,stroke-width:1px
+    style Connector2 fill:#E0E0E0,stroke:#999,stroke-width:1px
+    style IH1 fill:#FFFFFF,stroke:#999,stroke-width:1px
+    style IH2 fill:#FFFFFF,stroke:#999,stroke-width:1px
+    style IssuerEntity fill:#F5F5F5,stroke:#999,stroke-width:1px
+    style IS fill:#FFFFFF,stroke:#999,stroke-width:1px
+```
+The diagram above illustrates the interaction between Connectors, Identity Hubs, and an Issuer Service during a credential issuance process.
 ## NOTICE
 
 This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
