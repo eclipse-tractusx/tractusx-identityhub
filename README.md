@@ -45,13 +45,13 @@ run it.
 ## Documentation
 Detailed documentation and guides are available in `docs/README.md`: [View documentation](./docs/README.md)
 
-## NOTICE
+## License
 
-This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+Distributed under the Apache 2.0 License.
+See [LICENSE](https://github.com/eclipse-tractusx/tractusx-edc/blob/main/LICENSE) for more information.
 
-- SPDX-License-Identifier: CC-BY-4.0
-- SPDX-FileCopyrightText: 2024 Contributors to the Eclipse Foundation
-- Source URL: <https://github.com/eclipse-tractusx/tractus-x-identityhub>
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
 [contributors-shield]: https://img.shields.io/github/contributors/eclipse-tractusx/tractusx-identityhub.svg?style=for-the-badge
 
@@ -68,3 +68,4 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 [release-shield]: https://img.shields.io/github/v/release/eclipse-tractusx/tractusx-identityhub.svg?style=for-the-badge
 
 [release-url]: https://github.com/eclipse-tractusx/tractusx-identityhub/releases
+
