@@ -256,42 +256,53 @@ identityhub:
     targetCPUUtilizationPercentage: 80
     # -- targetAverageUtilization of memory provided to a pod
     targetMemoryUtilizationPercentage: 80
-  # -- configuration of the [Java Util Logging Facade](https://docs.oracle.com/javase/7/docs/technotes/guides/logging/overview.html)
-  # enable logging to create .log files
+  # Configuration of the [Java Util Logging Facade](https://docs.oracle.com/javase/7/docs/technotes/guides/logging/overview.html)
   logging:
+    # -- Enable logging to create .log files
     enabled: true
-    # allow .log files to persist in local machine
     persistence:
+      # -- Enable .log files to persist in local machine
       enabled: false
+      # -- Persistent volume access mode
       accessMode: ReadWriteOnce
+      # -- Persistent volume size
       size: 1Gi
+      # -- Persistent volume claim storage name
       storageClass: "test"
+      # -- Persistent volume reclaim policy
       reclaimPolicy: Retain
+      # -- Persistent volume host path
       path: /data/logs/
-    # list of handlers to use in the logger
+    # -- List of handlers to use in the logger
     handlers:
       - java.util.logging.ConsoleHandler
       - java.util.logging.FileHandler
     handlersConfig:
-      # configuration of consoleHandler
+      # -- Console handler configuration
       java.util.logging.ConsoleHandler:
         level: FINE
         formatter: org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter
-      # configuration of fileHandler
       java.util.logging.FileHandler:
+        # -- Log level of handler
         level: FINE
+        # -- Formatter to use in handler, formatter must be set in identityhub.logging.formatters
         formatter: org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter
+        # -- Path where the log is created, must be the same path as the logging.path values
         pattern: /app/logs/identityhub.log
+        # -- Limit of bytes to write before log file rotation
         limit: 0
+        # -- Number of files to use in log file rotation
         count: 1
+        # -- Append logs to the file or create new file every deployment
         append: true
-    # configuration of the formatters
     formatters:
+      # -- configuration of custom colorful formatter
       org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter:
         format: "%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"
-    # root level control
+    # -- root log level
     level: INFO
-    # package level control
+    # -- package level control
+    # @default -- `{"org.eclipse.edc": "FINE"}`
     logLevels:
       org.glassfish: OFF
       jdk.event: OFF
@@ -301,9 +312,9 @@ identityhub:
       org.flywaydb: OFF
       org.postgresql: OFF
       org.eclipse.edc: FINE
-    # path where the log resides, must be the same path as the fileHandler pattern
+    # -- path where the log resides, must be the same path as the fileHandler pattern
     path: /app/logs
-    # default logging properties if logging is not enabled
+    # -- default logging properties if logging is not enabled
     default: |-
       .level=INFO
       org.eclipse.edc.level=INFO
