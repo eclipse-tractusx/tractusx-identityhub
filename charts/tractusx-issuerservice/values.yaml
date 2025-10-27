@@ -261,11 +261,7 @@ issuerservice:
       # -- Persistent volume size
       size: 1Gi
       # -- Persistent volume claim storage name
-      storageClass: "test"
-      # -- Persistent volume reclaim policy
-      reclaimPolicy: Retain
-      # -- Persistent volume host path
-      path: /data/logs/
+      storageClass: "standard"
     # -- List of handlers to use in the logger
     handlers:
       - java.util.logging.ConsoleHandler
