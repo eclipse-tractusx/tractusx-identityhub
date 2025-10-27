@@ -45,8 +45,8 @@ RUN mkdir /app/logs
 USER "$APP_USER"
 
 COPY ${JAR} issuerservice.jar
-#COPY ${OTEL_JAR} opentelemetry-javaagent.jar
-#COPY ${ADDITIONAL_FILES} ./
+COPY ${OTEL_JAR} opentelemetry-javaagent.jar
+COPY ${ADDITIONAL_FILES} ./
 
 HEALTHCHECK NONE
 
