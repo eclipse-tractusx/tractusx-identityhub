@@ -35,8 +35,42 @@ The Identity Hub (IH) is a core component in the Tractus-X dataspace architectur
 - Audit logging for credential operations.
 ---
 ## Modules and Services
-The **Identity Hub** is composed of several modules and services that interact to manage decentralized identities, verifiable credentials, and associated operations.
+The **Identity Hub** is composed of several modules and services that interact to manage decentralized identities, verifiable credentials, and associated operations. The diagram below illustrates the high-level architecture and relationships between these components.
 
+```mermaid
+flowchart TD
+subgraph APIs["APIs"]
+A1["Management API"]
+A2["Hub API"]
+end
+subgraph subGraph1["Shared Modules"]
+DIDCORE["Identity DID Core"]
+KEYPAIR["KeyPair Module"]
+end
+subgraph Libraries["Libraries"]
+CRYPTO["Crypto Core Library"]
+end
+ASM["Aggregate Services Module"] --> A1 & A2
+VC["VC Module"] --> ASM
+DID["DID Module"] --> ASM
+AUTH["Auth/Permission Module"] --> ASM
+PC["Participant Context Module"] --> ASM & AUTH
+DIDCORE --> DID
+CRYPTO --> KEYPAIR
+KEYPAIR --> ASM
+
+     A1:::api
+     A2:::api
+     DIDCORE:::shared
+     KEYPAIR:::shared
+     CRYPTO:::lib
+    classDef api fill:#b5e7a0,stroke:#333,stroke-width:1px
+    classDef shared fill:#dce6f2,stroke:#333,stroke-width:1px
+    classDef lib fill:#f9f2a7,stroke:#333,stroke-width:1px
+
+
+```
+---
 ### **Verifiable Credential Module**
 ```mermaid
 flowchart LR
