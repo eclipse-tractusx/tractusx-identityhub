@@ -20,7 +20,7 @@ The `Identity Hub`  (IH) is the component responsible for managing an organizati
 
 Identity Hub supports **machine-to-machine trust**, not end-user authentication — therefore, **OID4VC is not used**. Instead, the IH implements **DCP**, which is optimized for automated trust exchange between connectors.
 
-> [!NOTE] If your're new in this topic, please refer to the  [DCP](https://eclipse-dataspace-dcp.github.io/decentralized-claims-protocol/v1.0-RC4/) protocol.
+> [NOTE] If your're new in this topic, please refer to the  [DCP](https://eclipse-dataspace-dcp.github.io/decentralized-claims-protocol/v1.0-RC4/) protocol.
 ## 1. Deployment Topologies
 
 One deployment topologies is supported:
@@ -95,11 +95,11 @@ stateDiagram-v2
 ```
 Three areas to `Verifiable Credential Resource` will be used:
 
-1. On the holder side: the older manages credentials and uses them in verifiable presentations
+1. On the holder side, the older manages credentials and uses them in verifiable presentations.
 2. On the issuer side, to track issued credentials. The issuer must keep track of which credentials were issued to which holder. In this case, the signed credential **must not be stored** by the issuer.
 3. On the issuer side, to manage revocation credentials. Issuers must resolve a revocation list credential. In this case, metadata about the credential, in particular the credentialSubject (containing the bit string) **must not be stored** by the issuer.
 
-#### The VerifiableCredentialManager
+#### 2.2.1.1 The VerifiableCredentialManager
 The **VerifiableCredentialManager** (VCM) manages `Verifiable Credential Resource` across participant contexts. For example, it monitors outstanding requests and initiates reissue flows. The VCM is cluster-aware and guarantees that only one flow is in effect for a particular VCR across all runtime instances.
 
 Services may register to receive VerifiableCredentialManager events, for example, when a flow is initiated.
@@ -121,7 +121,7 @@ ACTIVATED --> ERROR : 400 / 500 (KeyPairState null)
 ROTATED --> ERROR : 400 / 500 (KeyPairState null)
 REVOKED --> ERROR : 400 / 500 (KeyPairState null)
 ```
-#### The KeyPairManager
+#### 2.2.2.1 The KeyPairManager
 
 The **KeyPairManager** (KPM) manages `KeyPair Resources` across participant contexts. It handles key generation, rotation, and revocation operations. The KPM is cluster-aware and ensures that key lifecycle operations are consistent across all runtime instances.
 
