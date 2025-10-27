@@ -22,7 +22,7 @@
 ---
 apiVersion: v2
 name: tractusx-identityhub-memory
-description: A Helm chart for Tractus-X IdentityHub, a comprehensive DCP CredentialService solution
+description: A Helm chart for Tractus-X IdentityHub, that deploys the IdentityHub with in-memory persistance
 
 # A chart can be either an 'application' or a 'library' chart.
 #

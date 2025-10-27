@@ -22,7 +22,7 @@
 ---
 apiVersion: v2
 name: tractusx-issuerservice
-description: A Helm chart for Tractus-X IssuerService, a comprehensive DCP CredentialService solution
+description: A Helm chart for Tractus-X IssuerService, that deploys the IssuerService with in-memory persistance
 
 # A chart can be either an 'application' or a 'library' chart.
 #

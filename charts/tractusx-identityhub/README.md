@@ -1,48 +1,33 @@
 # tractusx-identityhub
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
-A Helm chart for Tractus-X IdentityHub, a comprehensive DCP CredentialService solution
+A Helm chart for Tractus-X IdentityHub, that deploys the IdentityHub with postgresql and vault charts for persistance
 
 **Homepage:** <https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub>
 
-# Configure the chart
-
-Optionally provide the following configuration entries to your Tractus-X IdentityHub Helm chart, either by directly setting them (`--set`)
-or by supplying an additional yaml file:
-- `server.endpoints.default.[port|path]`: the port and base path for the Observability API. This API is **not** supposed to be reachable
-   via the internet!
-- `server.endpoints.identity.[port|path]`: the port and base path for the IdentityAPI API. This API is **not** supposed to be reachable
-   via the internet!
-- `server.endpoints.did.[port|path]`: the port and base path for the DID Document resolution. This API is supposed to be internet-facing.
-- `server.endpoints.credentials.[port|path]`: the port and base path for the DCP Presentation API. This API is supposed to be internet-facing.
-
-### Launching the application
-
-Simply execute these commands on a shell:
+## TL;DR
 
 ```shell
 helm repo add tractusx https://eclipse-tractusx.github.io/charts/dev
-helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
-     -f <path-to>/additional-values-file.yaml \
-     --wait-for-jobs --timeout=120s --dependency-update
+helm install my-release tractusx-identityhub/identityhub
 ```
 
 ## Source Code
 
 * <https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub>
 
-## Requirements
-
-| Repository | Name | Version |
-|------------|------|---------|
-| https://charts.bitnami.com/bitnami | postgresql(postgresql) | 16.3.5 |
-| https://helm.releases.hashicorp.com | vault(vault) | 0.29.1 |
-
 ## Prerequisites
 
 - Kubernetes 1.29.8+
 - Helm 3.14.0+
+
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| https://charts.bitnami.com/bitnami | postgresql(postgresql) | 12.12.x |
+| https://helm.releases.hashicorp.com | vault(vault) | 0.29.1 |
 
 ## Values
 
@@ -60,20 +45,23 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 | identityhub.debug.enabled | bool | `false` |  |
 | identityhub.debug.port | int | `1044` |  |
 | identityhub.debug.suspendOnStart | bool | `false` |  |
-| identityhub.endpoints | object | `{"default":{"path":"/api","port":8080},"did":{"path":"/","port":8083},"identity":{"authKeyAlias":"sup3r$3cr3t","path":"/api/identity","port":8081},"credentials":{"path":"/api/credentials","port":8082}}` | endpoints of the control plane |
-| identityhub.endpoints.default | object | `{"path":"/api","port":8080}` | default api for health checks, should not be added to any ingress |
+| identityhub.endpoints | object | `{"accounts":{"authKeyAlias":"sup3r$3cr3t","path":"/api/accounts","port":8085},"credentials":{"path":"/api/credentials","port":8083},"default":{"path":"/api","port":8081},"did":{"path":"/","port":8084},"identity":{"authKeyAlias":"sup3r$3cr3t","path":"/api/identity","port":8082},"sts":{"path":"/api/sts","port":8087},"version":{"path":"/.well-known/api","port":8086}}` | endpoints of the control plane |
+| identityhub.endpoints.accounts | object | `{"authKeyAlias":"sup3r$3cr3t","path":"/api/accounts","port":8085}` | STS Accounts API, used to manipulate STS accounts |
+| identityhub.endpoints.credentials | object | `{"path":"/api/credentials","port":8083}` | DCP Presentation API endpoint |
+| identityhub.endpoints.credentials.path | string | `"/api/credentials"` | path for incoming api calls |
+| identityhub.endpoints.credentials.port | int | `8083` | port for incoming api calls |
+| identityhub.endpoints.default | object | `{"path":"/api","port":8081}` | default api for health checks, should not be added to any ingress |
 | identityhub.endpoints.default.path | string | `"/api"` | path for incoming api calls |
-| identityhub.endpoints.default.port | int | `8080` | port for incoming api calls |
-| identityhub.endpoints.did | object | `{"path":"/","port":8083}` | DID service endpoint. DID documents can be resolved from here. |
+| identityhub.endpoints.default.port | int | `8081` | port for incoming api calls |
+| identityhub.endpoints.did | object | `{"path":"/","port":8084}` | DID service endpoint. DID documents can be resolved from here. |
 | identityhub.endpoints.did.path | string | `"/"` | path for incoming api calls |
-| identityhub.endpoints.did.port | int | `8083` | port for incoming api calls |
-| identityhub.endpoints.identity | object | `{"authKeyAlias":"sup3r$3cr3t","path":"/api/identity","port":8081}` | management api, used by internal users, can be added to an ingress and must not be internet facing |
+| identityhub.endpoints.did.port | int | `8084` | port for incoming api calls |
+| identityhub.endpoints.identity | object | `{"authKeyAlias":"sup3r$3cr3t","path":"/api/identity","port":8082}` | management api, used by internal users, can be added to an ingress and must not be internet facing |
 | identityhub.endpoints.identity.authKeyAlias | string | `"sup3r$3cr3t"` | authentication key, must be attached to each 'X-Api-Key' request header |
 | identityhub.endpoints.identity.path | string | `"/api/identity"` | path for incoming api calls |
-| identityhub.endpoints.identity.port | int | `8081` | port for incoming api calls |
-| identityhub.endpoints.credentials | object | `{"path":"/api/credentials","port":8082}` | DCP Presentation API endpoint |
-| identityhub.endpoints.credentials.path | string | `"/api/credentials"` | path for incoming api calls |
-| identityhub.endpoints.credentials.port | int | `8082` | port for incoming api calls |
+| identityhub.endpoints.identity.port | int | `8082` | port for incoming api calls |
+| identityhub.endpoints.sts | object | `{"path":"/api/sts","port":8087}` | STS Endpoint, used to obtain tokens |
+| identityhub.endpoints.version | object | `{"path":"/.well-known/api","port":8086}` | Version API, used to obtain exact version information about all APIs at runtime |
 | identityhub.env | object | `{}` |  |
 | identityhub.envConfigMapNames[0] | string | `"identityhub-config"` |  |
 | identityhub.envConfigMapNames[1] | string | `"identityhub-datasource-config"` |  |
@@ -87,7 +75,7 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 | identityhub.ingresses[0].certManager.issuer | string | `""` | If preset enables certificate generation via cert-manager namespace scoped issuer |
 | identityhub.ingresses[0].className | string | `""` | Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use |
 | identityhub.ingresses[0].enabled | bool | `false` |  |
-| identityhub.ingresses[0].endpoints | list | `["directory"]` | EDC endpoints exposed by this ingress resource |
+| identityhub.ingresses[0].endpoints | list | `["credentials","did","sts"]` | EDC endpoints exposed by this ingress resource |
 | identityhub.ingresses[0].hostname | string | `"identityhub.presentation.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
 | identityhub.ingresses[0].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
 | identityhub.ingresses[0].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
@@ -97,7 +85,7 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 | identityhub.ingresses[1].certManager.issuer | string | `""` | If preset enables certificate generation via cert-manager namespace scoped issuer |
 | identityhub.ingresses[1].className | string | `""` | Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use |
 | identityhub.ingresses[1].enabled | bool | `false` |  |
-| identityhub.ingresses[1].endpoints | list | `["management"]` | EDC endpoints exposed by this ingress resource |
+| identityhub.ingresses[1].endpoints | list | `["identity","accounts","version"]` | EDC endpoints exposed by this ingress resource |
 | identityhub.ingresses[1].hostname | string | `"identityhub.identity.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
 | identityhub.ingresses[1].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
 | identityhub.ingresses[1].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
@@ -148,6 +136,8 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 | postgresql.auth.database | string | `"ih"` |  |
 | postgresql.auth.password | string | `"password"` |  |
 | postgresql.auth.username | string | `"user"` |  |
+| postgresql.image.repository | string | `"bitnamilegacy/postgresql"` | workaround to use bitnamilegacy chart for version 12.12.x till committers align on new postgresql charts |
+| postgresql.image.tag | string | `"15.4.0-debian-11-r45"` | workaround to use bitnamilegacy chart for version 12.12.x till committers align on new postgresql charts |
 | postgresql.jdbcUrl | string | `"jdbc:postgresql://{{ .Release.Name }}-postgresql:5432/ih"` |  |
 | postgresql.primary.persistence.enabled | bool | `false` |  |
 | postgresql.primary.resources.limits.cpu | int | `1` |  |
