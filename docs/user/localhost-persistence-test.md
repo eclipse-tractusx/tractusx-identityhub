@@ -18,6 +18,27 @@ cd /data
 sudo mkdir ./logs
 sudo chown 10100:10100 ./logs
 ```
+Append the Persistent Volume pod in `pvc-logging.yml` at the end of file.
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: logs-pv
+spec:
+  capacity:
+    storage: {{ .Values.identityhub.logging.persistence.size | quote }}
+  accessModes:
+    - {{ .Values.identityhub.logging.persistence.accessMode | quote }}
+  persistentVolumeReclaimPolicy: Retain
+  {{- if .Values.identityhub.logging.persistence.storageClass }}
+  storageClassName: {{ .Values.identityhub.logging.persistence.storageClass }}
+  {{- end }}
+  hostPath:
+    path: /data/logs
+```
+> [!NOTE]
+> This persistent volume configuration works for identityhub, for the issuerservice
+> configuration, change identityhub to issuerservice.
 
 Enable de logging and persistence in `values.yaml`
 
