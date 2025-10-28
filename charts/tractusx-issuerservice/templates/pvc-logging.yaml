@@ -26,6 +26,8 @@ metadata:
   namespace: {{ .Release.Namespace | default "default" | quote }}
   labels:
     {{- include "issuerservice.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/resource-policy": keep
 spec:
   accessModes:
     - {{ .Values.issuerservice.logging.persistence.accessMode | quote }}
