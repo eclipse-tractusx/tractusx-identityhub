@@ -262,7 +262,7 @@ identityhub:
     enabled: true
     persistence:
       # -- Enable .log files to persist in local machine
-      enabled: true
+      enabled: false
       # -- Persistent volume access mode
       accessMode: ReadWriteOnce
       # -- Persistent volume size
