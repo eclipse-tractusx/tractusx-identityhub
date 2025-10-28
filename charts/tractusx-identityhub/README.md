@@ -60,20 +60,23 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 | identityhub.debug.enabled | bool | `false` |  |
 | identityhub.debug.port | int | `1044` |  |
 | identityhub.debug.suspendOnStart | bool | `false` |  |
-| identityhub.endpoints | object | `{"default":{"path":"/api","port":8080},"did":{"path":"/","port":8083},"identity":{"authKeyAlias":"sup3r$3cr3t","path":"/api/identity","port":8081},"credentials":{"path":"/api/credentials","port":8082}}` | endpoints of the control plane |
-| identityhub.endpoints.default | object | `{"path":"/api","port":8080}` | default api for health checks, should not be added to any ingress |
+| identityhub.endpoints | object | `{"accounts":{"authKeyAlias":"sup3r$3cr3t","path":"/api/accounts","port":8085},"credentials":{"path":"/api/credentials","port":8083},"default":{"path":"/api","port":8081},"did":{"path":"/","port":8084},"identity":{"authKeyAlias":"sup3r$3cr3t","path":"/api/identity","port":8082},"sts":{"path":"/api/sts","port":8087},"version":{"path":"/.well-known/api","port":8086}}` | endpoints of the control plane |
+| identityhub.endpoints.accounts | object | `{"authKeyAlias":"sup3r$3cr3t","path":"/api/accounts","port":8085}` | STS Accounts API, used to manipulate STS accounts |
+| identityhub.endpoints.credentials | object | `{"path":"/api/credentials","port":8083}` | DCP Presentation API endpoint |
+| identityhub.endpoints.credentials.path | string | `"/api/credentials"` | path for incoming api calls |
+| identityhub.endpoints.credentials.port | int | `8083` | port for incoming api calls |
+| identityhub.endpoints.default | object | `{"path":"/api","port":8081}` | default api for health checks, should not be added to any ingress |
 | identityhub.endpoints.default.path | string | `"/api"` | path for incoming api calls |
-| identityhub.endpoints.default.port | int | `8080` | port for incoming api calls |
-| identityhub.endpoints.did | object | `{"path":"/","port":8083}` | DID service endpoint. DID documents can be resolved from here. |
+| identityhub.endpoints.default.port | int | `8081` | port for incoming api calls |
+| identityhub.endpoints.did | object | `{"path":"/","port":8084}` | DID service endpoint. DID documents can be resolved from here. |
 | identityhub.endpoints.did.path | string | `"/"` | path for incoming api calls |
-| identityhub.endpoints.did.port | int | `8083` | port for incoming api calls |
-| identityhub.endpoints.identity | object | `{"authKeyAlias":"sup3r$3cr3t","path":"/api/identity","port":8081}` | management api, used by internal users, can be added to an ingress and must not be internet facing |
+| identityhub.endpoints.did.port | int | `8084` | port for incoming api calls |
+| identityhub.endpoints.identity | object | `{"authKeyAlias":"sup3r$3cr3t","path":"/api/identity","port":8082}` | management api, used by internal users, can be added to an ingress and must not be internet facing |
 | identityhub.endpoints.identity.authKeyAlias | string | `"sup3r$3cr3t"` | authentication key, must be attached to each 'X-Api-Key' request header |
 | identityhub.endpoints.identity.path | string | `"/api/identity"` | path for incoming api calls |
-| identityhub.endpoints.identity.port | int | `8081` | port for incoming api calls |
-| identityhub.endpoints.credentials | object | `{"path":"/api/credentials","port":8082}` | DCP Presentation API endpoint |
-| identityhub.endpoints.credentials.path | string | `"/api/credentials"` | path for incoming api calls |
-| identityhub.endpoints.credentials.port | int | `8082` | port for incoming api calls |
+| identityhub.endpoints.identity.port | int | `8082` | port for incoming api calls |
+| identityhub.endpoints.sts | object | `{"path":"/api/sts","port":8087}` | STS Endpoint, used to obtain tokens |
+| identityhub.endpoints.version | object | `{"path":"/.well-known/api","port":8086}` | Version API, used to obtain exact version information about all APIs at runtime |
 | identityhub.env | object | `{}` |  |
 | identityhub.envConfigMapNames[0] | string | `"identityhub-config"` |  |
 | identityhub.envConfigMapNames[1] | string | `"identityhub-datasource-config"` |  |
@@ -87,7 +90,7 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 | identityhub.ingresses[0].certManager.issuer | string | `""` | If preset enables certificate generation via cert-manager namespace scoped issuer |
 | identityhub.ingresses[0].className | string | `""` | Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use |
 | identityhub.ingresses[0].enabled | bool | `false` |  |
-| identityhub.ingresses[0].endpoints | list | `["directory"]` | EDC endpoints exposed by this ingress resource |
+| identityhub.ingresses[0].endpoints | list | `["credentials","did","sts"]` | EDC endpoints exposed by this ingress resource |
 | identityhub.ingresses[0].hostname | string | `"identityhub.presentation.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
 | identityhub.ingresses[0].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
 | identityhub.ingresses[0].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
@@ -97,7 +100,7 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 | identityhub.ingresses[1].certManager.issuer | string | `""` | If preset enables certificate generation via cert-manager namespace scoped issuer |
 | identityhub.ingresses[1].className | string | `""` | Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use |
 | identityhub.ingresses[1].enabled | bool | `false` |  |
-| identityhub.ingresses[1].endpoints | list | `["management"]` | EDC endpoints exposed by this ingress resource |
+| identityhub.ingresses[1].endpoints | list | `["identity","accounts","version"]` | EDC endpoints exposed by this ingress resource |
 | identityhub.ingresses[1].hostname | string | `"identityhub.identity.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
 | identityhub.ingresses[1].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
 | identityhub.ingresses[1].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
@@ -109,25 +112,31 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 | identityhub.livenessProbe.periodSeconds | int | `5` | this fields specifies that kubernetes should perform a liveness check every 5 seconds |
 | identityhub.livenessProbe.successThreshold | int | `1` | number of consecutive successes for the probe to be considered successful after having failed |
 | identityhub.livenessProbe.timeoutSeconds | int | `5` | number of seconds after which the probe times out |
-| identityhub.logging.enabled | bool | `true` | Enables logging custom configuration and files |
-| identityhub.logging.persistence.enabled | bool | `false` | Enables persistence of `.log` files |
-| identityhub.logging.persistence.accessMode | string | `ReadWriteOnce` | Access mode for the PersistentVolumeClaim |
-| identityhub.logging.persistence.size | string | `1Gi` | Size of the PersistentVolumeClaim |
-| identityhub.logging.persistence.storageClass | string | `test` | Storage class for the PersistentVolumeClaim |
-| identityhub.logging.handlers | list | `["java.util.logging.ConsoleHandler", "java.util.logging.FileHandler"]` | List of handlers to use in the logger |
-| identityhub.logging.handlersConfig | object | `{" java.util.logging.ConsoleHandler": {"level": "FINE", "formatter": "org.eclipse.tractusx.identityhub.monitor.ColorfullFormatter"}}` | Configuration for each logging handler (level, formatter, pattern, etc.) |
-| identityhub.logging.formatters | object | `{"org.eclipse.tractusx.identityhub.monitor.ColorfullFormatter":{"format": "%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"}}` | Configuration for log formatters |
-| identityhub.logging.logLevels | object | `{"org.eclipse.edc":"FINE", "org.glassfish":"OFF"}` | Package-level log level control |
-| identityhub.logging.level | string | `INFO` | Root log level control |
-| identityhub.logging.path | string | `/app/logs` | Path where the log files will be stored |
-| identityhub.logging.default | string | `.level=INFO  org.eclipse.edc.level=INFO  handlers=java.util.logging.ConsoleHandler  java.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter  java.util.logging.ConsoleHandler.level=ALL  org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s` | Default logging configuration of the [Java Util Logging Facade](https://docs.oracle.com/javase/7/docs/technotes/guides/logging/overview.html) |
+| identityhub.logging.default | string | `".level=INFO\norg.eclipse.edc.level=INFO\nhandlers=java.util.logging.ConsoleHandler\njava.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter\njava.util.logging.ConsoleHandler.level=ALL\norg.eclipse.tractusx.identityhub.monitor.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"` | default logging properties if logging is not enabled |
+| identityhub.logging.enabled | bool | `true` | Enable logging to create .log files |
+| identityhub.logging.formatters."org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter" | object | `{"format":"%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"}` | configuration of custom colorful formatter |
+| identityhub.logging.handlers | list | `["java.util.logging.ConsoleHandler","java.util.logging.FileHandler"]` | List of handlers to use in the logger |
+| identityhub.logging.handlersConfig."java.util.logging.ConsoleHandler" | object | `{"formatter":"org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter","level":"FINE"}` | Console handler configuration |
+| identityhub.logging.handlersConfig."java.util.logging.FileHandler".append | bool | `true` | Append logs to the file or create new file every deployment |
+| identityhub.logging.handlersConfig."java.util.logging.FileHandler".count | int | `1` | Number of files to use in log file rotation |
+| identityhub.logging.handlersConfig."java.util.logging.FileHandler".formatter | string | `"org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter"` | Formatter to use in handler, formatter must be set in identityhub.logging.formatters |
+| identityhub.logging.handlersConfig."java.util.logging.FileHandler".level | string | `"FINE"` | Log level of handler |
+| identityhub.logging.handlersConfig."java.util.logging.FileHandler".limit | int | `0` | Limit of bytes to write before log file rotation |
+| identityhub.logging.handlersConfig."java.util.logging.FileHandler".pattern | string | `"/app/logs/identityhub.log"` | Path where the log is created, must be the same path as the logging.path values |
+| identityhub.logging.level | string | `"INFO"` | root log level |
+| identityhub.logging.logLevels | object | `{"org.eclipse.edc": "FINE"}` | package level control |
+| identityhub.logging.path | string | `"/app/logs"` | path where the log resides, must be the same path as the fileHandler pattern |
+| identityhub.logging.persistence.accessMode | string | `"ReadWriteOnce"` | Persistent volume access mode |
+| identityhub.logging.persistence.enabled | bool | `true` | Enable .log files to persist in local machine |
+| identityhub.logging.persistence.size | string | `"1Gi"` | Persistent volume size |
+| identityhub.logging.persistence.storageClass | string | `"standard"` | Persistent volume claim storage name |
 | identityhub.nodeSelector | object | `{}` |  |
 | identityhub.podAnnotations | object | `{}` | additional annotations for the pod |
 | identityhub.podLabels | object | `{}` | additional labels for the pod |
-| identityhub.podSecurityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | The [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod) defines privilege and access control settings for a Pod within the deployment |
-| identityhub.podSecurityContext.fsGroup | int | `10001` | The owner for volumes and any files created within volumes will belong to this guid |
-| identityhub.podSecurityContext.runAsGroup | int | `10001` | Processes within a pod will belong to this guid |
-| identityhub.podSecurityContext.runAsUser | int | `10001` | Runs all processes within a pod with a special uid |
+| identityhub.podSecurityContext | object | `{"fsGroup":10100,"runAsGroup":10100,"runAsUser":10100,"seccompProfile":{"type":"RuntimeDefault"}}` | The [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod) defines privilege and access control settings for a Pod within the deployment |
+| identityhub.podSecurityContext.fsGroup | int | `10100` | The owner for volumes and any files created within volumes will belong to this guid |
+| identityhub.podSecurityContext.runAsGroup | int | `10100` | Processes within a pod will belong to this guid |
+| identityhub.podSecurityContext.runAsUser | int | `10100` | Runs all processes within a pod with a special uid |
 | identityhub.podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` | Restrict a Container's Syscalls with seccomp |
 | identityhub.readinessProbe.enabled | bool | `true` | Whether to enable kubernetes [readiness-probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) |
 | identityhub.readinessProbe.failureThreshold | int | `6` | when a probe fails kubernetes will try 6 times before giving up |
@@ -142,7 +151,7 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 | identityhub.securityContext.capabilities.drop | list | `["ALL"]` | Specifies which capabilities to drop to reduce syscall attack surface |
 | identityhub.securityContext.readOnlyRootFilesystem | bool | `true` | Whether the root filesystem is mounted in read-only mode |
 | identityhub.securityContext.runAsNonRoot | bool | `true` | Requires the container to run without root privileges |
-| identityhub.securityContext.runAsUser | int | `10001` | The container's process will run with the specified uid |
+| identityhub.securityContext.runAsUser | int | `10100` | The container's process will run with the specified uid |
 | identityhub.service.annotations | object | `{}` |  |
 | identityhub.service.type | string | `"ClusterIP"` | [Service type](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) to expose the running application on a set of Pods as a network service. |
 | identityhub.tolerations | list | `[]` |  |
@@ -159,6 +168,8 @@ helm install my-release tractusx-identityhub/identityhub --version 0.1.0 \
 | postgresql.auth.database | string | `"ih"` |  |
 | postgresql.auth.password | string | `"password"` |  |
 | postgresql.auth.username | string | `"user"` |  |
+| postgresql.image.repository | string | `"bitnamilegacy/postgresql"` | workaround to use bitnamilegacy chart for version 12.12.x till committers align on new postgresql charts |
+| postgresql.image.tag | string | `"15.4.0-debian-11-r45"` | workaround to use bitnamilegacy chart for version 12.12.x till committers align on new postgresql charts |
 | postgresql.jdbcUrl | string | `"jdbc:postgresql://{{ .Release.Name }}-postgresql:5432/ih"` |  |
 | postgresql.primary.persistence.enabled | bool | `false` |  |
 | postgresql.primary.resources.limits.cpu | int | `1` |  |
