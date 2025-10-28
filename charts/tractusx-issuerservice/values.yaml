@@ -293,14 +293,14 @@ issuerservice:
     # -- package level control
     # @default -- `{"org.eclipse.edc": "FINE"}`
     logLevels:
-      org.glassfish: OFF
-      jdk.event: OFF
-      jakarta.json: OFF
-      org.jvnet: OFF
-      okhttp3.internal: OFF
-      org.flywaydb: OFF
-      org.postgresql: OFF
-      org.eclipse.edc: FINE
+      org.glassfish: "OFF"
+      jdk.event: "OFF"
+      jakarta.json: "OFF"
+      org.jvnet: "OFF"
+      okhttp3.internal: "OFF"
+      org.flywaydb: "OFF"
+      org.postgresql: "OFF"
+      org.eclipse.edc: "FINE"
     # -- path where the log resides, must be the same path as the fileHandler pattern
     path: /app/logs
     # -- default logging properties if logging is not enabled
