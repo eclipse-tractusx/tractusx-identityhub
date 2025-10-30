@@ -1,4 +1,52 @@
-#  Identity Hub in Tractus-X
+# General view of Identity Hub and the IssuerService component
+
+This represents a high-level architecture overview of the `IdentityHub` service, focusing on the `IssuerService` component and its internal modules.
+```mermaid
+graph TD
+%% Central IdentityHub Service
+subgraph IdentityHub ["IdentityHub Service"]
+IH_API["API / Client Endpoints"]
+
+    %% IssuerService Component
+    subgraph IssuerService ["IssuerService Component"]
+      ISC["IssuerServiceImpl (Coordinator)"]
+
+      %% Issuer Service internal modules
+      subgraph Modules ["Internal Modules"]
+        CDS["CredentialDefinitionStore"]
+        IS["IssuanceStore"]
+        IPS["IssuanceProcessStore"]
+        DID["DIDStore"]
+        PC["ParticipantContextStore"]
+        COMMON["CommonLib / Utilities"]
+      end
+    end
+
+    %% Other internal IdentityHub modules
+    IH_DID["DID Management"]
+    IH_Creds["Credential Management"]
+    IH_Auth["Authentication & Authorization"]
+end
+
+%% Client
+Client["Client"] --> Request["Request credential issuance\n(definitionId, subjectDid, claims)"]
+Request --> IH_API
+
+%% Interactions
+IH_API --> ISC
+ISC --> CDS
+ISC --> IS
+ISC --> IPS
+ISC --> DID
+ISC --> PC
+ISC --> COMMON
+IH_API --> IH_DID
+IH_API --> IH_Creds
+IH_API --> IH_Auth
+```
+
+
+##  Identity Hub in Tractus-X
 
 The `Identity Hub`  (IH) is the component responsible for managing an organization’s decentralized identity within the Tractus-X dataspace.
 `Identity Hub` (IH) manages identity resources in a dataspace. Specifically, it provides two services:
@@ -203,6 +251,8 @@ They only affect the data or credentials associated with that participant.
 - Managing that participant’s DID documents.
 - Updating access policies or credentials within their scope.
 ---
+
+
 ## NOTICE
 This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
 
