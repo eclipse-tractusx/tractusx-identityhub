@@ -33,6 +33,15 @@ servers:
   - url: '{{ISSUER_ADMIN_PATH}}'
   - url: '{{STS_PATH}}'
   - url: '{{STATUS_LIST_PATH}}'
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []
 paths:
   /v1/participants/{PARTICIPANT_CONTEXT_ID}/offers:
     parameters:
