@@ -25,4 +25,4 @@ repositories:
     usage: "Eclipse Tractus-X Identity Hub - a comprehensive DCP Wallet for decentralized credential management"
     url: "https://github.com/eclipse-tractusx/tractusx-identityhub" 
 openApiSpec:
-  - "https://raw.githubusercontent.com/eclipse-tractusx/tractusx-identityhub/refs/heads/main/docs/api/openApi.yaml"
+  - "https://raw.githubusercontent.com/eclipse-tractusx/tractusx-identityhub/refs/heads/main/docs/api/openAPI.yaml"

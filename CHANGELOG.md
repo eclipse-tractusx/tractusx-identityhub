@@ -10,7 +10,6 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 ## [Unreleased]
 
 ### Added
-
 - Add colored logger and logger persistence by @AYaoZhan in [#149](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/149)
 - Add CHANGELOG.md file following TRG 1.03 standards by @CDiezRodriguez in [#151](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/151)
 - Add installation and deployment documentation, enhance documentation structure, fix header and list formatting, add license headers and NOTICE files, set key signing alias default configuration by @AYaoZhan in [#147](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/147)
@@ -25,7 +24,7 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 - Update Bitnami images by @CDiezRodriguez in [#130](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/130)
 
 ### Fixed
-
+- Fix OpenAPI specification by @Alaitz1 in [#165](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/165)
 - Fix ingress path values configuration, add STS/accounts/version endpoint configuration, fix credentials configuration issues and API endpoint naming by @AYaoZhan in [#118](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/118)
 
 ## [0.0.1] - 2025-07-16
