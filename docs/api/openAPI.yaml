@@ -35,13 +35,23 @@ servers:
   - url: '{{STATUS_LIST_PATH}}'
 components:
   securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    X-Api-Key:
+      type: apiKey
+      description: API Key needed to access the endpoints
+      in: header
+      name: X-Api-Key
+    Authorization:
+      type: apiKey
+      description: >-
+        Bearer token authentication with JWT tokens issued by the STS service (Bearer token)
+      in: header
+      name: Authorization
+
+
 
 security:
-  - BearerAuth: []
+  - X-Api-Key: [ ]
+  - Authorization: [ ]
 paths:
   /v1/participants/{PARTICIPANT_CONTEXT_ID}/offers:
     parameters:
@@ -57,15 +67,6 @@ paths:
       tags:
         - Credentials-API
         - Credential Offer
-      security:
-        - BearerAuth: [ ]
-      parameters:
-        - name: Authorization
-          in: header
-          required: false
-          example: Bearer ads
-          schema:
-            type: string
       responses:
         '200':
           description: Credential offer sent successfully
@@ -113,15 +114,6 @@ paths:
       tags:
         - Credentials-API
         - Presentation
-      security:
-        - BearerAuth: [ ]
-      parameters:
-        - name: Authorization
-          in: header
-          required: false
-          example: Bearer ads
-          schema:
-            type: string
       responses:
         '200':
           description: Presentation query issued successfully
@@ -176,15 +168,6 @@ paths:
       tags:
         - Credentials-API
         - Storage
-      security:
-        - BearerAuth: [ ]
-      parameters:
-        - name: Authorization
-          in: header
-          required: false
-          example: Bearer asdas
-          schema:
-            type: string
       responses:
         '201':
           description: Credentials stored successfully
@@ -1526,15 +1509,6 @@ paths:
       tags:
         - Issuance-API
         - CredentialRequestStatus-API
-      security:
-        - BearerAuth: [ ]
-      parameters:
-        - name: Authorization
-          in: header
-          required: false
-          example: Bearer asdas
-          schema:
-            type: string
       responses:
         '200':
           description: Credential request status retrieved successfully
@@ -1560,15 +1534,6 @@ paths:
       tags:
         - Issuance-API
         - IssuerMetadata-API
-      security:
-        - BearerAuth: [ ]
-      parameters:
-        - name: Authorization
-          in: header
-          required: false
-          example: Bearer asdas
-          schema:
-            type: string
       responses:
         '200':
           description: Issuer metadata retrieved successfully
