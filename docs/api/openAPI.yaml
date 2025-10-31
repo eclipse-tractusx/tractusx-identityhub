@@ -57,6 +57,8 @@ paths:
       tags:
         - Credentials-API
         - Credential Offer
+      security:
+        - BearerAuth: [ ]
       parameters:
         - name: Authorization
           in: header
@@ -111,6 +113,8 @@ paths:
       tags:
         - Credentials-API
         - Presentation
+      security:
+        - BearerAuth: [ ]
       parameters:
         - name: Authorization
           in: header
@@ -172,6 +176,8 @@ paths:
       tags:
         - Credentials-API
         - Storage
+      security:
+        - BearerAuth: [ ]
       parameters:
         - name: Authorization
           in: header
@@ -269,7 +275,6 @@ paths:
           type: string
     post:
       summary: Adds a service endpoint to a particular DID document.
-      security: []
       tags: &ref_0
         - Identity-API
         - DID
@@ -381,7 +386,6 @@ paths:
       summary: >-
         Get all DID documents across all Participant Contexts. Requires elevated
         access.
-      security: []
       tags: *ref_0
       parameters: []
       responses:
@@ -449,7 +453,6 @@ paths:
         Publish an (existing) DID document. The DID is expected to exist in the
         database.
       tags: *ref_0
-      security: []
       parameters: []
       responses:
         '200':
@@ -483,7 +486,6 @@ paths:
     post:
       summary: Query for DID documents.
       tags: *ref_0
-      security: []
       parameters: []
       responses:
         '200':
@@ -526,7 +528,6 @@ paths:
         Un-Publish an (existing) DID document. The DID is expected to exist in
         the database.
       tags: *ref_0
-      security: []
       parameters: []
       responses:
         '200':
@@ -565,7 +566,6 @@ paths:
       tags: &ref_1
         - Identity-API
         - Key Pairs
-      security: []
       parameters:
         - name: makeDefault
           in: query
@@ -625,7 +625,6 @@ paths:
     get:
       summary: Finds all KeyPairResources for a particular ParticipantContext.
       tags: *ref_1
-      security: []
       parameters: []
       responses:
         '200':
@@ -656,7 +655,6 @@ paths:
     get:
       summary: Finds a KeyPairResource by ID.
       tags: *ref_1
-      security: []
       parameters: []
       responses:
         '200':
@@ -678,7 +676,6 @@ paths:
         Get all KeyPair resources across all Participant Contexts. Requires
         elevated access.
       tags: *ref_1
-      security: []
       parameters:
         - name: offset
           in: query
@@ -725,7 +722,6 @@ paths:
         Revokes (=removes) a particular key pair, identified by their ID and
         create a new successor key.
       tags: *ref_1
-      security: []
       parameters: []
       responses:
         '200':
@@ -793,7 +789,6 @@ paths:
         Rotates (=retires) a particular key pair, identified by their ID and
         optionally create a new successor key.
       tags: *ref_1
-      security: []
       parameters:
         - name: duration
           in: query
@@ -867,7 +862,6 @@ paths:
         Sets a KeyPairResource to the ACTIVE state. Will fail if the current
         state is anything other than ACTIVE or CREATED.
       tags: *ref_1
-      security: []
       parameters: []
       responses:
         '200':
@@ -902,7 +896,6 @@ paths:
       tags: &ref_2
         - Identity-API
         - Participant Context
-      security: []
       parameters:
         - name: isActive
           in: query
@@ -932,7 +925,6 @@ paths:
     post:
       summary: Creates a new ParticipantContext object.
       tags: *ref_2
-      security: []
       parameters: []
       responses:
         '201':
@@ -992,7 +984,6 @@ paths:
         Get all DID documents across all Participant Contexts. Requires elevated
         access.
       tags: *ref_2
-      security: []
       parameters:
         - name: offset
           in: query
@@ -1032,7 +1023,6 @@ paths:
     delete:
       summary: Delete a ParticipantContext.
       tags: *ref_2
-      security: []
       parameters: []
       responses:
         '204':
@@ -1046,7 +1036,6 @@ paths:
     get:
       summary: Gets ParticipantContexts by ID.
       tags: *ref_2
-      security: []
       parameters: []
       responses:
         '200':
@@ -1073,7 +1062,6 @@ paths:
         Regenerates the API token for a ParticipantContext and returns the new
         token.
       tags: *ref_2
-      security: []
       parameters: []
       responses:
         '200':
@@ -1104,7 +1092,6 @@ paths:
         update, that means all roles that the Participant should have must be
         submitted in the body. Requires elevated privileges.
       tags: *ref_2
-      security: []
       parameters: []
       responses:
         '200':
@@ -1402,7 +1389,6 @@ paths:
     get:
       summary: Finds a VerifiableCredential by ID.
       tags: *ref_3
-      security: []
       parameters: []
       responses:
         '200':
@@ -1432,7 +1418,6 @@ paths:
     get:
       summary: Finds a credential request by ID.
       tags: *ref_3
-      security: []
       parameters: []
       responses:
         '200':
@@ -1454,7 +1439,6 @@ paths:
         Get all VerifiableCredentials across all Participant Contexts. Requires
         elevated access.
       tags: *ref_3
-      security: []
       parameters: []
       responses:
         '200':
@@ -1484,7 +1468,6 @@ paths:
         Triggers a credential request that is send to the issuer via the DCP
         protocol.
       tags: *ref_3
-      security: []
       parameters: []
       responses:
         '200':
@@ -1543,6 +1526,8 @@ paths:
       tags:
         - Issuance-API
         - CredentialRequestStatus-API
+      security:
+        - BearerAuth: [ ]
       parameters:
         - name: Authorization
           in: header
@@ -1575,6 +1560,8 @@ paths:
       tags:
         - Issuance-API
         - IssuerMetadata-API
+      security:
+        - BearerAuth: [ ]
       parameters:
         - name: Authorization
           in: header
@@ -1605,7 +1592,6 @@ paths:
       tags: &ref_4
         - IssuerAdmin-API
         - IssuerServiceAttestationAdmin-API
-      security: []
       parameters: []
       responses:
         '201':
@@ -1660,7 +1646,6 @@ paths:
     delete:
       summary: Deletes an attestation definition.
       tags: *ref_4
-      security: []
       parameters: []
       responses:
         '204':
@@ -1681,7 +1666,6 @@ paths:
     post:
       summary: Query attestation definitions
       tags: *ref_4
-      security: []
       parameters: []
       responses:
         '200':
@@ -1717,7 +1701,6 @@ paths:
       tags: &ref_5
         - IssuerAdmin-API
         - IssuerServiceCredentialDefinitionAdmin-API
-      security: []
       parameters: []
       responses:
         '201':
@@ -1770,7 +1753,6 @@ paths:
     delete:
       summary: Deletes a credential definition by its ID.
       tags: *ref_5
-      security: []
       parameters: []
       responses:
         '204':
@@ -1784,7 +1766,6 @@ paths:
     get:
       summary: Gets a credential definition by its ID.
       tags: *ref_5
-      security: []
       parameters: []
       responses:
         '200':
@@ -1809,7 +1790,6 @@ paths:
     post:
       summary: Gets all credential definitions for a certain query.
       tags: *ref_5
-      security: []
       parameters: []
       responses:
         '200':
@@ -1852,7 +1832,6 @@ paths:
       tags: &ref_6
         - IssuerAdmin-API
         - IssuerServiceCredentialsAdmin-API
-      security: []
       parameters: []
       responses:
         '200':
@@ -1881,7 +1860,6 @@ paths:
     post:
       summary: Query credentials, possibly across multiple participants.
       tags: *ref_6
-      security: []
       parameters: []
       responses:
         '200':
@@ -1922,7 +1900,6 @@ paths:
         Resumes a credential with the given ID for the given participant.
         Resumed credentials will be removed from the Revocation List.
       tags: *ref_6
-      security: []
       parameters: []
       responses:
         '200':
@@ -1952,7 +1929,6 @@ paths:
         Revokes a credential with the given ID for the given participant.
         Revoked credentials will be added to the Revocation List
       tags: *ref_6
-      security: []
       parameters: []
       responses:
         '200':
@@ -1983,7 +1959,6 @@ paths:
         Suspended credentials will be added to the Revocation List. Suspension
         is reversible.
       tags: *ref_6
-      security: []
       parameters: []
       responses:
         '200':
@@ -2006,7 +1981,6 @@ paths:
     post:
       summary: Triggers a DCP CredentialOffer message being sent to the holder.
       tags: *ref_6
-      security: []
       parameters: []
       responses:
         '200':
@@ -2046,7 +2020,6 @@ paths:
       tags: &ref_7
         - IssuerAdmin-API
         - IssuerServiceHolderAdmin-API
-      security: []
       parameters: []
       responses:
         '201':
@@ -2078,7 +2051,6 @@ paths:
     put:
       summary: Updates holder data.
       tags: *ref_7
-      security: []
       parameters: []
       responses:
         '200':
@@ -2118,7 +2090,6 @@ paths:
     post:
       summary: Gets all holders for a certain query.
       tags: *ref_7
-      security: []
       parameters: []
       responses:
         '200':
@@ -2157,7 +2128,6 @@ paths:
     get:
       summary: Gets metadata for a certain holder.
       tags: *ref_7
-      security: []
       parameters: []
       responses:
         '200':
@@ -2184,7 +2154,6 @@ paths:
       tags: &ref_8
         - IssuerAdmin-API
         - IssuerServiceIssuanceProcessAdmin-API
-      security: []
       parameters: []
       responses:
         '200':
@@ -2223,7 +2192,6 @@ paths:
     get:
       summary: Gets an issuance process by its ID.
       tags: *ref_8
-      security: []
       parameters: []
       responses:
         '200':
@@ -2244,7 +2212,6 @@ paths:
       summary: Secure Token Service Api
       tags:
         - STS-API
-      security: []
       parameters: []
       responses:
         '200':
@@ -2277,7 +2244,6 @@ paths:
       summary: Resolves and returns a verifiable credential by ID
       tags:
         - StatusList-API
-      security: []
       parameters: []
       responses:
         '200':
