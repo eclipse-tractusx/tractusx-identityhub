@@ -1,5 +1,6 @@
 /*
  *   Copyright (c) 2025 Cofinity-X
+ *   Copyright (c) 2025 LKS NEXT
  *   Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  *   See the NOTICE file(s) distributed with this work for additional
@@ -30,11 +31,12 @@ dependencies {
     // used for the runtime
     runtimeOnly(libs.bom.ih)
     runtimeOnly(project(":extensions:seed:super-user"))
+    runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
 
     // used for custom extensions
     implementation(libs.edc.core.connector)
     implementation(libs.edc.ih.spi)
-
+    implementation(libs.edc.jdk.monitor)
     testImplementation(libs.edc.lib.crypto)
     testImplementation(libs.edc.lib.keys)
     testImplementation(libs.edc.junit)
