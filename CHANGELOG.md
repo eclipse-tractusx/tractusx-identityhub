@@ -48,3 +48,11 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 ### Fixed
 
 - Gitflow trigger dockerfile publish by @AYaoZhan in [#91](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/91)
+
+# NOTICE
+
+This work is licensed under the CC-BY-4.0.
+
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/tractusx-identityhub
