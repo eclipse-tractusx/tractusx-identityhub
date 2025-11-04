@@ -11,8 +11,8 @@
 ## TL;DR
 
 ```shell
-helm repo add tractusx https://eclipse-tractusx.github.io/charts/dev
-helm install my-release tractusx-issuerservice/issuerservice
+helm repo add tractusx-dev https://eclipse-tractusx.github.io/charts/dev
+helm install issuerservice tractusx-dev/tractusx-issuerservice
 ```
 
 {{ template "chart.maintainersSection" . }}
@@ -23,6 +23,7 @@ helm install my-release tractusx-issuerservice/issuerservice
 
 - Kubernetes 1.29.8+
 - Helm 3.14.0+
+- PV provisioner support in the underlying infrastructure
 
 {{ template "chart.requirementsSection" . }}
 
