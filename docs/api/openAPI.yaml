@@ -60,6 +60,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: >-
         Notifies the holder about the availability of a particular credential
@@ -87,13 +88,17 @@ paths:
                   maxItems: 2147483647
                   items:
                     type: string
+                    maxLength: 1000
                     format: uri
                 type:
                   type: string
+                  maxLength: 1000
                 '@id':
                   type: string
+                  maxLength: 1000
                 issuer:
                   type: string
+                  maxLength: 1000
             example:
               '@context':
                 - https://w3id.org/dspace-dcp/v1.0/dcp.jsonld
@@ -107,6 +112,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: >-
         Issues a new presentation query, that contains either a DIF presentation
@@ -134,9 +140,11 @@ paths:
                   maxItems: 2147483647
                   items:
                     type: string
+                    maxLength: 1000
                     format: uri
                 type:
                   type: string
+                  maxLength: 1000
                 presentationDefinition:
                   nullable: true
                 scope:
@@ -144,6 +152,7 @@ paths:
                   maxItems: 2147483647
                   items:
                     type: string
+                    maxLength: 1000
                     format: uri
             example:
               '@context':
@@ -163,6 +172,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: Writes a set of credentials into storage
       tags:
@@ -188,6 +198,7 @@ paths:
                   maxItems: 2147483647
                   items:
                     type: string
+                    maxLength: 1000
                     format: uri
                 type:
                   type: string
@@ -199,18 +210,25 @@ paths:
                     properties:
                       credentialType:
                         type: string
+                        maxLength: 1000
                       payload:
                         type: string
+                        maxLength: 1000
                       format:
                         type: string
+                        maxLength: 1000
                 issuerPid:
                   type: string
+                  maxLength: 1000
                 holderPid:
                   type: string
+                  maxLength: 1000
                 status:
                   type: string
+                  maxLength: 1000
                 requestId:
                   type: string
+                  maxLength: 1000
             example:
               '@context':
                 - https://w3id.org/dspace-dcp/v1.0/dcp.jsonld
@@ -251,11 +269,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: DID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: Adds a service endpoint to a particular DID document.
       tags: &ref_0
@@ -287,12 +307,15 @@ paths:
               properties:
                 id:
                   type: string
+                  maxLength: 1000
                   format: uri
                 serviceEndpoint:
                   type: string
+                  maxLength: 1000
                   format: uri
                 type:
                   type: string
+                  maxLength: 1000
             example:
               id: did:web:super-user#service-1
               serviceEndpoint: http://localhost:8182/api/identity
@@ -307,6 +330,7 @@ paths:
           example: string
           schema:
             type: string
+            maxLength: 1000
         - name: autoPublish
           in: query
           required: false
@@ -353,12 +377,15 @@ paths:
               properties:
                 id:
                   type: string
+                  maxLength: 1000
                   format: uri
                 serviceEndpoint:
                   type: string
+                  maxLength: 1000
                   format: uri
                 type:
                   type: string
+                  maxLength: 1000
             example:
               id: did:web:super-user#service-1
               serviceEndpoint: http://localhost:8182/api/identity
@@ -394,6 +421,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: Get state of a DID document
       tags: *ref_0
@@ -421,6 +449,7 @@ paths:
               properties:
                 did:
                   type: string
+                  maxLength: 1000
                   format: uri
             example:
               did: did:web:super-user
@@ -431,6 +460,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: >-
         Publish an (existing) DID document. The DID is expected to exist in the
@@ -456,6 +486,7 @@ paths:
               properties:
                 did:
                   type: string
+                  maxLength: 1000
                   format: uri
             example:
               did: did:web:super-user
@@ -466,6 +497,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: Query for DID documents.
       tags: *ref_0
@@ -506,6 +538,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: >-
         Un-Publish an (existing) DID document. The DID is expected to exist in
@@ -531,6 +564,7 @@ paths:
               properties:
                 did:
                   type: string
+                  maxLength: 1000
                   format: uri
             example:
               did: did:web:super-user
@@ -541,6 +575,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     put:
       summary: >-
         Adds a new key pair to a ParticipantContext. Note that the key pair is
@@ -577,23 +612,29 @@ paths:
                   type: boolean
                 keyId:
                   type: string
+                  maxLength: 1000
                 privateKeyAlias:
                   type: string
+                  maxLength: 1000
                 type:
                   type: string
+                  maxLength: 1000
                 keyGeneratorParams:
                   type: object
                   properties:
                     algorithm:
                       type: string
+                      maxLength: 1000
                     curve:
                       type: string
+                      maxLength: 1000
                 publicKeyJwk:
                   nullable: true
                 publicKeyPem:
                   nullable: true
                 resourceId:
                   type: string
+                  maxLength: 1000
             example:
               active: true
               keyId: my-new-key
@@ -630,11 +671,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: KEY_PAIR_ID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     get:
       summary: Finds a KeyPairResource by ID.
       tags: *ref_1
@@ -695,11 +738,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: KEY_PAIR_ID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: >-
         Revokes (=removes) a particular key pair, identified by their ID and
@@ -727,23 +772,29 @@ paths:
                   type: boolean
                 keyId:
                   type: string
+                  maxLength: 1000
                 privateKeyAlias:
                   type: string
+                  maxLength: 1000
                 type:
                   type: string
+                  maxLength: 1000
                 keyGeneratorParams:
                   type: object
                   properties:
                     algorithm:
                       type: string
+                      maxLength: 1000
                     curve:
                       type: string
+                      maxLength: 1000
                 publicKeyJwk:
                   nullable: true
                 publicKeyPem:
                   nullable: true
                 resourceId:
                   type: string
+                  maxLength: 1000
             example:
               active: true
               keyId: my-new-key2
@@ -762,11 +813,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: KEY_PAIR_ID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: >-
         Rotates (=retires) a particular key pair, identified by their ID and
@@ -800,23 +853,29 @@ paths:
                   type: boolean
                 keyId:
                   type: string
+                  maxLength: 1000
                 privateKeyAlias:
                   type: string
+                  maxLength: 1000
                 type:
                   type: string
+                  maxLength: 1000
                 keyGeneratorParams:
                   type: object
                   properties:
                     algorithm:
                       type: string
+                      maxLength: 1000
                     curve:
                       type: string
+                      maxLength: 1000
                 publicKeyJwk:
                   nullable: true
                 publicKeyPem:
                   nullable: true
                 resourceId:
                   type: string
+                  maxLength: 1000
             example:
               active: true
               keyId: my-new-key3
@@ -835,11 +894,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: KEY_PAIR_ID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: >-
         Sets a KeyPairResource to the ACTIVE state. Will fail if the current
@@ -872,6 +933,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: >-
         Activates a ParticipantContext. This operation is idempotent, i.e.
@@ -928,6 +990,7 @@ paths:
                   type: boolean
                 did:
                   type: string
+                  maxLength: 1000
                   format: uri
                 key:
                   type: object
@@ -937,19 +1000,25 @@ paths:
                       properties:
                         algorithm:
                           type: string
+                          maxLength: 1000
                         curve:
                           type: string
+                          maxLength: 1000
                     keyId:
                       type: string
+                      maxLength: 1000
                     privateKeyAlias:
                       type: string
+                      maxLength: 1000
                 participantId:
                   type: string
+                  maxLength: 1000
                 roles:
                   type: array
                   maxItems: 2147483647
                   items:
                     type: string
+                    maxLength: 1000
             example:
               active: true
               did: did:web:eclipse-tractus-x
@@ -1003,6 +1072,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     delete:
       summary: Delete a ParticipantContext.
       tags: *ref_2
@@ -1040,6 +1110,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: >-
         Regenerates the API token for a ParticipantContext and returns the new
@@ -1056,6 +1127,7 @@ paths:
                 properties:
                   token:
                     type: string
+                    maxLength: 1000
         '401':
           description: Unauthorized
         '404':
@@ -1069,6 +1141,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     put:
       summary: >-
         Updates a ParticipantContext's roles. Note that this is an absolute
@@ -1097,6 +1170,7 @@ paths:
               maxItems: 2147483647
               items:
                 type: string
+                maxLength: 1000
             example:
               - admin
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials:
@@ -1106,6 +1180,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: Adds a new VerifiableCredential into the system.
       tags: &ref_3
@@ -1129,8 +1204,10 @@ paths:
               properties:
                 id:
                   type: string
+                  maxLength: 1000
                 participantContextId:
                   type: string
+                  maxLength: 1000
                 verifiableCredentialContainer:
                   type: object
                   properties:
@@ -1145,9 +1222,11 @@ paths:
                             properties:
                               id:
                                 type: string
+                                maxLength: 1000
                                 format: uri
                               type:
                                 type: string
+                                maxLength: 1000
                         credentialStatus:
                           type: array
                           maxItems: 2147483647
@@ -1156,9 +1235,11 @@ paths:
                             properties:
                               id:
                                 type: string
+                                maxLength: 1000
                                 format: uri
                               type:
                                 type: string
+                                maxLength: 1000
                         credentialSubject:
                           type: array
                           maxItems: 2147483647
@@ -1167,30 +1248,38 @@ paths:
                             properties:
                               id:
                                 type: string
+                                maxLength: 1000
                                 format: uri
                               holderIdentifier:
                                 type: string
+                                maxLength: 1000
                         '@context':
                           type: array
                           maxItems: 2147483647
                           items:
                             type: string
+                            maxLength: 1000
                             format: uri
                         id:
                           type: string
+                          maxLength: 1000
                         type:
                           type: array
                           maxItems: 2147483647
                           items:
                             type: string
+                            maxLength: 1000
                         issuer:
                           type: string
+                          maxLength: 1000
                           format: uri
                         issuanceDate:
                           type: string
+                          maxLength: 1000
                           format: date-time
                         expirationDate:
                           type: string
+                          maxLength: 1000
                           format: date-time
             example:
               id: 1f36af58-0fc0-4b24-9b1c-e37d59668089
@@ -1257,8 +1346,10 @@ paths:
               properties:
                 id:
                   type: string
+                  maxLength: 1000
                 participantContextId:
                   type: string
+                  maxLength: 1000
                 verifiableCredentialContainer:
                   type: object
                   properties:
@@ -1273,9 +1364,11 @@ paths:
                             properties:
                               id:
                                 type: string
+                                maxLength: 1000
                                 format: uri
                               type:
                                 type: string
+                                maxLength: 1000
                         credentialStatus:
                           type: array
                           maxItems: 2147483647
@@ -1284,9 +1377,11 @@ paths:
                             properties:
                               id:
                                 type: string
+                                maxLength: 1000
                                 format: uri
                               type:
                                 type: string
+                                maxLength: 1000
                         credentialSubject:
                           type: array
                           maxItems: 2147483647
@@ -1295,30 +1390,38 @@ paths:
                             properties:
                               id:
                                 type: string
+                                maxLength: 1000
                                 format: uri
                               holderIdentifier:
                                 type: string
+                                maxLength: 1000
                         '@context':
                           type: array
                           maxItems: 2147483647
                           items:
                             type: string
+                            maxLength: 1000
                             format: uri
                         id:
                           type: string
+                          maxLength: 1000
                         type:
                           type: array
                           maxItems: 2147483647
                           items:
                             type: string
+                            maxLength: 1000
                         issuer:
                           type: string
+                          maxLength: 1000
                           format: uri
                         issuanceDate:
                           type: string
+                          maxLength: 1000
                           format: date-time
                         expirationDate:
                           type: string
+                          maxLength: 1000
                           format: date-time
             example:
               id: 1f36af58-0fc0-4b24-9b1c-e37d59668089
@@ -1351,11 +1454,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     delete:
       summary: Delete a VerifiableCredential.
       tags: *ref_3
@@ -1393,11 +1498,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: HOLDER_PID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     get:
       summary: Finds a credential request by ID.
       tags: *ref_3
@@ -1446,6 +1553,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: >-
         Triggers a credential request that is send to the issuer via the DCP
@@ -1475,15 +1583,20 @@ paths:
                     properties:
                       format:
                         type: string
+                        maxLength: 1000
                       id:
                         type: string
+                        maxLength: 1000
                       type:
                         type: string
+                        maxLength: 1000
                 holderPid:
                   type: string
+                  maxLength: 1000
                   format: uri
                 issuerDid:
                   type: string
+                  maxLength: 1000
                   format: uri
             example:
               credentials:
@@ -1499,11 +1612,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: CREDENTIAL_REQUEST_ID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     get:
       summary: Requests status information about an issuance request from an issuer
       tags:
@@ -1529,6 +1644,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     get:
       summary: Requests information about the capabilities of this issuer.
       tags:
@@ -1552,6 +1668,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: Creates an attestation definition in the runtime.
       tags: &ref_4
@@ -1575,11 +1692,13 @@ paths:
               properties:
                 attestationType:
                   type: string
+                  maxLength: 1000
                 configuration:
                   type: object
                   properties:
                     credentialType:
                       type: string
+                      maxLength: 1000
                     outputClaim:
                       type: object
                     additionalProp2:
@@ -1588,6 +1707,7 @@ paths:
                       type: object
                 id:
                   type: string
+                  maxLength: 1000
             example:
               attestationType: presentation
               configuration:
@@ -1603,11 +1723,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: ATTESTATION_DEFINITION_ID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     delete:
       summary: Deletes an attestation definition.
       tags: *ref_4
@@ -1628,6 +1750,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: Query attestation definitions
       tags: *ref_4
@@ -1661,6 +1784,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: Adds a new credential definition.
       tags: &ref_5
@@ -1710,11 +1834,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: CREDENTIAL_DEFINITION_ID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     delete:
       summary: Deletes a credential definition by its ID.
       tags: *ref_5
@@ -1752,6 +1878,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: Gets all credential definitions for a certain query.
       tags: *ref_5
@@ -1785,11 +1912,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     get:
       summary: >-
         Checks the revocation status of a credential with the given ID for the
@@ -1808,6 +1937,7 @@ paths:
                 properties:
                   status:
                     type: string
+                    maxLength: 1000
                     enum: [active, revoked, suspended]
         '401':
           description: Unauthorized
@@ -1822,6 +1952,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: Query credentials, possibly across multiple participants.
       tags: *ref_6
@@ -1855,11 +1986,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: >-
         Resumes a credential with the given ID for the given participant.
@@ -1884,11 +2017,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: >-
         Revokes a credential with the given ID for the given participant.
@@ -1913,11 +2048,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: >-
         Suspends a credential with the given ID for the given participant.
@@ -1943,6 +2080,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: Triggers a DCP CredentialOffer message being sent to the holder.
       tags: *ref_6
@@ -1967,8 +2105,10 @@ paths:
                   maxItems: 2147483647
                   items:
                     type: string
+                    maxLength: 1000
                 holderId:
                   type: string
+                  maxLength: 1000
             example:
               credentials:
                 - string
@@ -1980,6 +2120,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: Adds a new holder.
       tags: &ref_7
@@ -2005,10 +2146,13 @@ paths:
               properties:
                 did:
                   type: string
+                  maxLength: 1000
                 holderId:
                   type: string
+                  maxLength: 1000
                 name:
                   type: string
+                  maxLength: 1000
             example:
               did: string
               holderId: string
@@ -2036,11 +2180,14 @@ paths:
               properties:
                 did:
                   type: string
+                  maxLength: 1000
                   format: uri
                 holderId:
                   type: string
+                  maxLength: 1000
                 name:
                   type: string
+                  maxLength: 1000
             example:
               did: did:web:webhook.site:dbdd9b07-f1cf-4586-b2e2-fc8e8c5515da
               holderId: string
@@ -2052,6 +2199,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: Gets all holders for a certain query.
       tags: *ref_7
@@ -2085,11 +2233,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: HOLDER_ID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     get:
       summary: Gets metadata for a certain holder.
       tags: *ref_7
@@ -2114,6 +2264,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     post:
       summary: Gets all issuance processes for a certain query.
       tags: &ref_8
@@ -2149,11 +2300,13 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
       - name: ISSUANCE_PROCESS_ID
         in: path
         required: true
         schema:
           type: string
+          maxLength: 1000
     get:
       summary: Gets an issuance process by its ID.
       tags: *ref_8
@@ -2188,8 +2341,10 @@ paths:
                 properties:
                   access_token:
                     type: string
+                    maxLength: 1000
                   token_type:
                     type: string
+                    maxLength: 1000
                   expires_in:
                     type: integer
         '400':
@@ -2205,6 +2360,7 @@ paths:
         required: true
         schema:
           type: string
+          maxLength: 1000
     get:
       summary: Resolves and returns a verifiable credential by ID
       tags:
