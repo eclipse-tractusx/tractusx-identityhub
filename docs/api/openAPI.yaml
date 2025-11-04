@@ -26,13 +26,13 @@ info:
   version: 1.0.0
   description: ''
 servers:
-  - url: '{{CREDENTIAL_PATH}}'
-  - url: '{{DID_PATH}}'
-  - url: '{{IDENTITY_PATH}}'
-  - url: '{{ISSUANCE_PATH}}'
-  - url: '{{ISSUER_ADMIN_PATH}}'
-  - url: '{{STS_PATH}}'
-  - url: '{{STATUS_LIST_PATH}}'
+  - url: 'https://{{CREDENTIAL_PATH}}'
+  - url: 'https://{{DID_PATH}}'
+  - url: 'https://{{IDENTITY_PATH}}'
+  - url: 'https://{{ISSUANCE_PATH}}'
+  - url: 'https://{{ISSUER_ADMIN_PATH}}'
+  - url: 'https://{{STS_PATH}}'
+  - url: 'https://{{STATUS_LIST_PATH}}'
 components:
   securitySchemes:
     X-Api-Key:
