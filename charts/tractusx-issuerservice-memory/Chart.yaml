@@ -23,7 +23,7 @@
 ---
 apiVersion: v2
 name: tractusx-issuerservice-memory
-description: A Helm chart for Tractus-X IssuerService, a comprehensive DCP CredentialService solution
+description: A Helm chart for Tractus-X IssuerService, that deploys the IssuerService with in-memory persistance
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -43,8 +43,8 @@ version: 0.1.1
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "0.1.0"
-home: https://github.com/eclipse-tractusx/tractusx-issuerservice/tree/main/charts/tractusx-issuerservice-memory
+home: https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-issuerservice-memory
 sources:
-  - https://github.com/eclipse-tractusx/tractusx-issuerservice/tree/main/charts/tractusx-issuerservice-memory
+  - https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-issuerservice-memory
 
 # no dependencies here
