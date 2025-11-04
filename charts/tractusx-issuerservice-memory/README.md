@@ -1,10 +1,10 @@
-# tractusx-issuerservice-memory
+# tractusx-issuerservice
 
 ![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
 A Helm chart for Tractus-X IssuerService, that deploys the IssuerService with in-memory persistance
 
-**Homepage:** <https://github.com/eclipse-tractusx/tractusx-issuerservice/tree/main/charts/tractusx-issuerservice>
+**Homepage:** <https://github.com/eclipse-tractusx/tractusx-issuerservice/tree/main/charts/tractusx-issuerservice-memory>
 
 ## TL;DR
 
@@ -15,7 +15,7 @@ helm install my-release tractusx-issuerservice/issuerservice
 
 ## Source Code
 
-* <https://github.com/eclipse-tractusx/tractusx-issuerservice/tree/main/charts/tractusx-issuerservice>
+* <https://github.com/eclipse-tractusx/tractusx-issuerservice/tree/main/charts/tractusx-issuerservice-memory>
 
 ## Prerequisites
 

@@ -32,7 +32,7 @@ helm install my-release tractusx-identityhub/identityhub
 ## Values
 
 | Key | Type | Default | Description |
-|-----|------|------|-------------|
+|-----|------|---------|-------------|
 | customCaCerts | object | `{}` | Add custom ca certificates to the truststore |
 | customLabels | object | `{}` | To add some custom labels |
 | fullnameOverride | string | `""` |  |
@@ -112,7 +112,7 @@ helm install my-release tractusx-identityhub/identityhub
 | identityhub.logging.logLevels | object | `{"org.eclipse.edc": "FINE"}` | package level control |
 | identityhub.logging.path | string | `"/app/logs"` | path where the log resides, must be the same path as the fileHandler pattern |
 | identityhub.logging.persistence.accessMode | string | `"ReadWriteOnce"` | Persistent volume access mode |
-| identityhub.logging.persistence.enabled | bool | `true` | Enable .log files to persist in local machine |
+| identityhub.logging.persistence.enabled | bool | `false` | Enable .log files to persist in local machine |
 | identityhub.logging.persistence.size | string | `"1Gi"` | Persistent volume size |
 | identityhub.logging.persistence.storageClass | string | `"standard"` | Persistent volume claim storage name |
 | identityhub.nodeSelector | object | `{}` |  |
