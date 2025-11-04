@@ -1,0 +1,85 @@
+apiVersion: v1
+entries:
+  tractusx-identityhub:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2025-11-04T14:57:24.871945998Z"
+    dependencies:
+    - alias: postgresql
+      condition: install.postgresql
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.12.x
+    - alias: vault
+      condition: install.vault
+      name: vault
+      repository: https://helm.releases.hashicorp.com
+      version: 0.29.1
+    description: A Helm chart for Tractus-X IdentityHub, that deploys the IdentityHub
+      with postgresql and vault charts for persistance
+    digest: 2f1699d8a4416003f75eb5222bfbe0d65cc1253afd28f0ec392e3c0c5cf85b84
+    home: https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub
+    name: tractusx-identityhub
+    sources:
+    - https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub
+    type: application
+    urls:
+    - https://github.com/eclipse-tractusx/tractusx-identityhub/releases/download/tractusx-identityhub-0.1.1/tractusx-identityhub-0.1.1.tgz
+    version: 0.1.1
+  tractusx-identityhub-memory:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2025-11-04T14:57:25.079497635Z"
+    description: A Helm chart for Tractus-X IdentityHub, that deploys the IdentityHub
+      with in-memory persistance
+    digest: cb08e1aa4c2d0b74bb02604523d761ee70e97e932b1b8959158a16ea531d3093
+    home: https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub-memory
+    name: tractusx-identityhub-memory
+    sources:
+    - https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub-memory
+    type: application
+    urls:
+    - https://github.com/eclipse-tractusx/tractusx-identityhub/releases/download/tractusx-identityhub-memory-0.1.1/tractusx-identityhub-memory-0.1.1.tgz
+    version: 0.1.1
+  tractusx-issuerservice:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2025-11-04T14:57:25.291544052Z"
+    dependencies:
+    - alias: postgresql
+      condition: install.postgresql
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.12.x
+    - alias: vault
+      condition: install.vault
+      name: vault
+      repository: https://helm.releases.hashicorp.com
+      version: 0.29.1
+    description: A Helm chart for Tractus-X IssuerService, that deploys the IssuerService
+      with postgresql and vault charts for persistance
+    digest: 2df000056e32162582233d829317aa35a1e291b76e8c057c97e58157d0685231
+    home: https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-issuerservice
+    name: tractusx-issuerservice
+    sources:
+    - https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-issuerservice
+    type: application
+    urls:
+    - https://github.com/eclipse-tractusx/tractusx-identityhub/releases/download/tractusx-issuerservice-0.1.1/tractusx-issuerservice-0.1.1.tgz
+    version: 0.1.1
+  tractusx-issuerservice-memory:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2025-11-04T14:57:25.484468623Z"
+    description: A Helm chart for Tractus-X IssuerService, that deploys the IssuerService
+      with in-memory persistance
+    digest: 927fa4261d56a26f7f80dc08779332e749c33ab59fbbeef6bc346f5eb3002f86
+    home: https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-issuerservice-memory
+    name: tractusx-issuerservice-memory
+    sources:
+    - https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-issuerservice-memory
+    type: application
+    urls:
+    - https://github.com/eclipse-tractusx/tractusx-identityhub/releases/download/tractusx-issuerservice-memory-0.1.1/tractusx-issuerservice-memory-0.1.1.tgz
+    version: 0.1.1
+generated: "2025-11-04T14:57:25.484476508Z"
