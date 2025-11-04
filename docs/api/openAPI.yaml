@@ -60,6 +60,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: >-
@@ -112,6 +113,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: >-
@@ -172,6 +174,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: Writes a set of credentials into storage
@@ -269,12 +272,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: DID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
           maxLength: 1000
     post:
       summary: Adds a service endpoint to a particular DID document.
@@ -421,6 +426,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: Get state of a DID document
@@ -460,6 +466,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: >-
@@ -497,6 +504,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: Query for DID documents.
@@ -538,6 +546,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: >-
@@ -575,6 +584,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     put:
       summary: >-
@@ -671,12 +681,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: KEY_PAIR_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
           maxLength: 1000
     get:
       summary: Finds a KeyPairResource by ID.
@@ -738,12 +750,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: KEY_PAIR_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
           maxLength: 1000
     post:
       summary: >-
@@ -813,12 +827,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: KEY_PAIR_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
           maxLength: 1000
     post:
       summary: >-
@@ -894,12 +910,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: KEY_PAIR_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
           maxLength: 1000
     post:
       summary: >-
@@ -933,6 +951,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: >-
@@ -1072,6 +1091,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     delete:
       summary: Delete a ParticipantContext.
@@ -1110,6 +1130,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: >-
@@ -1141,6 +1162,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     put:
       summary: >-
@@ -1180,6 +1202,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: Adds a new VerifiableCredential into the system.
@@ -1454,12 +1477,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
           maxLength: 1000
     delete:
       summary: Delete a VerifiableCredential.
@@ -1498,12 +1523,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: HOLDER_PID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     get:
       summary: Finds a credential request by ID.
@@ -1553,6 +1580,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: >-
@@ -1612,12 +1640,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: CREDENTIAL_REQUEST_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
           maxLength: 1000
     get:
       summary: Requests status information about an issuance request from an issuer
@@ -1644,6 +1674,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     get:
       summary: Requests information about the capabilities of this issuer.
@@ -1668,6 +1699,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: Creates an attestation definition in the runtime.
@@ -1723,12 +1755,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: ATTESTATION_DEFINITION_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
           maxLength: 1000
     delete:
       summary: Deletes an attestation definition.
@@ -1750,6 +1784,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: Query attestation definitions
@@ -1784,6 +1819,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: Adds a new credential definition.
@@ -1834,12 +1870,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: CREDENTIAL_DEFINITION_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
           maxLength: 1000
     delete:
       summary: Deletes a credential definition by its ID.
@@ -1878,6 +1916,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: Gets all credential definitions for a certain query.
@@ -1912,12 +1951,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
           maxLength: 1000
     get:
       summary: >-
@@ -1952,6 +1993,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: Query credentials, possibly across multiple participants.
@@ -1986,12 +2028,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
           maxLength: 1000
     post:
       summary: >-
@@ -2017,12 +2061,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
           maxLength: 1000
     post:
       summary: >-
@@ -2048,12 +2094,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
           maxLength: 1000
     post:
       summary: >-
@@ -2080,6 +2128,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: Triggers a DCP CredentialOffer message being sent to the holder.
@@ -2120,6 +2169,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: Adds a new holder.
@@ -2199,6 +2249,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: Gets all holders for a certain query.
@@ -2233,12 +2284,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: HOLDER_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
           maxLength: 1000
     get:
       summary: Gets metadata for a certain holder.
@@ -2264,6 +2317,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
     post:
       summary: Gets all issuance processes for a certain query.
@@ -2300,12 +2354,14 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
           maxLength: 1000
       - name: ISSUANCE_PROCESS_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
           maxLength: 1000
     get:
       summary: Gets an issuance process by its ID.
@@ -2360,6 +2416,7 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
           maxLength: 1000
     get:
       summary: Resolves and returns a verifiable credential by ID
