@@ -30,6 +30,7 @@ on:
       - 'charts/tractusx-issuerservice-memory'
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   release:
