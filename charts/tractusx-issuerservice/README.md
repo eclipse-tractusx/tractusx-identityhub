@@ -95,14 +95,31 @@ helm install my-release tractusx-issuerservice/issuerservice
 | issuerservice.livenessProbe.periodSeconds | int | `5` | this fields specifies that kubernetes should perform a liveness check every 5 seconds |
 | issuerservice.livenessProbe.successThreshold | int | `1` | number of consecutive successes for the probe to be considered successful after having failed |
 | issuerservice.livenessProbe.timeoutSeconds | int | `5` | number of seconds after which the probe times out |
-| issuerservice.logging | string | `".level=INFO\norg.eclipse.edc.level=INFO\nhandlers=java.util.logging.ConsoleHandler\njava.util.logging.ConsoleHandler.formatter=java.util.logging.SimpleFormatter\njava.util.logging.ConsoleHandler.level=ALL\njava.util.logging.SimpleFormatter.format=[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$-7s] %5$s%6$s%n"` | configuration of the [Java Util Logging Facade](https://docs.oracle.com/javase/7/docs/technotes/guides/logging/overview.html) |
+| issuerservice.logging.default | string | `".level=INFO\norg.eclipse.edc.level=INFO\nhandlers=java.util.logging.ConsoleHandler\njava.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter\njava.util.logging.ConsoleHandler.level=ALL\norg.eclipse.tractusx.identityhub.monitor.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"` | default logging properties if logging is not enabled |
+| issuerservice.logging.enabled | bool | `true` | Enable logging to create .log files |
+| issuerservice.logging.formatters."org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter" | object | `{"format":"%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"}` | configuration of custom colorful formatter |
+| issuerservice.logging.handlers | list | `["java.util.logging.ConsoleHandler","java.util.logging.FileHandler"]` | List of handlers to use in the logger |
+| issuerservice.logging.handlersConfig."java.util.logging.ConsoleHandler" | object | `{"formatter":"org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter","level":"FINE"}` | Console handler configuration |
+| issuerservice.logging.handlersConfig."java.util.logging.FileHandler".append | bool | `true` | Append logs to the file or create new file every deployment |
+| issuerservice.logging.handlersConfig."java.util.logging.FileHandler".count | int | `1` | Number of files to use in log file rotation |
+| issuerservice.logging.handlersConfig."java.util.logging.FileHandler".formatter | string | `"org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter"` | Formatter to use in handler, formatter must be set in identityhub.logging.formatters |
+| issuerservice.logging.handlersConfig."java.util.logging.FileHandler".level | string | `"FINE"` | Log level of handler |
+| issuerservice.logging.handlersConfig."java.util.logging.FileHandler".limit | int | `0` | Limit of bytes to write before log file rotation |
+| issuerservice.logging.handlersConfig."java.util.logging.FileHandler".pattern | string | `"/app/logs/identityhub.log"` | Path where the log is created, must be the same path as the logging.path values |
+| issuerservice.logging.level | string | `"INFO"` | root log level |
+| issuerservice.logging.logLevels | object | `{"org.eclipse.edc": "FINE"}` | package level control |
+| issuerservice.logging.path | string | `"/app/logs"` | path where the log resides, must be the same path as the fileHandler pattern |
+| issuerservice.logging.persistence.accessMode | string | `"ReadWriteOnce"` | Persistent volume access mode |
+| issuerservice.logging.persistence.enabled | bool | `false` | Enable .log files to persist in local machine |
+| issuerservice.logging.persistence.size | string | `"1Gi"` | Persistent volume size |
+| issuerservice.logging.persistence.storageClass | string | `"standard"` | Persistent volume claim storage name |
 | issuerservice.nodeSelector | object | `{}` |  |
 | issuerservice.podAnnotations | object | `{}` | additional annotations for the pod |
 | issuerservice.podLabels | object | `{}` | additional labels for the pod |
-| issuerservice.podSecurityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | The [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod) defines privilege and access control settings for a Pod within the deployment |
-| issuerservice.podSecurityContext.fsGroup | int | `10001` | The owner for volumes and any files created within volumes will belong to this guid |
-| issuerservice.podSecurityContext.runAsGroup | int | `10001` | Processes within a pod will belong to this guid |
-| issuerservice.podSecurityContext.runAsUser | int | `10001` | Runs all processes within a pod with a special uid |
+| issuerservice.podSecurityContext | object | `{"fsGroup":10100,"runAsGroup":10100,"runAsUser":10100,"seccompProfile":{"type":"RuntimeDefault"}}` | The [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod) defines privilege and access control settings for a Pod within the deployment |
+| issuerservice.podSecurityContext.fsGroup | int | `10100` | The owner for volumes and any files created within volumes will belong to this guid |
+| issuerservice.podSecurityContext.runAsGroup | int | `10100` | Processes within a pod will belong to this guid |
+| issuerservice.podSecurityContext.runAsUser | int | `10100` | Runs all processes within a pod with a special uid |
 | issuerservice.podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` | Restrict a Container's Syscalls with seccomp |
 | issuerservice.readinessProbe.enabled | bool | `true` | Whether to enable kubernetes [readiness-probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) |
 | issuerservice.readinessProbe.failureThreshold | int | `6` | when a probe fails kubernetes will try 6 times before giving up |
@@ -117,7 +134,7 @@ helm install my-release tractusx-issuerservice/issuerservice
 | issuerservice.securityContext.capabilities.drop | list | `["ALL"]` | Specifies which capabilities to drop to reduce syscall attack surface |
 | issuerservice.securityContext.readOnlyRootFilesystem | bool | `true` | Whether the root filesystem is mounted in read-only mode |
 | issuerservice.securityContext.runAsNonRoot | bool | `true` | Requires the container to run without root privileges |
-| issuerservice.securityContext.runAsUser | int | `10001` | The container's process will run with the specified uid |
+| issuerservice.securityContext.runAsUser | int | `10100` | The container's process will run with the specified uid |
 | issuerservice.service.annotations | object | `{}` |  |
 | issuerservice.service.type | string | `"ClusterIP"` | [Service type](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) to expose the running application on a set of Pods as a network service. |
 | issuerservice.tolerations | list | `[]` |  |
