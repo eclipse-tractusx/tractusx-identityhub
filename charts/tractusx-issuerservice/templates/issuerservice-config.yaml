@@ -1,5 +1,6 @@
 #################################################################################
   #  Copyright (c) 2025 Cofinity-X
+  #  Copyright (c) 2025 LKS NEXT
   #  Copyright (c) 2025 Contributors to the Eclipse Foundation
   #
   #  See the NOTICE file(s) distributed with this work for additional
@@ -66,6 +67,6 @@ data:
   #################
   ## APPLICATION ##
   #################
-  edc.issuer.statuslist.signing.key.alias: {{ .Values.statuslist.signing_key.alias | required ".Values.statuslist.signing.key.alias is required" | quote }}
+  edc.issuer.statuslist.signing.key.alias: {{ .Values.statuslist.signing_key.alias | required ".Values.statuslist.signing_key.alias is required" | quote }}
   edc.iam.did.web.use.https: {{ .Values.issuerservice.didweb.https | quote }}
   edc.iam.accesstoken.jti.validation:  {{ .Values.issuerservice.jtivalidation | quote}}
