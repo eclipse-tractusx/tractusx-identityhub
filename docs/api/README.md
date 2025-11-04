@@ -21,7 +21,7 @@ This [directory](./bruno/Eclipse%20Tractus-X%20Identity%20Hub/) contains a [Brun
 
 ### OpenAPI Specification
 
-A comprehensive OpenAPI specification is available at [openApi.yaml](./openApi.yaml), which documents all available endpoints, request/response schemas, and authentication requirements.
+A comprehensive OpenAPI specification is available at [openAPI.yaml](openAPI.yaml), which documents all available endpoints, request/response schemas, and authentication requirements.
 
 ## Additional Information
 

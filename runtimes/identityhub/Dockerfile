@@ -1,5 +1,6 @@
 #################################################################################
 #  Copyright (c) 2025 Cofinity-X
+#  Copyright (c) 2025 LKS NEXT
 #  Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
 #  See the NOTICE file(s) distributed with this work for additional
@@ -37,8 +38,11 @@ RUN adduser \
      --uid "$APP_UID" \
      "$APP_USER"
 
-USER "$APP_USER"
 WORKDIR /app
+
+RUN mkdir /app/logs
+
+USER "$APP_USER"
 
 COPY ${JAR} identityhub.jar
 COPY ${OTEL_JAR} opentelemetry-javaagent.jar
@@ -49,6 +53,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["java", \
 #     "-javaagent:/app/opentelemetry-javaagent.jar", \
 #     "-Dotel.javaagent.configuration-file=/app/opentelemetry.properties", \
+     "-Djava.util.logging.config.file=/app/logging.properties", \
      "-Dedc.fs.config=/app/configuration.properties", \
      "-Djava.security.egd=file:/dev/urandom", \
      "-jar", \

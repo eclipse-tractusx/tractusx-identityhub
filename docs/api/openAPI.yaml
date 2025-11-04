@@ -33,6 +33,25 @@ servers:
   - url: '{{ISSUER_ADMIN_PATH}}'
   - url: '{{STS_PATH}}'
   - url: '{{STATUS_LIST_PATH}}'
+components:
+  securitySchemes:
+    X-Api-Key:
+      type: apiKey
+      description: API Key needed to access the endpoints
+      in: header
+      name: X-Api-Key
+    Authorization:
+      type: apiKey
+      description: >-
+        Bearer token authentication with JWT tokens issued by the STS service (Bearer token)
+      in: header
+      name: Authorization
+
+
+
+security:
+  - X-Api-Key: [ ]
+  - Authorization: [ ]
 paths:
   /v1/participants/{PARTICIPANT_CONTEXT_ID}/offers:
     parameters:
@@ -48,13 +67,6 @@ paths:
       tags:
         - Credentials-API
         - Credential Offer
-      parameters:
-        - name: Authorization
-          in: header
-          required: false
-          example: Bearer ads
-          schema:
-            type: string
       responses:
         '200':
           description: Credential offer sent successfully
@@ -72,6 +84,7 @@ paths:
               properties:
                 '@context':
                   type: array
+                  maxItems: 2147483647
                   items:
                     type: string
                     format: uri
@@ -101,13 +114,6 @@ paths:
       tags:
         - Credentials-API
         - Presentation
-      parameters:
-        - name: Authorization
-          in: header
-          required: false
-          example: Bearer ads
-          schema:
-            type: string
       responses:
         '200':
           description: Presentation query issued successfully
@@ -125,6 +131,7 @@ paths:
               properties:
                 '@context':
                   type: array
+                  maxItems: 2147483647
                   items:
                     type: string
                     format: uri
@@ -134,6 +141,7 @@ paths:
                   nullable: true
                 scope:
                   type: array
+                  maxItems: 2147483647
                   items:
                     type: string
                     format: uri
@@ -160,13 +168,6 @@ paths:
       tags:
         - Credentials-API
         - Storage
-      parameters:
-        - name: Authorization
-          in: header
-          required: false
-          example: Bearer asdas
-          schema:
-            type: string
       responses:
         '201':
           description: Credentials stored successfully
@@ -184,6 +185,7 @@ paths:
               properties:
                 '@context':
                   type: array
+                  maxItems: 2147483647
                   items:
                     type: string
                     format: uri
@@ -191,6 +193,7 @@ paths:
                   type: string
                 credentials:
                   type: array
+                  maxItems: 2147483647
                   items:
                     type: object
                     properties:
@@ -375,6 +378,7 @@ paths:
             application/json:
               schema:
                 type: array
+                maxItems: 2147483647
                 items:
                   type: object
         '401':
@@ -473,6 +477,7 @@ paths:
             application/json:
               schema:
                 type: array
+                maxItems: 2147483647
                 items:
                   type: object
         '400':
@@ -611,6 +616,7 @@ paths:
             application/json:
               schema:
                 type: array
+                maxItems: 2147483647
                 items:
                   type: object
         '401':
@@ -673,6 +679,7 @@ paths:
             application/json:
               schema:
                 type: array
+                maxItems: 2147483647
                 items:
                   type: object
         '401':
@@ -940,6 +947,7 @@ paths:
                   type: string
                 roles:
                   type: array
+                  maxItems: 2147483647
                   items:
                     type: string
             example:
@@ -979,6 +987,7 @@ paths:
             application/json:
               schema:
                 type: array
+                maxItems: 2147483647
                 items:
                   type: object
         '401':
@@ -1085,6 +1094,7 @@ paths:
           application/json:
             schema:
               type: array
+              maxItems: 2147483647
               items:
                 type: string
             example:
@@ -1129,6 +1139,7 @@ paths:
                       properties:
                         credentialSchema:
                           type: array
+                          maxItems: 2147483647
                           items:
                             type: object
                             properties:
@@ -1139,6 +1150,7 @@ paths:
                                 type: string
                         credentialStatus:
                           type: array
+                          maxItems: 2147483647
                           items:
                             type: object
                             properties:
@@ -1149,6 +1161,7 @@ paths:
                                 type: string
                         credentialSubject:
                           type: array
+                          maxItems: 2147483647
                           items:
                             type: object
                             properties:
@@ -1159,6 +1172,7 @@ paths:
                                 type: string
                         '@context':
                           type: array
+                          maxItems: 2147483647
                           items:
                             type: string
                             format: uri
@@ -1166,6 +1180,7 @@ paths:
                           type: string
                         type:
                           type: array
+                          maxItems: 2147483647
                           items:
                             type: string
                         issuer:
@@ -1212,6 +1227,7 @@ paths:
             application/json:
               schema:
                 type: array
+                maxItems: 2147483647
                 items:
                   type: object
         '401':
@@ -1251,6 +1267,7 @@ paths:
                       properties:
                         credentialSchema:
                           type: array
+                          maxItems: 2147483647
                           items:
                             type: object
                             properties:
@@ -1261,6 +1278,7 @@ paths:
                                 type: string
                         credentialStatus:
                           type: array
+                          maxItems: 2147483647
                           items:
                             type: object
                             properties:
@@ -1271,6 +1289,7 @@ paths:
                                 type: string
                         credentialSubject:
                           type: array
+                          maxItems: 2147483647
                           items:
                             type: object
                             properties:
@@ -1281,6 +1300,7 @@ paths:
                                 type: string
                         '@context':
                           type: array
+                          maxItems: 2147483647
                           items:
                             type: string
                             format: uri
@@ -1288,6 +1308,7 @@ paths:
                           type: string
                         type:
                           type: array
+                          maxItems: 2147483647
                           items:
                             type: string
                         issuer:
@@ -1409,6 +1430,7 @@ paths:
             application/json:
               schema:
                 type: array
+                maxItems: 2147483647
                 items:
                   type: object
         '401':
@@ -1447,6 +1469,7 @@ paths:
               properties:
                 credentials:
                   type: array
+                  maxItems: 2147483647
                   items:
                     type: object
                     properties:
@@ -1486,13 +1509,6 @@ paths:
       tags:
         - Issuance-API
         - CredentialRequestStatus-API
-      parameters:
-        - name: Authorization
-          in: header
-          required: false
-          example: Bearer asdas
-          schema:
-            type: string
       responses:
         '200':
           description: Credential request status retrieved successfully
@@ -1518,13 +1534,6 @@ paths:
       tags:
         - Issuance-API
         - IssuerMetadata-API
-      parameters:
-        - name: Authorization
-          in: header
-          required: false
-          example: Bearer asdas
-          schema:
-            type: string
       responses:
         '200':
           description: Issuer metadata retrieved successfully
@@ -1630,6 +1639,7 @@ paths:
             application/json:
               schema:
                 type: array
+                maxItems: 2147483647
                 items:
                   type: object
         '400':
@@ -1753,6 +1763,7 @@ paths:
             application/json:
               schema:
                 type: array
+                maxItems: 2147483647
                 items:
                   type: object
         '400':
@@ -1822,6 +1833,7 @@ paths:
             application/json:
               schema:
                 type: array
+                maxItems: 2147483647
                 items:
                   type: object
         '400':
@@ -1952,6 +1964,7 @@ paths:
               properties:
                 credentials:
                   type: array
+                  maxItems: 2147483647
                   items:
                     type: string
                 holderId:
@@ -2050,6 +2063,7 @@ paths:
             application/json:
               schema:
                 type: array
+                maxItems: 2147483647
                 items:
                   type: object
         '400':
@@ -2113,6 +2127,7 @@ paths:
             application/json:
               schema:
                 type: array
+                maxItems: 2147483647
                 items:
                   type: object
         '400':
