@@ -83,6 +83,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 '@context':
                   type: array
@@ -136,6 +137,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 '@context':
                   type: array
@@ -195,6 +197,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 '@context':
                   type: array
@@ -210,6 +213,7 @@ paths:
                   maxItems: 2147483647
                   items:
                     type: object
+                    additionalProperties: false
                     properties:
                       credentialType:
                         type: string
@@ -261,6 +265,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '404':
           description: DID not found
         '500':
@@ -309,6 +314,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 id:
                   type: string
@@ -379,6 +385,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 id:
                   type: string
@@ -439,6 +446,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '400':
           description: Bad request
         '401':
@@ -452,6 +460,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 did:
                   type: string
@@ -490,6 +499,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 did:
                   type: string
@@ -531,6 +541,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 limit:
                   type: integer
@@ -570,6 +581,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 did:
                   type: string
@@ -617,6 +629,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 active:
                   type: boolean
@@ -631,6 +644,7 @@ paths:
                   maxLength: 1000
                 keyGeneratorParams:
                   type: object
+                  additionalProperties: false
                   properties:
                     algorithm:
                       type: string
@@ -701,6 +715,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
           description: Unauthorized
         '404':
@@ -781,6 +796,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 active:
                   type: boolean
@@ -795,6 +811,7 @@ paths:
                   maxLength: 1000
                 keyGeneratorParams:
                   type: object
+                  additionalProperties: false
                   properties:
                     algorithm:
                       type: string
@@ -864,6 +881,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 active:
                   type: boolean
@@ -878,6 +896,7 @@ paths:
                   maxLength: 1000
                 keyGeneratorParams:
                   type: object
+                  additionalProperties: false
                   properties:
                     algorithm:
                       type: string
@@ -943,6 +962,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: {}
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/state:
     parameters:
@@ -983,6 +1003,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: {}
   /v1alpha/participants:
     parameters: []
@@ -1004,6 +1025,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 active:
                   type: boolean
@@ -1013,9 +1035,11 @@ paths:
                   format: uri
                 key:
                   type: object
+                  additionalProperties: false
                   properties:
                     keyGeneratorParams:
                       type: object
+                      additionalProperties: false
                       properties:
                         algorithm:
                           type: string
@@ -1117,6 +1141,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
           description: Unauthorized
         '404':
@@ -1145,6 +1170,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
                 properties:
                   token:
                     type: string
@@ -1224,6 +1250,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 id:
                   type: string
@@ -1233,15 +1260,18 @@ paths:
                   maxLength: 1000
                 verifiableCredentialContainer:
                   type: object
+                  additionalProperties: false
                   properties:
                     credential:
                       type: object
+                      additionalProperties: false
                       properties:
                         credentialSchema:
                           type: array
                           maxItems: 2147483647
                           items:
                             type: object
+                            additionalProperties: false
                             properties:
                               id:
                                 type: string
@@ -1255,6 +1285,7 @@ paths:
                           maxItems: 2147483647
                           items:
                             type: object
+                            additionalProperties: false
                             properties:
                               id:
                                 type: string
@@ -1366,6 +1397,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 id:
                   type: string
@@ -1375,15 +1407,18 @@ paths:
                   maxLength: 1000
                 verifiableCredentialContainer:
                   type: object
+                  additionalProperties: false
                   properties:
                     credential:
                       type: object
+                      additionalProperties: false
                       properties:
                         credentialSchema:
                           type: array
                           maxItems: 2147483647
                           items:
                             type: object
+                            additionalProperties: false
                             properties:
                               id:
                                 type: string
@@ -1397,6 +1432,7 @@ paths:
                           maxItems: 2147483647
                           items:
                             type: object
+                            additionalProperties: false
                             properties:
                               id:
                                 type: string
@@ -1510,6 +1546,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
           description: Unauthorized
         '404':
@@ -1543,6 +1580,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
           description: Unauthorized
         '404':
@@ -1602,12 +1640,14 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 credentials:
                   type: array
                   maxItems: 2147483647
                   items:
                     type: object
+                    additionalProperties: false
                     properties:
                       format:
                         type: string
@@ -1661,6 +1701,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
           description: Unauthorized
         '404':
@@ -1688,6 +1729,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
           description: Unauthorized
         '500':
@@ -1721,21 +1763,19 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 attestationType:
                   type: string
                   maxLength: 1000
                 configuration:
                   type: object
+                  additionalProperties: false
                   properties:
                     credentialType:
                       type: string
                       maxLength: 1000
                     outputClaim:
-                      type: object
-                    additionalProp2:
-                      type: object
-                    additionalProp3:
                       type: object
                 id:
                   type: string
@@ -1745,8 +1785,6 @@ paths:
               configuration:
                 credentialType: ''
                 outputClaim: {}
-                additionalProp2: {}
-                additionalProp3: {}
               id: string
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/attestations/{ATTESTATION_DEFINITION_ID}:
     parameters:
@@ -1811,6 +1849,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: null
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions:
     parameters:
@@ -1841,6 +1880,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: null
     put:
       summary: Updates credential definition.
@@ -1862,6 +1902,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: null
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions/{CREDENTIAL_DEFINITION_ID}:
     parameters:
@@ -1903,6 +1944,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
           description: Unauthorized
         '404':
@@ -1943,6 +1985,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: null
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/status:
     parameters:
@@ -1975,6 +2018,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
                 properties:
                   status:
                     type: string
@@ -2020,6 +2064,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: null
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/resume:
     parameters:
@@ -2148,6 +2193,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 credentials:
                   type: array
@@ -2193,6 +2239,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 did:
                   type: string
@@ -2227,6 +2274,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 did:
                   type: string
@@ -2276,6 +2324,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: null
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/holders/{HOLDER_ID}:
     parameters:
@@ -2304,6 +2353,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
           description: Unauthorized
         '404':
@@ -2346,6 +2396,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: null
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/issuanceprocesses/{ISSUANCE_PROCESS_ID}:
     parameters:
@@ -2374,6 +2425,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
           description: Unauthorized
         '404':
@@ -2394,6 +2446,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
                 properties:
                   access_token:
                     type: string
@@ -2430,6 +2483,7 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '404':
           description: Credential not found
         '500':
