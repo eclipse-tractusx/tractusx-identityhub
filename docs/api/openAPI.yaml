@@ -91,16 +91,20 @@ paths:
                   items:
                     type: string
                     maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                     format: uri
                 type:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 '@id':
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._:/|-]+$"
                 issuer:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               '@context':
                 - https://w3id.org/dspace-dcp/v1.0/dcp.jsonld
@@ -145,10 +149,12 @@ paths:
                   items:
                     type: string
                     maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                     format: uri
                 type:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 presentationDefinition:
                   nullable: true
                 scope:
@@ -157,6 +163,7 @@ paths:
                   items:
                     type: string
                     maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                     format: uri
             example:
               '@context':
@@ -205,9 +212,11 @@ paths:
                   items:
                     type: string
                     maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                     format: uri
                 type:
                   type: string
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 credentials:
                   type: array
                   maxItems: 2147483647
@@ -218,24 +227,31 @@ paths:
                       credentialType:
                         type: string
                         maxLength: 1000
+                        pattern: "^[a-zA-Z0-9._-]+$"
                       payload:
                         type: string
                         maxLength: 1000
+                        pattern: "^[A-Za-z0-9+/]+=*$"
                       format:
                         type: string
                         maxLength: 1000
+                        pattern: "^[a-zA-Z0-9._-]+$"
                 issuerPid:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 holderPid:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 status:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 requestId:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               '@context':
                 - https://w3id.org/dspace-dcp/v1.0/dcp.jsonld
@@ -319,14 +335,17 @@ paths:
                 id:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                   format: uri
                 serviceEndpoint:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._:/|-]+$"
                   format: uri
                 type:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               id: did:web:super-user#service-1
               serviceEndpoint: http://localhost:8182/api/identity
@@ -342,6 +361,7 @@ paths:
           schema:
             type: string
             maxLength: 1000
+            pattern: "^[a-zA-Z0-9._:/|-]+$"
         - name: autoPublish
           in: query
           required: false
@@ -390,14 +410,17 @@ paths:
                 id:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                   format: uri
                 serviceEndpoint:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._:/|-]+$"
                   format: uri
                 type:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               id: did:web:super-user#service-1
               serviceEndpoint: http://localhost:8182/api/identity
@@ -465,6 +488,7 @@ paths:
                 did:
                   type: string
                   maxLength: 1000
+                  pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
                   format: uri
             example:
               did: did:web:super-user
@@ -504,6 +528,7 @@ paths:
                 did:
                   type: string
                   maxLength: 1000
+                  pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
                   format: uri
             example:
               did: did:web:super-user
@@ -586,6 +611,7 @@ paths:
                 did:
                   type: string
                   maxLength: 1000
+                  pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
                   format: uri
             example:
               did: did:web:super-user
@@ -636,12 +662,15 @@ paths:
                 keyId:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 privateKeyAlias:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 type:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 keyGeneratorParams:
                   type: object
                   additionalProperties: false
@@ -649,9 +678,11 @@ paths:
                     algorithm:
                       type: string
                       maxLength: 1000
+                      pattern: "^[a-zA-Z0-9_-]+$"
                     curve:
                       type: string
                       maxLength: 1000
+                      pattern: "^[a-zA-Z0-9_-]+$"
                 publicKeyJwk:
                   nullable: true
                 publicKeyPem:
@@ -659,6 +690,7 @@ paths:
                 resourceId:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               active: true
               keyId: my-new-key
@@ -803,12 +835,15 @@ paths:
                 keyId:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 privateKeyAlias:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 type:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 keyGeneratorParams:
                   type: object
                   additionalProperties: false
@@ -816,9 +851,11 @@ paths:
                     algorithm:
                       type: string
                       maxLength: 1000
+                      pattern: "^[a-zA-Z0-9_-]+$"
                     curve:
                       type: string
                       maxLength: 1000
+                      pattern: "^[a-zA-Z0-9_-]+$"
                 publicKeyJwk:
                   nullable: true
                 publicKeyPem:
@@ -826,6 +863,7 @@ paths:
                 resourceId:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               active: true
               keyId: my-new-key2
@@ -888,12 +926,15 @@ paths:
                 keyId:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 privateKeyAlias:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 type:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 keyGeneratorParams:
                   type: object
                   additionalProperties: false
@@ -901,9 +942,11 @@ paths:
                     algorithm:
                       type: string
                       maxLength: 1000
+                      pattern: "^[a-zA-Z0-9_-]+$"
                     curve:
                       type: string
                       maxLength: 1000
+                      pattern: "^[a-zA-Z0-9_-]+$"
                 publicKeyJwk:
                   nullable: true
                 publicKeyPem:
@@ -911,6 +954,7 @@ paths:
                 resourceId:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               active: true
               keyId: my-new-key3
@@ -1032,6 +1076,7 @@ paths:
                 did:
                   type: string
                   maxLength: 1000
+                  pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
                   format: uri
                 key:
                   type: object
@@ -1044,24 +1089,30 @@ paths:
                         algorithm:
                           type: string
                           maxLength: 1000
+                          pattern: "^[a-zA-Z0-9_-]+$"
                         curve:
                           type: string
                           maxLength: 1000
+                          pattern: "^[a-zA-Z0-9_-]+$"
                     keyId:
                       type: string
                       maxLength: 1000
+                      pattern: "^[a-zA-Z0-9._-]+$"
                     privateKeyAlias:
                       type: string
                       maxLength: 1000
+                      pattern: "^[a-zA-Z0-9._-]+$"
                 participantId:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 roles:
                   type: array
                   maxItems: 2147483647
                   items:
                     type: string
                     maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
             example:
               active: true
               did: did:web:eclipse-tractus-x
@@ -1175,6 +1226,7 @@ paths:
                   token:
                     type: string
                     maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
         '401':
           description: Unauthorized
         '404':
@@ -1219,6 +1271,7 @@ paths:
               items:
                 type: string
                 maxLength: 1000
+                pattern: "^[a-zA-Z0-9._-]+$"
             example:
               - admin
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials:
@@ -1255,9 +1308,11 @@ paths:
                 id:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 participantContextId:
                   type: string
                   maxLength: 1000
+                  pattern: "^[A-Za-z0-9+/]+=*$"
                 verifiableCredentialContainer:
                   type: object
                   additionalProperties: false
@@ -1276,10 +1331,12 @@ paths:
                               id:
                                 type: string
                                 maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                                 format: uri
                               type:
                                 type: string
                                 maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                         credentialStatus:
                           type: array
                           maxItems: 2147483647
@@ -1290,10 +1347,12 @@ paths:
                               id:
                                 type: string
                                 maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                                 format: uri
                               type:
                                 type: string
                                 maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                         credentialSubject:
                           type: array
                           maxItems: 2147483647
@@ -1303,29 +1362,35 @@ paths:
                               id:
                                 type: string
                                 maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                                 format: uri
                               holderIdentifier:
                                 type: string
                                 maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                         '@context':
                           type: array
                           maxItems: 2147483647
                           items:
                             type: string
                             maxLength: 1000
+                            pattern: "^[a-zA-Z0-9._-]+$"
                             format: uri
                         id:
                           type: string
                           maxLength: 1000
+                          pattern: "^[a-zA-Z0-9._-]+$"
                         type:
                           type: array
                           maxItems: 2147483647
                           items:
                             type: string
                             maxLength: 1000
+                            pattern: "^[a-zA-Z0-9._-]+$"
                         issuer:
                           type: string
                           maxLength: 1000
+                          pattern: "^[a-zA-Z0-9._-]+$"
                           format: uri
                         issuanceDate:
                           type: string
@@ -1402,9 +1467,11 @@ paths:
                 id:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 participantContextId:
                   type: string
                   maxLength: 1000
+                  pattern: "^[A-Za-z0-9+/]+=*$"
                 verifiableCredentialContainer:
                   type: object
                   additionalProperties: false
@@ -1423,10 +1490,12 @@ paths:
                               id:
                                 type: string
                                 maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                                 format: uri
                               type:
                                 type: string
                                 maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                         credentialStatus:
                           type: array
                           maxItems: 2147483647
@@ -1437,10 +1506,12 @@ paths:
                               id:
                                 type: string
                                 maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                                 format: uri
                               type:
                                 type: string
                                 maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                         credentialSubject:
                           type: array
                           maxItems: 2147483647
@@ -1450,29 +1521,35 @@ paths:
                               id:
                                 type: string
                                 maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                                 format: uri
                               holderIdentifier:
                                 type: string
                                 maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                         '@context':
                           type: array
                           maxItems: 2147483647
                           items:
                             type: string
                             maxLength: 1000
+                            pattern: "^[a-zA-Z0-9._-]+$"
                             format: uri
                         id:
                           type: string
                           maxLength: 1000
+                          pattern: "^[a-zA-Z0-9._-]+$"
                         type:
                           type: array
                           maxItems: 2147483647
                           items:
                             type: string
                             maxLength: 1000
+                            pattern: "^[a-zA-Z0-9._-]+$"
                         issuer:
                           type: string
                           maxLength: 1000
+                          pattern: "^[a-zA-Z0-9._-]+$"
                           format: uri
                         issuanceDate:
                           type: string
@@ -1652,19 +1729,24 @@ paths:
                       format:
                         type: string
                         maxLength: 1000
+                        pattern: "^[a-zA-Z0-9._-]+$"
                       id:
                         type: string
                         maxLength: 1000
+                        pattern: "^[a-zA-Z0-9._-]+$"
                       type:
                         type: string
                         maxLength: 1000
+                        pattern: "^[a-zA-Z0-9._-]+$"
                 holderPid:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                   format: uri
                 issuerDid:
                   type: string
                   maxLength: 1000
+                  pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
                   format: uri
             example:
               credentials:
@@ -1768,6 +1850,7 @@ paths:
                 attestationType:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 configuration:
                   type: object
                   additionalProperties: false
@@ -1775,11 +1858,13 @@ paths:
                     credentialType:
                       type: string
                       maxLength: 1000
+                      pattern: "^[a-zA-Z0-9._-]+$"
                     outputClaim:
                       type: object
                 id:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               attestationType: presentation
               configuration:
@@ -2023,6 +2108,7 @@ paths:
                   status:
                     type: string
                     maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                     enum: [active, revoked, suspended]
         '401':
           description: Unauthorized
@@ -2201,9 +2287,11 @@ paths:
                   items:
                     type: string
                     maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                 holderId:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               credentials:
                 - string
@@ -2244,12 +2332,15 @@ paths:
                 did:
                   type: string
                   maxLength: 1000
+                  pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
                 holderId:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 name:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               did: string
               holderId: string
@@ -2279,13 +2370,16 @@ paths:
                 did:
                   type: string
                   maxLength: 1000
+                  pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
                   format: uri
                 holderId:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 name:
                   type: string
                   maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               did: did:web:webhook.site:dbdd9b07-f1cf-4586-b2e2-fc8e8c5515da
               holderId: string
@@ -2451,9 +2545,11 @@ paths:
                   access_token:
                     type: string
                     maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                   token_type:
                     type: string
                     maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                   expires_in:
                     type: integer
         '400':
