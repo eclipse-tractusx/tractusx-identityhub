@@ -46,6 +46,93 @@ components:
         Bearer token authentication with JWT tokens issued by the STS service (Bearer token)
       in: header
       name: Authorization
+  
+  schemas:
+    SuccessResponse:
+      type: object
+      additionalProperties: false
+      description: Generic success response
+    
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      description: Generic error response
+      properties:
+        error:
+          type: string
+          pattern: "^[a-zA-Z0-9._\\s-]+$"
+          description: Error code or type
+        message:
+          type: string
+          pattern: "^[a-zA-Z0-9._\\s-]+$"
+          description: Human-readable error message
+      required:
+        - error
+        - message
+  
+  responses:
+    Success:
+      description: Operation successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SuccessResponse'
+    
+    BadRequest:
+      description: Bad request - invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    Unauthorized:
+      description: Unauthorized - authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    Forbidden:
+      description: Forbidden - insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    Conflict:
+      description: Conflict - resource already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    UnsupportedMediaType:
+      description: Unsupported media type
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    TooManyRequests:
+      description: Too many requests - rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
 
 
 
@@ -71,13 +158,13 @@ paths:
         - Credential Offer
       responses:
         '200':
-          description: Credential offer sent successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -130,12 +217,13 @@ paths:
       responses:
         '200':
           description: Presentation query issued successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -193,12 +281,13 @@ paths:
       responses:
         '201':
           description: Credentials stored successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -277,15 +366,16 @@ paths:
       responses:
         '200':
           description: DID document retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
                 additionalProperties: false
         '404':
-          description: DID not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/dids/{DID}/endpoints:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -317,14 +407,15 @@ paths:
       responses:
         '201':
           description: Service endpoint added successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: DID not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -372,13 +463,13 @@ paths:
         '204':
           description: Service endpoint removed successfully
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Service endpoint not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
     patch:
       summary: Replaces a service endpoint of a particular DID document.
       tags: *ref_0
@@ -392,14 +483,15 @@ paths:
       responses:
         '200':
           description: Service endpoint updated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Service endpoint not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -436,6 +528,7 @@ paths:
       responses:
         '200':
           description: DID documents retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -444,11 +537,11 @@ paths:
                 items:
                   type: object
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          description: Forbidden - requires elevated access
+          $ref: '#/components/responses/Forbidden'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/dids/state:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -465,19 +558,20 @@ paths:
       responses:
         '200':
           description: DID state retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
                 additionalProperties: false
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: DID not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -510,14 +604,15 @@ paths:
       responses:
         '200':
           description: DID published successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: DID not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -548,6 +643,7 @@ paths:
       responses:
         '200':
           description: DID documents query results
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -556,11 +652,11 @@ paths:
                 items:
                   type: object
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -592,15 +688,15 @@ paths:
       parameters: []
       responses:
         '200':
-          description: DID unpublished successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: DID not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -642,14 +738,15 @@ paths:
       responses:
         '201':
           description: Key pair created successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '409':
-          description: Key pair already exists
+          $ref: '#/components/responses/Conflict'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -709,6 +806,7 @@ paths:
       responses:
         '200':
           description: Key pairs retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -717,9 +815,9 @@ paths:
                 items:
                   type: object
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -743,17 +841,18 @@ paths:
       responses:
         '200':
           description: Key pair retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
                 additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Key pair not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/keypairs:
     parameters: []
     get:
@@ -777,6 +876,7 @@ paths:
       responses:
         '200':
           description: All key pairs retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -785,11 +885,11 @@ paths:
                 items:
                   type: object
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          description: Forbidden - requires elevated access
+          $ref: '#/components/responses/Forbidden'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}/revoke:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -815,14 +915,15 @@ paths:
       responses:
         '200':
           description: Key pair revoked successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Key pair not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -906,14 +1007,15 @@ paths:
       responses:
         '200':
           description: Key pair rotated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Key pair not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -991,16 +1093,17 @@ paths:
       responses:
         '200':
           description: Key pair activated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Key pair not found
+          $ref: '#/components/responses/NotFound'
         '409':
-          description: Key pair cannot be activated in current state
+          $ref: '#/components/responses/Conflict'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -1034,14 +1137,15 @@ paths:
       responses:
         '200':
           description: Participant context state updated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Participant context not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -1058,12 +1162,13 @@ paths:
       responses:
         '201':
           description: Participant context created successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '409':
-          description: Participant context already exists
+          $ref: '#/components/responses/Conflict'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -1146,6 +1251,7 @@ paths:
       responses:
         '200':
           description: Participant contexts retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -1154,11 +1260,11 @@ paths:
                 items:
                   type: object
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          description: Forbidden - requires elevated access
+          $ref: '#/components/responses/Forbidden'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1176,11 +1282,11 @@ paths:
         '204':
           description: Participant context deleted successfully
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Participant context not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
     get:
       summary: Gets ParticipantContexts by ID.
       tags: *ref_2
@@ -1188,17 +1294,18 @@ paths:
       responses:
         '200':
           description: Participant context retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
                 additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Participant context not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/token:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1217,6 +1324,7 @@ paths:
       responses:
         '200':
           description: API token regenerated successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -1228,11 +1336,11 @@ paths:
                     maxLength: 1000
                     pattern: "^[a-zA-Z0-9._-]+$"
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Participant context not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/roles:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1252,16 +1360,17 @@ paths:
       responses:
         '200':
           description: Roles updated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          description: Forbidden - requires elevated privileges
+          $ref: '#/components/responses/Forbidden'
         '404':
-          description: Participant context not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -1292,12 +1401,13 @@ paths:
       responses:
         '201':
           description: Verifiable credential added successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -1431,6 +1541,7 @@ paths:
       responses:
         '200':
           description: Verifiable credentials query results
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -1439,9 +1550,9 @@ paths:
                 items:
                   type: object
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
     put:
       summary: Update an existing VerifiableCredential.
       tags: *ref_3
@@ -1449,14 +1560,15 @@ paths:
       responses:
         '200':
           description: Verifiable credential updated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Verifiable credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -1607,11 +1719,11 @@ paths:
         '204':
           description: Verifiable credential deleted successfully
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Verifiable credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
     get:
       summary: Finds a VerifiableCredential by ID.
       tags: *ref_3
@@ -1619,17 +1731,18 @@ paths:
       responses:
         '200':
           description: Verifiable credential retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
                 additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Verifiable credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/request/{HOLDER_PID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1653,17 +1766,18 @@ paths:
       responses:
         '200':
           description: Credential request retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
                 additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential request not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/credentials:
     parameters: []
     get:
@@ -1675,6 +1789,7 @@ paths:
       responses:
         '200':
           description: All verifiable credentials retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -1683,11 +1798,11 @@ paths:
                 items:
                   type: object
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          description: Forbidden - requires elevated access
+          $ref: '#/components/responses/Forbidden'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/request:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1706,12 +1821,13 @@ paths:
       responses:
         '200':
           description: Credential request triggered successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -1779,17 +1895,18 @@ paths:
       responses:
         '200':
           description: Credential request status retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
                 additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential request not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/metadata:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1807,15 +1924,16 @@ paths:
       responses:
         '200':
           description: Issuer metadata retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
                 additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/attestations:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1834,12 +1952,13 @@ paths:
       responses:
         '201':
           description: Attestation definition created successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -1895,11 +2014,11 @@ paths:
         '204':
           description: Attestation definition deleted successfully
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Attestation definition not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/attestations/query:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1916,6 +2035,7 @@ paths:
       responses:
         '200':
           description: Attestation definitions query results
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -1924,11 +2044,11 @@ paths:
                 items:
                   type: object
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -1954,12 +2074,13 @@ paths:
       responses:
         '201':
           description: Credential definition created successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -1974,14 +2095,15 @@ paths:
       responses:
         '200':
           description: Credential definition updated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential definition not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -2013,11 +2135,11 @@ paths:
         '204':
           description: Credential definition deleted successfully
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential definition not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
     get:
       summary: Gets a credential definition by its ID.
       tags: *ref_5
@@ -2025,17 +2147,18 @@ paths:
       responses:
         '200':
           description: Credential definition retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
                 additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential definition not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions/query:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -2052,6 +2175,7 @@ paths:
       responses:
         '200':
           description: Credential definitions query results
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -2060,11 +2184,11 @@ paths:
                 items:
                   type: object
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -2099,6 +2223,7 @@ paths:
       responses:
         '200':
           description: Credential status retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -2111,11 +2236,11 @@ paths:
                     pattern: "^[a-zA-Z0-9._-]+$"
                     enum: [active, revoked, suspended]
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/query:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -2132,6 +2257,7 @@ paths:
       responses:
         '200':
           description: Credentials query results
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -2140,11 +2266,11 @@ paths:
                 items:
                   type: object
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -2177,14 +2303,15 @@ paths:
       responses:
         '200':
           description: Credential resumed successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/revoke:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -2210,14 +2337,15 @@ paths:
       responses:
         '200':
           description: Credential revoked successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/suspend:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -2244,14 +2372,15 @@ paths:
       responses:
         '200':
           description: Credential suspended successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/offer:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -2268,12 +2397,13 @@ paths:
       responses:
         '200':
           description: Credential offer sent successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -2314,14 +2444,15 @@ paths:
       responses:
         '201':
           description: Holder created successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '409':
-          description: Holder already exists
+          $ref: '#/components/responses/Conflict'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -2352,14 +2483,15 @@ paths:
       responses:
         '200':
           description: Holder updated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Holder not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -2400,6 +2532,7 @@ paths:
       responses:
         '200':
           description: Holders query results
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -2408,11 +2541,11 @@ paths:
                 items:
                   type: object
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -2443,17 +2576,18 @@ paths:
       responses:
         '200':
           description: Holder metadata retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
                 additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Holder not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/issuanceprocesses/query:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -2472,6 +2606,7 @@ paths:
       responses:
         '200':
           description: Issuance processes query results
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -2480,11 +2615,11 @@ paths:
                 items:
                   type: object
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -2515,17 +2650,18 @@ paths:
       responses:
         '200':
           description: Issuance process retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
                 additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Issuance process not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /token:
     parameters: []
     post:
@@ -2536,6 +2672,7 @@ paths:
       responses:
         '200':
           description: Token issued successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -2553,11 +2690,11 @@ paths:
                   expires_in:
                     type: integer
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /{CREDENTIAL_ID}:
     parameters:
       - name: CREDENTIAL_ID
@@ -2575,12 +2712,13 @@ paths:
       responses:
         '200':
           description: Verifiable credential retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
                 additionalProperties: false
         '404':
-          description: Credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
           description: Internal server error
