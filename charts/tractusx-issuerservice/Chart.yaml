@@ -22,7 +22,7 @@
 ---
 apiVersion: v2
 name: tractusx-issuerservice
-description: A Helm chart for Tractus-X IssuerService, a comprehensive DCP CredentialService solution
+description: A Helm chart for Tractus-X IssuerService, that deploys the IssuerService with postgresql and vault charts for persistance
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -42,9 +42,9 @@ version: 0.1.1
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "0.1.0"
-home: https://github.com/eclipse-tractusx/tractusx-issuerservice/tree/main/charts/tractusx-issuerservice
+home: https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-issuerservice
 sources:
-  - https://github.com/eclipse-tractusx/tractusx-issuerservice/tree/main/charts/tractusx-issuerservice
+  - https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-issuerservice
 dependencies:
   # PostgreSQL
   - name: postgresql
