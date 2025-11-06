@@ -60,6 +60,7 @@ jobs:
           cd charts/tractusx-identityhub
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add runix https://helm.runix.net
+          helm repo add hashicorp https://helm.releases.hashicorp.com
           helm dependency update
 
       - name: Update identityhub-memory helm dependencies
