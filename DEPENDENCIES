@@ -228,6 +228,7 @@ maven/mavencentral/org.eclipse.edc/keys-spi/0.14.0, Apache-2.0, approved, techno
 maven/mavencentral/org.eclipse.edc/ldp-verifiable-credentials/0.14.0, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/local-did-publisher/0.14.0, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/local-statuslist-publisher/0.14.0, Apache-2.0, approved, technology.edc
+maven/mavencentral/org.eclipse.edc/monitor-jdk-logger/0.14.0, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/participant-context-api/0.14.0, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/participant-context-spi/0.14.0, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/participant-context-validators/0.14.0, Apache-2.0, approved, technology.edc
