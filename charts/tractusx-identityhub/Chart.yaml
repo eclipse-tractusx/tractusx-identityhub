@@ -22,7 +22,7 @@
 ---
 apiVersion: v2
 name: tractusx-identityhub
-description: A Helm chart for Tractus-X IdentityHub, a comprehensive DCP CredentialService solution
+description: A Helm chart for Tractus-X IdentityHub, that deploys the IdentityHub with postgresql and vault charts for persistance
 
 # A chart can be either an 'application' or a 'library' chart.
 #

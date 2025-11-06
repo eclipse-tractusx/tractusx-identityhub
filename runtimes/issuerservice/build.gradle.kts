@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2025 Cofinity-X
+ * Copyright (c) 2025 LKS NEXT
  * Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -31,10 +32,12 @@ dependencies {
     runtimeOnly(libs.edc.vault.hashicorp)
     runtimeOnly(project(":extensions:store:sql:migrations"))
     runtimeOnly(project(":extensions:seed:super-user"))
+    runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
     runtimeOnly(libs.postgres)
 
     // used for custom extensions
     implementation(libs.edc.ih.spi)
+    implementation(libs.edc.jdk.monitor)
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
