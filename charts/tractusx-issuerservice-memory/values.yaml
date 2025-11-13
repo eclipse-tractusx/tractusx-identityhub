@@ -89,11 +89,22 @@ issuerservice:
     did:
       port: 8083
       path: /
-
     # -- Version API, used to obtain exact version information about all APIs at runtime. Should not be internet-facing
     version:
       port: 8084
       path: /.well-known/api
+    # -- STS Token API, for the IssuerService to create Self-Issued ID tokens
+    sts:
+      port: 8085
+      path: /api/sts
+    # -- Issuer Admin API to manage data of the IssuerService. Should not be internet-facing
+    issueradmin:
+      port: 8086
+      path: /api/admin
+    # -- Identity API, used to manage certain identity aspects such as DID documents, key pairs etc. Should not be internet-facing
+    identity:
+      port: 8087
+      path: /api/identity
 
   service:
     # -- [Service type](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) to expose the running application on a set of Pods as a network service.
@@ -166,6 +177,8 @@ issuerservice:
       # -- EDC endpoints exposed by this ingress resource
       endpoints:
         - issuance
+        - sts
+        - did
       # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
       className: ""
       # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
@@ -188,7 +201,8 @@ issuerservice:
       annotations: {}
       # -- EDC endpoints exposed by this ingress resource
       endpoints:
-        - did
+        - issueradmin
+        - identity
       # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
       className: ""
       # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
