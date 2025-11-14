@@ -188,6 +188,8 @@ issuerservice:
       # -- EDC endpoints exposed by this ingress resource
       endpoints:
         - issuance
+        - sts
+        - did
       # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
       className: ""
       # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
@@ -210,7 +212,8 @@ issuerservice:
       annotations: {}
       # -- EDC endpoints exposed by this ingress resource
       endpoints:
-        - did
+        - issueradmin
+        - identity
       # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
       className: ""
       # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
@@ -301,6 +304,7 @@ issuerservice:
       org.flywaydb: "OFF"
       org.postgresql: "OFF"
       org.eclipse.edc: "FINE"
+      org.eclipse.tractusx: "FINE"
     # -- path where the log resides, must be the same path as the fileHandler pattern
     path: /app/logs
     # -- default logging properties if logging is not enabled
