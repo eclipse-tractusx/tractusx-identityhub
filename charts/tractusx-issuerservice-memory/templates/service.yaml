@@ -45,5 +45,17 @@ spec:
       targetPort: issuance
       protocol: TCP
       name: issuance
+    - port: {{ .Values.issuerservice.endpoints.sts.port }}
+      targetPort: sts
+      protocol: TCP
+      name: sts
+    - port: {{ .Values.issuerservice.endpoints.issueradmin.port }}
+      targetPort: issueradmin
+      protocol: TCP
+      name: issueradmin
+    - port: {{ .Values.issuerservice.endpoints.identity.port }}
+      targetPort: identity
+      protocol: TCP
+      name: identity
   selector:
     {{- include "issuerservice.server.selectorLabels" . | nindent 4 }}
