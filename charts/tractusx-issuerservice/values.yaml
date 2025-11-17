@@ -301,6 +301,7 @@ issuerservice:
       org.flywaydb: "OFF"
       org.postgresql: "OFF"
       org.eclipse.edc: "FINE"
+      org.eclipse.tractusx: "FINE"
     # -- path where the log resides, must be the same path as the fileHandler pattern
     path: /app/logs
     # -- default logging properties if logging is not enabled
