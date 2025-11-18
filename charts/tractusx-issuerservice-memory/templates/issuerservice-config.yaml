@@ -41,8 +41,14 @@ data:
   web.http.path: {{ .Values.issuerservice.endpoints.default.path | quote }}
   web.http.version.port: {{ .Values.issuerservice.endpoints.version.port | quote}}
   web.http.version.path: {{ .Values.issuerservice.endpoints.version.path | quote}}
-  web.http.issuer-api.port: {{ .Values.issuerservice.endpoints.issuance.port | quote }}
-  web.http.issuer-api.path: {{ .Values.issuerservice.endpoints.issuance.path | quote }}
+  web.http.sts.port: {{ .Values.issuerservice.endpoints.sts.port | quote }}
+  web.http.sts.path: {{ .Values.issuerservice.endpoints.sts.path | quote }}
+  web.http.issuance.port: {{ .Values.issuerservice.endpoints.issuance.port | quote }}
+  web.http.issuance.path: {{ .Values.issuerservice.endpoints.issuance.path | quote }}
+  web.http.issueradmin.port: {{ .Values.issuerservice.endpoints.issueradmin.port | quote }}
+  web.http.issueradmin.path: {{ .Values.issuerservice.endpoints.issueradmin.path | quote }}
+  web.http.identity.port: {{ .Values.issuerservice.endpoints.identity.port | quote }}
+  web.http.identity.path: {{ .Values.issuerservice.endpoints.identity.path | quote }}
   web.http.did.port: {{ .Values.issuerservice.endpoints.did.port | quote}}
   web.http.did.path: {{ .Values.issuerservice.endpoints.did.path | quote}}
 
