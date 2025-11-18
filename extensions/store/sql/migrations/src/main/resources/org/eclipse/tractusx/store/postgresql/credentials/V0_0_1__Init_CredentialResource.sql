@@ -1,5 +1,6 @@
 /*
  *   Copyright (c) 2025 Cofinity-X
+ *   Copyright (c) 2025 LKS NEXT
  *   Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  *   See the NOTICE file(s) distributed with this work for additional
@@ -27,12 +28,13 @@ CREATE TABLE IF NOT EXISTS credential_resource
     issuer_id             VARCHAR             NOT NULL,
     holder_id             VARCHAR             NOT NULL,
     vc_state              INTEGER             NOT NULL,
+    metadata              JSON DEFAULT '{}',
     issuance_policy       JSON,
     reissuance_policy     JSON,
-    raw_vc                VARCHAR             NOT NULL, -- Representation of the VC exactly as it was received by the issuer. Can be JWT or JSON(-LD)
+    raw_vc                VARCHAR,                      -- Representation of the VC exactly as it was received by the issuer. Can be JWT or JSON(-LD)
     vc_format             INTEGER             NOT NULL, -- 0 = JSON-LD, 1 = JWT
     verifiable_credential JSON                NOT NULL, -- JSON-representation of the verifiable credential
-    participant_context_id        VARCHAR                       -- ID of the ParticipantContext that owns this credentisl
+    participant_context_id        VARCHAR               -- ID of the ParticipantContext that owns this credentials
 );
 CREATE UNIQUE INDEX IF NOT EXISTS credential_resource_credential_id_uindex ON credential_resource USING btree (id);
 COMMENT ON COLUMN credential_resource.id IS 'ID of the VC, duplicated here for indexing purposes';

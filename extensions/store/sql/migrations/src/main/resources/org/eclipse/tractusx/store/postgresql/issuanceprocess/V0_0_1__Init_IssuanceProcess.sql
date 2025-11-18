@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS edc_lease
     leased_at      BIGINT,
     lease_duration INTEGER NOT NULL,
     lease_id       VARCHAR NOT NULL
-    CONSTRAINT lease_pk
-    PRIMARY KEY
+        CONSTRAINT lease_pk
+            PRIMARY KEY
 );
 
 COMMENT ON COLUMN edc_lease.leased_at IS 'posix timestamp of lease';
@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS edc_issuance_process
     error_detail                VARCHAR,
     pending                     BOOLEAN  DEFAULT FALSE,
     lease_id                    VARCHAR CONSTRAINT issuance_process_lease_lease_id_fk REFERENCES edc_lease ON DELETE SET NULL,
-    participant_id              VARCHAR           NOT NULL,
-    issuer_context_id           VARCHAR           NOT NULL,
+    holder_id                   VARCHAR           NOT NULL,
+    participant_context_id      VARCHAR           NOT NULL,
     holder_pid                  VARCHAR           NOT NULL,
     claims                      JSON              NOT NULL,
     credential_definitions      JSONB             NOT NULL,
@@ -57,4 +57,3 @@ CREATE UNIQUE INDEX IF NOT EXISTS lease_lease_id_uindex ON edc_lease (lease_id);
 
 -- This will help to identify states that need to be transitioned without a table scan when the entries grow
 CREATE INDEX IF NOT EXISTS issuance_process_state ON edc_issuance_process (state,state_time_stamp);
-
