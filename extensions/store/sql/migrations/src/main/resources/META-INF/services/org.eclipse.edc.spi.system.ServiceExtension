@@ -30,5 +30,4 @@ org.eclipse.tractusx.store.postgresql.migration.IssuanceProcessMigrationExtensio
 org.eclipse.tractusx.store.postgresql.migration.JtiValidationMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.KeyPairResourceMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.ParticipantContextMigrationExtension
-org.eclipse.tractusx.store.postgresql.migration.ParticipantMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.StsClientMigrationExtension
