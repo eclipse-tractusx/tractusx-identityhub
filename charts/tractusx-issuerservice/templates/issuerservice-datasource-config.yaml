@@ -90,3 +90,15 @@ data:
   edc.datasource.jti.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
   edc.datasource.jti.user: {{ .Values.postgresql.auth.username | quote }}
   edc.datasource.jti.password: {{ .Values.postgresql.auth.password | quote }}
+
+  # VerifiableCredentialResources
+  edc.sql.store.credentials.datasource: "credentials"
+  edc.datasource.credentials.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
+  edc.datasource.credentials.user: {{ .Values.postgresql.auth.username | quote }}
+  edc.datasource.credentials.password: {{ .Values.postgresql.auth.password | quote }}
+
+  # Holders
+  edc.sql.store.holders.datasource: "holders"
+  edc.datasource.holders.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
+  edc.datasource.holders.user: {{ .Values.postgresql.auth.username | quote }}
+  edc.datasource.holders.password: {{ .Values.postgresql.auth.password | quote }}
