@@ -27,6 +27,7 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 - Fix OpenAPI specification by @Alaitz1 in [#165](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/165)
 - Fix ingress path values configuration, add STS/accounts/version endpoint configuration, fix credentials configuration issues and API endpoint naming by @AYaoZhan in [#118](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/118)
 - Fix Helm chart auto generated README.md files by @AYaoZhan in [#163](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/163)
+- Fix issuerservice not secured with X-API-KEY header by @AyaoZhan in [#184](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/185)
 
 ## [0.0.1] - 2025-07-16
 

@@ -36,6 +36,7 @@ dependencies {
     runtimeOnly(libs.postgres)
 
     // used for custom extensions
+    implementation(libs.edc.api.authentication)
     implementation(libs.edc.ih.spi)
     implementation(libs.edc.jdk.monitor)
 }
