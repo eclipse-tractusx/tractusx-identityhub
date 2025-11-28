@@ -29,7 +29,7 @@ import org.eclipse.tractusx.store.postgresql.AbstractPostgresqlMigrationExtensio
 @Extension("Holders Migration Extension")
 public class HoldersMigrationExtension extends AbstractPostgresqlMigrationExtension {
 
-    private static final String NAME_SUBSYSTEM = "holders";
+    private static final String NAME_SUBSYSTEM = "holder";
 
     @Inject
     private Vault vault;

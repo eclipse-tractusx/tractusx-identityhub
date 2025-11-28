@@ -98,7 +98,7 @@ data:
   edc.datasource.credentials.password: {{ .Values.postgresql.auth.password | quote }}
 
   # Holders
-  edc.sql.store.holders.datasource: "holders"
-  edc.datasource.holders.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
-  edc.datasource.holders.user: {{ .Values.postgresql.auth.username | quote }}
-  edc.datasource.holders.password: {{ .Values.postgresql.auth.password | quote }}
+  edc.sql.store.holder.datasource: "holder"
+  edc.datasource.holder.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
+  edc.datasource.holder.user: {{ .Values.postgresql.auth.username | quote }}
+  edc.datasource.holder.password: {{ .Values.postgresql.auth.password | quote }}
