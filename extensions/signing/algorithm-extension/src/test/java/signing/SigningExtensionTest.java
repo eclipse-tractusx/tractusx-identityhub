@@ -73,7 +73,7 @@ class SigningExtensionTest {
         ArgumentCaptor<Jws2020SignatureSuite> suiteCaptor = ArgumentCaptor.forClass(Jws2020SignatureSuite.class);
         verify(signatureSuiteRegistry).register(eq("PS256"), suiteCaptor.capture());
         verify(signatureSuiteRegistry).register(eq("ES256"), suiteCaptor.capture());
-        verify(signatureSuiteRegistry).register(eq("EdDSA"), suiteCaptor.capture());
+        verify(signatureSuiteRegistry).register(eq("ED25519"), suiteCaptor.capture());
 
         assertThat(suiteCaptor.getAllValues())
                 .hasSize(3);

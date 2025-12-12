@@ -168,7 +168,7 @@ class LdpCredentialGeneratorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"PS256", "ES256", "EdDSA"})
+    @ValueSource(strings = {"PS256", "ES256", "ED25519"})
     void generateCredential_shouldSignWithAllAlgorithms() throws Exception {
 
         var keyPair = KeyPairGenerator.getInstance("EC").generateKeyPair();
