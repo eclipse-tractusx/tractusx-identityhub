@@ -1,11 +1,8 @@
 # Tractus-X IdentityHub
 
-
-
 The following table links you to the respective documentations.
 
 ## **Table of Contents**
-
 
 - [API Requests](api/README.md)
 - [Administration](admin)
