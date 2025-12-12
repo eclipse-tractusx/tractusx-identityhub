@@ -34,6 +34,7 @@ dependencies {
     // used for custom extensions
     implementation(libs.edc.ih.spi)
     implementation(libs.edc.jdk.monitor)
+    implementation(libs.edc.api.authentication)
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
