@@ -46,8 +46,8 @@ public class SigningExtension implements ServiceExtension {
 
         signatureSuiteRegistry.register("PS256", new Jws2020SignatureSuite(typeManager.getMapper("json-ld")));
         signatureSuiteRegistry.register("ES256", new Jws2020SignatureSuite(typeManager.getMapper("json-ld")));
-        signatureSuiteRegistry.register("EdDSA", new Jws2020SignatureSuite(typeManager.getMapper("json-ld")));
-        monitor.info("Registered Jws2020SignatureSuite for PS256, ES256, EdDSA");
+        signatureSuiteRegistry.register("ED25519", new Jws2020SignatureSuite(typeManager.getMapper("json-ld")));
+        monitor.info("Registered Jws2020SignatureSuite for PS256, ES256, ED25519");
 
 
         var jwtGenerator = new JwtCredentialGenerator(tokenGenerationService, clock);
