@@ -67,7 +67,7 @@ jobs:
     outputs:
       VERSION: ${{ steps.get-version.outputs.VERSION }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
       - name: "Get version"
         id: get-version
         run: |
