@@ -51,6 +51,3 @@ include(":runtimes:identityhub")
 include(":runtimes:identityhub-memory")
 include(":runtimes:issuerservice")
 include(":runtimes:issuerservice-memory")
-
-include("extensions:signing:signing-extension")
-include("extensions:signing:algorithm-extension")
