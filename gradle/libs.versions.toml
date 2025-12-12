@@ -4,9 +4,9 @@ format.version = "1.1"
 [versions]
 edc = "0.14.0"
 edc-build = "1.0.0"
-opentelemetry = "2.20.1"
+opentelemetry = "2.22.0"
 postgres = "42.7.8"
-flyway = "11.9.1"
+flyway = "11.15.0"
 
 
 [libraries]
@@ -25,6 +25,7 @@ edc-build-plugin = { module = "org.eclipse.edc.edc-build:org.eclipse.edc.edc-bui
 edc-jdk-monitor = { module = "org.eclipse.edc:monitor-jdk-logger", version.ref = "edc" }
 edc-vc-ldp = { module = "org.eclipse.edc:ldp-verifiable-credentials", version.ref = "edc" }
 edc-identity-trust-spi = { module = "org.eclipse.edc:identity-trust-spi", version.ref = "edc" }
+edc-api-authentication = { module = "org.eclipse.edc:identityhub-api-authentication", version.ref = "edc"}
 
 # EDC SPIs
 edc-spi-transaction = { module = "org.eclipse.edc:transaction-spi", version.ref = "edc" }

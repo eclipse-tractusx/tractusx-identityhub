@@ -31,7 +31,7 @@ jobs:
     name: OWASP ZAP API Scan
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
       - uses: ./.github/actions/setup-memory-runtime
 
       - name: Fetch SI TOKEN
@@ -86,7 +86,7 @@ jobs:
 
       - name: Upload HTML report
         if: success() || failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ZAP_API scan report
           path: ./API_report.html
@@ -95,7 +95,7 @@ jobs:
     runs-on: ubuntu-latest
     name: OWASP ZAP FULL Scan
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
       - uses: ./.github/actions/setup-memory-runtime
 
       - name: Generating report skeletons
@@ -118,7 +118,7 @@ jobs:
 
       - name: Upload HTML report
         if: success() || failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ZAP_FULL scan report
           path: ./fullscan_report.html
