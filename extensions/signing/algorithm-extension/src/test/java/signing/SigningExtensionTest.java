@@ -1,5 +1,27 @@
+/*
+ *   Copyright (c) 2025 Cofinity-X
+ *   Copyright (c) 2025 LKS next
+ *   Copyright (c) 2025 Contributors to the Eclipse Foundation
+ *
+ *   See the NOTICE file(s) distributed with this work for additional
+ *   information regarding copyright ownership.
+ *
+ *   This program and the accompanying materials are made available under the
+ *   terms of the Apache License, Version 2.0 which is available at
+ *   https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *   License for the specific language governing permissions and limitations
+ *   under the License.
+ *
+ *   SPDX-License-Identifier: Apache-2.0
+ *
+ */
 package signing;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.edc.iam.identitytrust.spi.verification.SignatureSuiteRegistry;
 import org.eclipse.edc.iam.verifiablecredentials.spi.model.CredentialFormat;
 import org.eclipse.edc.iam.verifiablecredentials.spi.model.VerifiableCredentialContainer;
@@ -20,7 +42,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -49,48 +70,62 @@ class SigningExtensionTest {
     @Mock private Clock clock;
     @Mock private Monitor monitor;
     @Mock private TypeManager typeManager;
-    @Mock private com.fasterxml.jackson.databind.ObjectMapper mapper;
+    @Mock private ObjectMapper mapper;
 
-    @InjectMocks
     private SigningExtension extension;
 
     @BeforeEach
     void setUp() {
-        lenient().when(typeManager.getMapper("json-ld")).thenReturn(mapper);
+        extension = new SigningExtension();
+
         lenient().when(context.getMonitor()).thenReturn(monitor);
         lenient().when(monitor.withPrefix(anyString())).thenReturn(monitor);
+
+        lenient().when(context.getService(CredentialGeneratorRegistry.class))
+                .thenReturn(generatorRegistry);
+        lenient().when(context.getService(TokenGenerationService.class))
+                .thenReturn(tokenService);
+        lenient().when(context.getService(SignatureSuiteRegistry.class))
+                .thenReturn(signatureSuiteRegistry);
+        lenient().when(context.getService(TypeManager.class))
+                .thenReturn(typeManager);
+
+        lenient().when(context.getService(Clock.class))
+                .thenReturn(clock);
+
+        lenient().when(typeManager.getMapper("json-ld")).thenReturn(mapper);
         lenient().when(clock.instant()).thenReturn(Instant.now());
         lenient().when(clock.getZone()).thenReturn(ZoneId.systemDefault());
-
-
     }
 
     @Test
     void shouldRegisterSuitesAndSimulateVcGeneration() {
         extension.initialize(context);
 
+        ArgumentCaptor<Jws2020SignatureSuite> suiteCaptor =
+                ArgumentCaptor.forClass(Jws2020SignatureSuite.class);
 
-        ArgumentCaptor<Jws2020SignatureSuite> suiteCaptor = ArgumentCaptor.forClass(Jws2020SignatureSuite.class);
         verify(signatureSuiteRegistry).register(eq("PS256"), suiteCaptor.capture());
         verify(signatureSuiteRegistry).register(eq("ES256"), suiteCaptor.capture());
         verify(signatureSuiteRegistry).register(eq("ED25519"), suiteCaptor.capture());
 
-        assertThat(suiteCaptor.getAllValues())
-                .hasSize(3);
+        assertThat(suiteCaptor.getAllValues()).hasSize(3);
 
+        ArgumentCaptor<CredentialGenerator> generatorCaptor =
+                ArgumentCaptor.forClass(CredentialGenerator.class);
 
-        ArgumentCaptor<CredentialGenerator> generatorCaptor = ArgumentCaptor.forClass(CredentialGenerator.class);
-        verify(generatorRegistry).addGenerator(eq(CredentialFormat.VC1_0_JWT), generatorCaptor.capture());
-        verify(generatorRegistry).addGenerator(eq(CredentialFormat.VC1_0_LD), generatorCaptor.capture());
+        verify(generatorRegistry)
+                .addGenerator(eq(CredentialFormat.VC1_0_JWT), generatorCaptor.capture());
+        verify(generatorRegistry)
+                .addGenerator(eq(CredentialFormat.VC1_0_LD), generatorCaptor.capture());
 
         assertThat(generatorCaptor.getAllValues())
-                .anyMatch(g -> g instanceof JwtCredentialGenerator)
-                .anyMatch(g -> g instanceof LdpCredentialGenerator);
+                .anyMatch(JwtCredentialGenerator.class::isInstance)
+                .anyMatch(LdpCredentialGenerator.class::isInstance);
 
-
-        JwtCredentialGenerator jwtGenerator = (JwtCredentialGenerator) generatorCaptor.getAllValues()
-                .stream()
-                .filter(g -> g instanceof JwtCredentialGenerator)
+        JwtCredentialGenerator jwtGenerator = generatorCaptor.getAllValues().stream()
+                .filter(JwtCredentialGenerator.class::isInstance)
+                .map(JwtCredentialGenerator.class::cast)
                 .findFirst()
                 .orElseThrow();
 
@@ -119,8 +154,9 @@ class SigningExtensionTest {
         );
 
         assertThat(result.succeeded()).isTrue();
-        VerifiableCredentialContainer container = result.getContent();
-        assertThat(container.format()).isEqualTo(CredentialFormat.VC1_0_JWT);
-        assertThat(container.rawVc()).isEqualTo("mock-jwt-token");
+        assertThat(result.getContent().format())
+                .isEqualTo(CredentialFormat.VC1_0_JWT);
+        assertThat(result.getContent().rawVc())
+                .isEqualTo("mock-jwt-token");
     }
 }
