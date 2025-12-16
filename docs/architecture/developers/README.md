@@ -1,6 +1,7 @@
 # General view of Identity Hub and the IssuerService component
 
 This represents a high-level architecture overview of the `IdentityHub` service, focusing on the `IssuerService` component and its internal modules.
+
 ```mermaid
 graph TD
 %% Central IdentityHub Service
@@ -44,9 +45,11 @@ IH_API --> IH_DID
 IH_API --> IH_Creds
 IH_API --> IH_Auth
 ```
-# Key Interaction Flows
+
+## Key Interaction Flows
 
 ## 1. Credential Request Flow (IdentityHub → Issuer)
+
 The IdentityHub initiates credential requests by sending a `CredentialRequestMessage` to the Issuer Service. This includes:
 
 - **Holder DID**: For identifying the requesting participant.
@@ -58,6 +61,7 @@ The request is tracked in a `HolderCredentialRequest` object that transitions th
 **CREATED → REQUESTING → REQUESTED → ISSUED** .
 
 ## 2. Credential Issuance Flow (Issuer → IdentityHub)
+
 The Issuer Service processes requests and issues credentials back to the IdentityHub.
 
 - **Verifiable Credentials**: The signed credentials containing the claims.
@@ -66,6 +70,7 @@ The Issuer Service processes requests and issues credentials back to the Identit
 - **Status Information**: For credential revocation checking.
 
 ## 3. Credential Offer Flow (Issuer → IdentityHub)
+
 The Issuer can proactively offer credentials to holders through the `IssuerCredentialOfferService`:.
 
 - **Credential Descriptors**: Describing the offered credentials.
@@ -74,6 +79,7 @@ The Issuer can proactively offer credentials to holders through the `IssuerCrede
 - **Offer Message**: DCP-compliant credential offer message.
 
 ## 4. Status Management Flow (IdentityHub → Issuer)
+
 The IdentityHub can check credential status, and the Issuer provides status information.
 
 - **Credential ID**: For identifying the specific credential.
@@ -81,6 +87,7 @@ The IdentityHub can check credential status, and the Issuer provides status info
 - **Revocation/Suspend Operations**: For credential lifecycle management.
 
 ---
+
 ## Technical Implementation
 
 The interaction is implemented through several key components:
@@ -99,13 +106,10 @@ The interaction is implemented through several key components:
 - The system supports both pull-based (holder requests) and push-based (issuer offers) credential distribution.
 - Credential status is managed through status list credentials for efficient revocation checking.
 
-
-
-
 ## NOTICE
+
 This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
 
 - SPDX-License-Identifier: CC-BY-4.0
 - SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
 - Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub>
----

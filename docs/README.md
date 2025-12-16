@@ -6,10 +6,10 @@ The following table links you to the respective documentations.
 
 - [API Requests](api/README.md)
 - [Administration](admin)
-    - [Migration](admin/migration-guide.md)
+  - [Migration](admin/migration-guide.md)
 - [Architecture](architecture)
-    - [Decision Records](architecture/decision-records)
-    - [Developers](architecture/developers)
+  - [Decision Records](architecture/decision-records)
+  - [Developers](architecture/developers)
 
 ## NOTICE
 

@@ -1,7 +1,7 @@
-
 # Tractus-x IssuerService
 
 ## 1.Overview
+
 The **IssuerService** is a core component of **IdentityHub** responsible for issuing **Verifiable Credentials (VCs)**.  
 It handles:
 
@@ -11,54 +11,64 @@ It handles:
 - Persistence of issuance records.
 
 **Primary external actor:**
+
 - `Client` → requests credential issuance via `IdentityHub`.
 
 ---
 
-
 ## 2.Core Modules of IssuerService
 
 ### 2.1 `issuerservice-core`
+
 - Contains the **core logic** of the IssuerService.
 - Responsible for:
-    - Orchestrating the issuance workflow.
-    - Applying **issuance rules** and policies.
-    - Validating claims against credential definitions.
-    - Constructing and signing Verifiable Credentials (VCs).
+  - Orchestrating the issuance workflow.
+  - Applying **issuance rules** and policies.
+  - Validating claims against credential definitions.
+  - Constructing and signing Verifiable Credentials (VCs).
 
 ### 2.2 `issuerservice-credentials`
+
 - Contains **domain models** and structures for credentials.
 - Responsible for:
-    - Defining credential schemas and data structures.
-    - Supporting JSON-LD and W3C-compliant VC representations.
-    - Utilities for credential transformation and serialization.
+  - Defining credential schemas and data structures.
+  - Supporting JSON-LD and W3C-compliant VC representations.
+  - Utilities for credential transformation and serialization.
 
 ### 2.3 `issuerservice-holders`
+
 - Handles interactions with **credential holders** (the entity receiving the VC).
 - Responsible for:
-    - Optional SPI to store or notify holders.
-    - Interfacing with `HolderStore` implementations (SQL or other backends).
-    - Managing holder-related metadata or attestations.
+  - Optional SPI to store or notify holders.
+  - Interfacing with `HolderStore` implementations (SQL or other backends).
+  - Managing holder-related metadata or attestations.
 
 ### 2.4 `issuerservice-issuance`
+
 - Contains the **implementation of the issuance service**.
 - Responsible for:
-    - Integrating core logic, credential models, and holder interactions.
-    - Recording issuance metadata in the **IssuanceProcessStore**.
-    - Exposing SPI or API hooks for external IdentityHub components.
-    - Ensuring auditability and traceability of issued credentials.
+  - Integrating core logic, credential models, and holder interactions.
+  - Recording issuance metadata in the **IssuanceProcessStore**.
+  - Exposing SPI or API hooks for external IdentityHub components.
+  - Ensuring auditability and traceability of issued credentials.
 
 ---
-##  3.IssuerService SPIs
+
+## 3.IssuerService SPIs
+
 The IssuerService exposes several SPIs (Service Provider Interfaces) to allow for extensibility and customization:
 
 ### 3.1 `issuerservice-credential-spi`
+
 Handles credential status management and operations:
+
 - **CredentialStatusService**: Manages credential lifecycle operations like revocation, suspension, and status checking
 - **IssuerCreentialOfferService**: Sends credential offers to holders proactively.
 
 ### 3.2 `issuerservice-issuance-spi`
+
 Manages the credential issuance process lifecycle:
+
 - **AttestationSource**: Sources data when an attestation pipeline is executed for credential issuance requests
 - **AttestationContext**: Provides access to context data for attestation evaluation, including validated token claims and participant ID
 - **CredentialGenerator**: Generates and signs credentials based on definitions and claims
@@ -83,14 +93,15 @@ stateDiagram-v2
 
 
 ```
+
 ### 3.3 `holder-spi`
+
 Manages holder-related operations:
+
 - **HolderService**: Manages holder information and operations within the issuer service context.
 
-
-
-
 ## Key Notes
+
 1. IssuerService only persists metadata, not the full VC. Full VC storage happens in IdentityHub.
 
 2. CredentialDefinitionStore provides schema, policies, and issuer DID.
@@ -111,4 +122,4 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 
 - SPDX-License-Identifier: CC-BY-4.0
 - SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
-- Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub> 
+- Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub>
