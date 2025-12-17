@@ -29,6 +29,7 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 - Fix Helm chart auto generated README.md files by @AYaoZhan in [#163](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/163)
 - Fix missing API in issuerservice charts by @AYaoZhan in [#174](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/174)
 - Fix Postgresql missing tables not being added by @AYaoZhan in [#178](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/178)
+- Fix issuerservice not secured with X-API-KEY header by @AyaoZhan in [#185](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/185)
 
 ## [0.0.1] - 2025-07-16
 
