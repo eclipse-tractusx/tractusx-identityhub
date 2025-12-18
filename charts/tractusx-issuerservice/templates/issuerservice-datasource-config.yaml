@@ -1,5 +1,6 @@
 #################################################################################
   #  Copyright (c) 2025 Cofinity-X
+  #  Copyright (c) 2025 LKS Next
   #  Copyright (c) 2025 Contributors to the Eclipse Foundation
   #
   #  See the NOTICE file(s) distributed with this work for additional
@@ -90,3 +91,15 @@ data:
   edc.datasource.jti.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
   edc.datasource.jti.user: {{ .Values.postgresql.auth.username | quote }}
   edc.datasource.jti.password: {{ .Values.postgresql.auth.password | quote }}
+
+  # VerifiableCredentialResources
+  edc.sql.store.credentials.datasource: "credentials"
+  edc.datasource.credentials.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
+  edc.datasource.credentials.user: {{ .Values.postgresql.auth.username | quote }}
+  edc.datasource.credentials.password: {{ .Values.postgresql.auth.password | quote }}
+
+  # Holders
+  edc.sql.store.holder.datasource: "holder"
+  edc.datasource.holder.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
+  edc.datasource.holder.user: {{ .Values.postgresql.auth.username | quote }}
+  edc.datasource.holder.password: {{ .Values.postgresql.auth.password | quote }}
