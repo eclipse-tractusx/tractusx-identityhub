@@ -26,13 +26,13 @@ info:
   version: 1.0.0
   description: ''
 servers:
-  - url: '{{CREDENTIAL_PATH}}'
-  - url: '{{DID_PATH}}'
-  - url: '{{IDENTITY_PATH}}'
-  - url: '{{ISSUANCE_PATH}}'
-  - url: '{{ISSUER_ADMIN_PATH}}'
-  - url: '{{STS_PATH}}'
-  - url: '{{STATUS_LIST_PATH}}'
+  - url: 'https://{{CREDENTIAL_PATH}}'
+  - url: 'https://{{DID_PATH}}'
+  - url: 'https://{{IDENTITY_PATH}}'
+  - url: 'https://{{ISSUANCE_PATH}}'
+  - url: 'https://{{ISSUER_ADMIN_PATH}}'
+  - url: 'https://{{STS_PATH}}'
+  - url: 'https://{{STATUS_LIST_PATH}}'
 components:
   securitySchemes:
     X-Api-Key:
@@ -46,6 +46,93 @@ components:
         Bearer token authentication with JWT tokens issued by the STS service (Bearer token)
       in: header
       name: Authorization
+  
+  schemas:
+    SuccessResponse:
+      type: object
+      additionalProperties: false
+      description: Generic success response
+    
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      description: Generic error response
+      properties:
+        error:
+          type: string
+          pattern: "^[a-zA-Z0-9._\\s-]+$"
+          description: Error code or type
+        message:
+          type: string
+          pattern: "^[a-zA-Z0-9._\\s-]+$"
+          description: Human-readable error message
+      required:
+        - error
+        - message
+  
+  responses:
+    Success:
+      description: Operation successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SuccessResponse'
+    
+    BadRequest:
+      description: Bad request - invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    Unauthorized:
+      description: Unauthorized - authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    Forbidden:
+      description: Forbidden - insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    Conflict:
+      description: Conflict - resource already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    UnsupportedMediaType:
+      description: Unsupported media type
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    TooManyRequests:
+      description: Too many requests - rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
 
 
 
@@ -60,6 +147,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: >-
         Notifies the holder about the availability of a particular credential
@@ -69,31 +158,40 @@ paths:
         - Credential Offer
       responses:
         '200':
-          description: Credential offer sent successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 '@context':
                   type: array
                   maxItems: 2147483647
                   items:
                     type: string
+                    maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                     format: uri
                 type:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 '@id':
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._:/|-]+$"
                 issuer:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               '@context':
                 - https://w3id.org/dspace-dcp/v1.0/dcp.jsonld
@@ -107,6 +205,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: >-
         Issues a new presentation query, that contains either a DIF presentation
@@ -117,26 +217,32 @@ paths:
       responses:
         '200':
           description: Presentation query issued successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 '@context':
                   type: array
                   maxItems: 2147483647
                   items:
                     type: string
+                    maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                     format: uri
                 type:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 presentationDefinition:
                   nullable: true
                 scope:
@@ -144,6 +250,8 @@ paths:
                   maxItems: 2147483647
                   items:
                     type: string
+                    maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                     format: uri
             example:
               '@context':
@@ -163,6 +271,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: Writes a set of credentials into storage
       tags:
@@ -171,46 +281,66 @@ paths:
       responses:
         '201':
           description: Credentials stored successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 '@context':
                   type: array
                   maxItems: 2147483647
                   items:
                     type: string
+                    maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                     format: uri
                 type:
                   type: string
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 credentials:
                   type: array
                   maxItems: 2147483647
                   items:
                     type: object
+                    additionalProperties: false
                     properties:
                       credentialType:
                         type: string
+                        maxLength: 1000
+                        pattern: "^[a-zA-Z0-9._-]+$"
                       payload:
                         type: string
+                        maxLength: 1000
+                        pattern: "^[A-Za-z0-9+/]+=*$"
                       format:
                         type: string
+                        maxLength: 1000
+                        pattern: "^[a-zA-Z0-9._-]+$"
                 issuerPid:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 holderPid:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 status:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 requestId:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               '@context':
                 - https://w3id.org/dspace-dcp/v1.0/dcp.jsonld
@@ -236,14 +366,16 @@ paths:
       responses:
         '200':
           description: DID document retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '404':
-          description: DID not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/dids/{DID}/endpoints:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -251,11 +383,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: DID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
+          maxLength: 1000
     post:
       summary: Adds a service endpoint to a particular DID document.
       tags: &ref_0
@@ -271,28 +407,36 @@ paths:
       responses:
         '201':
           description: Service endpoint added successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: DID not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 id:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                   format: uri
                 serviceEndpoint:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._:/|-]+$"
                   format: uri
                 type:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               id: did:web:super-user#service-1
               serviceEndpoint: http://localhost:8182/api/identity
@@ -307,6 +451,8 @@ paths:
           example: string
           schema:
             type: string
+            maxLength: 1000
+            pattern: "^[a-zA-Z0-9._:/|-]+$"
         - name: autoPublish
           in: query
           required: false
@@ -317,13 +463,13 @@ paths:
         '204':
           description: Service endpoint removed successfully
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Service endpoint not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
     patch:
       summary: Replaces a service endpoint of a particular DID document.
       tags: *ref_0
@@ -337,28 +483,36 @@ paths:
       responses:
         '200':
           description: Service endpoint updated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Service endpoint not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 id:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                   format: uri
                 serviceEndpoint:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._:/|-]+$"
                   format: uri
                 type:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               id: did:web:super-user#service-1
               serviceEndpoint: http://localhost:8182/api/identity
@@ -374,6 +528,7 @@ paths:
       responses:
         '200':
           description: DID documents retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -382,11 +537,11 @@ paths:
                 items:
                   type: object
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          description: Forbidden - requires elevated access
+          $ref: '#/components/responses/Forbidden'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/dids/state:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -394,6 +549,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: Get state of a DID document
       tags: *ref_0
@@ -401,26 +558,31 @@ paths:
       responses:
         '200':
           description: DID state retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: DID not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 did:
                   type: string
+                  maxLength: 1000
+                  pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
                   format: uri
             example:
               did: did:web:super-user
@@ -431,6 +593,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: >-
         Publish an (existing) DID document. The DID is expected to exist in the
@@ -440,22 +604,26 @@ paths:
       responses:
         '200':
           description: DID published successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: DID not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 did:
                   type: string
+                  maxLength: 1000
+                  pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
                   format: uri
             example:
               did: did:web:super-user
@@ -466,6 +634,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: Query for DID documents.
       tags: *ref_0
@@ -473,6 +643,7 @@ paths:
       responses:
         '200':
           description: DID documents query results
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -481,16 +652,17 @@ paths:
                 items:
                   type: object
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 limit:
                   type: integer
@@ -506,6 +678,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: >-
         Un-Publish an (existing) DID document. The DID is expected to exist in
@@ -514,23 +688,26 @@ paths:
       parameters: []
       responses:
         '200':
-          description: DID unpublished successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: DID not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 did:
                   type: string
+                  maxLength: 1000
+                  pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
                   format: uri
             example:
               did: did:web:super-user
@@ -541,6 +718,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     put:
       summary: >-
         Adds a new key pair to a ParticipantContext. Note that the key pair is
@@ -559,41 +738,56 @@ paths:
       responses:
         '201':
           description: Key pair created successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '409':
-          description: Key pair already exists
+          $ref: '#/components/responses/Conflict'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 active:
                   type: boolean
                 keyId:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 privateKeyAlias:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 type:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 keyGeneratorParams:
                   type: object
+                  additionalProperties: false
                   properties:
                     algorithm:
                       type: string
+                      maxLength: 1000
+                      pattern: "^[a-zA-Z0-9_-]+$"
                     curve:
                       type: string
+                      maxLength: 1000
+                      pattern: "^[a-zA-Z0-9_-]+$"
                 publicKeyJwk:
                   nullable: true
                 publicKeyPem:
                   nullable: true
                 resourceId:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               active: true
               keyId: my-new-key
@@ -612,6 +806,7 @@ paths:
       responses:
         '200':
           description: Key pairs retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -620,9 +815,9 @@ paths:
                 items:
                   type: object
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -630,11 +825,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: KEY_PAIR_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
+          maxLength: 1000
     get:
       summary: Finds a KeyPairResource by ID.
       tags: *ref_1
@@ -642,16 +841,18 @@ paths:
       responses:
         '200':
           description: Key pair retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Key pair not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/keypairs:
     parameters: []
     get:
@@ -675,6 +876,7 @@ paths:
       responses:
         '200':
           description: All key pairs retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -683,11 +885,11 @@ paths:
                 items:
                   type: object
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          description: Forbidden - requires elevated access
+          $ref: '#/components/responses/Forbidden'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}/revoke:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -695,11 +897,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: KEY_PAIR_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
+          maxLength: 1000
     post:
       summary: >-
         Revokes (=removes) a particular key pair, identified by their ID and
@@ -709,41 +915,56 @@ paths:
       responses:
         '200':
           description: Key pair revoked successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Key pair not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 active:
                   type: boolean
                 keyId:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 privateKeyAlias:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 type:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 keyGeneratorParams:
                   type: object
+                  additionalProperties: false
                   properties:
                     algorithm:
                       type: string
+                      maxLength: 1000
+                      pattern: "^[a-zA-Z0-9_-]+$"
                     curve:
                       type: string
+                      maxLength: 1000
+                      pattern: "^[a-zA-Z0-9_-]+$"
                 publicKeyJwk:
                   nullable: true
                 publicKeyPem:
                   nullable: true
                 resourceId:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               active: true
               keyId: my-new-key2
@@ -762,11 +983,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: KEY_PAIR_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
+          maxLength: 1000
     post:
       summary: >-
         Rotates (=retires) a particular key pair, identified by their ID and
@@ -782,41 +1007,56 @@ paths:
       responses:
         '200':
           description: Key pair rotated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Key pair not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 active:
                   type: boolean
                 keyId:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 privateKeyAlias:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 type:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 keyGeneratorParams:
                   type: object
+                  additionalProperties: false
                   properties:
                     algorithm:
                       type: string
+                      maxLength: 1000
+                      pattern: "^[a-zA-Z0-9_-]+$"
                     curve:
                       type: string
+                      maxLength: 1000
+                      pattern: "^[a-zA-Z0-9_-]+$"
                 publicKeyJwk:
                   nullable: true
                 publicKeyPem:
                   nullable: true
                 resourceId:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               active: true
               keyId: my-new-key3
@@ -835,11 +1075,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: KEY_PAIR_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
+          maxLength: 1000
     post:
       summary: >-
         Sets a KeyPairResource to the ACTIVE state. Will fail if the current
@@ -849,21 +1093,23 @@ paths:
       responses:
         '200':
           description: Key pair activated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Key pair not found
+          $ref: '#/components/responses/NotFound'
         '409':
-          description: Key pair cannot be activated in current state
+          $ref: '#/components/responses/Conflict'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: {}
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/state:
     parameters:
@@ -872,6 +1118,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: >-
         Activates a ParticipantContext. This operation is idempotent, i.e.
@@ -889,19 +1137,21 @@ paths:
       responses:
         '200':
           description: Participant context state updated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Participant context not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: {}
   /v1alpha/participants:
     parameters: []
@@ -912,44 +1162,62 @@ paths:
       responses:
         '201':
           description: Participant context created successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '409':
-          description: Participant context already exists
+          $ref: '#/components/responses/Conflict'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 active:
                   type: boolean
                 did:
                   type: string
+                  maxLength: 1000
+                  pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
                   format: uri
                 key:
                   type: object
+                  additionalProperties: false
                   properties:
                     keyGeneratorParams:
                       type: object
+                      additionalProperties: false
                       properties:
                         algorithm:
                           type: string
+                          maxLength: 1000
+                          pattern: "^[a-zA-Z0-9_-]+$"
                         curve:
                           type: string
+                          maxLength: 1000
+                          pattern: "^[a-zA-Z0-9_-]+$"
                     keyId:
                       type: string
+                      maxLength: 1000
+                      pattern: "^[a-zA-Z0-9._-]+$"
                     privateKeyAlias:
                       type: string
+                      maxLength: 1000
+                      pattern: "^[a-zA-Z0-9._-]+$"
                 participantId:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 roles:
                   type: array
                   maxItems: 2147483647
                   items:
                     type: string
+                    maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
             example:
               active: true
               did: did:web:eclipse-tractus-x
@@ -983,6 +1251,7 @@ paths:
       responses:
         '200':
           description: Participant contexts retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -991,11 +1260,11 @@ paths:
                 items:
                   type: object
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          description: Forbidden - requires elevated access
+          $ref: '#/components/responses/Forbidden'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1003,6 +1272,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     delete:
       summary: Delete a ParticipantContext.
       tags: *ref_2
@@ -1011,11 +1282,11 @@ paths:
         '204':
           description: Participant context deleted successfully
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Participant context not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
     get:
       summary: Gets ParticipantContexts by ID.
       tags: *ref_2
@@ -1023,16 +1294,18 @@ paths:
       responses:
         '200':
           description: Participant context retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Participant context not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/token:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1040,6 +1313,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: >-
         Regenerates the API token for a ParticipantContext and returns the new
@@ -1049,19 +1324,23 @@ paths:
       responses:
         '200':
           description: API token regenerated successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
                 properties:
                   token:
                     type: string
+                    maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Participant context not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/roles:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1069,6 +1348,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     put:
       summary: >-
         Updates a ParticipantContext's roles. Note that this is an absolute
@@ -1079,16 +1360,17 @@ paths:
       responses:
         '200':
           description: Roles updated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          description: Forbidden - requires elevated privileges
+          $ref: '#/components/responses/Forbidden'
         '404':
-          description: Participant context not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -1097,6 +1379,8 @@ paths:
               maxItems: 2147483647
               items:
                 type: string
+                maxLength: 1000
+                pattern: "^[a-zA-Z0-9._-]+$"
             example:
               - admin
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials:
@@ -1106,6 +1390,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: Adds a new VerifiableCredential into the system.
       tags: &ref_3
@@ -1115,50 +1401,68 @@ paths:
       responses:
         '201':
           description: Verifiable credential added successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 id:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 participantContextId:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[A-Za-z0-9+/]+=*$"
                 verifiableCredentialContainer:
                   type: object
+                  additionalProperties: false
                   properties:
                     credential:
                       type: object
+                      additionalProperties: false
                       properties:
                         credentialSchema:
                           type: array
                           maxItems: 2147483647
                           items:
                             type: object
+                            additionalProperties: false
                             properties:
                               id:
                                 type: string
+                                maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                                 format: uri
                               type:
                                 type: string
+                                maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                         credentialStatus:
                           type: array
                           maxItems: 2147483647
                           items:
                             type: object
+                            additionalProperties: false
                             properties:
                               id:
                                 type: string
+                                maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                                 format: uri
                               type:
                                 type: string
+                                maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                         credentialSubject:
                           type: array
                           maxItems: 2147483647
@@ -1167,30 +1471,44 @@ paths:
                             properties:
                               id:
                                 type: string
+                                maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                                 format: uri
                               holderIdentifier:
                                 type: string
+                                maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                         '@context':
                           type: array
                           maxItems: 2147483647
                           items:
                             type: string
+                            maxLength: 1000
+                            pattern: "^[a-zA-Z0-9._-]+$"
                             format: uri
                         id:
                           type: string
+                          maxLength: 1000
+                          pattern: "^[a-zA-Z0-9._-]+$"
                         type:
                           type: array
                           maxItems: 2147483647
                           items:
                             type: string
+                            maxLength: 1000
+                            pattern: "^[a-zA-Z0-9._-]+$"
                         issuer:
                           type: string
+                          maxLength: 1000
+                          pattern: "^[a-zA-Z0-9._-]+$"
                           format: uri
                         issuanceDate:
                           type: string
+                          maxLength: 1000
                           format: date-time
                         expirationDate:
                           type: string
+                          maxLength: 1000
                           format: date-time
             example:
               id: 1f36af58-0fc0-4b24-9b1c-e37d59668089
@@ -1223,6 +1541,7 @@ paths:
       responses:
         '200':
           description: Verifiable credentials query results
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -1231,9 +1550,9 @@ paths:
                 items:
                   type: object
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
     put:
       summary: Update an existing VerifiableCredential.
       tags: *ref_3
@@ -1241,52 +1560,70 @@ paths:
       responses:
         '200':
           description: Verifiable credential updated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Verifiable credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 id:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 participantContextId:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[A-Za-z0-9+/]+=*$"
                 verifiableCredentialContainer:
                   type: object
+                  additionalProperties: false
                   properties:
                     credential:
                       type: object
+                      additionalProperties: false
                       properties:
                         credentialSchema:
                           type: array
                           maxItems: 2147483647
                           items:
                             type: object
+                            additionalProperties: false
                             properties:
                               id:
                                 type: string
+                                maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                                 format: uri
                               type:
                                 type: string
+                                maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                         credentialStatus:
                           type: array
                           maxItems: 2147483647
                           items:
                             type: object
+                            additionalProperties: false
                             properties:
                               id:
                                 type: string
+                                maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                                 format: uri
                               type:
                                 type: string
+                                maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                         credentialSubject:
                           type: array
                           maxItems: 2147483647
@@ -1295,30 +1632,44 @@ paths:
                             properties:
                               id:
                                 type: string
+                                maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                                 format: uri
                               holderIdentifier:
                                 type: string
+                                maxLength: 1000
+                                pattern: "^[a-zA-Z0-9._-]+$"
                         '@context':
                           type: array
                           maxItems: 2147483647
                           items:
                             type: string
+                            maxLength: 1000
+                            pattern: "^[a-zA-Z0-9._-]+$"
                             format: uri
                         id:
                           type: string
+                          maxLength: 1000
+                          pattern: "^[a-zA-Z0-9._-]+$"
                         type:
                           type: array
                           maxItems: 2147483647
                           items:
                             type: string
+                            maxLength: 1000
+                            pattern: "^[a-zA-Z0-9._-]+$"
                         issuer:
                           type: string
+                          maxLength: 1000
+                          pattern: "^[a-zA-Z0-9._-]+$"
                           format: uri
                         issuanceDate:
                           type: string
+                          maxLength: 1000
                           format: date-time
                         expirationDate:
                           type: string
+                          maxLength: 1000
                           format: date-time
             example:
               id: 1f36af58-0fc0-4b24-9b1c-e37d59668089
@@ -1351,11 +1702,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+          maxLength: 1000
     delete:
       summary: Delete a VerifiableCredential.
       tags: *ref_3
@@ -1364,11 +1719,11 @@ paths:
         '204':
           description: Verifiable credential deleted successfully
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Verifiable credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
     get:
       summary: Finds a VerifiableCredential by ID.
       tags: *ref_3
@@ -1376,16 +1731,18 @@ paths:
       responses:
         '200':
           description: Verifiable credential retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Verifiable credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/request/{HOLDER_PID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1393,11 +1750,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: HOLDER_PID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     get:
       summary: Finds a credential request by ID.
       tags: *ref_3
@@ -1405,16 +1766,18 @@ paths:
       responses:
         '200':
           description: Credential request retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential request not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/credentials:
     parameters: []
     get:
@@ -1426,6 +1789,7 @@ paths:
       responses:
         '200':
           description: All verifiable credentials retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -1434,11 +1798,11 @@ paths:
                 items:
                   type: object
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          description: Forbidden - requires elevated access
+          $ref: '#/components/responses/Forbidden'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/request:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1446,6 +1810,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: >-
         Triggers a credential request that is send to the issuer via the DCP
@@ -1455,35 +1821,48 @@ paths:
       responses:
         '200':
           description: Credential request triggered successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 credentials:
                   type: array
                   maxItems: 2147483647
                   items:
                     type: object
+                    additionalProperties: false
                     properties:
                       format:
                         type: string
+                        maxLength: 1000
+                        pattern: "^[a-zA-Z0-9._-]+$"
                       id:
                         type: string
+                        maxLength: 1000
+                        pattern: "^[a-zA-Z0-9._-]+$"
                       type:
                         type: string
+                        maxLength: 1000
+                        pattern: "^[a-zA-Z0-9._-]+$"
                 holderPid:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                   format: uri
                 issuerDid:
                   type: string
+                  maxLength: 1000
+                  pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
                   format: uri
             example:
               credentials:
@@ -1499,11 +1878,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: CREDENTIAL_REQUEST_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
+          maxLength: 1000
     get:
       summary: Requests status information about an issuance request from an issuer
       tags:
@@ -1512,16 +1895,18 @@ paths:
       responses:
         '200':
           description: Credential request status retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential request not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/metadata:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1529,6 +1914,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     get:
       summary: Requests information about the capabilities of this issuer.
       tags:
@@ -1537,14 +1924,16 @@ paths:
       responses:
         '200':
           description: Issuer metadata retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/attestations:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1552,6 +1941,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: Creates an attestation definition in the runtime.
       tags: &ref_4
@@ -1561,40 +1952,43 @@ paths:
       responses:
         '201':
           description: Attestation definition created successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 attestationType:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 configuration:
                   type: object
+                  additionalProperties: false
                   properties:
                     credentialType:
                       type: string
+                      maxLength: 1000
+                      pattern: "^[a-zA-Z0-9._-]+$"
                     outputClaim:
-                      type: object
-                    additionalProp2:
-                      type: object
-                    additionalProp3:
                       type: object
                 id:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               attestationType: presentation
               configuration:
                 credentialType: ''
                 outputClaim: {}
-                additionalProp2: {}
-                additionalProp3: {}
               id: string
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/attestations/{ATTESTATION_DEFINITION_ID}:
     parameters:
@@ -1603,11 +1997,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: ATTESTATION_DEFINITION_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
+          maxLength: 1000
     delete:
       summary: Deletes an attestation definition.
       tags: *ref_4
@@ -1616,11 +2014,11 @@ paths:
         '204':
           description: Attestation definition deleted successfully
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Attestation definition not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/attestations/query:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1628,6 +2026,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: Query attestation definitions
       tags: *ref_4
@@ -1635,6 +2035,7 @@ paths:
       responses:
         '200':
           description: Attestation definitions query results
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -1643,16 +2044,17 @@ paths:
                 items:
                   type: object
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: null
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions:
     parameters:
@@ -1661,6 +2063,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: Adds a new credential definition.
       tags: &ref_5
@@ -1670,17 +2074,19 @@ paths:
       responses:
         '201':
           description: Credential definition created successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: null
     put:
       summary: Updates credential definition.
@@ -1689,19 +2095,21 @@ paths:
       responses:
         '200':
           description: Credential definition updated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential definition not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: null
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions/{CREDENTIAL_DEFINITION_ID}:
     parameters:
@@ -1710,11 +2118,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: CREDENTIAL_DEFINITION_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
+          maxLength: 1000
     delete:
       summary: Deletes a credential definition by its ID.
       tags: *ref_5
@@ -1723,11 +2135,11 @@ paths:
         '204':
           description: Credential definition deleted successfully
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential definition not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
     get:
       summary: Gets a credential definition by its ID.
       tags: *ref_5
@@ -1735,16 +2147,18 @@ paths:
       responses:
         '200':
           description: Credential definition retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential definition not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions/query:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1752,6 +2166,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: Gets all credential definitions for a certain query.
       tags: *ref_5
@@ -1759,6 +2175,7 @@ paths:
       responses:
         '200':
           description: Credential definitions query results
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -1767,16 +2184,17 @@ paths:
                 items:
                   type: object
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: null
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/status:
     parameters:
@@ -1785,11 +2203,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+          maxLength: 1000
     get:
       summary: >-
         Checks the revocation status of a credential with the given ID for the
@@ -1801,20 +2223,24 @@ paths:
       responses:
         '200':
           description: Credential status retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
                 properties:
                   status:
                     type: string
+                    maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                     enum: [active, revoked, suspended]
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/query:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1822,6 +2248,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: Query credentials, possibly across multiple participants.
       tags: *ref_6
@@ -1829,6 +2257,7 @@ paths:
       responses:
         '200':
           description: Credentials query results
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -1837,16 +2266,17 @@ paths:
                 items:
                   type: object
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: null
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/resume:
     parameters:
@@ -1855,11 +2285,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+          maxLength: 1000
     post:
       summary: >-
         Resumes a credential with the given ID for the given participant.
@@ -1869,14 +2303,15 @@ paths:
       responses:
         '200':
           description: Credential resumed successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/revoke:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1884,11 +2319,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+          maxLength: 1000
     post:
       summary: >-
         Revokes a credential with the given ID for the given participant.
@@ -1898,14 +2337,15 @@ paths:
       responses:
         '200':
           description: Credential revoked successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/suspend:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1913,11 +2353,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: CREDENTIAL_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+          maxLength: 1000
     post:
       summary: >-
         Suspends a credential with the given ID for the given participant.
@@ -1928,14 +2372,15 @@ paths:
       responses:
         '200':
           description: Credential suspended successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/credentials/offer:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -1943,6 +2388,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: Triggers a DCP CredentialOffer message being sent to the holder.
       tags: *ref_6
@@ -1950,25 +2397,31 @@ paths:
       responses:
         '200':
           description: Credential offer sent successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 credentials:
                   type: array
                   maxItems: 2147483647
                   items:
                     type: string
+                    maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                 holderId:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               credentials:
                 - string
@@ -1980,6 +2433,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: Adds a new holder.
       tags: &ref_7
@@ -1989,26 +2444,34 @@ paths:
       responses:
         '201':
           description: Holder created successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '409':
-          description: Holder already exists
+          $ref: '#/components/responses/Conflict'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 did:
                   type: string
+                  maxLength: 1000
+                  pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
                 holderId:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 name:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               did: string
               holderId: string
@@ -2020,27 +2483,35 @@ paths:
       responses:
         '200':
           description: Holder updated successfully
+          $ref: '#/components/responses/Success'
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Holder not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 did:
                   type: string
+                  maxLength: 1000
+                  pattern: "^did:[a-z0-9]+:[a-zA-Z0-9._-]+$"
                   format: uri
                 holderId:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
                 name:
                   type: string
+                  maxLength: 1000
+                  pattern: "^[a-zA-Z0-9._-]+$"
             example:
               did: did:web:webhook.site:dbdd9b07-f1cf-4586-b2e2-fc8e8c5515da
               holderId: string
@@ -2052,6 +2523,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: Gets all holders for a certain query.
       tags: *ref_7
@@ -2059,6 +2532,7 @@ paths:
       responses:
         '200':
           description: Holders query results
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -2067,16 +2541,17 @@ paths:
                 items:
                   type: object
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: null
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/holders/{HOLDER_ID}:
     parameters:
@@ -2085,11 +2560,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: HOLDER_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
+          maxLength: 1000
     get:
       summary: Gets metadata for a certain holder.
       tags: *ref_7
@@ -2097,16 +2576,18 @@ paths:
       responses:
         '200':
           description: Holder metadata retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Holder not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/issuanceprocesses/query:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
@@ -2114,6 +2595,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
     post:
       summary: Gets all issuance processes for a certain query.
       tags: &ref_8
@@ -2123,6 +2606,7 @@ paths:
       responses:
         '200':
           description: Issuance processes query results
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
@@ -2131,16 +2615,17 @@ paths:
                 items:
                   type: object
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
             example: null
   /v1alpha/participants/{PARTICIPANT_CONTEXT_ID}/issuanceprocesses/{ISSUANCE_PROCESS_ID}:
     parameters:
@@ -2149,11 +2634,15 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[A-Za-z0-9+/]+=*$"
+          maxLength: 1000
       - name: ISSUANCE_PROCESS_ID
         in: path
         required: true
         schema:
           type: string
+          pattern: "^[a-zA-Z0-9._-]+$"
+          maxLength: 1000
     get:
       summary: Gets an issuance process by its ID.
       tags: *ref_8
@@ -2161,16 +2650,18 @@ paths:
       responses:
         '200':
           description: Issuance process retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Issuance process not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /token:
     parameters: []
     post:
@@ -2181,23 +2672,29 @@ paths:
       responses:
         '200':
           description: Token issued successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
                 properties:
                   access_token:
                     type: string
+                    maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                   token_type:
                     type: string
+                    maxLength: 1000
+                    pattern: "^[a-zA-Z0-9._-]+$"
                   expires_in:
                     type: integer
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequest'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /{CREDENTIAL_ID}:
     parameters:
       - name: CREDENTIAL_ID
@@ -2205,6 +2702,8 @@ paths:
         required: true
         schema:
           type: string
+          pattern: "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+          maxLength: 1000
     get:
       summary: Resolves and returns a verifiable credential by ID
       tags:
@@ -2213,11 +2712,13 @@ paths:
       responses:
         '200':
           description: Verifiable credential retrieved successfully
+          $ref: '#/components/responses/Success'
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
         '404':
-          description: Credential not found
+          $ref: '#/components/responses/NotFound'
         '500':
           description: Internal server error
