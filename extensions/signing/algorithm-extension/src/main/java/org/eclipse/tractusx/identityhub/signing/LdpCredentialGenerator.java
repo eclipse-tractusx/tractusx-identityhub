@@ -1,6 +1,6 @@
 /*
  *   Copyright (c) 2025 Cofinity-X
- *   Copyright (c) 2025 LKS next
+ *   Copyright (c) 2026 LKS next
  *   Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  *   See the NOTICE file(s) distributed with this work for additional

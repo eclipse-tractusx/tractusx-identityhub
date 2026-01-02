@@ -1,6 +1,6 @@
 /*
  *   Copyright (c) 2025 Cofinity-X
- *   Copyright (c) 2025 LKS next
+ *   Copyright (c) 2026 LKS next
  *   Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  *   See the NOTICE file(s) distributed with this work for additional
@@ -24,14 +24,12 @@ package org.eclipse.tractusx.identityhub.signing;
 
 import org.eclipse.edc.iam.identitytrust.spi.verification.SignatureSuiteRegistry;
 import org.eclipse.edc.iam.verifiablecredentials.spi.model.CredentialFormat;
-import org.eclipse.edc.issuerservice.issuance.generator.JwtCredentialGenerator;
 import org.eclipse.edc.issuerservice.spi.issuance.generator.CredentialGeneratorRegistry;
 import org.eclipse.edc.keys.spi.PrivateKeyResolver;
 import org.eclipse.edc.security.signature.jws2020.Jws2020SignatureSuite;
 import org.eclipse.edc.spi.system.ServiceExtension;
 import org.eclipse.edc.spi.system.ServiceExtensionContext;
 import org.eclipse.edc.spi.types.TypeManager;
-import org.eclipse.edc.token.spi.TokenGenerationService;
 import org.eclipse.edc.verifiablecredentials.linkeddata.LdpIssuer;
 
 import java.time.Clock;
@@ -50,7 +48,6 @@ public class SigningExtension implements ServiceExtension {
         var monitor = context.getMonitor().withPrefix(NAME);
 
         var generatorRegistry = context.getService(CredentialGeneratorRegistry.class);
-        var tokenGenerationService = context.getService(TokenGenerationService.class);
         var ldpIssuer = context.getService(LdpIssuer.class);
         var signatureSuiteRegistry = context.getService(SignatureSuiteRegistry.class);
         var privateKeyResolver = context.getService(PrivateKeyResolver.class);
@@ -68,9 +65,6 @@ public class SigningExtension implements ServiceExtension {
         );
         monitor.info("Registered Jws2020SignatureSuite for PS256, ES256, ED25519");
 
-        var jwtGenerator = new JwtCredentialGenerator(tokenGenerationService, clock);
-        generatorRegistry.addGenerator(CredentialFormat.VC1_0_JWT, jwtGenerator);
-        monitor.info("Registered generator for VC1_0_JWT");
 
         var ldpGenerator = new LdpCredentialGenerator(
                 ldpIssuer,

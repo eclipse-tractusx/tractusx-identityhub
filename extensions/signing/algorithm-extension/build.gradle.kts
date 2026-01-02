@@ -19,7 +19,6 @@ dependencies {
     implementation(libs.edc.dcp.identityhub.core)
     implementation(libs.edc.ih.spi)
     implementation(libs.edc.lib.keys)
-    implementation(libs.edc.issuerservice.issuance)
     implementation(libs.edc.lib.crypto)
     implementation(libs.edc.token.spi)
     implementation(libs.edc.issuerservice.issuance.spi)
