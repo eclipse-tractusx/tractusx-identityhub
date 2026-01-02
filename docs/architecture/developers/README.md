@@ -6,7 +6,7 @@ This guide is intended to help developers understand the architecture and the pr
 
 ### API Access
 
-- **Hub API**: Public-facing endpoints for VCs and VPs.
+- **IssuerService API**: Manages verifiable credential definitions, rules, and status, as well as its metadata.
 - **Identity API**: Administrative operations for managing keys, DIDs, and participant contexts. Elevated privileges required for mutation.
 
 ### Module Extension
@@ -32,5 +32,5 @@ This guide is intended to help developers understand the architecture and the pr
 This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
 
 - SPDX-License-Identifier: CC-BY-4.0
-- SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
+- SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
 - Source URL: <https://github.com/eclipse-tractusx/tractus-x-identityhub>
