@@ -1,5 +1,6 @@
 #
 #   Copyright (c) 2025 Cofinity-X
+#   Copyright (c) 2025 LKS Next
 #   Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
@@ -18,14 +19,15 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-org.eclipse.tractusx.issuerservice.postgresql.migration.IssuanceProcessMigrationExtension
-org.eclipse.tractusx.issuerservice.postgresql.migration.AttestationDefinitionMigrationExtension
-org.eclipse.tractusx.issuerservice.postgresql.migration.CredentialDefinitionMigrationExtension
-org.eclipse.tractusx.issuerservice.postgresql.migration.DidResourceMigrationExtension
-org.eclipse.tractusx.issuerservice.postgresql.migration.ParticipantMigrationExtension
-org.eclipse.tractusx.issuerservice.postgresql.migration.ParticipantContextMigrationExtension
-org.eclipse.tractusx.issuerservice.postgresql.migration.KeyPairResourceMigrationExtension
-org.eclipse.tractusx.issuerservice.postgresql.migration.StsClientMigrationExtension
-org.eclipse.tractusx.issuerservice.postgresql.migration.JtiValidationMigrationExtension
-org.eclipse.tractusx.identityhub.postgresql.migration.CredentialResourceMigrationExtension
-org.eclipse.tractusx.identityhub.postgresql.migration.HolderCredentialRequestMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.AttestationDefinitionMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.CredentialDefinitionMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.CredentialOfferMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.CredentialResourceMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.DidResourceMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.HolderCredentialRequestMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.HoldersMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.IssuanceProcessMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.JtiValidationMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.KeyPairResourceMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.ParticipantContextMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.StsClientMigrationExtension
