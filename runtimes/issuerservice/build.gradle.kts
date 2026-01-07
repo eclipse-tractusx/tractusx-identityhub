@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2025 Cofinity-X
- * Copyright (c) 2025 LKS NEXT
+ * Copyright (c) 2025 LKS Next
  * Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -36,6 +36,7 @@ dependencies {
     runtimeOnly(libs.postgres)
 
     // used for custom extensions
+    implementation(libs.edc.api.authentication)
     implementation(libs.edc.ih.spi)
     implementation(libs.edc.jdk.monitor)
 }

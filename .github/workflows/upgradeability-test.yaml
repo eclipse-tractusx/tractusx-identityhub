@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache ContainerD Image Layers
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /var/lib/containerd/io.containerd.snapshotter.v1.overlayfs
           key: ${{ runner.os }}-io.containerd.snapshotter.v1.overlayfs
@@ -43,7 +43,7 @@ jobs:
     needs: [ test-prepare ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 
       - uses: ./.github/actions/setup-helm
       - uses: ./.github/actions/setup-kubectl
