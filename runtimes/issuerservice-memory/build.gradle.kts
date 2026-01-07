@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2025 Cofinity-X
- * Copyright (c) 2025 LKS NEXT
+ * Copyright (c) 2025 LKS Next
  * Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -34,6 +34,7 @@ dependencies {
     // used for custom extensions
     implementation(libs.edc.ih.spi)
     implementation(libs.edc.jdk.monitor)
+    implementation(libs.edc.api.authentication)
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
