@@ -47,10 +47,10 @@ sources:
   - https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub
 dependencies:
   # PostgreSQL
-  - name: postgresql
+  - name: postgres
     alias: postgresql
-    version: 12.12.x
-    repository: https://charts.bitnami.com/bitnami
+    version: 0.11.0
+    repository: oci://registry-1.docker.io/cloudpirates
     condition: install.postgresql
   # HashiCorp Vault
   - name: vault
