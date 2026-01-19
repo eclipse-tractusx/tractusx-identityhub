@@ -43,7 +43,7 @@ run it.
 > supported by the Tractus-X IdentityHub team. Please use the official Helm chart.
 
 ## Documentation
-Detailed documentation and guides are available in `docs/README.md`: [View documentation](./docs/README.md)
+Detailed documentation and guides are available in `docs/README.md`: [View documentation](docs/architecture/README.md)
 
 ## License
 

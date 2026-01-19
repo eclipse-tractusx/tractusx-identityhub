@@ -24,12 +24,12 @@ The following table links you to the respective documentations based on the rele
 
 # **Table of Contents**
 
-- [API Requests](api/README.md)
-- [Administration](admin)
-  - [Migration](admin/migration-guide.md)
-- [Architecture](architecture)
-  - [Decision Records](architecture/decision-records)
-  - [Developers](architecture/developers)
+- [API Requests](../api/README.md)
+- [Administration](../admin)
+  - [Migration](../admin/migration-guide.md)
+- [Architecture](../architecture/)
+  - [Decision Records](decision-records)
+  - [Developers](../developers)
 
 ## NOTICE
 

@@ -1,6 +1,14 @@
-# General view of Identity Hub and the IssuerService component
+# 3. System Scope and Context
 
-This represents a high-level architecture overview of the `IdentityHub` service and the `IssuerService` component.
+## 3.1 Business Context
+
+The **Tractus-X Identity Hub** operates as the central trust anchor for a Dataspace Participant. It acts as the bridge between the technical data exchange (Connector) and the regulatory trust requirements (Issuer).
+
+### 3.1.2 Bussiness Interactions (High Level Flows)
+
+The Identity Hub orchestrates three critical business processes: acquiring credentials (Issuance), maintaining them (Revocation/Renewal), and using them to authorize data transfers (Authentication).
+
+The interaction between the Identity Hub (Holder) and the Issuer Service generally follows two patterns: Pull Mode (Holder initiates) and Push Mode (Issuer initiates).
 
 ```mermaid
 sequenceDiagram
@@ -30,9 +38,7 @@ sequenceDiagram
     end
 ```
 
-## Key Interaction Flows
-
-### 1. Credential Request Flow (IdentityHub → Issuer)
+### A. Credential Request Flow (IdentityHub → Issuer)
 
 The IdentityHub initiates credential requests by sending a `CredentialRequestMessage` to the Issuer Service. This includes:
 
@@ -54,7 +60,7 @@ sequenceDiagram
     end
 ```
 
-### 2. Credential Offer Flow (Issuer → IdentityHub) (not implemented as of 2025-12-17 )
+### B. Credential Offer Flow (Issuer → IdentityHub) (not implemented as of 2025-12-17 )
 
 The Issuer can proactively offer credentials to holders through the `IssuerCredentialOfferService`:
 
@@ -74,9 +80,10 @@ sequenceDiagram
     IS->>IS: Start standard issuance flow
 ```
 
-### 4. Status Management Flow (IdentityHub → Issuer)
+### C. Status Management Flow (IdentityHub → Issuer)
 
-The IdentityHub can check credential status, and the Issuer provides status information.
+Credentials are not static; they can be revoked. The Identity Hub periodically checks the status of its stored credentials to ensure they are still valid before using them in a presentation.
+So the IdentityHub can check credential status, and the Issuer provides status information.
 
 ```mermaid
 sequenceDiagram
