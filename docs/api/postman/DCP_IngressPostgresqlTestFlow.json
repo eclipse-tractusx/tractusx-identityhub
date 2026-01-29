@@ -1,0 +1,560 @@
+{
+	"info": {
+		"_postman_id": "3ac1a1e6-07a9-4b74-b056-0aa2a008284a",
+		"name": "Decentralized Claims Protocol",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25105075"
+	},
+	"item": [
+		{
+			"name": "IdH Automatic Issuance Flow",
+			"item": [
+				{
+					"name": "Set Up Participant Context",
+					"item": [
+						{
+							"name": "Set Admin Api Key",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Set ADMIN API KEY AND PARTICIPANT CONTEXT",
+											"",
+											"var identityApiKey = \"c3VwZXItdXNlcg==.5FogmS1FnowZU8RXCdeZnSTlTfRA0xQjcuN1Gt3D1poe7+7ISugwZDHWxnFkfHhdZMNsD6hsaJzChwDCB1CgyQ==\";",
+											"var issuerserviceApiKey = \"c3VwZXItdXNlcg==.uEdFb2ITidFisY2ANuuJTzy3XgJFKp6u4WaKuW7WjJwT45c9bLd7NA3tkkb4aasDmyeMBuW4Gysfkg4h/HVF1w==\";",
+											"",
+											"pm.collectionVariables.set(\"ISSUER_API_KEY_ADMIN\", issuerserviceApiKey);",
+											"pm.collectionVariables.set(\"ISSUER_PARTICIPANT_CONTEXT_ADMIN\", issuerserviceApiKey.split(\".\")[0]);",
+											"pm.collectionVariables.set(\"IDH_API_KEY_ADMIN\", identityApiKey);",
+											"pm.collectionVariables.set(\"IDH_PARTICIPANT_CONTEXT_ADMIN\", identityApiKey.split(\".\")[0]);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://postman-echo.com/get",
+									"protocol": "https",
+									"host": [
+										"postman-echo",
+										"com"
+									],
+									"path": [
+										"get"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "IssuerService Create ParticipantContext",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"",
+											"    var json = pm.response.json();",
+											"    console.log(json);",
+											"",
+											"    pm.collectionVariables.set(\"ISSUER_API_KEY\", json.apiKey);",
+											"    pm.collectionVariables.set(\"ISSUER_PARTICIPANT_CONTEXT\", json.apiKey.split(\".\")[0]);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "value",
+											"value": "{{ISSUER_API_KEY_ADMIN}}",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "x-api-key",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"active\": true,\n  \"did\": \"did:web:issuerservice.issuance.local\",\n  \"key\": {\n    \"keyGeneratorParams\": {\n      \"algorithm\": \"Ec\",\n      \"curve\": \"secp256r1\"\n    },\n    \"keyId\": \"did:web:issuerservice.issuance.local#key-1\",\n    \"type\": \"JsonWebKey2020\",\n    \"privateKeyAlias\": \"did:web:issuerservice.issuance.local-privatekey-alias\"\n  },\n  \"participantId\": \"minikube\",\n  \"roles\": [\n    \"ROLE_ADMIN\", \"admin\"\n  ],\n  \"serviceEndpoints\": [\n    {\n      \"id\": \"http://issuerservice.issuance.local#credential-service\",\n      \"type\": \"IssuerService\",\n      \"serviceEndpoint\": \"http://issuerservice.issuance.local/api/issuance/v1alpha/participants/bWluaWt1YmU=\"\n    }\n  ],\n  \"apiKeyAlias\": \"apiKeyAliasTest\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ISSUERSERVICE_INTERNAL_URL}}{{IDENTITY_API}}/v1alpha/participants",
+									"host": [
+										"{{ISSUERSERVICE_INTERNAL_URL}}{{IDENTITY_API}}"
+									],
+									"path": [
+										"v1alpha",
+										"participants"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "IdentityHub Create ParticipantContext",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"",
+											"    var json = pm.response.json();",
+											"    console.log(json);",
+											"",
+											"    pm.collectionVariables.set(\"IDH_API_KEY\", json.apiKey);",
+											"    pm.collectionVariables.set(\"IDH_PARTICIPANT_CONTEXT\", json.apiKey.split(\".\")[0]);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "value",
+											"value": "{{IDH_API_KEY_ADMIN}}",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "x-api-key",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"active\": true,\n  \"did\": \"did:web:identityhub.presentation.local\",\n  \"key\": {\n    \"keyGeneratorParams\": {\n      \"algorithm\": \"Ec\",\n      \"curve\": \"secp256r1\"\n    },\n    \"keyId\": \"did:web:identityhub.presentation.local#key-1\",\n    \"type\": \"JsonWebKey2020\",\n    \"privateKeyAlias\": \"identity-x-alias\"\n  },\n  \"participantId\": \"minikube\",\n  \"roles\": [\n    \"ROLE_ADMIN\", \"admin\"\n  ],\n  \"serviceEndpoints\": [\n    {\n      \"id\": \"identityhub.presentation.local#credential-service\",\n      \"type\": \"CredentialService\",\n      \"serviceEndpoint\": \"http://identityhub.presentation.local/api/credentials/v1/participants/bWluaWt1YmU=\"\n    }\n  ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{IDENTITYHUB_INTERNAL_URL}}{{IDENTITY_API}}/v1alpha/participants",
+									"host": [
+										"{{IDENTITYHUB_INTERNAL_URL}}{{IDENTITY_API}}"
+									],
+									"path": [
+										"v1alpha",
+										"participants"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "IssuerService",
+					"item": [
+						{
+							"name": "Create Attestation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"attestationType\": \"database\",\n  \"configuration\": {\n    \"dataSourceName\": \"holder\",\n    \"tableName\": \"holders\"\n  },\n  \"id\": \"attestation-id\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ISSUERSERVICE_INTERNAL_URL}}{{ISSUERADMIN_API}}/v1alpha/participants/{{ISSUER_PARTICIPANT_CONTEXT}}/attestations",
+									"host": [
+										"{{ISSUERSERVICE_INTERNAL_URL}}{{ISSUERADMIN_API}}"
+									],
+									"path": [
+										"v1alpha",
+										"participants",
+										"{{ISSUER_PARTICIPANT_CONTEXT}}",
+										"attestations"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add CredentialDefinition",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"attestations\": [\"attestation-id\"],\n  \"credentialType\": \"MembershipCredential\",\n  \"format\": \"VC1_0_JWT\",\n  \"id\": \"membershipCredential-id\",\n  \"jsonSchema\": \"{}\",\n  \"jsonSchemaUrl\": \"test\",\n  \"mappings\": [\n    {\n      \"input\": \"holder_name\",\n      \"output\": \"credentialSubject.name\",\n      \"required\": true\n    }\n  ],\n//   \"rules\": [\n//     {\n    //    \"configuration\": {\n    //      \"additionalProp1\": {},\n    //      \"additionalProp2\": {},\n    //      \"additionalProp3\": {}\n    //    },\n    //    \"type\": \"string\"\n//     }\n//   ],\n  \"validity\": 10000000000000\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ISSUERSERVICE_INTERNAL_URL}}{{ISSUERADMIN_API}}/v1alpha/participants/{{ISSUER_PARTICIPANT_CONTEXT}}/credentialdefinitions",
+									"host": [
+										"{{ISSUERSERVICE_INTERNAL_URL}}{{ISSUERADMIN_API}}"
+									],
+									"path": [
+										"v1alpha",
+										"participants",
+										"{{ISSUER_PARTICIPANT_CONTEXT}}",
+										"credentialdefinitions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Holder",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"did\": \"did:web:identityhub.presentation.local\",\n  \"holderId\": \"did:web:identityhub.presentation.local\",\n  \"name\": \"issuer\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{ISSUERSERVICE_INTERNAL_URL}}{{ISSUERADMIN_API}}/v1alpha/participants/{{ISSUER_PARTICIPANT_CONTEXT}}/holders",
+									"host": [
+										"{{ISSUERSERVICE_INTERNAL_URL}}{{ISSUERADMIN_API}}"
+									],
+									"path": [
+										"v1alpha",
+										"participants",
+										"{{ISSUER_PARTICIPANT_CONTEXT}}",
+										"holders"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "apikey",
+						"apikey": [
+							{
+								"key": "value",
+								"value": "{{ISSUER_API_KEY}}",
+								"type": "string"
+							},
+							{
+								"key": "key",
+								"value": "x-api-key",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "IdentityHub",
+					"item": [
+						{
+							"name": "Request Credential from Issuer",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"credentials\": [\n    {\n      \"format\": \"VC1_0_JWT\",\n      \"id\": \"membershipCredential-id\",\n      \"type\": \"MembershipCredential\"\n    }\n  ],\n  \"holderPid\": \"did:web:issuerservice.issuance.local\",\n  \"issuerDid\": \"did:web:issuerservice.issuance.local\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{IDENTITYHUB_INTERNAL_URL}}{{IDENTITY_API}}/v1alpha/participants/{{IDH_PARTICIPANT_CONTEXT}}/credentials/request",
+									"host": [
+										"{{IDENTITYHUB_INTERNAL_URL}}{{IDENTITY_API}}"
+									],
+									"path": [
+										"v1alpha",
+										"participants",
+										"{{IDH_PARTICIPANT_CONTEXT}}",
+										"credentials",
+										"request"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get VC by Participant",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{IDENTITYHUB_INTERNAL_URL}}{{IDENTITY_API}}/v1alpha/participants/{{IDH_PARTICIPANT_CONTEXT}}/credentials",
+									"host": [
+										"{{IDENTITYHUB_INTERNAL_URL}}{{IDENTITY_API}}"
+									],
+									"path": [
+										"v1alpha",
+										"participants",
+										"{{IDH_PARTICIPANT_CONTEXT}}",
+										"credentials"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "apikey",
+						"apikey": [
+							{
+								"key": "value",
+								"value": "{{IDH_API_KEY_ADMIN}}",
+								"type": "string"
+							},
+							{
+								"key": "key",
+								"value": "x-api-key",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "ISSUERSERVICE_INTERNAL_URL",
+			"value": ""
+		},
+		{
+			"key": "IDENTITYHUB_INTERNAL_URL",
+			"value": ""
+		},
+		{
+			"key": "ISSUERADMIN_API",
+			"value": ""
+		},
+		{
+			"key": "IDENTITY_API",
+			"value": ""
+		},
+		{
+			"key": "ISSUER_PARTICIPANT_CONTEXT_ADMIN",
+			"value": ""
+		},
+		{
+			"key": "ISSUER_API_KEY_ADMIN",
+			"value": ""
+		},
+		{
+			"key": "ISSUER_PARTICIPANT_CONTEXT",
+			"value": ""
+		},
+		{
+			"key": "ISSUER_API_KEY",
+			"value": ""
+		},
+		{
+			"key": "IDH_PARTICIPANT_CONTEXT_ADMIN",
+			"value": ""
+		},
+		{
+			"key": "IDH_API_KEY_ADMIN",
+			"value": ""
+		},
+		{
+			"key": "IDH_PARTICIPANT_CONTEXT",
+			"value": ""
+		},
+		{
+			"key": "IDH_API_KEY",
+			"value": ""
+		}
+	]
+}
