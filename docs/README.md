@@ -12,7 +12,6 @@ This directory contains the complete documentation for the Identity Hub and Issu
 * **[developers/](./developers/README.md)**: Deep-dive technical documentation for contributors and system integrators.
   * [components/](./developers/components/): Core component documentation.
     * [IdentityHub.md](./developers/components/IdentityHub.md): Identity Hub data models and lifecycles.
-    * [IssuerService.md](./developers/components/IssuerService.md): Issuer Service architecture and workflows.
   * [setup/](./developers/setup/): Setup and configuration guides.
     * [Linux.md](./developers/setup/Linux.md): Linux setup and configuration guide.
   
