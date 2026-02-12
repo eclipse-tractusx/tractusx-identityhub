@@ -67,3 +67,12 @@ For detailed installation instructions, please refer to the [Installation Guide]
 > It is strongly recommended to deploy with **Ingress enabled**. In each component's `values.yaml`, there are two ingresses that have to be enabled to true. This allows you to use the internal URLs (e.g., `identityhub.presentation.local`) without additional configuration.
 > [!WARNING]
 > The path /.well-known is mandatory for did:web resolution. However, the Nginx Admission Webhook often blocks paths starting with a dot. You must edit the ingress.yaml file in the templates folder and change the pathType to ImplementationSpecific.
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+* SPDX-License-Identifier: CC-BY-4.0
+* SPDX-FileCopyrightText: 2026 LKS Next
+* SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
+* Source URL: <https://github.com/eclipse-tractusx/tractus-x-identityhub>
