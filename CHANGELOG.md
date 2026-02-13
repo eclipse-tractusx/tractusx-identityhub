@@ -10,6 +10,8 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 ## [Unreleased]
 
 ### Added
+- Add documentation about IssuerService by @AYaoZhan in [#222](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/222)
+- Add documentation about IdentityHub, Developers and setup guide by @Alaitz1 in [#221](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/221)
 - Add colored logger and logger persistence by @AYaoZhan in [#149](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/149)
 - Add CHANGELOG.md file following TRG 1.03 standards by @CDiezRodriguez in [#151](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/151)
 - Add installation and deployment documentation, enhance documentation structure, fix header and list formatting, add license headers and NOTICE files, set key signing alias default configuration by @AYaoZhan in [#147](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/147)
