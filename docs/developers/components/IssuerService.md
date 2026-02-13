@@ -16,6 +16,8 @@ This document describes the core data models that participate in the credential 
 4. [Data Flow](#data-flow)
 5. [Additional Information](#additional-information)
 
+---
+
 ## Core Models
 
 ### Attestation
@@ -74,42 +76,17 @@ An **IssuanceProcess** tracks the asynchronous workflow of generating and delive
 
 **Lifecycle States:**
 
-1. **SUBMITTED (50)**: External approval required
-    - **Purpose**: Process requires manual or external approval before proceeding
-    - **Operational Capabilities**: Awaiting external approval signal
-    - **Transitions**: External system must transition to APPROVED or ERRORED
-    - **Usage**: Default implementation auto-approves, custom implementations can enable manual approval
+| State | Code | Description | Operational Capabilities | Transitions |
+| :--- | :--- | :--- | :--- | :--- |
+| **SUBMITTED** | 50 | External approval required | Awaiting external approval signal | To APPROVED (after approval) or ERRORED (on rejection) |
+| **APPROVED** | 100 | Ready for credential generation | - Generate credentials based on CredentialDefinitions<br/>- Map claims using MappingDefinitions<br/>- Add credentials to status lists<br/>- Deliver to holder's endpoint<br/>- Store in IdentityHub | To DELIVERED (on success) or ERRORED (after retry failures) |
+| **DELIVERED** | 200 | Terminal success state | None (terminal state) | None |
+| **ERRORED** | 300 | Terminal failure state | None (terminal state) | None |
 
-2. **APPROVED (100)**: Ready for credential generation
-    - **Purpose**: Process has passed all checks and is ready for asynchronous generation
-    - **Operational Capabilities**:
-        - Credentials are generated based on CredentialDefinitions
-        - Claims are mapped using MappingDefinitions
-        - Credentials are added to status lists (for revocation support)
-        - Credentials are delivered to holder's CredentialService endpoint
-        - CredentialResources are stored in the IdentityHub
-    - **Transitions**:
-        - To DELIVERED on successful generation and delivery
-        - To ERRORED if generation/delivery fails after retries
-        - Can stay in APPROVED for retry attempts (stateCount increments)
-    - **Retry Behavior**: Process will retry on transient failures up to configured limit
+- **SUBMITTED**: Default implementation auto-approves; custom implementations can enable manual approval workflows
+- **APPROVED**: Will retry on transient failures up to configured limit (stateCount increments on retries)
+- **ERRORED**: Contains `errorDetail` field with failure reason; requires manual investigation
 
-3. **DELIVERED (200)**: Terminal success state
-    - **Purpose**: Credentials successfully generated, stored, and delivered to holder
-    - **Operational Capabilities**: None (terminal state)
-    - **CredentialResource Impact**: CredentialResources created in holder's IdentityHub
-    - **Usage**: Final state for successful issuance flows
-
-4. **ERRORED (300)**: Terminal failure state
-    - **Purpose**: Issuance failed after all retry attempts
-    - **Operational Capabilities**: None (terminal state)
-    - **Error Information**: `errorDetail` field contains failure reason
-    - **Common Causes**:
-        - Attestation evaluation failures
-        - Rule validation failures
-        - Credential generation errors
-        - Delivery failures (holder unreachable, rejected credentials)
-    - **Usage**: Requires manual investigation; may need to create new IssuanceProcess
 
 **State Machine Flow:**
 ```
@@ -266,6 +243,8 @@ sequenceDiagram
     - Issuer can proactively send CredentialOfferMessage to holder
     - Holder decides whether to accept and request credentials
     - If accepted, follows standard Credential Request flow
+
+---
 
 ## Additional Information
 
