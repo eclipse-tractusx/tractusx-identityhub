@@ -24,7 +24,7 @@ We are working at the moment to bring the current implemented functionalities fr
 5. [Deployment](#deployment)
    - [Helm Chart](#helm-chart)
    - [Localhost](#localhost)
-6. [Developer Documentation](#developer-documentation)
+6. [Documentation Hub](#documentation-hub)
 7. [License](#license)
 
 ---
