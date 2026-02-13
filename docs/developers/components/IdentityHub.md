@@ -2,6 +2,17 @@
 
 This document provides an overview of the core data models in the IdentityHub component, based on the upstream **Eclipse EDC IdentityHub** project.
 
+## Table of Contents
+
+1. [Core Data Models](#core-data-models)
+   - [ParticipantContext](#1-participantcontext)
+   - [CredentialResource](#2-credentialresource)
+   - [KeyPairResource](#3-keypairresource)
+   - [DidResource](#4-didresource)
+2. [Relationships](#relationships)
+3. [Data Flow](#data-flow)
+4. [Additional Information](#additional-information)
+
 ---
 
 ## Core Data Models
@@ -51,23 +62,54 @@ The `DidResource` wraps a DID Document and represents its lifecycle in the Ident
 
 ## Relationships
 
-The data models are interconnected as follows:
+```mermaid
+flowchart TD
+    PC[ParticipantContext]
+    CR[CredentialResource]
+    KPR[KeyPairResource]
+    DR[DidResource]
 
-* **ParticipantContext (1)**
-  * └── *owns* → **CredentialResource** (many)
-  * └── *owns* → **KeyPairResource** (many)
-  * └── *owns* → **DidResource** (many)
-* **CredentialResource**
-  * └── *references* → `ParticipantContext` (via `participant_context_id`)
-* **KeyPairResource**
-  * └── *references* → `ParticipantContext` (via `participant_context_id`)
-  * └── *influences* → `DidResource` (verification methods)
-* **DidResource**
-  * └── *references* → `ParticipantContext` (via `participant_context_id`)
+    PC -->|owns| CR
+    PC -->|owns| KPR
+    PC -->|owns| DR
+    
+    CR -->|references| PC
+    KPR -->|references| PC
+    KPR -->|influences| DR
+    DR -->|references| PC
+
+    style PC fill:#000000,stroke:#ffffff,color:#ffffff
+    style CR fill:#000000,stroke:#ffffff,color:#ffffff
+    style KPR fill:#000000,stroke:#ffffff,color:#ffffff
+    style DR fill:#000000,stroke:#ffffff,color:#ffffff
+```
+
+**Key Relationships:**
+- **ParticipantContext** owns all resources (credentials, key pairs, DIDs) for a dataspace participant
+- Each **CredentialResource**, **KeyPairResource**, and **DidResource** references their owning **ParticipantContext**
+- **KeyPairResource** influences **DidResource** by adding/removing verification methods during key lifecycle transitions
+- All entities are scoped to a single participant context for multi-tenancy isolation
 
 ---
 
 ## Data Flow
+
+```mermaid
+sequenceDiagram
+    participant Admin
+    participant IdentityHub
+    participant IssuerService
+    participant Connector
+
+    Admin->>IdentityHub: 1. Create ParticipantContext
+    IdentityHub->>IdentityHub: 2. Create DID & KeyPair
+    IssuerService->>IdentityHub: 3. Issue Credential
+    Connector->>IdentityHub: 4. Request Presentation
+    IdentityHub->>Connector: 5. Return Signed Presentation
+    IdentityHub->>IdentityHub: 6. Rotate Keys (CREATED→ACTIVATED→ROTATED→REVOKED)
+```
+
+### Detailed Steps
 
 1. **Participant Onboarding:** A `ParticipantManifest` is submitted; a `ParticipantContext` is created with an API token.
 2. **DID and Key Creation:** `DidResource` and `KeyPairResource` entries are created based on the manifest.
