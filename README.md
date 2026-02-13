@@ -31,7 +31,7 @@ We are working at the moment to bring the current implemented functionalities fr
 
 ## About The Project
 
-The Tractus-X IdentityHub is a specialized, production-ready distribution of the upstream [Eclipse EDC IdentityHub project](https://github.com/eclipse-edc/IdentityHub/), tailored specifically for the Catena-X/Tractus-X ecosystem.
+The Tractus-X IdentityHub is a specialized, production-ready distribution of the upstream [Eclipse EDC IdentityHub project](https://github.com/eclipse-edc/IdentityHub/), tailored specifically for the Tractus-X ecosystem.
 
 This project provides deployable versions of two core components:
 
