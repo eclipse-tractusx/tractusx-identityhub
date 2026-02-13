@@ -42,6 +42,9 @@ run it.
 > Note that running the application natively as Java process, or directly as Docker image is possible, but is not
 > supported by the Tractus-X IdentityHub team. Please use the official Helm chart.
 
+## Documentation
+Detailed documentation and guides are available in `docs/README.md`: [View documentation](docs/architecture/README.md)
+
 ## License
 
 Distributed under the Apache 2.0 License.
@@ -65,3 +68,4 @@ See [LICENSE](https://github.com/eclipse-tractusx/tractusx-edc/blob/main/LICENSE
 [release-shield]: https://img.shields.io/github/v/release/eclipse-tractusx/tractusx-identityhub.svg?style=for-the-badge
 
 [release-url]: https://github.com/eclipse-tractusx/tractusx-identityhub/releases
+
