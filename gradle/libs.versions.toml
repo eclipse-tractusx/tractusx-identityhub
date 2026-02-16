@@ -4,7 +4,7 @@ format.version = "1.1"
 [versions]
 edc = "0.14.0"
 edc-build = "1.0.0"
-opentelemetry = "2.24.0"
+opentelemetry = "2.25.0"
 postgres = "42.7.8"
 flyway = "11.15.0"
 
