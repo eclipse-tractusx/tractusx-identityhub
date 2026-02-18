@@ -109,6 +109,10 @@ issuerservice:
     identity:
       port: 8087
       path: /api/identity
+    # -- StatusList API, used to check the status of verifiable credentials. Must be internet-facing
+    statuslist:
+      port: 8088
+      path: /statuslist
 
   # -- Whether web DIDs should be interpreted as HTTPS or HTTP
   didweb:
@@ -190,6 +194,7 @@ issuerservice:
         - issuance
         - sts
         - did
+        - statuslist
       # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
       className: ""
       # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
