@@ -51,7 +51,8 @@ data:
   web.http.identity.path: {{ .Values.issuerservice.endpoints.identity.path | quote }}
   web.http.did.port: {{ .Values.issuerservice.endpoints.did.port | quote}}
   web.http.did.path: {{ .Values.issuerservice.endpoints.did.path | quote}}
-
+  web.http.statuslist.port: {{ .Values.issuerservice.endpoints.statuslist.port | quote }}
+  web.http.statuslist.path: {{ .Values.issuerservice.endpoints.statuslist.path | quote }}
 
   ###########
   ## VAULT ##

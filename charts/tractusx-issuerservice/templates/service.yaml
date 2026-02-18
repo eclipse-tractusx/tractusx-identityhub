@@ -57,5 +57,9 @@ spec:
       targetPort: identity
       protocol: TCP
       name: identity
+    - port: {{ .Values.issuerservice.endpoints.statuslist.port }}
+      targetPort: statuslist
+      protocol: TCP
+      name: statuslist
   selector:
     {{- include "issuerservice.server.selectorLabels" . | nindent 4 }}
