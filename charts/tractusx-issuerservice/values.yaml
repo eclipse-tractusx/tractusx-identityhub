@@ -401,3 +401,6 @@ vault:
 statuslist:
   signing_key:
     alias: default
+  # -- Callback address for statuslist
+  callback:
+    address: "issuerservice.issuance.local"
