@@ -1,0 +1,52 @@
+@use 'config/variables' as *;
+@use 'config/mixins';
+@use 'layout';
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Manrope', sans-serif !important;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+.add-button {
+    border-radius: 8px!important;
+    border-color: green!important;
+    color: $brand-text !important;
+
+    &:hover {
+        background: $green-gradient-bg!important;
+        border-color: $brand-text!important;
+    }
+}
+
+.card-list-pagination {
+    p {
+        color: $brand-text !important;
+    }
+    button {
+        color: $brand-text !important;
+    }
+    button.Mui-disabled {
+        color: $brand-shadow !important;
+    }
+}
+
+.page-catalog {
+    .title {
+        @include mixins.center-flex;
+        margin: 20px 0px;
+    }
+    .text {
+        @include mixins.space-title-h2-font;
+        color: $brand-text;
+        padding: 5px 80px;
+        text-align: center;
+        background: rgba($brand-primary, 0.3);
+        @include mixins.space-shadow($brand-blue);
+    }
+}

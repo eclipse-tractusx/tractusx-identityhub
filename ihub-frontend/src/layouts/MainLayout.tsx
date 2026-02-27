@@ -1,0 +1,68 @@
+/********************************************************************************
+ * Eclipse Tractus-X - Identity Hub Frontend
+ *
+ * Copyright (c) 2025 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the
+ * License for the specific language govern in permissions and limitations
+ * under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ ********************************************************************************/
+
+import { Outlet } from "react-router-dom";
+import Grid2 from '@mui/material/Grid2';
+import Header from '../components/general/Header';
+import Sidebar from '../components/general/Sidebar';
+import ProtectedRoute from '../components/auth/ProtectedRoute';
+import { SidebarProvider } from '../contexts/SidebarContext';
+import { ParticipantProvider } from '../contexts/ParticipantContext';
+import { isAuthEnabled } from '../services/EnvironmentService';
+
+function MainLayoutContent() {
+    const authEnabled = isAuthEnabled();
+
+    const content = (
+        <Grid2 container className="contentWrapper" size={12}>
+            <Grid2 size={12} className="headerArea">
+                <Header />
+            </Grid2>
+            <Grid2 container direction="row" size={12}>
+                <Grid2 sx={{ width: '72px', flexShrink: 0 }} className="sidebarArea">
+                    <Sidebar />
+                </Grid2>
+                <Grid2 size="auto" className="contentArea" padding={0} sx={{ flex: 1 }}>
+                    <Outlet />
+                </Grid2>
+            </Grid2>
+        </Grid2>
+    );
+
+    return authEnabled ? (
+        <ProtectedRoute>{content}</ProtectedRoute>
+    ) : (
+        content
+    );
+}
+
+function MainLayout() {
+    return (
+        <SidebarProvider>
+            <ParticipantProvider>
+                <MainLayoutContent />
+            </ParticipantProvider>
+        </SidebarProvider>
+    );
+}
+
+export default MainLayout;

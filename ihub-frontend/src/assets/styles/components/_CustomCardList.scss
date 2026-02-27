@@ -1,0 +1,103 @@
+@use "../config/variables" as *;
+@use '../config/mixins';
+
+.custom-cards-list {
+    display: flex;
+    --ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .custom-card-box {
+        padding-right: 10px;
+        padding-left: 10px;
+        margin-bottom: 20px!important;
+        border-radius: 5px;
+        color: $brand-text;
+        min-width: 280px;
+
+        .custom-card {
+            display: flex;
+            flex-direction: column;
+            width: 320px;
+            max-width: 320px;
+            min-width: 320px;
+            justify-content: space-between;
+            cursor: pointer;
+            background: $brand-dark !important;
+            @include mixins.space-shadow($brand-blue);
+            @include mixins.rounded-bordered;
+
+            &:hover {
+                border: 2px solid rgba($brand-light-blue, 0.85) !important;
+            }
+
+            .custom-card-header {
+                padding: 10px 10px 0px 10px;
+                margin-bottom: 0px;
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                align-items: center;
+
+                .custom-card-header-buttons {
+                    display: flex;
+                    justify-self: right;
+
+                    button {
+                        padding: 0px;
+                        margin: 0px 5px;
+                        border-radius: 8px;
+
+                        &:hover {
+                            opacity: 0.5;
+                            background-color: transparent;
+                        }
+
+                        svg {
+                            font-size: 20px;
+                        }
+                    }
+                }
+            }
+
+            .custom-card-content {
+                padding: 10px 25px 8px;
+
+                h5 {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    font-weight: bold;
+                    font-size: 18px;
+                    color: $brand-text;
+                }
+
+                span {
+                    color: $brand-text;
+                }
+            }
+
+            .custom-card-button-box {
+                width: 100%;
+
+                button {
+                    border-radius: 8px;
+                    border-top-left-radius: 0px;
+                    border-top-right-radius: 0px;
+                    background: $brand-dark-gray;
+                    width: 100%;
+
+                    &:hover {
+                        background: $blue-gradient-bg;
+                    }
+                }
+            }
+        }
+
+        .MuiChip-icon {
+            color: $brand-dark !important;
+        }
+    }
+}

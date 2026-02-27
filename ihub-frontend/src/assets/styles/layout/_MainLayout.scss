@@ -1,0 +1,65 @@
+@use "../config/variables" as *;
+
+.contentWrapper {
+    background: black;
+    background-image:
+        linear-gradient(rgba($brand-dark, 0.3), rgba($brand-dark, 0.6)),
+        url('/stars-background.png') !important;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.headerArea {
+    position: sticky;
+    top: 0;
+    z-index: 1100;
+}
+
+.sidebarArea {
+    z-index: 1000;
+    position: sticky;
+    top: 68.8px;
+    height: calc(100vh - 68.8px);
+    overflow-y: auto;
+}
+
+.contentArea {
+    padding: 0;
+    height: calc(100vh - 68.8px);
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+
+    scrollbar-width: auto;
+    scrollbar-color: rgba(0, 106, 255, 0.524) rgba(0, 94, 255, 0.2);
+
+    &::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: rgba(0, 94, 255, 0.2);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba(0, 106, 255, 0.524);
+        border-radius: 0;
+
+        &:hover {
+            background: rgba(0, 128, 255, 0.5);
+        }
+    }
+}
+
+.main-logo {
+    height: 50px;
+    vertical-align: middle;
+    margin-top: -2px;
+}
+
+.small-logo {
+    height: 35px;
+    vertical-align: middle;
+    margin-top: -1px;
+}

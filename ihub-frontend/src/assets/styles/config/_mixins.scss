@@ -1,0 +1,60 @@
+@use 'variables' as *;
+
+/****** General Styling ******/
+
+// Spacing utility classes
+$spacing: (
+    1: 4px,
+    2: 8px,
+    3: 12px,
+    4: 16px,
+    5: 20px
+) !default;
+
+@each $key, $value in $spacing {
+    .mr-#{$key} { margin-right: $value; }
+    .ml-#{$key} { margin-left: $value; }
+    .mb-#{$key} { margin-bottom: $value; }
+    .mt-#{$key} { margin-top: $value; }
+    .my-#{$key} { margin-top: $value; margin-bottom: $value; }
+    .mx-#{$key} { margin-left: $value; margin-right: $value; }
+}
+
+.my-auto { margin-bottom: auto; margin-top: auto; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+// Flex utilities
+.flex { display: flex; }
+.flex-content-center { justify-content: center; }
+
+// Text utilities
+.text-center { text-align: center; }
+
+@mixin center-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+@mixin space-title-h2-font {
+    font-size: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 10px;
+}
+
+@mixin space-shadow($color) {
+    box-shadow: 0 0 12px $color;
+}
+
+@mixin dark-bg-white-text {
+    background-color: $brand-dark !important;
+    color: $brand-text !important;
+}
+
+@mixin rounded-bordered($radius: 8px, $shadow: 0 0 10px $brand-primary, $border: 2px solid $brand-border) {
+    border-radius: $radius !important;
+    box-shadow: $shadow;
+    border: $border !important;
+}
