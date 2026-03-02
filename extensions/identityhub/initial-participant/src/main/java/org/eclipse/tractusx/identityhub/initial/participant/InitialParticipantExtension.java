@@ -74,7 +74,7 @@ public class InitialParticipantExtension implements ServiceExtension {
             defaultValue = "false")
     private boolean useConfigParticipant;
 
-    @Setting(key = "edc.iam.did.web.use.https")
+    @Setting(key = "edc.iam.did.web.use.https", defaultValue = "true")
     private boolean useHttpsScheme;
 
     @Setting(key = "web.http.credentials.path")
