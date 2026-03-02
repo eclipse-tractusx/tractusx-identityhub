@@ -2,8 +2,8 @@
 format.version = "1.1"
 
 [versions]
-edc = "0.14.0"
-edc-build = "1.0.0"
+edc = "0.15.1"
+edc-build = "1.1.6"
 opentelemetry = "2.24.0"
 postgres = "42.7.8"
 flyway = "11.15.0"
@@ -49,4 +49,4 @@ flyway-database-postgres = { module = "org.flywaydb:flyway-database-postgresql",
 postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
 
 [plugins]
-shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
+shadow = { id = "com.gradleup.shadow", version = "9.3.1" }

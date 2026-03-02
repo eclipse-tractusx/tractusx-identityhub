@@ -21,6 +21,10 @@
 
 package org.eclipse.tractusx.identityhub.seed;
 
+import java.util.List;
+import java.util.Map;
+import static java.util.Optional.ofNullable;
+
 import org.eclipse.edc.identityhub.spi.authentication.ServicePrincipal;
 import org.eclipse.edc.identityhub.spi.participantcontext.ParticipantContextService;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.KeyDescriptor;
@@ -32,11 +36,6 @@ import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.security.Vault;
 import org.eclipse.edc.spi.system.ServiceExtension;
 import org.eclipse.edc.spi.system.ServiceExtensionContext;
-
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Optional.ofNullable;
 
 public class SuperUserSeedExtension implements ServiceExtension {
     public static final String NAME = "SUPER USER Seed Extension";
@@ -75,7 +74,7 @@ public class SuperUserSeedExtension implements ServiceExtension {
             return;
         }
         participantContextService.createParticipantContext(ParticipantManifest.Builder.newInstance()
-                        .participantId(superUserParticipantId)
+                        .participantContextId(superUserParticipantId)
                         .did("did:web:%s".formatted(superUserParticipantId)) // doesn't matter, not intended for resolution
                         .active(true)
                         .key(KeyDescriptor.Builder.newInstance()
