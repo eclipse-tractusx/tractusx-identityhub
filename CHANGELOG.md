@@ -16,6 +16,7 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 - Basic IdentityHub component Documentation by @Alaitz1 in [#221](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/221)
 - IssuanceFlow postman workflow test by @AYaoZhan in [#214](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/214)
 - Add configurable initial participantContext in IdentityHub by @AYaoZhan in [#231](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/231)
+- Add configuration to resolve did web methods with https or http by @AYaoZhan in [#243](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/243)
 
 ### Fixed
 - Fix missing API in issuerservice charts by @AYaoZhan in [#174](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/174)

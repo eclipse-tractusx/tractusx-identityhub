@@ -341,6 +341,10 @@ identityhub:
     # -- API key for the initial participant (base64 encoded DID + random suffix)
     apiKey: "ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"
 
+  # -- Whether web DIDs should be interpreted as HTTPS or HTTP
+  didweb:
+    https: false
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true

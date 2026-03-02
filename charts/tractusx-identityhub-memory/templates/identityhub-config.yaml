@@ -51,6 +51,8 @@ data:
   web.http.sts.port: {{ .Values.identityhub.endpoints.sts.port | quote}}
   web.http.sts.path: {{ .Values.identityhub.endpoints.sts.path | quote}}
 
+  edc.iam.did.web.use.https: {{ .Values.identityhub.didweb.https | quote }}
+
   ##########################
   ## INITIAL PARTICIPANT  ##
   ##########################

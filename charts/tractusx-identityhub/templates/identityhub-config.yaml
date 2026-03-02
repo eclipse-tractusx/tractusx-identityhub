@@ -62,6 +62,8 @@ data:
   edc.vault.hashicorp.api.secret.path: {{ .Values.vault.hashicorp.paths.secret | quote }}
   edc.vault.hashicorp.api.health.check.path: {{ .Values.vault.hashicorp.paths.health | quote }}
 
+  edc.iam.did.web.use.https: {{ .Values.identityhub.didweb.https | quote }}
+
   ##########################
   ## INITIAL PARTICIPANT  ##
   ##########################
