@@ -330,6 +330,17 @@ identityhub:
     protocol: ""
     public: ""
     readiness: ""
+  # -- Initial participant context configuration
+  initialParticipant:
+    # -- Enable automatic creation of initial participant context on startup
+    enabled: true
+    # -- DID (Decentralized Identifier) for the initial participant
+    did: "did:web:identityhub.presentation.local"
+    # -- Secret for the initial participant, should be stored in vault in production
+    secret: "testme"
+    # -- API key for the initial participant (base64 encoded DID + random suffix)
+    apiKey: "ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
