@@ -147,6 +147,9 @@ For detailed deployment instructions in a localhost environment, please refer to
 
 For developer resources, as well as best practices for development and testing, can be found [in this file](./docs/README.md).
 
+## Documentation
+Detailed documentation and guides are available in `docs/README.md`: [View documentation](docs/architecture/README.md)
+
 ## License
 
 Distributed under the Apache 2.0 License.
@@ -170,3 +173,4 @@ See [LICENSE](https://github.com/eclipse-tractusx/tractusx-edc/blob/main/LICENSE
 [release-shield]: https://img.shields.io/github/v/release/eclipse-tractusx/tractusx-identityhub.svg?style=for-the-badge
 
 [release-url]: https://github.com/eclipse-tractusx/tractusx-identityhub/releases
+
