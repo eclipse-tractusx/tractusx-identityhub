@@ -1,3 +1,26 @@
+#################################################################################
+# Eclipse Tractus-X - Industry Core Hub Backend
+#
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+# Copyright (c) 2026 Catena-X Autmootive Network e.V.
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0.
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the
+# License for the specific language govern in permissions and limitations
+# under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+#################################################################################
+
 #!/usr/bin/env python3
 """
 Verify a JWT-based Verifiable Credential (VC-JWT) issued by a did:web issuer.
@@ -140,6 +163,7 @@ def check_bitstring_status_list(status_list_url: str, index: int, issuer_did: st
     body = resp.text.strip()
     encoded_list = None
     sl_type = None
+    sl_decoded = None  # decoded status list credential content
 
     # Determine if the response is a JWT or JSON
     if body.startswith("ey") and body.count(".") == 2:
@@ -147,39 +171,54 @@ def check_bitstring_status_list(status_list_url: str, index: int, issuer_did: st
         sl_type = "JWT"
         try:
             sl_parts = body.split(".")
+            sl_header = json.loads(b64url_decode(sl_parts[0]))
             sl_payload = json.loads(b64url_decode(sl_parts[1]))
+            sl_decoded = {"header": sl_header, "payload": sl_payload}
             sl_vc = sl_payload.get("vc", sl_payload)
             encoded_list = sl_vc.get("credentialSubject", {}).get("encodedList")
 
-            # Optionally verify the status list credential's signature too
-            sl_header = json.loads(b64url_decode(sl_parts[0]))
+            # Verify the status list credential's issuer matches
             sl_issuer = sl_payload.get("iss", "")
             if sl_issuer and sl_issuer != issuer_did:
                 return {
                     "revoked": None,
                     "error": f"Status list issuer mismatch: {sl_issuer} ≠ {issuer_did}",
                     "details": "",
+                    "sl_decoded": sl_decoded,
                 }
         except Exception as e:
-            return {"revoked": None, "error": f"Failed to decode status list JWT: {e}", "details": ""}
+            return {"revoked": None, "error": f"Failed to decode status list JWT: {e}", "details": "", "sl_decoded": None}
     else:
         # JSON-LD format
         sl_type = "JSON-LD"
         try:
             sl_doc = json.loads(body)
+            sl_decoded = sl_doc
             encoded_list = sl_doc.get("credentialSubject", {}).get("encodedList")
         except Exception as e:
-            return {"revoked": None, "error": f"Failed to parse status list JSON: {e}", "details": ""}
+            return {"revoked": None, "error": f"Failed to parse status list JSON: {e}", "details": "", "sl_decoded": None}
 
     if not encoded_list:
-        return {"revoked": None, "error": "No encodedList found in status list credential", "details": f"format={sl_type}"}
+        return {"revoked": None, "error": "No encodedList found in status list credential", "details": f"format={sl_type}", "sl_decoded": sl_decoded}
 
-    # Decode: base64 → gzip → raw bitstring bytes
+    # Decode: strip multibase prefix → base64url → gzip → raw bitstring bytes
+    # The W3C Bitstring Status List spec uses Multibase encoding.
+    # Common prefixes: 'u' = base64url-no-pad, 'z' = base58btc
     try:
-        compressed = base64.b64decode(encoded_list)
+        if encoded_list.startswith("u"):
+            # Multibase base64url-no-pad prefix
+            raw_b64 = encoded_list[1:]
+            compressed = b64url_decode(raw_b64)
+        elif encoded_list.startswith("z"):
+            # Multibase base58btc — less common for status lists
+            import base58
+            compressed = base58.b58decode(encoded_list[1:])
+        else:
+            # No multibase prefix — try base64url directly
+            compressed = b64url_decode(encoded_list)
         bitstring = gzip.decompress(compressed)
     except Exception as e:
-        return {"revoked": None, "error": f"Failed to decode/decompress encodedList: {e}", "details": ""}
+        return {"revoked": None, "error": f"Failed to decode/decompress encodedList: {e}", "details": "", "sl_decoded": sl_decoded}
 
     total_bits = len(bitstring) * 8
     if index < 0 or index >= total_bits:
@@ -198,36 +237,15 @@ def check_bitstring_status_list(status_list_url: str, index: int, issuer_did: st
         "revoked": is_set,
         "error": None,
         "details": f"format={sl_type}, bitstring_size={total_bits} bits, byte[{byte_index}]=0x{bitstring[byte_index]:02x}, bit_position={bit_index}",
+        "sl_decoded": sl_decoded,
+        "bitstring": bitstring,
     }
 
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 
 def main():
-    if len(sys.argv) < 2:
-        token = (
-            "eyJraWQiOiJkaWQ6d2ViOmlzc3Vlci1zZXJ2aWNlLmludC5jYXRlbmEteC5uZXQja2V5LTEi"
-            "LCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJkaWQ6d2ViOmlkZW50aXR5LWh1Yi5pbnQuY2F0ZW5h"
-            "LXgubmV0IiwibmJmIjoxNzcyNjUzMDcwLCJpc3MiOiJkaWQ6d2ViOmlzc3Vlci1zZXJ2aWNl"
-            "LmludC5jYXRlbmEteC5uZXQiLCJleHAiOjEwMDAxNzcyNjUzMDcwLCJpYXQiOjE3NzI2NTMw"
-            "NzAsInZjIjp7Imlzc3VhbmNlRGF0ZSI6IjIwMjYtMDMtMDRUMTk6Mzc6NTAuODE3NDIyMDMy"
-            "WiIsImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImhvbGRlcklkZW50aWZpZXIiOiJCUE5MMDAwMDAw"
-            "MDNBWVJFIiwiaWQiOiJkaWQ6d2ViOmlkZW50aXR5LWh1Yi5pbnQuY2F0ZW5hLXgubmV0In0s"
-            "ImlkIjoiYTg4YWYyMzYtMTkxMi00NWE5LTljYjItMDk0NWRhZjZiYzM4IiwidHlwZSI6WyJW"
-            "ZXJpZmlhYmxlQ3JlZGVudGlhbCIsIk1lbWJlcnNoaXBDcmVkZW50aWFsIl0sIkBjb250ZXh0"
-            "IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIl0sImlzc3VlciI6"
-            "ImRpZDp3ZWI6aXNzdWVyLXNlcnZpY2UuaW50LmNhdGVuYS14Lm5ldCIsImV4cGlyYXRpb25E"
-            "YXRlIjoiKzMxODkxMy0wNy0yM1QxMzoyNDozMC44MTc0MjQ3MzJaIiwiY3JlZGVudGlhbFN0"
-            "YXR1cyI6eyJzdGF0dXNQdXJwb3NlIjoicmV2b2NhdGlvbiIsInN0YXR1c0xpc3RJbmRleCI6"
-            "MCwiaWQiOiI0MzkyYjQ2NC1lMjRkLTQ4MWMtYjJjMi04NTk1NTQwZjY4YTUiLCJ0eXBlIjoi"
-            "Qml0c3RyaW5nU3RhdHVzTGlzdEVudHJ5Iiwic3RhdHVzTGlzdENyZWRlbnRpYWwiOiJodHRw"
-            "czovL2lzc3Vlci1zZXJ2aWNlLmludC5jYXRlbmEteC5uZXQvYWIwZWM2ZDYtYWQwNS00NWUz"
-            "LWIzNjItMDdlZGRjYTQ3MzUwIn19LCJqdGkiOiI1YjNkMzc5NS00N2IzLTRmNDktYjJhNi0y"
-            "YWFhM2FjNzU5NzcifQ.PnISEGvY6O2YJwsJXostj100cYR_PiQ6YLOC1LCVTuYYpNORkYRw"
-            "2Vn9KzuWUr4EFFD__vsyBB7tB7JfyCv5KA"
-        )
-    else:
-        token = sys.argv[1]
+    token = sys.argv[1]
 
     print("=" * 70)
     print("  JWT Verifiable Credential Verification")
@@ -354,6 +372,40 @@ def main():
 
         if sl_url:
             result = check_bitstring_status_list(sl_url, int(sl_index), issuer_did)
+
+            # Print decoded bitstring content
+            bitstring_data = result.get("bitstring")
+            if bitstring_data is not None:
+                total_bits = len(bitstring_data) * 8
+                revoked_indices = []
+                for i in range(total_bits):
+                    bi = i // 8
+                    bit_pos = 7 - (i % 8)
+                    if bitstring_data[bi] & (1 << bit_pos):
+                        revoked_indices.append(i)
+
+                print(f"\n  ── Decoded Bitstring ({total_bits} bits = {len(bitstring_data)} bytes) ──")
+                # Hex dump of first 64 bytes
+                hex_rows = min(4, (len(bitstring_data) + 15) // 16)
+                for row in range(hex_rows):
+                    offset = row * 16
+                    chunk = bitstring_data[offset:offset + 16]
+                    hex_part = " ".join(f"{b:02x}" for b in chunk)
+                    ascii_part = "".join(chr(b) if 32 <= b < 127 else "." for b in chunk)
+                    print(f"  {offset:04x}: {hex_part:<48s}  |{ascii_part}|")
+                if len(bitstring_data) > 64:
+                    print(f"  ... ({len(bitstring_data) - 64} more bytes, all shown above are first 64)")
+
+                if revoked_indices:
+                    if len(revoked_indices) <= 20:
+                        print(f"\n  Revoked credential indices: {revoked_indices}")
+                    else:
+                        print(f"\n  Revoked credentials: {len(revoked_indices)} total")
+                        print(f"  First 20: {revoked_indices[:20]}")
+                else:
+                    print(f"\n  No revoked credentials (all {total_bits} bits are 0)")
+                print()
+
             if result["error"]:
                 print(f"  ⚠  {result['error']}")
                 if result["details"]:
