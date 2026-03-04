@@ -45,7 +45,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -75,13 +74,14 @@ public class InitialParticipantExtensionTest {
         // Test data
         String participantDid = "did:web:example.com";
         String participantSecret = "test-secret-123";
+        String participantSecretAlias = "participant-secret-alias";
         String participantApiKey = Base64.getEncoder().encodeToString(participantDid.getBytes()) + ".random-chars";
         boolean useHttps = false;
         boolean enableParticipant = true;
         
         // Create extension manually and inject dependencies and configuration
         var extension = new InitialParticipantExtension();
-        startup(extension, participantDid, participantSecret, participantApiKey, enableParticipant, useHttps);
+        startup(extension, participantDid, participantSecret, participantSecretAlias, participantApiKey, enableParticipant, useHttps);
         
         // Arrange
         when(participantContextStore.create(any(ParticipantContext.class)))
@@ -101,8 +101,8 @@ public class InitialParticipantExtensionTest {
 
         // Assert
         verify(participantContextStore).create(any(ParticipantContext.class));
+        verify(vault).storeSecret(eq(participantSecretAlias), eq(participantSecret));
         verify(vault).storeSecret(eq(participantDid + "-apikey"), eq(participantApiKey));
-        verify(vault).storeSecret(contains("-sts-client-secret"), eq(participantSecret));
         verify(didDocumentService).store(any(), eq(participantDid));
         verify(keyPairService).addKeyPair(eq(participantDid), any(), eq(true));
         verify(stsAccountStore).create(any());
@@ -113,13 +113,14 @@ public class InitialParticipantExtensionTest {
         // Test data with incorrectly encoded API key
         String participantDid = "did:web:example.com";
         String participantSecret = "test-secret-123";
+        String participantSecretAlias = "participant-secret-alias";
         String participantApiKey = "incorrectBase64Encoding.random-chars"; // Wrong encoding
         boolean useHttps = false;
         boolean enableParticipant = true;
         
         // Create extension manually and inject dependencies and configuration
         var extension = new InitialParticipantExtension();
-        startup(extension, participantDid, participantSecret, participantApiKey, enableParticipant, useHttps);
+        startup(extension, participantDid, participantSecret, participantSecretAlias, participantApiKey, enableParticipant, useHttps);
         
         // Act & Assert - expect EdcException to be thrown during initialization
         assertThrows(EdcException.class, () -> extension.initialize(context));
@@ -130,13 +131,14 @@ public class InitialParticipantExtensionTest {
         // Test data with null participantDid
         String participantDid = null; // Required field set to null
         String participantSecret = "test-secret-123";
+        String participantSecretAlias = "participant-secret-alias";
         String participantApiKey = "base64EncodedDid.random-chars";
         boolean useHttps = false;
         boolean enableParticipant = true;
         
         // Create extension manually and inject dependencies and configuration
         var extension = new InitialParticipantExtension();
-        startup(extension, participantDid, participantSecret, participantApiKey, enableParticipant, useHttps);
+        startup(extension, participantDid, participantSecret, participantSecretAlias, participantApiKey, enableParticipant, useHttps);
         
         // Act & Assert - expect NullPointerException to be thrown during initialization
         assertThrows(NullPointerException.class, () -> extension.initialize(context));
@@ -147,13 +149,14 @@ public class InitialParticipantExtensionTest {
         // Test data with enableParticipant set to false
         String participantDid = "did:web:example.com";
         String participantSecret = "test-secret-123";
+        String participantSecretAlias = "participant-secret-alias";
         String participantApiKey = Base64.getEncoder().encodeToString(participantDid.getBytes()) + ".random-chars";
         boolean useHttps = false;
         boolean enableParticipant = false; // Disabled
         
         // Create extension manually and inject dependencies and configuration
         var extension = new InitialParticipantExtension();
-        startup(extension, participantDid, participantSecret, participantApiKey, enableParticipant, useHttps);
+        startup(extension, participantDid, participantSecret, participantSecretAlias, participantApiKey, enableParticipant, useHttps);
         
         // Act
         extension.initialize(context);
@@ -170,6 +173,7 @@ public class InitialParticipantExtensionTest {
     private void startup(InitialParticipantExtension extension,
                         String participantDid,
                         String participantSecret,
+                        String participantSecretAlias,
                         String participantApiKey,
                         boolean useConfigParticipant,
                         boolean useHttpsScheme) {
@@ -182,8 +186,9 @@ public class InitialParticipantExtensionTest {
             setField(extension, "didDocumentService", didDocumentService);
             
             // Inject configuration settings
-            setField(extension, "participantDid", participantDid);
+            setField(extension, "participantId", participantDid);
             setField(extension, "participantSecret", participantSecret);
+            setField(extension, "participantSecretAlias", participantSecretAlias);
             setField(extension, "participantApiKey", participantApiKey);
             setField(extension, "useConfigParticipant", useConfigParticipant);
             setField(extension, "useHttpsScheme", useHttpsScheme);
