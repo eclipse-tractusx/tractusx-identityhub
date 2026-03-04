@@ -35,7 +35,7 @@ install:
   # -- Disable the bundled HashiCorp Vault dev-mode subchart
   vault: false
 
-identity-hub:
+identityhub:
   image:
     pullPolicy: Always
 
