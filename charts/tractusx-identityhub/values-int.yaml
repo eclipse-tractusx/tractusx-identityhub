@@ -61,6 +61,7 @@ identity-hub:
     version:
       port: 8086
       path: /.well-known/api
+      pathType: ImplementationSpecific
     sts:
       port: 8087
       path: /api/sts

@@ -52,6 +52,7 @@ issuerservice:
     version:
       port: 8084
       path: /.well-known/api
+      pathType: ImplementationSpecific
     sts:
       port: 8085
       path: /api/sts
