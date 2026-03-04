@@ -40,7 +40,7 @@ customCaCerts: {}
 
 issuerservice:
   image:
-    repository: ""
+    repository: tractusx/issuerservice
     # -- [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use
     pullPolicy: IfNotPresent
     # -- Overrides the image tag whose default is the chart appVersion
