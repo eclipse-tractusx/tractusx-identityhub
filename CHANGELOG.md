@@ -10,8 +10,21 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 ## [Unreleased]
 
 ### Added
-- Add documentation about IssuerService by @AYaoZhan in [#222](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/222)
-- Add documentation about IdentityHub, Developers and setup guide by @Alaitz1 in [#221](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/221)
+
+- Add Helm chart configuration for StatusList API by @stephanbcbauer in [#230](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/230)
+- Basic IssuerService component Documentation by @AYaoZhan in [#222](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/222)
+- Basic IdentityHub component Documentation by @Alaitz1 in [#221](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/221)
+- IssuanceFlow postman workflow test by @AYaoZhan in [#214](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/214)
+- Add configurable initial participantContext in IdentityHub by @AYaoZhan in [#231](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/231)
+
+### Fixed
+- Fix missing API in issuerservice charts by @AYaoZhan in [#174](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/174)
+- Fix Postgresql missing tables not being added by @AYaoZhan in [#178](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/178)
+- Fix issuerservice not secured with X-API-KEY header by @AyaoZhan in [#185](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/185)
+
+## [0.1.0] - 2025-11-05
+
+### Added
 - Add colored logger and logger persistence by @AYaoZhan in [#149](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/149)
 - Add CHANGELOG.md file following TRG 1.03 standards by @CDiezRodriguez in [#151](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/151)
 - Add installation and deployment documentation, enhance documentation structure, fix header and list formatting, add license headers and NOTICE files, set key signing alias default configuration by @AYaoZhan in [#147](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/147)
@@ -29,9 +42,6 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 - Fix OpenAPI specification by @Alaitz1 in [#165](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/165)
 - Fix ingress path values configuration, add STS/accounts/version endpoint configuration, fix credentials configuration issues and API endpoint naming by @AYaoZhan in [#118](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/118)
 - Fix Helm chart auto generated README.md files by @AYaoZhan in [#163](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/163)
-- Fix missing API in issuerservice charts by @AYaoZhan in [#174](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/174)
-- Fix Postgresql missing tables not being added by @AYaoZhan in [#178](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/178)
-- Fix issuerservice not secured with X-API-KEY header by @AyaoZhan in [#185](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/185)
 
 ## [0.0.1] - 2025-07-16
 

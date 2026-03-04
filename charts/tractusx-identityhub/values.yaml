@@ -330,6 +330,21 @@ identityhub:
     protocol: ""
     public: ""
     readiness: ""
+  # -- Initial participant context configuration
+  iatp:
+    sts:
+      oauth:
+        client:
+          # -- Enable participant context client configuration
+          enabled: false
+          # -- Client ID // Did of the initial participant
+          id: "did:web:identityhub.presentation.local"
+          # -- The client secret that is stored in the vault for requesting OAuth2 access token for Presentation API access
+          secret: "testme"
+          # -- Alias under which the client secret is stored in the vault
+          secret_alias: "sts-secret"
+          # -- The x-api-key that is stored in the vault for the initial participant
+          x_api_key: "ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"
 
 serviceAccount:
   # Specifies whether a service account should be created

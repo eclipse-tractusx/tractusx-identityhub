@@ -32,6 +32,7 @@ dependencies {
     runtimeOnly(libs.bom.ih)
     runtimeOnly(project(":extensions:seed:super-user"))
     runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
+    runtimeOnly(project(":extensions:identityhub:initial-participant"))
 
     // used for custom extensions
     implementation(libs.edc.core.connector)

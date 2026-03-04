@@ -50,3 +50,12 @@ data:
   web.http.version.path: {{ .Values.identityhub.endpoints.version.path | quote}}
   web.http.sts.port: {{ .Values.identityhub.endpoints.sts.port | quote}}
   web.http.sts.path: {{ .Values.identityhub.endpoints.sts.path | quote}}
+
+  ##########################
+  ## INITIAL PARTICIPANT  ##
+  ##########################
+  edc.tractusx.ih.participant.configurable.enable: {{ .Values.identityhub.iatp.sts.oauth.client.enabled | quote }}
+  edc.tractusx.ih.participant.configurable.id: {{ .Values.identityhub.iatp.sts.oauth.client.id | quote }}
+  edc.tractusx.ih.participant.configurable.secret: {{ .Values.identityhub.iatp.sts.oauth.client.secret | quote }}
+  edc.tractusx.ih.participant.configurable.secret.alias: {{ .Values.identityhub.iatp.sts.oauth.client.secret_alias | quote }}
+  edc.tractusx.ih.participant.configurable.api.key: {{ .Values.identityhub.iatp.sts.oauth.client.x_api_key | quote }}
