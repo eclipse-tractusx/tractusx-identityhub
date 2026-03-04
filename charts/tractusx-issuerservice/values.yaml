@@ -395,7 +395,7 @@ vault:
       enabled: true
       standbyOk: true
     paths:
-      secret: /v1/secret
+      secret: /v1/secret/data
       health: /v1/sys/health
 
 statuslist:

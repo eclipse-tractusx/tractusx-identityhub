@@ -146,4 +146,4 @@ statuslist:
   signing_key:
     alias: default
   callback:
-    address: "issuer-service.int.catena-x.net"
+    address: "https://issuer-service.int.catena-x.net"
