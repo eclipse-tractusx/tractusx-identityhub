@@ -35,19 +35,25 @@ curl -X POST "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/hol
 
 The credential definition mappings defined in [Step 6](06_create_credential_definition.md) read directly from **columns in the `holders` database table**. The holder registration (`holderId`, `name`) populates that table, but the mapped fields (`holder_id`, `member_of`) are columns you must also populate in the database for each holder row.
 
-| Mapping (`input` → `output`) | Source | Credential field |
-|---|---|---|
-| `did` → `credentialSubject.id` | Holder's DID | Subject identifier |
-| `holder_id` → `credentialSubject.holderIdentifier` | `holders.holder_id` column | Holder's BPNL |
-| `member_of` → `credentialSubject.memberOf` | `holders.member_of` column | BPN of the organization the holder is a member of |
+| Mapping (`input` → `output`) | Source | Credential field | Status |
+|---|---|---|---|
+| `did` → `credentialSubject.id` | Holder's DID | Subject identifier | ✅ Available |
+| `holder_id` → `credentialSubject.holderIdentifier` | `holders.holder_id` column | Holder's BPNL | ✅ Available |
+| `member_of` → `credentialSubject.memberOf` | `holders.member_of` column | BPN of the organization the holder is a member of | ⚠️ Not available — see note below |
 
 For **MembershipCredentials** in the Catena-X dataspace, the `holders` table row should look like:
 
-| Column | Example value | Maps to |
-|---|---|---|
-| `did` | `did:web:identity-hub.example.com` | `credentialSubject.id` |
-| `holder_id` | `BPNL00000003AYRE` | `credentialSubject.holderIdentifier` |
-| `member_of` | `Catena-X` | `credentialSubject.memberOf` |
+| Column | Example value | Maps to | Status |
+|---|---|---|---|
+| `did` | `did:web:identity-hub.example.com` | `credentialSubject.id` | ✅ Available |
+| `holder_id` | `BPNL00000003AYRE` | `credentialSubject.holderIdentifier` | ✅ Available |
+| `member_of` | `Catena-X` | `credentialSubject.memberOf` | ⚠️ Not available |
+
+> **⚠️ `member_of` is not yet available:** The default `holders` table schema (defined in the upstream IssuerService) does not include a `member_of` column. The table only exposes: `holder_id`, `did`, `holder_name`, `anonymous`, `properties`. Adding `member_of` as a mappable field would require either:
+> - A custom database migration to add the column to the `holders` table, **or**
+> - An upstream change to the `Holder` model and its SQL schema.
+>
+> This is a known limitation. A feature request or upstream contribution would be needed to support `credentialSubject.memberOf` natively.
 
 The resulting issued credential will contain:
 

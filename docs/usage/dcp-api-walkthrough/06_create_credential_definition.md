@@ -29,16 +29,13 @@ curl -X POST "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/cre
                     "input": "holder_id",
                     "output": "credentialSubject.holderIdentifier",
                     "required": true
-                },
-                {
-                    "input": "member_of",
-                    "output": "credentialSubject.memberOf",
-                    "required": true
                 }
             ],
         "validity": 10000000000000
         }'
 ```
+
+> **⚠️ `member_of` mapping is not yet functional:** The default `holders` table schema does not include a `member_of` column, so this mapping will fail at issuance time. See [Step 7](07_register_holder.md) for details.
 
 ## Response
 
