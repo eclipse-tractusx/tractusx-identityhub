@@ -39,6 +39,17 @@ Complete API reference and testing resources, including:
 - **Bruno Collection**: Lightweight, Git-friendly API collection for Bruno
 - **Testing Guide**: Instructions for setting up and running API tests
 
+### [DCP API Walkthrough](./usage/dcp-api-walkthrough/README.md)
+
+Step-by-step guide for the full DCP credential issuance flow, including:
+
+- Creating and activating participant contexts on both IssuerService and IdentityHub
+- Configuring attestations, credential definitions, and holders
+- Requesting and receiving a **MembershipCredential** via the DCP protocol
+- Verifying the issued credential (signature, revocation status)
+
+See the full [Usage Guides index](./usage/README.md) for all available walkthroughs.
+
 ### [Migration Guide](./admin/migration-guide.md)
 
 Administrator guide for migrating between chart versions, including:
@@ -53,7 +64,8 @@ Administrator guide for migrating between chart versions, including:
 
 This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
 
-* SPDX-License-Identifier: CC-BY-4.0
-* SPDX-FileCopyrightText: 2026 LKS Next
-* SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
-* Source URL: <https://github.com/eclipse-tractusx/tractus-x-identityhub>
+- SPDX-License-Identifier: CC-BY-4.0
+- SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
+- SPDX-FileCopyrightText: 2026 Catena-X Automotive Network e.V.
+- SPDX-FileCopyrightText: 2026 LKS Next
+- Source URL: <https://github.com/eclipse-tractusx/tractus-x-identityhub>
