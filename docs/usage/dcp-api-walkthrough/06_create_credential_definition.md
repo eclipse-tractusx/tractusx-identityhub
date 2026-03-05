@@ -29,6 +29,11 @@ curl -X POST "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/cre
                     "input": "holder_id",
                     "output": "credentialSubject.holderIdentifier",
                     "required": true
+                },
+                {
+                    "input": "member_of",
+                    "output": "credentialSubject.memberOf",
+                    "required": true
                 }
             ],
         "validity": 10000000000000
@@ -51,6 +56,8 @@ Mappings transform data from the attestation source (database columns) into cred
 │  holder_id ──────────┼────────►│  credentialSubject            │
 │  "BPNL00000003AYRE"  │  maps   │    .holderIdentifier          │
 │                      │  to     │    = "BPNL00000003AYRE"       │
+│  member_of ──────────┼────────►│  credentialSubject.memberOf   │
+│  "Catena-X"         │         │    = "BPNL00000003CSGV"      │
 └──────────────────────┘         └───────────────────────────────┘
 ```
 

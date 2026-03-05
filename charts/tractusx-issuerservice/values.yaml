@@ -404,3 +404,14 @@ statuslist:
   # -- Callback address for statuslist
   callback:
     address: "issuerservice.issuance.local"
+# -- pgAdmin4 configuration
+
+pgadmin4:
+  enabled: false
+  env:
+    email: pgadmin4@txtest.org
+    password: tractusxpgadmin4
+  persistentVolume:
+    enabled: false
+  ingress:
+    enabled: false

@@ -14,7 +14,7 @@ curl -X POST "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/hol
   -H "x-api-key: ${ISSUER_API_KEY}" \
   -d '{
     "did": "did:web:identity-hub.example.com",
-    "holderId": "BPNL00000003AYRE", # Any other identifier can be used (including the DID), for Catena-X use your assigned BPNL.
+    "holderId": "BPNL00000003AYRE",
     "name": "identity-hub"
   }'
 ```
@@ -28,30 +28,35 @@ curl -X POST "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/hol
 | Field | Description |
 |-------|-------------|
 | `did` | The holder's DID — must match the DID created in [Step 2](02_create_holder_participant.md) |
-| `holderId` | Unique identifier for the holder (typically the same as their DID or can be any unique identifier, in the case of Catena-X use your assigned BPNL) |
-| `name` | Human-readable name, also used as the `holder_name` in database attestations |
+| `holderId` | Unique identifier for the holder (typically their BPNL for Catena-X) |
+| `name` | Human-readable name of the holder |
 
-## Important: The `name` Field and Attestation Mappings
+## Important: Attestation Mappings and the `holders` Table
 
-The `name` field is the value that gets mapped via the `holder_name → credentialSubject.holderIdentifier` mapping defined in [Step 6](06_create_credential_definition.md).
+The credential definition mappings defined in [Step 6](06_create_credential_definition.md) read directly from **columns in the `holders` database table**. The holder registration (`holderId`, `name`) populates that table, but the mapped fields (`holder_id`, `member_of`) are columns you must also populate in the database for each holder row.
 
-For **MembershipCredentials** in the Catena-X dataspace, set the `name` to the **Business Partner Number (BPN)**:
+| Mapping (`input` → `output`) | Source | Credential field |
+|---|---|---|
+| `did` → `credentialSubject.id` | Holder's DID | Subject identifier |
+| `holder_id` → `credentialSubject.holderIdentifier` | `holders.holder_id` column | Holder's BPNL |
+| `member_of` → `credentialSubject.memberOf` | `holders.member_of` column | BPN of the organization the holder is a member of |
 
-```json
-{
-  "did": "did:web:identity-hub.example.com",
-  "holderId": "did:web:identity-hub.example.com",
-  "name": "BPNL00000003AYRE"
-}
-```
+For **MembershipCredentials** in the Catena-X dataspace, the `holders` table row should look like:
 
-This ensures the issued credential's `credentialSubject.holderIdentifier` is set to the BPN:
+| Column | Example value | Maps to |
+|---|---|---|
+| `did` | `did:web:identity-hub.example.com` | `credentialSubject.id` |
+| `holder_id` | `BPNL00000003AYRE` | `credentialSubject.holderIdentifier` |
+| `member_of` | `Catena-X` | `credentialSubject.memberOf` |
+
+The resulting issued credential will contain:
 
 ```json
 {
   "credentialSubject": {
     "id": "did:web:identity-hub.example.com",
-    "holderIdentifier": "BPNL00000003AYRE"
+    "holderIdentifier": "BPNL00000003AYRE",
+    "memberOf": "Catena-X"
   }
 }
 ```

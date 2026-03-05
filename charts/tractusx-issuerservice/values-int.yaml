@@ -118,7 +118,25 @@ postgresql:
     database: "issuer"
     username: <path:identity-hub/data/db#username>
     password: <path:identity-hub/data/db#password>
-
+pgadmin4:
+  enabled: true
+  env:
+    email: <path:identity-hub/data/pgadmin#username>
+    password: <path:identity-hub/data/pgadmin#password>
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: pgadmin-idhub.int.catena-x.net
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+       - secretName: "pgadmin-idhub.int.catena-x.net-tls"
+         hosts:
+           - "pgadmin-idhub.int.catena-x.net" 
 ####################################
 ## External HashiCorp Vault config
 ####################################
