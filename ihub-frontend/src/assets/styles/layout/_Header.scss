@@ -1,0 +1,105 @@
+/********************************************************************************
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ ********************************************************************************/
+
+@use "../config/variables" as *;
+@use '../config/mixins';
+
+header.ichub-header {
+    background: $header-gradient-bg;
+    border-radius: 0;
+    border-bottom: 5px solid $brand-header-blue;
+    padding: 0 !important;
+    position: sticky !important;
+    transition: background-color 0.3s ease-in-out;
+
+    &.scrolled {
+        background: $header-opaque-gradient-bg;
+    }
+
+    button.user-button {
+        background-color: $brand-border;
+        color: $brand-text;
+        border: 1px solid $brand-text;
+        transition: all 0.2s ease-in-out;
+
+        &:hover {
+            background-color: rgba(25, 118, 210, 0.2);
+            color: white;
+            border-color: rgba(25, 118, 210, 0.5);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+    }
+
+    .MuiIconButton-root {
+        color: white;
+
+        &:hover {
+            background-color: rgba(25, 118, 210, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+        .MuiSvgIcon-root {
+            color: white;
+        }
+    }
+
+    h1, h2 {
+        color: $brand-text;
+        font-weight: bold;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        letter-spacing: 0.5px;
+
+        &.main-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffffff 30%, #42a5f5 90%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+
+            @media (max-width: 768px) {
+                font-size: 1.6rem;
+            }
+        }
+    }
+}
+
+#primary-search-account-menu {
+    > div.MuiPaper-root.MuiPopover-paper.MuiMenu-paper {
+        background-color: $brand-dark;
+        @include mixins.space-shadow($brand-shadow);
+        margin-top: 20px;
+
+        ul * {
+            @include mixins.dark-bg-white-text;
+        }
+
+        li:hover {
+            font-weight: bold;
+            @include mixins.space-shadow($brand-orange);
+        }
+
+        hr {
+            border-color: $brand-shadow;
+        }
+    }
+}
