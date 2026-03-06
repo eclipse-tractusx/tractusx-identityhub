@@ -1,4 +1,4 @@
-# tractusx-identityhub
+# Tractusx-identityhub
 
 ![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
@@ -27,8 +27,8 @@ helm install identityhub tractusx-dev/tractusx-identityhub
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com/bitnami | postgresql(postgresql) | 12.12.x |
-| https://helm.releases.hashicorp.com | vault(vault) | 0.29.1 |
+| https://github.com/CloudPirates-io/helm-charts| postgres(postgresql) | 0.11.0  |
+| https://helm.releases.hashicorp.com | vault(vault) | 0.29.1  |
 
 ## Values
 
