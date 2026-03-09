@@ -110,6 +110,10 @@ issuerservice:
       port: 8088
       path: /statuslist
 
+  # -- Whether web DIDs should be interpreted as HTTPS or HTTP
+  didweb:
+    https: false
+
   service:
     # -- [Service type](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) to expose the running application on a set of Pods as a network service.
     type: ClusterIP
