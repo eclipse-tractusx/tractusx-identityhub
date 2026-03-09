@@ -72,6 +72,7 @@ jobs:
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add hashicorp https://helm.releases.hashicorp.com
+          helm repo add runix https://helm.runix.net
           helm repo update
 
       - name: chart-testing (lint)
