@@ -345,16 +345,6 @@ identityhub:
           secret_alias: "sts-secret"
           # -- The x-api-key that is stored in the vault for the initial participant
           x_api_key: "ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"
-  initialParticipant:
-    # -- Enable automatic creation of initial participant context on startup
-    enabled: false
-    # -- DID (Decentralized Identifier) for the initial participant
-    did: "did:web:identityhub.presentation.local"
-    # -- Secret for the initial participant, should be stored in vault in production
-    secret: "testme"
-    # -- API key for the initial participant (base64 encoded DID + random suffix)
-    apiKey: "ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"
-
   # -- Whether web DIDs should be interpreted as HTTPS or HTTP
   didweb:
     https: false

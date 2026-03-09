@@ -70,12 +70,5 @@ data:
   edc.tractusx.ih.participant.configurable.secret: {{ .Values.identityhub.iatp.sts.oauth.client.secret | quote }}
   edc.tractusx.ih.participant.configurable.secret.alias: {{ .Values.identityhub.iatp.sts.oauth.client.secret_alias | quote }}
   edc.tractusx.ih.participant.configurable.api.key: {{ .Values.identityhub.iatp.sts.oauth.client.x_api_key | quote }}
-  edc.iam.did.web.use.https: {{ .Values.identityhub.didweb.https | quote }}
 
-  ##########################
-  ## INITIAL PARTICIPANT  ##
-  ##########################
-  edc.tractusx.ih.participant.configurable.enable: {{ .Values.identityhub.initialParticipant.enabled | quote }}
-  edc.tractusx.ih.participant.configurable.secret: {{ .Values.identityhub.initialParticipant.secret | required ".Values.identityhub.initialParticipant.secret is required when enabled" | quote }}
-  edc.tractusx.ih.participant.configurable.did: {{ .Values.identityhub.initialParticipant.did | required ".Values.identityhub.initialParticipant.did is required when enabled" | quote }}
-  edc.tractusx.ih.participant.configurable.api.key: {{ .Values.identityhub.initialParticipant.apiKey | required ".Values.identityhub.initialParticipant.apiKey is required when enabled" | quote }}
+  edc.iam.did.web.use.https: {{ .Values.identityhub.didweb.https | quote }}
