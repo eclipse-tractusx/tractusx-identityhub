@@ -83,7 +83,7 @@ spec:
           {{- range  $name, $mapping := $controlEdcEndpoints }}
           {{- if (has $name $ingressEdcEndpoints) }}
           - path: {{ $mapping.path }}
-            pathType: Prefix
+            pathType: {{ $mapping.pathType | default "Prefix" }}
             backend:
               {{- if semverCompare ">=1.19-0" $gitVersion }}
               service:
