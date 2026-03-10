@@ -15,6 +15,7 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 - Add developers guide and IdentityHub documentation by @Alaitz1 in [#221](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/221)
 - Add issuer service documentation by @AYaoZhan in [#222](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/222)
 - Add StatusList API configuration to IssuerService by @stephanbcbauer in [#230](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/230)
+- Add configurable initial participantContext by @AYaoZhan in [#242](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/242)
 - Add architecture documentation by @Alaitz1 in [#152](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/152)
 - Add did web http usage configuration by @AYaoZhan in [#243](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/243)
 - Add API walkthrough and helm charts for int by @matbmoser in [#248](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/248)
