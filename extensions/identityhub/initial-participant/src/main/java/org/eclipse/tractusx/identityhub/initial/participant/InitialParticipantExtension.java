@@ -54,15 +54,20 @@ import static java.util.Objects.requireNonNull;
 public class InitialParticipantExtension implements ServiceExtension {
     public static final String NAME = "Configurable Initial Participant Context Extension";
 
-    @Setting(key = "edc.tractusx.ih.participant.configurable.did",
+    @Setting(key = "edc.tractusx.ih.participant.configurable.id",
             description = "The did/participantId of the initial participant, must be the Did API url",
             required = false)
-    private String participantDid;
+    private String participantId;
 
     @Setting(key = "edc.tractusx.ih.participant.configurable.secret",
             description = "The client secret of the initial participant context",
             required = false)
     private String participantSecret;
+
+    @Setting(key = "edc.tractusx.ih.participant.configurable.secret.alias",
+            description = "The vault alias for storing the client secret",
+            required = false)
+    private String participantSecretAlias;
 
     @Setting(key = "edc.tractusx.ih.participant.configurable.api.key",
             description = "Configurable XApiKey for Initial Participant Context",
@@ -108,12 +113,13 @@ public class InitialParticipantExtension implements ServiceExtension {
         monitor = context.getMonitor().withPrefix(InitialParticipantExtension.class.getSimpleName());
         if (useConfigParticipant) {
             // validate values in case configurable participant is enabled
-            requireNonNull(participantDid, "Missing required default participant Did property");
+            requireNonNull(participantId, "Missing required default participant Did property");
             requireNonNull(participantSecret, "Missing required default participant secret property");
+            requireNonNull(participantSecretAlias, "Missing required default participant secret alias property");
             requireNonNull(participantApiKey, "Missing required default participant apikey property");
 
             Base64.Encoder enc = Base64.getEncoder();
-            String base64Did = enc.encodeToString(participantDid.getBytes());
+            String base64Did = enc.encodeToString(participantId.getBytes());
 
             if (!participantApiKey.substring(0, participantApiKey.indexOf(".")).equals(base64Did)) {
                 throw new EdcException("The configured x-api-key must start with the participantDid encoded in base64. For instance: %s.randomChars".formatted(base64Did));
@@ -132,7 +138,7 @@ public class InitialParticipantExtension implements ServiceExtension {
         participantContextStore.create(context)
                 .onFailure(e -> monitor.severe("Error storing participantContext into storage, error details: %s".formatted(e.getFailureDetail())));
 
-        vault.storeSecret(context.clientSecretAlias(), participantSecret)
+        vault.storeSecret(participantSecretAlias, participantSecret)
                 .onFailure(e -> monitor.severe("Error storing client-secret into vault, error details: %s".formatted(e.getFailureDetail())));
 
         monitor.info("Generated X-Api-Key for initial PC: %s".formatted(participantApiKey));
@@ -140,11 +146,11 @@ public class InitialParticipantExtension implements ServiceExtension {
                 .onFailure(e -> monitor.severe("Error storing X-Api-Key into vault, error details: %s".formatted(e.getFailureDetail())));
 
         DidDocument document = getDidDocument();
-        didDocumentService.store(document, participantDid)
+        didDocumentService.store(document, participantId)
                 .onFailure(e -> monitor.severe("Error storing DID in storage, error details: %s".formatted(e.getFailureDetail())));
 
         KeyDescriptor key = getKeyDescriptor();
-        keyPairService.addKeyPair(participantDid, key, true)
+        keyPairService.addKeyPair(participantId, key, true)
                 .onFailure(e -> monitor.severe("Error storing KeyPair in storage, error details: %s".formatted(e.getFailureDetail())));
 
         StsAccount sts = getStsAccount(key);
@@ -154,11 +160,11 @@ public class InitialParticipantExtension implements ServiceExtension {
 
     private StsAccount getStsAccount(KeyDescriptor key) {
         return StsAccount.Builder.newInstance()
-                .id(participantDid)
-                .name(participantDid)
-                .clientId(participantDid)
-                .did(participantDid)
-                .secretAlias("%s-sts-client-secret".formatted(participantDid))
+                .id(participantId)
+                .name(participantId)
+                .clientId(participantId)
+                .did(participantId)
+                .secretAlias(participantSecretAlias)
                 .privateKeyAlias(key.getPrivateKeyAlias())
                 .publicKeyReference(key.getKeyId())
                 .build();
@@ -166,10 +172,10 @@ public class InitialParticipantExtension implements ServiceExtension {
 
     private DidDocument getDidDocument() {
         String type = "CredentialService";
-        String id = "%s#credential-service".formatted(participantDid.replace("did:web:", ""));
+        String id = "%s#credential-service".formatted(participantId.replace("did:web:", ""));
         String endpoint = getServiceEndpoint();
         return DidDocument.Builder.newInstance()
-                .id(participantDid)
+                .id(participantId)
                 .service(List.of(new Service(id, type, endpoint)))
                 .build();
     }
@@ -184,28 +190,28 @@ public class InitialParticipantExtension implements ServiceExtension {
         }
 
         endpointBuilder.append("://");
-        endpointBuilder.append(participantDid.split(":")[2]);
+        endpointBuilder.append(participantId.split(":")[2]);
         endpointBuilder.append(credentialsApi);
-        endpointBuilder.append("/v1/participants/%s".formatted(enc.encodeToString(participantDid.getBytes())));
+        endpointBuilder.append("/v1/participants/%s".formatted(enc.encodeToString(participantId.getBytes())));
         return endpointBuilder.toString();
     }
 
     private KeyDescriptor getKeyDescriptor() {
         return KeyDescriptor.Builder.newInstance()
                 .keyGeneratorParams(Map.of("algorithm", "Ec", "curve", "secp256r1"))
-                .keyId("%s#key-1".formatted(participantDid))
-                .privateKeyAlias("%s-alias".formatted(participantDid))
+                .keyId("%s#key-1".formatted(participantId))
+                .privateKeyAlias("%s-alias".formatted(participantId))
                 .build();
     }
 
     private ParticipantContext getParticipantContext() {
         long timestamp = Instant.now().toEpochMilli();
         return ParticipantContext.Builder.newInstance()
-                .did(participantDid)
-                .participantContextId(participantDid)
+                .did(participantId)
+                .participantContextId(participantId)
                 .createdAt(timestamp)
                 .lastModified(timestamp)
-                .apiTokenAlias("%s-apikey".formatted(participantDid))
+                .apiTokenAlias("%s-apikey".formatted(participantId))
                 .state(ParticipantContextState.ACTIVATED)
                 .roles(List.of(ServicePrincipal.ROLE_ADMIN))
                 .properties(new HashMap<>())
