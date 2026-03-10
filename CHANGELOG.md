@@ -7,21 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog](https://github.com/eclipse-tractusx/tractus-x-release/blob/main/CHANGELOG.md).
 
-## [Unreleased]
+## [0.2.0] - 2026-03-10
 
 ### Added
 
-- Add Helm chart configuration for StatusList API by @stephanbcbauer in [#230](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/230)
-- Basic IssuerService component Documentation by @AYaoZhan in [#222](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/222)
-- Basic IdentityHub component Documentation by @Alaitz1 in [#221](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/221)
-- IssuanceFlow postman workflow test by @AYaoZhan in [#214](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/214)
-- Add configurable initial participantContext in IdentityHub by @AYaoZhan in [#231](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/231)
-- Add configuration to resolve did web methods with https or http by @AYaoZhan in [#243](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/243)
+- Add issuance flow workflow test by @AYaoZhan in [#214](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/214)
+- Add developers guide and IdentityHub documentation by @Alaitz1 in [#221](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/221)
+- Add issuer service documentation by @AYaoZhan in [#222](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/222)
+- Add StatusList API configuration to IssuerService by @stephanbcbauer in [#230](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/230)
+- Add configurable initial participantContext by @AYaoZhan in [#242](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/242)
+- Add architecture documentation by @Alaitz1 in [#152](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/152)
+- Add did web http usage configuration by @AYaoZhan in [#243](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/243)
+- Add API walkthrough and helm charts for int by @matbmoser in [#248](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/248)
+
+### Changed
+
+- Update KICS configuration to exclude additional OpenAPI file from scans by @CDiezRodriguez in [#246](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/246)
 
 ### Fixed
-- Fix missing API in issuerservice charts by @AYaoZhan in [#174](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/174)
-- Fix Postgresql missing tables not being added by @AYaoZhan in [#178](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/178)
-- Fix issuerservice not secured with X-API-KEY header by @AyaoZhan in [#185](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/185)
+
+- fix: issuerservice ingress apis by @AYaoZhan in [#174](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/174)
+- fix: add identityhub-authentication dependency for X-API-KEY usage by @AYaoZhan in [#185](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/185)
+- fix: charts postgres tables by @AYaoZhan in [#178](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/178)
+- fix: update chart versions to 0.1.3 and correct repository paths in values.yaml by @CDiezRodriguez in [#247](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/247)
 
 ## [0.1.0] - 2025-11-05
 
@@ -34,7 +42,7 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 - Add properties template functionality by @AYaoZhan in [#100](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/100)
 - Add OpenAPI specification and Bruno Collection for interface documentation by @CDiezRodriguez in [#85](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/85)
 
-### Changes
+### Changed
 
 - Update dependency files and IdentityHub to version 0.14.0 by @M-Busk in [#140](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/140)
 - Update Bitnami images by @CDiezRodriguez in [#130](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/130)
