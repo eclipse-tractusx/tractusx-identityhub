@@ -37,6 +37,7 @@ bom-issuer-sql = { module = "org.eclipse.edc:issuerservice-feature-sql-bom", ver
 # IdentityHub modules
 edc-ih-account-remote = { module = "org.eclipse.edc:sts-account-service-remote", version.ref = "edc" }
 edc-ih-spi = { module = "org.eclipse.edc:identity-hub-spi", version.ref = "edc" }
+edc-ih-participant-context-config-spi = { module = "org.eclipse.edc:participant-context-config-spi", version.ref = "edc" }
 
 # IdentityHub BOM modules
 bom-ih = { module = "org.eclipse.edc:identityhub-bom", version.ref = "edc" }

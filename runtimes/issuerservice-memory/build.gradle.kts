@@ -37,8 +37,9 @@ dependencies {
     implementation(libs.edc.api.authentication)
 }
 
-tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+tasks.shadowJar {
     mergeServiceFiles()
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     archiveFileName.set("${project.name}.jar")
 }
 
