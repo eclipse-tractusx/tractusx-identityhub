@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2025 Cofinity-X
- * Copyright (c) 2025 LKS Next
  * Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -19,30 +18,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-plugins {
-    `java-library`
-    id("application")
-    alias(libs.plugins.shadow)
-}
-
-dependencies {
-    // used for the runtime
-    runtimeOnly(libs.bom.issuer)
-    runtimeOnly(project(":extensions:seed:super-user"))
-    runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
-
-    // used for custom extensions
-    implementation(libs.edc.ih.spi)
-    implementation(libs.edc.jdk.monitor)
-    implementation(libs.edc.api.authentication)
-}
-
-tasks.shadowJar {
-    mergeServiceFiles()
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    archiveFileName.set("${project.name}.jar")
-}
-
-application {
-    mainClass.set("org.eclipse.edc.boot.system.runtime.BaseRuntime")
-}
+-- EDC 0.15.1: keypair_resource now requires a 'usage' column
+-- to track the array of usages for this key pair.
+ALTER TABLE keypair_resource ADD COLUMN IF NOT EXISTS usage VARCHAR NOT NULL DEFAULT '';

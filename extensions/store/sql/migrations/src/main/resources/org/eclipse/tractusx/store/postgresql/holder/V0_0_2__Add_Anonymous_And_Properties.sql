@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2025 Cofinity-X
- * Copyright (c) 2025 LKS Next
  * Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -19,30 +18,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-plugins {
-    `java-library`
-    id("application")
-    alias(libs.plugins.shadow)
-}
+-- EDC 0.15.1: holders table now requires:
+--   - 'anonymous' column: indicates whether the holder was created during a credential request
+--   - 'properties' column: JSON serialization of additional holder properties
 
-dependencies {
-    // used for the runtime
-    runtimeOnly(libs.bom.issuer)
-    runtimeOnly(project(":extensions:seed:super-user"))
-    runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
-
-    // used for custom extensions
-    implementation(libs.edc.ih.spi)
-    implementation(libs.edc.jdk.monitor)
-    implementation(libs.edc.api.authentication)
-}
-
-tasks.shadowJar {
-    mergeServiceFiles()
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    archiveFileName.set("${project.name}.jar")
-}
-
-application {
-    mainClass.set("org.eclipse.edc.boot.system.runtime.BaseRuntime")
-}
+ALTER TABLE holders ADD COLUMN IF NOT EXISTS anonymous BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE holders ADD COLUMN IF NOT EXISTS properties JSON DEFAULT '{}';

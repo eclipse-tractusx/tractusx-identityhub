@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2025 Cofinity-X
- * Copyright (c) 2025 LKS Next
  * Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -19,30 +18,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-plugins {
-    `java-library`
-    id("application")
-    alias(libs.plugins.shadow)
-}
+-- EDC 0.15.1: edc_sts_client schema changes:
+--   - Removed columns: private_key_alias, public_key_reference
+--     (key material is now resolved via the participant context's keypairs)
+--   - Added column: participant_context_id
+--     (links the STS client to its owning participant context)
 
-dependencies {
-    // used for the runtime
-    runtimeOnly(libs.bom.issuer)
-    runtimeOnly(project(":extensions:seed:super-user"))
-    runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
-
-    // used for custom extensions
-    implementation(libs.edc.ih.spi)
-    implementation(libs.edc.jdk.monitor)
-    implementation(libs.edc.api.authentication)
-}
-
-tasks.shadowJar {
-    mergeServiceFiles()
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    archiveFileName.set("${project.name}.jar")
-}
-
-application {
-    mainClass.set("org.eclipse.edc.boot.system.runtime.BaseRuntime")
-}
+ALTER TABLE edc_sts_client ADD COLUMN IF NOT EXISTS participant_context_id VARCHAR NOT NULL DEFAULT '';
+ALTER TABLE edc_sts_client DROP COLUMN IF EXISTS private_key_alias;
+ALTER TABLE edc_sts_client DROP COLUMN IF EXISTS public_key_reference;

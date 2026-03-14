@@ -21,10 +21,10 @@
 
 package org.eclipse.tractusx.identityhub.initial.participant;
 
+import org.eclipse.edc.iam.decentralizedclaims.sts.spi.model.StsAccount;
+import org.eclipse.edc.iam.decentralizedclaims.sts.spi.store.StsAccountStore;
 import org.eclipse.edc.iam.did.spi.document.DidDocument;
 import org.eclipse.edc.iam.did.spi.document.Service;
-import org.eclipse.edc.iam.identitytrust.sts.spi.model.StsAccount;
-import org.eclipse.edc.iam.identitytrust.sts.spi.store.StsAccountStore;
 import org.eclipse.edc.identityhub.spi.authentication.ServicePrincipal;
 import org.eclipse.edc.identityhub.spi.did.DidDocumentService;
 import org.eclipse.edc.identityhub.spi.keypair.KeyPairService;
@@ -153,20 +153,19 @@ public class InitialParticipantExtension implements ServiceExtension {
         keyPairService.addKeyPair(participantId, key, true)
                 .onFailure(e -> monitor.severe("Error storing KeyPair in storage, error details: %s".formatted(e.getFailureDetail())));
 
-        StsAccount sts = getStsAccount(key);
+        StsAccount sts = getStsAccount();
         stsAccountStore.create(sts)
                 .onFailure(e -> monitor.severe("Error storing Secure Token in storage, error details: %s".formatted(e.getFailureDetail())));
     }
 
-    private StsAccount getStsAccount(KeyDescriptor key) {
+    private StsAccount getStsAccount() {
         return StsAccount.Builder.newInstance()
                 .id(participantId)
                 .name(participantId)
                 .clientId(participantId)
                 .did(participantId)
                 .secretAlias(participantSecretAlias)
-                .privateKeyAlias(key.getPrivateKeyAlias())
-                .publicKeyReference(key.getKeyId())
+                .participantContextId(participantId)
                 .build();
     }
 
