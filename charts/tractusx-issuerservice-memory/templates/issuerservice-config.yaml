@@ -58,4 +58,5 @@ data:
   ## APPLICATION ##
   #################
   edc.issuer.statuslist.signing.key.alias: {{ .Values.statuslist.signing_key.alias | required ".Values.statuslist.signing_key.alias is required" | quote }}
+  edc.iam.did.web.use.https: {{ .Values.issuerservice.didweb.https | quote }}
   edc.statuslist.callback.address: {{ .Values.statuslist.callback.address | quote }}

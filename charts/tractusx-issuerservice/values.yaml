@@ -1,6 +1,6 @@
 #################################################################################
 #  Copyright (c) 2025 Cofinity-X
-#  Copyright (c) 2025 LKS Next
+#  Copyright (c) 2025,2026 LKS Next
 #  Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
 #  See the NOTICE file(s) distributed with this work for additional
@@ -40,7 +40,7 @@ customCaCerts: {}
 
 issuerservice:
   image:
-    repository: ""
+    repository: "tractusx/issuerservice"
     # -- [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use
     pullPolicy: IfNotPresent
     # -- Overrides the image tag whose default is the chart appVersion
@@ -395,7 +395,7 @@ vault:
       enabled: true
       standbyOk: true
     paths:
-      secret: /v1/secret
+      secret: /v1/secret/data
       health: /v1/sys/health
 
 statuslist:
@@ -404,3 +404,14 @@ statuslist:
   # -- Callback address for statuslist
   callback:
     address: "issuerservice.issuance.local"
+# -- pgAdmin4 configuration
+
+pgadmin4:
+  enabled: false
+  env:
+    email: pgadmin4@txtest.org
+    password: tractusxpgadmin4
+  persistentVolume:
+    enabled: false
+  ingress:
+    enabled: false

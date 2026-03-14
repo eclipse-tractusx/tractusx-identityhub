@@ -1,6 +1,6 @@
 #################################################################################
 #  Copyright (c) 2025 Cofinity-X
-#  Copyright (c) 2025 LKS Next
+#  Copyright (c) 2025,2026 LKS Next
 #  Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
 #  See the NOTICE file(s) distributed with this work for additional
@@ -40,7 +40,7 @@ customCaCerts: {}
 
 identityhub:
   image:
-    repository: ""
+    repository: "tractusx/identityhub"
     # -- [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use
     pullPolicy: IfNotPresent
     # -- Overrides the image tag whose default is the chart appVersion
@@ -330,6 +330,24 @@ identityhub:
     protocol: ""
     public: ""
     readiness: ""
+  # -- Initial participant context configuration
+  iatp:
+    sts:
+      oauth:
+        client:
+          # -- Enable participant context client configuration
+          enabled: false
+          # -- Client ID // Did of the initial participant
+          id: "did:web:identityhub.presentation.local"
+          # -- The client secret that is stored in the vault for requesting OAuth2 access token for Presentation API access
+          secret: "testme"
+          # -- Alias under which the client secret is stored in the vault
+          secret_alias: "sts-secret"
+          # -- The x-api-key that is stored in the vault for the initial participant
+          x_api_key: "ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"
+  # -- Whether web DIDs should be interpreted as HTTPS or HTTP
+  didweb:
+    https: false
 
 serviceAccount:
   # Specifies whether a service account should be created

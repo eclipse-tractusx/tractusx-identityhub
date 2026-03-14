@@ -1,4 +1,5 @@
 #################################################################################
+#  Copyright (c) 2026 LKS Next
 #  Copyright (c) 2025 Cofinity-X
 #  Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
@@ -52,7 +53,7 @@ jobs:
           disable_secrets: true
           output_path: kicsResults/
           output_formats: "json,sarif"
-          exclude_paths: "edc-tests/miw-tests/src/test/resources/docker-environment/docker-compose.yaml"
+          exclude_paths: "edc-tests/miw-tests/src/test/resources/docker-environment/docker-compose.yaml,docs/api/openAPI.yaml"
 
       - name: Upload SARIF file for GitHub Advanced Security Dashboard
         if: always()
