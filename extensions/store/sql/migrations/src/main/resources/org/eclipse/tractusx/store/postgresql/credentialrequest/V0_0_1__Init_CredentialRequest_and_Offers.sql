@@ -18,20 +18,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
--- EDC 0.15.1 lease schema: composite PK (resource_id, resource_kind), no FK from data tables
+/*
+ * This .sql statements is a combination of crendential offers and holder credential request
+ */
 -- only intended for and tested with Postgres!
 CREATE TABLE IF NOT EXISTS edc_lease
 (
     leased_by      VARCHAR NOT NULL,
     leased_at      BIGINT,
     lease_duration INTEGER NOT NULL,
-    resource_id    VARCHAR NOT NULL,
-    resource_kind  VARCHAR NOT NULL,
-    PRIMARY KEY (resource_id, resource_kind)
+    lease_id       VARCHAR NOT NULL
+        CONSTRAINT lease_pk
+            PRIMARY KEY
 );
 
 COMMENT ON COLUMN edc_lease.leased_at IS 'posix timestamp of lease';
 COMMENT ON COLUMN edc_lease.lease_duration IS 'duration of lease in milliseconds';
+CREATE UNIQUE INDEX IF NOT EXISTS lease_lease_id_uindex ON edc_lease (lease_id);
 
 CREATE TABLE IF NOT EXISTS edc_credential_offers
 (
@@ -43,6 +46,8 @@ CREATE TABLE IF NOT EXISTS edc_credential_offers
     updated_at             BIGINT  NOT NULL,
     trace_context          JSON,
     error_detail           VARCHAR,
+    lease_id               VARCHAR
+        CONSTRAINT credreq_lease_lease_id_fk REFERENCES edc_lease ON DELETE SET NULL,
     participant_context_id VARCHAR NOT NULL,
     issuer_did             VARCHAR NOT NULL,
     credentials            JSON    NOT NULL DEFAULT '{}'
@@ -62,6 +67,8 @@ CREATE TABLE IF NOT EXISTS edc_holder_credentialrequest
     trace_context          JSON,
     error_detail           VARCHAR,
     pending                BOOLEAN DEFAULT FALSE,
+    lease_id               VARCHAR
+        CONSTRAINT credreq_lease_lease_id_fk REFERENCES edc_lease ON DELETE SET NULL,
     participant_context_id VARCHAR           NOT NULL,
     issuer_did             VARCHAR           NOT NULL,
     ids_and_formats        JSON              NOT NULL,
