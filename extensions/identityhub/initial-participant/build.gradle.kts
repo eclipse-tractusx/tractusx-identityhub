@@ -30,5 +30,6 @@ dependencies {
     implementation(libs.edc.ih.spi.sts)
     implementation(libs.edc.ih.core.participants)
     implementation(libs.edc.ih.core.keypairs)
+    implementation(libs.edc.ih.participant.context.config.spi)
     testImplementation(libs.edc.junit)
 }

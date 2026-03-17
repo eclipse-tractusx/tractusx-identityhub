@@ -27,6 +27,7 @@ import org.eclipse.edc.identityhub.spi.keypair.KeyPairService;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantContext;
 import org.eclipse.edc.identityhub.spi.participantcontext.store.ParticipantContextStore;
 import org.eclipse.edc.junit.extensions.DependencyInjectionExtension;
+import org.eclipse.edc.participantcontext.spi.config.service.ParticipantContextConfigService;
 import org.eclipse.edc.spi.EdcException;
 import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.result.Result;
@@ -55,12 +56,13 @@ import static org.mockito.Mockito.when;
 public class InitialParticipantExtensionTest {
 
     private static final String CREDENTIALS_PATH = "/api/credentials";
-    
+
     private final Vault vault = mock();
     private final ParticipantContextStore participantContextStore = mock();
     private final StsAccountStore stsAccountStore = mock();
     private final KeyPairService keyPairService = mock();
     private final DidDocumentService didDocumentService = mock();
+    private final ParticipantContextConfigService participantContextConfigService = mock();
     private final Monitor monitor = mock();
 
     @BeforeEach
@@ -78,11 +80,12 @@ public class InitialParticipantExtensionTest {
         String participantApiKey = Base64.getEncoder().encodeToString(participantDid.getBytes()) + ".random-chars";
         boolean useHttps = false;
         boolean enableParticipant = true;
-        
+
         // Create extension manually and inject dependencies and configuration
         var extension = new InitialParticipantExtension();
-        startup(extension, participantDid, participantSecret, participantSecretAlias, participantApiKey, enableParticipant, useHttps);
-        
+        startup(extension, participantDid, participantSecret, participantSecretAlias, participantApiKey,
+                enableParticipant, useHttps);
+
         // Arrange
         when(participantContextStore.create(any(ParticipantContext.class)))
                 .thenReturn(StoreResult.success());
@@ -94,6 +97,8 @@ public class InitialParticipantExtensionTest {
                 .thenReturn(ServiceResult.success());
         when(stsAccountStore.create(any()))
                 .thenReturn(StoreResult.success());
+        when(participantContextConfigService.save(any()))
+                .thenReturn(ServiceResult.success());
 
         // Act
         extension.initialize(context);
@@ -106,6 +111,7 @@ public class InitialParticipantExtensionTest {
         verify(didDocumentService).store(any(), eq(participantDid));
         verify(keyPairService).addKeyPair(eq(participantDid), any(), eq(true));
         verify(stsAccountStore).create(any());
+        verify(participantContextConfigService).save(any());
     }
 
     @Test
@@ -117,11 +123,12 @@ public class InitialParticipantExtensionTest {
         String participantApiKey = "incorrectBase64Encoding.random-chars"; // Wrong encoding
         boolean useHttps = false;
         boolean enableParticipant = true;
-        
+
         // Create extension manually and inject dependencies and configuration
         var extension = new InitialParticipantExtension();
-        startup(extension, participantDid, participantSecret, participantSecretAlias, participantApiKey, enableParticipant, useHttps);
-        
+        startup(extension, participantDid, participantSecret, participantSecretAlias, participantApiKey,
+                enableParticipant, useHttps);
+
         // Act & Assert - expect EdcException to be thrown during initialization
         assertThrows(EdcException.class, () -> extension.initialize(context));
     }
@@ -135,11 +142,12 @@ public class InitialParticipantExtensionTest {
         String participantApiKey = "base64EncodedDid.random-chars";
         boolean useHttps = false;
         boolean enableParticipant = true;
-        
+
         // Create extension manually and inject dependencies and configuration
         var extension = new InitialParticipantExtension();
-        startup(extension, participantDid, participantSecret, participantSecretAlias, participantApiKey, enableParticipant, useHttps);
-        
+        startup(extension, participantDid, participantSecret, participantSecretAlias, participantApiKey,
+                enableParticipant, useHttps);
+
         // Act & Assert - expect NullPointerException to be thrown during initialization
         assertThrows(NullPointerException.class, () -> extension.initialize(context));
     }
@@ -153,11 +161,12 @@ public class InitialParticipantExtensionTest {
         String participantApiKey = Base64.getEncoder().encodeToString(participantDid.getBytes()) + ".random-chars";
         boolean useHttps = false;
         boolean enableParticipant = false; // Disabled
-        
+
         // Create extension manually and inject dependencies and configuration
         var extension = new InitialParticipantExtension();
-        startup(extension, participantDid, participantSecret, participantSecretAlias, participantApiKey, enableParticipant, useHttps);
-        
+        startup(extension, participantDid, participantSecret, participantSecretAlias, participantApiKey,
+                enableParticipant, useHttps);
+
         // Act
         extension.initialize(context);
         extension.start();
@@ -168,15 +177,16 @@ public class InitialParticipantExtensionTest {
         verifyNoInteractions(didDocumentService);
         verifyNoInteractions(keyPairService);
         verifyNoInteractions(stsAccountStore);
+        verifyNoInteractions(participantContextConfigService);
     }
 
     private void startup(InitialParticipantExtension extension,
-                        String participantDid,
-                        String participantSecret,
-                        String participantSecretAlias,
-                        String participantApiKey,
-                        boolean useConfigParticipant,
-                        boolean useHttpsScheme) {
+            String participantDid,
+            String participantSecret,
+            String participantSecretAlias,
+            String participantApiKey,
+            boolean useConfigParticipant,
+            boolean useHttpsScheme) {
         try {
             // Inject dependencies
             setField(extension, "vault", vault);
@@ -184,7 +194,8 @@ public class InitialParticipantExtensionTest {
             setField(extension, "stsAccountStore", stsAccountStore);
             setField(extension, "keyPairService", keyPairService);
             setField(extension, "didDocumentService", didDocumentService);
-            
+            setField(extension, "participantContextConfigService", participantContextConfigService);
+
             // Inject configuration settings
             setField(extension, "participantId", participantDid);
             setField(extension, "participantSecret", participantSecret);
