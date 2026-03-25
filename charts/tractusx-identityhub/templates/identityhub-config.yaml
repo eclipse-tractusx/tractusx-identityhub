@@ -26,7 +26,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "identityhub-config"
+  name: {{ include "identityhub.fullname" . }}-config
   namespace: {{ .Release.Namespace | default "default" | quote }}
   labels:
     {{- include "identityhub.labels" . | nindent 4 }}

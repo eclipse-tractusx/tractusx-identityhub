@@ -176,7 +176,9 @@ identityhub:
   #  - second-secret
 
   # [Kubernetes ConfigMap Resource](https://kubernetes.io/docs/concepts/configuration/configmap/) names to load environment variables from
-  envConfigMapNames: ["identityhub-config", "identityhub-datasource-config"]
+  # Note: The chart automatically includes the built-in ConfigMaps (config and datasource-config) with dynamic names based on the release name.
+  # This array is for additional custom ConfigMaps only.
+  envConfigMapNames: []
   #  - first-config-map
   #  - second-config-map
 

@@ -153,8 +153,11 @@ spec:
             - name: {{ $key | quote }}
               value: {{ $value | quote }}
           {{- end }}
-          {{- if and (or .Values.identityhub.envSecretNames .Values.identityhub.envConfigMapNames) (or (gt (len .Values.identityhub.envSecretNames) 0) (gt (len .Values.identityhub.envConfigMapNames) 0)) }}
           envFrom:
+            - configMapRef:
+                name: {{ include "identityhub.fullname" . }}-config
+            - configMapRef:
+                name: {{ include "identityhub.fullname" . }}-datasource-config
           {{- range $value := .Values.identityhub.envSecretNames }}
             - secretRef:
                 name: {{ $value | quote }}
@@ -162,7 +165,6 @@ spec:
           {{- range $value := .Values.identityhub.envConfigMapNames }}
             - configMapRef:
                 name: {{ $value | quote }}
-          {{- end }}
           {{- end }}
           volumeMounts:
             {{- if .Values.customCaCerts }}
