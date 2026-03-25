@@ -41,6 +41,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -78,7 +79,7 @@ public class InitialParticipantExtensionTest {
         String participantDid = "did:web:example.com";
         String participantSecret = "test-secret-123";
         String participantSecretAlias = "participant-secret-alias";
-        String participantApiKey = Base64.getEncoder().encodeToString(participantDid.getBytes()) + ".random-chars";
+        String participantApiKey = Base64.getEncoder().encodeToString(participantDid.getBytes(StandardCharsets.UTF_8)) + ".random-chars";
         boolean useHttps = false;
         boolean enableParticipant = true;
 
@@ -159,7 +160,7 @@ public class InitialParticipantExtensionTest {
         String participantDid = "did:web:example.com";
         String participantSecret = "test-secret-123";
         String participantSecretAlias = "participant-secret-alias";
-        String participantApiKey = Base64.getEncoder().encodeToString(participantDid.getBytes()) + ".random-chars";
+        String participantApiKey = Base64.getEncoder().encodeToString(participantDid.getBytes(StandardCharsets.UTF_8)) + ".random-chars";
         boolean useHttps = false;
         boolean enableParticipant = false; // Disabled
 

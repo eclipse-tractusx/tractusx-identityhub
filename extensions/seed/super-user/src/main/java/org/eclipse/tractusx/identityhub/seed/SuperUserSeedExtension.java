@@ -111,7 +111,7 @@ public class SuperUserSeedExtension implements ServiceExtension {
                                 return overrideKey;
                             })
                             .orElse(generatedKey.apiKey());
-                    monitor.info("Created user 'super-user'. Please take note of the API Key: %s".formatted(apiKey));
+                    monitor.info("Created user 'super-user'. API Key has been generated (configure '%s' to set an explicit key).".formatted(SUPERUSER_APIKEY_PROPERTY));
                 })
                 .orElseThrow(f -> new EdcException("Error creating Super-User: " + f.getFailureDetail()));
     }
@@ -125,6 +125,9 @@ public class SuperUserSeedExtension implements ServiceExtension {
      * "No configuration found for participant context" after a container restart.
      */
     private void restoreAllParticipantConfigs() {
+        // NB: QuerySpec.max() loads all participants into memory in a single query.
+        // This is acceptable because IdentityHub deployments typically have a small
+        // number of participant contexts (< 100). If this changes, switch to pagination.
         participantContextService.query(QuerySpec.max())
                 .onSuccess(participants -> {
                     var count = 0;

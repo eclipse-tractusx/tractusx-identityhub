@@ -1,25 +1,24 @@
 /*
-*   Copyright (c) 2025 LKS Next
-*   Copyright (c) 2025 Contributors to the Eclipse Foundation
-*   Copyright (c) 2026 Technovative Solutions 
-
-*
-*   See the NOTICE file(s) distributed with this work for additional
-*   information regarding copyright ownership.
-*
-*   This program and the accompanying materials are made available under the
-*   terms of the Apache License, Version 2.0 which is available at
-*   https://www.apache.org/licenses/LICENSE-2.0.
-*
-*   Unless required by applicable law or agreed to in writing, software
-*   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-*   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-*   License for the specific language governing permissions and limitations
-*   under the License.
-*
-*   SPDX-License-Identifier: Apache-2.0
-*
-*/
+ *   Copyright (c) 2025 LKS Next
+ *   Copyright (c) 2025 Contributors to the Eclipse Foundation
+ *   Copyright (c) 2026 Technovative Solutions
+ *
+ *   See the NOTICE file(s) distributed with this work for additional
+ *   information regarding copyright ownership.
+ *
+ *   This program and the accompanying materials are made available under the
+ *   terms of the Apache License, Version 2.0 which is available at
+ *   https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *   License for the specific language governing permissions and limitations
+ *   under the License.
+ *
+ *   SPDX-License-Identifier: Apache-2.0
+ *
+ */
 
 package org.eclipse.tractusx.identityhub.initial.participant;
 
@@ -45,6 +44,7 @@ import org.eclipse.edc.spi.security.Vault;
 import org.eclipse.edc.spi.system.ServiceExtension;
 import org.eclipse.edc.spi.system.ServiceExtensionContext;
 
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
@@ -58,19 +58,29 @@ import static java.util.Objects.requireNonNull;
 public class InitialParticipantExtension implements ServiceExtension {
     public static final String NAME = "Configurable Initial Participant Context Extension";
 
-    @Setting(key = "edc.tractusx.ih.participant.configurable.id", description = "The did/participantId of the initial participant, must be the Did API url", required = false)
+    @Setting(key = "edc.tractusx.ih.participant.configurable.id",
+            description = "The did/participantId of the initial participant, must be the Did API url",
+            required = false)
     private String participantId;
 
-    @Setting(key = "edc.tractusx.ih.participant.configurable.secret", description = "The client secret of the initial participant context", required = false)
+    @Setting(key = "edc.tractusx.ih.participant.configurable.secret",
+            description = "The client secret of the initial participant context",
+            required = false)
     private String participantSecret;
 
-    @Setting(key = "edc.tractusx.ih.participant.configurable.secret.alias", description = "The vault alias for storing the client secret", required = false)
+    @Setting(key = "edc.tractusx.ih.participant.configurable.secret.alias",
+            description = "The vault alias for storing the client secret",
+            required = false)
     private String participantSecretAlias;
 
-    @Setting(key = "edc.tractusx.ih.participant.configurable.api.key", description = "Configurable XApiKey for Initial Participant Context", required = false)
+    @Setting(key = "edc.tractusx.ih.participant.configurable.api.key",
+            description = "Configurable XApiKey for Initial Participant Context",
+            required = false)
     private String participantApiKey;
 
-    @Setting(key = "edc.tractusx.ih.participant.configurable.enable", description = "Enable configurable participant context", defaultValue = "false")
+    @Setting(key = "edc.tractusx.ih.participant.configurable.enable",
+            description = "Enable configurable participant context",
+            defaultValue = "false")
     private boolean useConfigParticipant;
 
     @Setting(key = "edc.iam.did.web.use.https", defaultValue = "true")
@@ -117,7 +127,7 @@ public class InitialParticipantExtension implements ServiceExtension {
             requireNonNull(participantApiKey, "Missing required default participant apikey property");
 
             Base64.Encoder enc = Base64.getEncoder();
-            String base64Did = enc.encodeToString(participantId.getBytes());
+            String base64Did = enc.encodeToString(participantId.getBytes(StandardCharsets.UTF_8));
 
             if (!participantApiKey.substring(0, participantApiKey.indexOf(".")).equals(base64Did)) {
                 throw new EdcException(
@@ -157,7 +167,7 @@ public class InitialParticipantExtension implements ServiceExtension {
                         .severe("Error storing client-secret into vault, error details: %s"
                                 .formatted(e.getFailureDetail())));
 
-        monitor.info("Generated X-Api-Key for initial PC: %s".formatted(participantApiKey));
+        monitor.debug("Generated X-Api-Key for initial PC: %s".formatted(participantApiKey));
         vault.storeSecret(context.getApiTokenAlias(), participantApiKey)
                 .onFailure(e -> monitor.severe("Error storing X-Api-Key into vault, error details: %s"
                         .formatted(e.getFailureDetail())));
@@ -212,7 +222,7 @@ public class InitialParticipantExtension implements ServiceExtension {
         endpointBuilder.append("://");
         endpointBuilder.append(participantId.split(":")[2]);
         endpointBuilder.append(credentialsApi);
-        endpointBuilder.append("/v1/participants/%s".formatted(enc.encodeToString(participantId.getBytes())));
+        endpointBuilder.append("/v1/participants/%s".formatted(enc.encodeToString(participantId.getBytes(StandardCharsets.UTF_8))));
         return endpointBuilder.toString();
     }
 

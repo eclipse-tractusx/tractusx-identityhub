@@ -4,7 +4,7 @@
   <h1> Identity Hub Architecture </h1>
 </div>
 
-The following table links you to the respective documentations based on the release 0.14.0 of the [EDC](https://github.com/eclipse-edc/IdentityHub) .
+The following table links you to the respective documentations based on the release 0.15.1 of the [EDC](https://github.com/eclipse-edc/IdentityHub) .
 
 # Metadata
 
