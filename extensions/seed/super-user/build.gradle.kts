@@ -27,7 +27,6 @@ plugins {
 
 dependencies {
     implementation(libs.edc.ih.spi)
-    implementation(libs.edc.ih.participant.context.config.spi)
 
     testImplementation(libs.edc.junit)
 }

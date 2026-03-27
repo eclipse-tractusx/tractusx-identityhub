@@ -26,13 +26,10 @@ import org.eclipse.edc.identityhub.spi.authentication.ServicePrincipal;
 import org.eclipse.edc.identityhub.spi.participantcontext.ParticipantContextService;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.KeyDescriptor;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantManifest;
-import org.eclipse.edc.participantcontext.spi.config.model.ParticipantContextConfiguration;
-import org.eclipse.edc.participantcontext.spi.config.service.ParticipantContextConfigService;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
 import org.eclipse.edc.runtime.metamodel.annotation.Setting;
 import org.eclipse.edc.spi.EdcException;
 import org.eclipse.edc.spi.monitor.Monitor;
-import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.edc.spi.security.Vault;
 import org.eclipse.edc.spi.system.ServiceExtension;
 import org.eclipse.edc.spi.system.ServiceExtensionContext;
@@ -57,8 +54,6 @@ public class SuperUserSeedExtension implements ServiceExtension {
     @Inject
     private ParticipantContextService participantContextService;
     @Inject
-    private ParticipantContextConfigService participantContextConfigService;
-    @Inject
     private Vault vault;
 
     @Override
@@ -75,14 +70,9 @@ public class SuperUserSeedExtension implements ServiceExtension {
 
     @Override
     public void start() {
-        // Restore configs for ALL existing participants (they persist in PostgreSQL,
-        // but the InMemoryParticipantContextConfigStore loses them on restart)
-        restoreAllParticipantConfigs();
-
         // create super-user
         if (participantContextService.getParticipantContext(superUserParticipantId).succeeded()) { // already exists
             monitor.debug("super-user already exists with ID '%s', will not re-create".formatted(superUserParticipantId));
-            ensureConfigExists(superUserParticipantId);
             ensureApiKeyInVault(superUserParticipantId);
             return;
         }
@@ -114,59 +104,6 @@ public class SuperUserSeedExtension implements ServiceExtension {
                     monitor.info("Created user 'super-user'. API Key has been generated (configure '%s' to set an explicit key).".formatted(SUPERUSER_APIKEY_PROPERTY));
                 })
                 .orElseThrow(f -> new EdcException("Error creating Super-User: " + f.getFailureDetail()));
-    }
-
-    /**
-     * Restores {@link ParticipantContextConfiguration} entries for ALL participant contexts
-     * found in the persistent store (PostgreSQL). This is necessary because the default
-     * {@code InMemoryParticipantContextConfigStore} does not persist across restarts,
-     * while participant contexts survive in PostgreSQL. Without this, any vault-dependent
-     * operation (delete, regenerate token, etc.) on non-super-user participants fails with
-     * "No configuration found for participant context" after a container restart.
-     */
-    private void restoreAllParticipantConfigs() {
-        // NB: QuerySpec.max() loads all participants into memory in a single query.
-        // This is acceptable because IdentityHub deployments typically have a small
-        // number of participant contexts (< 100). If this changes, switch to pagination.
-        participantContextService.query(QuerySpec.max())
-                .onSuccess(participants -> {
-                    var count = 0;
-                    for (var pc : participants) {
-                        var id = pc.getParticipantContextId();
-                        var configResult = participantContextConfigService.get(id);
-                        if (configResult.failed()) {
-                            var cfg = ParticipantContextConfiguration.Builder.newInstance()
-                                    .participantContextId(id)
-                                    .build();
-                            participantContextConfigService.save(cfg)
-                                    .onFailure(f -> monitor.warning("Error restoring config for '%s': %s".formatted(id, f.getFailureDetail())));
-                            count++;
-                        }
-                    }
-                    if (count > 0) {
-                        monitor.info("Restored ParticipantContextConfig entries for %d participant(s)".formatted(count));
-                    }
-                })
-                .onFailure(f -> monitor.warning("Error querying participants to restore configs: %s".formatted(f.getFailureDetail())));
-    }
-
-    /**
-     * Ensures a {@link ParticipantContextConfiguration} entry exists in the in-memory config store.
-     * This is needed because the default {@code InMemoryParticipantContextConfigStore} does not persist across restarts,
-     * while participant contexts survive in PostgreSQL. Without this, all authenticated API calls fail with
-     * "No configuration found for participant context" after a container restart.
-     */
-    private void ensureConfigExists(String participantContextId) {
-        var configResult = participantContextConfigService.get(participantContextId);
-        if (configResult.failed()) {
-            monitor.info("ParticipantContextConfig for '%s' not found in config store, re-creating...".formatted(participantContextId));
-            var cfg = ParticipantContextConfiguration.Builder.newInstance()
-                    .participantContextId(participantContextId)
-                    .build();
-            participantContextConfigService.save(cfg)
-                    .onSuccess(u -> monitor.debug("ParticipantContextConfig for '%s' created successfully".formatted(participantContextId)))
-                    .onFailure(f -> monitor.warning("Error creating ParticipantContextConfig for '%s': %s".formatted(participantContextId, f.getFailureDetail())));
-        }
     }
 
     /**

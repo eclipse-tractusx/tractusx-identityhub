@@ -32,6 +32,7 @@ dependencies {
     // used for the runtime
     runtimeOnly(libs.bom.ih)
     runtimeOnly(libs.bom.ih.sql)
+    runtimeOnly(libs.edc.ih.participantcontext.config.store.sql)
     runtimeOnly(libs.edc.vault.hashicorp)
     runtimeOnly(project(":extensions:store:sql:migrations"))
     runtimeOnly(project(":extensions:seed:super-user"))

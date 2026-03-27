@@ -64,21 +64,38 @@ Each group must be separated by a blank line and sorted alphabetically within th
 
 Six Flyway V0_0_2 migration scripts are required. These run automatically on startup if Flyway is enabled. If you manage schema changes manually, apply the following SQL in order.
 
-#### 3.1 `credential_resource` — new `usage` column
+Additionally, a new `edc_participant_context_config` table is required by the upstream `participantcontext-config-store-sql` module, which replaces the previous in-memory config store with a persistent PostgreSQL-backed implementation.
+
+#### 3.1 `edc_participant_context_config` — new table
+
+```sql
+CREATE TABLE IF NOT EXISTS edc_participant_context_config
+(
+    participant_context_id VARCHAR NOT NULL PRIMARY KEY,
+    created_date          BIGINT  NOT NULL,
+    last_modified_date    BIGINT  NOT NULL,
+    entries               JSON DEFAULT '{}',
+    private_entries       JSON DEFAULT '{}'
+);
+```
+
+> **Note:** This table stores per-participant configuration entries that were previously held in an in-memory store and lost on restart. With this migration, configuration now persists across restarts.
+
+#### 3.2 `credential_resource` — new `usage` column
 
 ```sql
 ALTER TABLE credential_resource
     ADD COLUMN IF NOT EXISTS usage VARCHAR NOT NULL DEFAULT 'holder';
 ```
 
-#### 3.2 `keypair_resource` — new `usage` column
+#### 3.3 `keypair_resource` — new `usage` column
 
 ```sql
 ALTER TABLE keypair_resource
     ADD COLUMN IF NOT EXISTS usage VARCHAR NOT NULL DEFAULT '';
 ```
 
-#### 3.3 `edc_sts_client` — schema update
+#### 3.4 `edc_sts_client` — schema update
 
 ```sql
 ALTER TABLE edc_sts_client
@@ -95,7 +112,7 @@ ALTER TABLE edc_sts_client
 
 > **Note:** Existing rows will have `participant_context_id` set to `''` (empty string). After migration, you should update this column for each STS client to its correct participant context ID value.
 
-#### 3.4 `holders` — new `anonymous` and `properties` columns
+#### 3.5 `holders` — new `anonymous` and `properties` columns
 
 ```sql
 ALTER TABLE holders
@@ -105,7 +122,7 @@ ALTER TABLE holders
     ADD COLUMN IF NOT EXISTS properties JSON DEFAULT '{}';
 ```
 
-#### 3.5 `edc_lease` (credentialrequest subsystem) — PK redesign
+#### 3.6 `edc_lease` (credentialrequest subsystem) — PK redesign
 
 The `edc_lease` table used by `edc_credential_offers` and `edc_holder_credentialrequest` is replaced with a new schema using a composite primary key `(resource_id, resource_kind)`.
 
@@ -131,7 +148,7 @@ CREATE TABLE IF NOT EXISTS edc_lease (
 
 > **Warning:** This is a destructive migration. All existing lease data is dropped. Ensure no active leases exist before migrating.
 
-#### 3.6 `edc_lease` (issuanceprocess subsystem) — PK redesign
+#### 3.7 `edc_lease` (issuanceprocess subsystem) — PK redesign
 
 The same redesign applies to the `edc_lease` table used by `edc_issuance_process`.
 

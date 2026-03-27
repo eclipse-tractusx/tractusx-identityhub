@@ -39,6 +39,7 @@ edc-ih-account-remote = { module = "org.eclipse.edc:sts-account-service-remote",
 edc-ih-core-keypairs = { module = "org.eclipse.edc:identity-hub-keypairs", version.ref = "edc" }
 edc-ih-spi = { module = "org.eclipse.edc:identity-hub-spi", version.ref = "edc" }
 edc-ih-participant-context-config-spi = { module = "org.eclipse.edc:participant-context-config-spi", version.ref = "edc" }
+edc-ih-participantcontext-config-store-sql = { module = "org.eclipse.edc:participantcontext-config-store-sql", version.ref = "edc" }
 edc-ih-spi-participant-context = { module = "org.eclipse.edc:participant-context-spi", version.ref = "edc" }
 edc-ih-spi-sts = { module = "org.eclipse.edc:sts-spi", version.ref = "edc" }
 edc-ih-core-participants = { module = "org.eclipse.edc:identity-hub-participants", version.ref = "edc" }
