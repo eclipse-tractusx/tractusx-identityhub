@@ -28,7 +28,7 @@ org.eclipse.tractusx.store.postgresql.migration.HolderCredentialRequestMigration
 org.eclipse.tractusx.store.postgresql.migration.HoldersMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.IssuanceProcessMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.JtiValidationMigrationExtension
-org.eclipse.tractusx.store.postgresql.migration.ParticipantContextConfigMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.KeyPairResourceMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.ParticipantContextConfigMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.ParticipantContextMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.StsClientMigrationExtension
