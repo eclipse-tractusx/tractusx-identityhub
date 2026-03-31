@@ -73,7 +73,6 @@ public class SuperUserSeedExtension implements ServiceExtension {
         // create super-user
         if (participantContextService.getParticipantContext(superUserParticipantId).succeeded()) { // already exists
             monitor.debug("super-user already exists with ID '%s', will not re-create".formatted(superUserParticipantId));
-            ensureApiKeyInVault(superUserParticipantId);
             return;
         }
         participantContextService.createParticipantContext(ParticipantManifest.Builder.newInstance()
@@ -101,33 +100,8 @@ public class SuperUserSeedExtension implements ServiceExtension {
                                 return overrideKey;
                             })
                             .orElse(generatedKey.apiKey());
-                    monitor.info("Created user 'super-user'. API Key has been generated (configure '%s' to set an explicit key).".formatted(SUPERUSER_APIKEY_PROPERTY));
+                    monitor.info("Created user 'super-user'. Please take note of the API Key: %s".formatted(apiKey));
                 })
                 .orElseThrow(f -> new EdcException("Error creating Super-User: " + f.getFailureDetail()));
-    }
-
-    /**
-     * Ensures the super-user API key is stored in the vault. When using HashiCorp Vault in dev mode (or any non-persistent
-     * vault), the API key is lost on container restart while the participant context persists in PostgreSQL.
-     * If a configured override key exists ({@link #SUPERUSER_APIKEY_PROPERTY}), it will be stored in the vault
-     * under the participant's API token alias.
-     */
-    private void ensureApiKeyInVault(String participantContextId) {
-        if (superUserApiKey == null) {
-            monitor.warning("Super-user already exists but no API key override is configured ('%s'). The API key in the vault may be stale after a restart."
-                    .formatted(SUPERUSER_APIKEY_PROPERTY));
-            return;
-        }
-        participantContextService.getParticipantContext(participantContextId)
-                .onSuccess(pc -> {
-                    var alias = pc.getApiTokenAlias();
-                    var existing = vault.resolveSecret(alias);
-                    if (existing == null || !existing.equals(superUserApiKey)) {
-                        vault.storeSecret(alias, superUserApiKey)
-                                .onSuccess(u -> monitor.info("API key for '%s' stored in vault under alias '%s'".formatted(participantContextId, alias)))
-                                .onFailure(f -> monitor.warning("Error storing API key in vault for '%s': %s".formatted(participantContextId, f.getFailureDetail())));
-                    }
-                })
-                .onFailure(f -> monitor.warning("Could not retrieve participant context '%s' to ensure API key: %s".formatted(participantContextId, f.getFailureDetail())));
     }
 }

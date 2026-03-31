@@ -1,5 +1,4 @@
 /*
- * Copyright (c) 2025 Cofinity-X
  * Copyright (c) 2025 Contributors to the Eclipse Foundation
  * Copyright (c) 2026 Technovative Solutions
  *

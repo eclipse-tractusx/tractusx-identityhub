@@ -33,7 +33,6 @@ import org.eclipse.edc.spi.result.ServiceResult;
 import org.eclipse.edc.spi.security.Vault;
 import org.eclipse.edc.spi.system.ServiceExtensionContext;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -42,7 +41,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -164,85 +162,6 @@ class ParticipantContextSeedExtensionTest {
         verify(vault).storeSecret(eq("super-user-apikey"), eq(apiKeyOverride));
         verify(monitor).warning(eq("Error storing API key in vault: test-failure"));
         verifyNoMoreInteractions(participantContextService, vault);
-    }
-
-    @Nested
-    @ExtendWith(DependencyInjectionExtension.class)
-    class EnsureApiKeyInVault {
-
-        @BeforeEach
-        void setup(ServiceExtensionContext context) {
-            context.registerService(ParticipantContextService.class, participantContextService);
-            context.registerService(Vault.class, vault);
-            context.registerService(Monitor.class, monitor);
-            when(context.getMonitor().withPrefix(SuperUserSeedExtension.class.getSimpleName())).thenReturn(monitor);
-        }
-
-        @Test
-        void shouldWarnWhenNoApiKeyOverrideConfigured(SuperUserSeedExtension ext,
-                                                      ServiceExtensionContext context) {
-            // No API key override → superUserApiKey is null
-            when(participantContextService.getParticipantContext(eq(SUPER_USER)))
-                    .thenReturn(ServiceResult.success(superUserContext().build()));
-
-            ext.initialize(context);
-            ext.start();
-
-            verify(monitor).warning(contains("no API key override is configured"));
-            verify(vault, never()).storeSecret(any(), any());
-        }
-
-        @Test
-        void shouldStoreApiKeyWhenVaultHasStaleKey(SuperUserSeedExtension ext,
-                                                   ServiceExtensionContext context) {
-            var apiKeyOverride = "c3VwZXItdXNlcgo=.fresh-key";
-            when(context.getSetting(eq(SuperUserSeedExtension.SUPERUSER_APIKEY_PROPERTY), eq(null)))
-                    .thenReturn(apiKeyOverride);
-            when(participantContextService.getParticipantContext(eq(SUPER_USER)))
-                    .thenReturn(ServiceResult.success(superUserContext().build()));
-            when(vault.resolveSecret(eq("super-user-apikey"))).thenReturn("old-stale-key");
-            when(vault.storeSecret(any(), any())).thenReturn(Result.success());
-
-            ext.initialize(context);
-            ext.start();
-
-            verify(vault).resolveSecret(eq("super-user-apikey"));
-            verify(vault).storeSecret(eq("super-user-apikey"), eq(apiKeyOverride));
-        }
-
-        @Test
-        void shouldNotStoreApiKeyWhenVaultAlreadyHasCorrectKey(SuperUserSeedExtension ext,
-                                                                ServiceExtensionContext context) {
-            var apiKeyOverride = "c3VwZXItdXNlcgo=.correct-key";
-            when(context.getSetting(eq(SuperUserSeedExtension.SUPERUSER_APIKEY_PROPERTY), eq(null)))
-                    .thenReturn(apiKeyOverride);
-            when(participantContextService.getParticipantContext(eq(SUPER_USER)))
-                    .thenReturn(ServiceResult.success(superUserContext().build()));
-            when(vault.resolveSecret(eq("super-user-apikey"))).thenReturn(apiKeyOverride);
-
-            ext.initialize(context);
-            ext.start();
-
-            verify(vault).resolveSecret(eq("super-user-apikey"));
-            verify(vault, never()).storeSecret(any(), any());
-        }
-
-        @Test
-        void shouldStoreApiKeyWhenVaultReturnsNull(SuperUserSeedExtension ext,
-                                                   ServiceExtensionContext context) {
-            var apiKeyOverride = "c3VwZXItdXNlcgo=.new-key";
-            when(context.getSetting(eq(SuperUserSeedExtension.SUPERUSER_APIKEY_PROPERTY), eq(null)))
-                    .thenReturn(apiKeyOverride);
-            when(participantContextService.getParticipantContext(eq(SUPER_USER)))
-                    .thenReturn(ServiceResult.success(superUserContext().build()));
-            when(vault.resolveSecret(eq("super-user-apikey"))).thenReturn(null);
-            when(vault.storeSecret(any(), any())).thenReturn(Result.success());
-
-            ext.initialize(context);
-            ext.start();
-
-            verify(vault).storeSecret(eq("super-user-apikey"), eq(apiKeyOverride));
-        }
     }
 
     private ParticipantContext.Builder superUserContext() {
