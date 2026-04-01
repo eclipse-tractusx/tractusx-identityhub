@@ -103,3 +103,9 @@ data:
   edc.datasource.holder.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
   edc.datasource.holder.user: {{ .Values.postgresql.auth.username | quote }}
   edc.datasource.holder.password: {{ .Values.postgresql.auth.password | quote }}
+
+  # Participant Context Config
+  edc.sql.store.participantcontextconfig.datasource: "participantcontextconfig"
+  edc.datasource.participantcontextconfig.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
+  edc.datasource.participantcontextconfig.user: {{ .Values.postgresql.auth.username | quote }}
+  edc.datasource.participantcontextconfig.password: {{ .Values.postgresql.auth.password | quote }}
