@@ -153,8 +153,12 @@ spec:
             - name: {{ $key | quote }}
               value: {{ $value | quote }}
           {{- end }}
-          {{- if and (or .Values.identityhub.envSecretNames .Values.identityhub.envConfigMapNames) (or (gt (len .Values.identityhub.envSecretNames) 0) (gt (len .Values.identityhub.envConfigMapNames) 0)) }}
           envFrom:
+            - configMapRef:
+                name: {{ include "identityhub.fullname" . }}-config
+            - configMapRef:
+                name: {{ include "identityhub.fullname" . }}-datasource-config
+          {{- if and (or .Values.identityhub.envSecretNames .Values.identityhub.envConfigMapNames) (or (gt (len .Values.identityhub.envSecretNames) 0) (gt (len .Values.identityhub.envConfigMapNames) 0)) }}
           {{- range $value := .Values.identityhub.envSecretNames }}
             - secretRef:
                 name: {{ $value | quote }}
@@ -172,15 +176,15 @@ spec:
             {{- end }}
             - name: "tmp"
               mountPath: "/tmp"
-            - name : configuration
+            - name : logging-config
               mountPath: /app/logging.properties
               subPath: logging.properties
             - name: logs
               mountPath: {{ .Values.identityhub.logging.path }}
       volumes:
-        - name: "configuration"
+        - name: "logging-config"
           configMap:
-            name: {{ include "identityhub.fullname" . }}
+            name: {{ include "identityhub.fullname" . }}-logging-config
             items:
               - key: "logging.properties"
                 path: "logging.properties"
