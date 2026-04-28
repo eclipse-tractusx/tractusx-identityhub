@@ -46,13 +46,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
     #####################
     # Login to DockerHub
     #####################
     - name: DockerHub login
-      uses: docker/login-action@v2
+      uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
       with:
         username: ${{ inputs.docker_user }}
         password: ${{ inputs.docker_token }}
@@ -72,7 +72,7 @@ runs:
     # Create SemVer or ref tags dependent of trigger event
     - name: Docker meta
       id: meta
-      uses: docker/metadata-action@v4
+      uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6.0.0
       with:
         images: |
           ${{ inputs.namespace }}/${{ inputs.imagename }}
@@ -89,7 +89,7 @@ runs:
     # Build and push the image
     ###############################
     - name: Build and push
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
       with:
         context: ${{ inputs.rootDir }}
         file: ${{ inputs.rootDir }}/Dockerfile
@@ -106,7 +106,7 @@ runs:
     # https://github.com/peter-evans/dockerhub-description
     ###############################
     - name: Update Docker Hub description
-      uses: peter-evans/dockerhub-description@v3
+      uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa # v5.0.0
       with:
         readme-filepath: ${{ inputs.rootDir }}/notice.md
         username: ${{ inputs.docker_user }}
