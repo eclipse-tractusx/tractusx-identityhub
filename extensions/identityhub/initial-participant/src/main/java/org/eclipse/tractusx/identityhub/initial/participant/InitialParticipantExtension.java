@@ -129,9 +129,10 @@ public class InitialParticipantExtension implements ServiceExtension {
             Base64.Encoder enc = Base64.getEncoder();
             String base64Did = enc.encodeToString(participantId.getBytes(StandardCharsets.UTF_8));
 
-            if (!participantApiKey.substring(0, participantApiKey.indexOf(".")).equals(base64Did)) {
+            int dotIndex = participantApiKey.indexOf('.');
+            if (dotIndex <= 0 || !participantApiKey.substring(0, dotIndex).equals(base64Did)) {
                 throw new EdcException(
-                        "The configured x-api-key must start with the participantDid encoded in base64. For instance: %s.randomChars"
+                        "The configured x-api-key must start with the participantDid encoded in base64, followed by '.'. For instance: %s.randomChars"
                                 .formatted(base64Did));
             }
         }
@@ -145,10 +146,12 @@ public class InitialParticipantExtension implements ServiceExtension {
         }
 
         ParticipantContext context = getParticipantContext();
-        participantContextStore.create(context)
-                .onFailure(e -> monitor.severe(
-                        "Error storing participantContext into storage, error details: %s"
-                                .formatted(e.getFailureDetail())));
+        var createResult = participantContextStore.create(context);
+        if (createResult.failed()) {
+            monitor.severe("Error storing participantContext into storage, error details: %s"
+                    .formatted(createResult.getFailureDetail()));
+            return;
+        }
 
         // EDC 0.15.1: ParticipantContextConfiguration must exist for per-participant
         // config lookups.
@@ -167,7 +170,7 @@ public class InitialParticipantExtension implements ServiceExtension {
                         .severe("Error storing client-secret into vault, error details: %s"
                                 .formatted(e.getFailureDetail())));
 
-        monitor.debug("Generated X-Api-Key for initial PC: %s".formatted(participantApiKey));
+        monitor.debug("Generated X-Api-Key for initial participant context");
         vault.storeSecret(context.getApiTokenAlias(), participantApiKey)
                 .onFailure(e -> monitor.severe("Error storing X-Api-Key into vault, error details: %s"
                         .formatted(e.getFailureDetail())));

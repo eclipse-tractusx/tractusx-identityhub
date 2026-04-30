@@ -182,7 +182,7 @@ After applying all changes, verify the upgrade:
 ./gradlew :runtimes:identityhub:shadowJar :runtimes:issuerservice:shadowJar
 ```
 
-All 5 tests should pass and shadow JARs should be produced in `runtimes/*/build/libs/`.
+All tests should pass and shadow JARs should be produced in `runtimes/*/build/libs/`.
 
 > [!WARNING]
 > Bitnami does change their update and versioning policy starting with 2025-08-28. To install the existing charts with its bitnami dependencies, please consider to manually specify the properties `image.repository` and `image.tag` specifying for the following dependencies:
@@ -210,7 +210,7 @@ helm install tractusx-identityhub -n tractusx-dev tractusx/tractusx-identityhub 
 > 
 > Notes:
 > 
-- Deploying an older version of the software may have used an older postgresql version.
+> - Deploying an older version of the software may have used an older postgresql version.
 > - The community is working out on how to resolve the issue.
 
 # NOTICE
