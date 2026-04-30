@@ -160,10 +160,12 @@ public class InitialParticipantExtension implements ServiceExtension {
         var cfg = ParticipantContextConfiguration.Builder.newInstance()
                 .participantContextId(participantId)
                 .build();
-        participantContextConfigService.save(cfg)
-                .onFailure(e -> monitor
-                        .severe("Error storing ParticipantContextConfig, error details: %s"
-                                .formatted(e.getFailureDetail())));
+        var saveConfigResult = participantContextConfigService.save(cfg);
+        if (saveConfigResult.failed()) {
+            monitor.severe("Error storing ParticipantContextConfig, error details: %s"
+                    .formatted(saveConfigResult.getFailureDetail()));
+            return;
+        }
 
         vault.storeSecret(participantSecretAlias, participantSecret)
                 .onFailure(e -> monitor
