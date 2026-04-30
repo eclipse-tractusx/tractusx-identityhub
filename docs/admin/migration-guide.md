@@ -203,8 +203,8 @@ All tests should pass and shadow JARs should be produced in `runtimes/*/build/li
 > 2. Set during installation.
 > 
 > ```bash
-helm install tractusx-identityhub -n tractusx-dev tractusx/tractusx-identityhub \
->   --set postgresql.image.repository=bitnamilegacy/postgresql
+> helm install tractusx-identityhub -n tractusx-dev tractusx/tractusx-identityhub \
+>   --set postgresql.image.repository=bitnamilegacy/postgresql \
 >   --set postgresql.image.tag=15.4.0-debian-11-r45
 > ```
 > 
