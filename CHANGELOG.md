@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog](https://github.com/eclipse-tractusx/tractus-x-release/blob/main/CHANGELOG.md).
 
+## [Unreleased]
+
+### Added
+
+- Add Flyway V0_0_2 migration scripts for EDC 0.15.1 DB schema changes ([#198](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/198)):
+  - `credential_resource`: new `usage` column
+  - `keypair_resource`: new `usage` column
+  - `edc_sts_client`: added `participant_context_id`, removed `private_key_alias` and `public_key_reference`
+  - `holders`: new `anonymous` and `properties` columns
+  - `edc_lease` (credentialrequest, issuanceprocess): redesigned PK from `lease_id` to composite `(resource_id, resource_kind)`
+
+### Changed
+
+- **BREAKING:** Upgrade EDC from 0.14.0 to 0.15.1 ([#198](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/198)):
+  - `ParticipantManifest.Builder.participantId()` renamed to `participantContextId()`
+  - `edc_sts_client` table: `private_key_alias` and `public_key_reference` columns removed, `participant_context_id` added
+  - `edc_lease` table (credentialrequest, issuanceprocess): primary key changed from single `lease_id` to composite `(resource_id, resource_kind)`
+- Upgrade edc-build plugin from 1.0.0 to 1.1.6 ([#198](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/198))
+- Upgrade Gradle wrapper from 8.12 to 9.3.1 (required by edc-build 1.1.6) ([#198](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/198))
+- Migrate Shadow plugin from `com.github.johnrengelman.shadow:8.1.1` to `com.gradleup.shadow:9.3.1` (required for Gradle 9.x) ([#198](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/198))
+- Update build.gradle.kts for Gradle 9.x compatibility (plugin references, `tasks.register()` API) ([#198](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/198))
+
 ## [0.2.0] - 2026-03-10
 
 ### Added
@@ -34,6 +56,8 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 ## [0.1.0] - 2025-11-05
 
 ### Added
+- Add documentation about IssuerService by @AYaoZhan in [#222](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/222)
+- Add documentation about IdentityHub, Developers and setup guide by @Alaitz1 in [#221](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/221)
 - Add colored logger and logger persistence by @AYaoZhan in [#149](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/149)
 - Add CHANGELOG.md file following TRG 1.03 standards by @CDiezRodriguez in [#151](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/151)
 - Add installation and deployment documentation, enhance documentation structure, fix header and list formatting, add license headers and NOTICE files, set key signing alias default configuration by @AYaoZhan in [#147](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/147)

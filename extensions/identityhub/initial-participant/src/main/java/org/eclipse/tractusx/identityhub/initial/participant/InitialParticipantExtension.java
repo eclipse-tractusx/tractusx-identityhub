@@ -1,6 +1,7 @@
 /*
  *   Copyright (c) 2025 LKS Next
  *   Copyright (c) 2025 Contributors to the Eclipse Foundation
+ *   Copyright (c) 2026 Technovative Solutions
  *
  *   See the NOTICE file(s) distributed with this work for additional
  *   information regarding copyright ownership.
@@ -21,10 +22,10 @@
 
 package org.eclipse.tractusx.identityhub.initial.participant;
 
+import org.eclipse.edc.iam.decentralizedclaims.sts.spi.model.StsAccount;
+import org.eclipse.edc.iam.decentralizedclaims.sts.spi.store.StsAccountStore;
 import org.eclipse.edc.iam.did.spi.document.DidDocument;
 import org.eclipse.edc.iam.did.spi.document.Service;
-import org.eclipse.edc.iam.identitytrust.sts.spi.model.StsAccount;
-import org.eclipse.edc.iam.identitytrust.sts.spi.store.StsAccountStore;
 import org.eclipse.edc.identityhub.spi.authentication.ServicePrincipal;
 import org.eclipse.edc.identityhub.spi.did.DidDocumentService;
 import org.eclipse.edc.identityhub.spi.keypair.KeyPairService;
@@ -32,6 +33,8 @@ import org.eclipse.edc.identityhub.spi.participantcontext.model.KeyDescriptor;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantContext;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantContextState;
 import org.eclipse.edc.identityhub.spi.participantcontext.store.ParticipantContextStore;
+import org.eclipse.edc.participantcontext.spi.config.model.ParticipantContextConfiguration;
+import org.eclipse.edc.participantcontext.spi.config.service.ParticipantContextConfigService;
 import org.eclipse.edc.runtime.metamodel.annotation.Extension;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
 import org.eclipse.edc.runtime.metamodel.annotation.Setting;
@@ -41,6 +44,7 @@ import org.eclipse.edc.spi.security.Vault;
 import org.eclipse.edc.spi.system.ServiceExtension;
 import org.eclipse.edc.spi.system.ServiceExtensionContext;
 
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
@@ -103,6 +107,9 @@ public class InitialParticipantExtension implements ServiceExtension {
     @Inject
     private DidDocumentService didDocumentService;
 
+    @Inject
+    private ParticipantContextConfigService participantContextConfigService;
+
     @Override
     public String name() {
         return NAME;
@@ -115,14 +122,18 @@ public class InitialParticipantExtension implements ServiceExtension {
             // validate values in case configurable participant is enabled
             requireNonNull(participantId, "Missing required default participant Did property");
             requireNonNull(participantSecret, "Missing required default participant secret property");
-            requireNonNull(participantSecretAlias, "Missing required default participant secret alias property");
+            requireNonNull(participantSecretAlias,
+                    "Missing required default participant secret alias property");
             requireNonNull(participantApiKey, "Missing required default participant apikey property");
 
             Base64.Encoder enc = Base64.getEncoder();
-            String base64Did = enc.encodeToString(participantId.getBytes());
+            String base64Did = enc.encodeToString(participantId.getBytes(StandardCharsets.UTF_8));
 
-            if (!participantApiKey.substring(0, participantApiKey.indexOf(".")).equals(base64Did)) {
-                throw new EdcException("The configured x-api-key must start with the participantDid encoded in base64. For instance: %s.randomChars".formatted(base64Did));
+            int dotIndex = participantApiKey.indexOf('.');
+            if (dotIndex <= 0 || !participantApiKey.substring(0, dotIndex).equals(base64Did)) {
+                throw new EdcException(
+                        "The configured x-api-key must start with the participantDid encoded in base64, followed by '.'. For instance: %s.randomChars"
+                                .formatted(base64Did));
             }
         }
     }
@@ -135,38 +146,62 @@ public class InitialParticipantExtension implements ServiceExtension {
         }
 
         ParticipantContext context = getParticipantContext();
-        participantContextStore.create(context)
-                .onFailure(e -> monitor.severe("Error storing participantContext into storage, error details: %s".formatted(e.getFailureDetail())));
+        var createResult = participantContextStore.create(context);
+        if (createResult.failed()) {
+            monitor.severe("Error storing participantContext into storage, error details: %s"
+                    .formatted(createResult.getFailureDetail()));
+            return;
+        }
+
+        // EDC 0.15.1: ParticipantContextConfiguration must exist for per-participant
+        // config lookups.
+        // Since we bypass ParticipantContextService (which auto-creates it), we must
+        // create it explicitly.
+        var cfg = ParticipantContextConfiguration.Builder.newInstance()
+                .participantContextId(participantId)
+                .build();
+        var saveConfigResult = participantContextConfigService.save(cfg);
+        if (saveConfigResult.failed()) {
+            monitor.severe("Error storing ParticipantContextConfig, error details: %s"
+                    .formatted(saveConfigResult.getFailureDetail()));
+            return;
+        }
 
         vault.storeSecret(participantSecretAlias, participantSecret)
-                .onFailure(e -> monitor.severe("Error storing client-secret into vault, error details: %s".formatted(e.getFailureDetail())));
+                .onFailure(e -> monitor
+                        .severe("Error storing client-secret into vault, error details: %s"
+                                .formatted(e.getFailureDetail())));
 
-        monitor.info("Generated X-Api-Key for initial PC: %s".formatted(participantApiKey));
+        monitor.debug("Generated X-Api-Key for initial participant context");
         vault.storeSecret(context.getApiTokenAlias(), participantApiKey)
-                .onFailure(e -> monitor.severe("Error storing X-Api-Key into vault, error details: %s".formatted(e.getFailureDetail())));
+                .onFailure(e -> monitor.severe("Error storing X-Api-Key into vault, error details: %s"
+                        .formatted(e.getFailureDetail())));
 
         DidDocument document = getDidDocument();
         didDocumentService.store(document, participantId)
-                .onFailure(e -> monitor.severe("Error storing DID in storage, error details: %s".formatted(e.getFailureDetail())));
+                .onFailure(e -> monitor.severe("Error storing DID in storage, error details: %s"
+                        .formatted(e.getFailureDetail())));
 
         KeyDescriptor key = getKeyDescriptor();
         keyPairService.addKeyPair(participantId, key, true)
-                .onFailure(e -> monitor.severe("Error storing KeyPair in storage, error details: %s".formatted(e.getFailureDetail())));
+                .onFailure(e -> monitor.severe("Error storing KeyPair in storage, error details: %s"
+                        .formatted(e.getFailureDetail())));
 
-        StsAccount sts = getStsAccount(key);
+        StsAccount sts = getStsAccount();
         stsAccountStore.create(sts)
-                .onFailure(e -> monitor.severe("Error storing Secure Token in storage, error details: %s".formatted(e.getFailureDetail())));
+                .onFailure(e -> monitor
+                        .severe("Error storing Secure Token in storage, error details: %s"
+                                .formatted(e.getFailureDetail())));
     }
 
-    private StsAccount getStsAccount(KeyDescriptor key) {
+    private StsAccount getStsAccount() {
         return StsAccount.Builder.newInstance()
                 .id(participantId)
                 .name(participantId)
                 .clientId(participantId)
                 .did(participantId)
                 .secretAlias(participantSecretAlias)
-                .privateKeyAlias(key.getPrivateKeyAlias())
-                .publicKeyReference(key.getKeyId())
+                .participantContextId(participantId)
                 .build();
     }
 
@@ -192,7 +227,7 @@ public class InitialParticipantExtension implements ServiceExtension {
         endpointBuilder.append("://");
         endpointBuilder.append(participantId.split(":")[2]);
         endpointBuilder.append(credentialsApi);
-        endpointBuilder.append("/v1/participants/%s".formatted(enc.encodeToString(participantId.getBytes())));
+        endpointBuilder.append("/v1/participants/%s".formatted(enc.encodeToString(participantId.getBytes(StandardCharsets.UTF_8))));
         return endpointBuilder.toString();
     }
 

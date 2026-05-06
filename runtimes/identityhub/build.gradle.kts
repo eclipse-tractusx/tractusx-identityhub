@@ -1,6 +1,7 @@
 /*
  *   Copyright (c) 2025 Cofinity-X
  *   Copyright (c) 2025 LKS Next
+ *   Copyright (c) 2026 Technovative Solutions
  *   Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  *   See the NOTICE file(s) distributed with this work for additional
@@ -31,6 +32,7 @@ dependencies {
     // used for the runtime
     runtimeOnly(libs.bom.ih)
     runtimeOnly(libs.bom.ih.sql)
+    runtimeOnly(libs.edc.ih.participantcontext.config.store.sql)
     runtimeOnly(libs.edc.vault.hashicorp)
     runtimeOnly(project(":extensions:store:sql:migrations"))
     runtimeOnly(project(":extensions:seed:super-user"))
@@ -47,8 +49,9 @@ dependencies {
     testImplementation(libs.edc.junit)
 }
 
-tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+tasks.shadowJar {
     mergeServiceFiles()
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     archiveFileName.set("${project.name}.jar")
 }
 

@@ -1,6 +1,7 @@
 /*
  *   Copyright (c) 2025 Cofinity-X
  *   Copyright (c) 2025 LKS Next
+ *   Copyright (c) 2026 Technovative Solutions
  *   Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  *   See the NOTICE file(s) distributed with this work for additional
@@ -43,8 +44,9 @@ dependencies {
     testImplementation(libs.edc.junit)
 }
 
-tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+tasks.shadowJar {
     mergeServiceFiles()
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     archiveFileName.set("${project.name}.jar")
 }
 
