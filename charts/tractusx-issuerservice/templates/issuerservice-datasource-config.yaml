@@ -27,7 +27,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "issuerservice-datasource-config"
+  name: {{ include "issuerservice.fullname" . }}-datasource-config
   namespace: {{ .Release.Namespace | default "default" | quote }}
   labels:
     {{- include "issuerservice.labels" . | nindent 4 }}
