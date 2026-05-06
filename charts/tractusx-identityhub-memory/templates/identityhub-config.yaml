@@ -1,4 +1,5 @@
 #################################################################################
+  #  Copyright (c) 2026 LKS Next
   #  Copyright (c) 2025 Cofinity-X
   #  Copyright (c) 2025 Contributors to the Eclipse Foundation
   #
@@ -26,7 +27,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "identityhub-config"
+  name: {{ include "identityhub.fullname" . }}-config
   namespace: {{ .Release.Namespace | default "default" | quote }}
   labels:
     {{- include "identityhub.labels" . | nindent 4 }}

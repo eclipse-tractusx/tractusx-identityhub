@@ -1,6 +1,4 @@
 /*
- * Copyright (c) 2025 Cofinity-X
- * Copyright (c) 2025 LKS Next
  * Copyright (c) 2026 Technovative Solutions
  * Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
@@ -20,30 +18,28 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-plugins {
-    `java-library`
-    id("application")
-    alias(libs.plugins.shadow)
-}
+package org.eclipse.tractusx.store.postgresql.migration;
 
-dependencies {
-    // used for the runtime
-    runtimeOnly(libs.bom.issuer)
-    runtimeOnly(project(":extensions:seed:super-user"))
-    runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
+import org.eclipse.edc.runtime.metamodel.annotation.Extension;
+import org.eclipse.edc.runtime.metamodel.annotation.Inject;
+import org.eclipse.edc.spi.security.Vault;
+import org.eclipse.tractusx.store.postgresql.AbstractPostgresqlMigrationExtension;
 
-    // used for custom extensions
-    implementation(libs.edc.ih.spi)
-    implementation(libs.edc.jdk.monitor)
-    implementation(libs.edc.api.authentication)
-}
+@Extension("Participant Context Config Migration Extension")
+public class ParticipantContextConfigMigrationExtension extends AbstractPostgresqlMigrationExtension {
 
-tasks.shadowJar {
-    mergeServiceFiles()
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    archiveFileName.set("${project.name}.jar")
-}
+    private static final String NAME_SUBSYSTEM = "participantcontextconfig";
 
-application {
-    mainClass.set("org.eclipse.edc.boot.system.runtime.BaseRuntime")
+    @Inject
+    private Vault vault;
+
+    @Override
+    protected Vault getVault() {
+        return vault;
+    }
+
+    @Override
+    protected String getSubsystemName() {
+        return NAME_SUBSYSTEM;
+    }
 }

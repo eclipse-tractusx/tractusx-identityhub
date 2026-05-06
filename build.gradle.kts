@@ -1,5 +1,6 @@
 /*
  *   Copyright (c) 2025 Cofinity-X
+ *   Copyright (c) 2026 Technovative Solutions
  *   Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  *   See the NOTICE file(s) distributed with this work for additional
@@ -20,12 +21,11 @@
  */
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import com.github.jengelman.gradle.plugins.shadow.ShadowJavaPlugin
 
 plugins {
     `java-library`
     id("com.bmuschko.docker-remote-api") version "10.0.0"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    alias(libs.plugins.shadow) apply false
 }
 
 
@@ -58,7 +58,7 @@ allprojects {
 // the "dockerize" task is added to all projects that use the `shadowJar` plugin, e.g. runtimes
 subprojects {
     afterEvaluate {
-        if (project.plugins.hasPlugin("com.github.johnrengelman.shadow") &&
+        if (project.plugins.hasPlugin(libs.plugins.shadow.get().pluginId) &&
             file("${project.projectDir}/Dockerfile").exists()
         ) {
 
@@ -75,7 +75,7 @@ subprojects {
             }
 
             // this task copies some legal docs into the build folder, so we can easily copy them into the docker images
-            val copyLegalDocs = tasks.create("copyLegalDocs", Copy::class) {
+            val copyLegalDocs = tasks.register("copyLegalDocs", Copy::class) {
                 from(project.rootProject.projectDir)
                 into("build/legal")
                 include("SECURITY.md", "NOTICE.md", "DEPENDENCIES", "LICENSE")
@@ -85,7 +85,7 @@ subprojects {
                 dependsOn(copyLegalDocs)
             }
 
-            val shadowJarTask = tasks.named(ShadowJavaPlugin.SHADOW_JAR_TASK_NAME).get()
+            val shadowJarTask = tasks.named("shadowJar").get()
             shadowJarTask
                 .dependsOn(copyLegalDocs)
                 .dependsOn(downloadOpentelemetryAgent)

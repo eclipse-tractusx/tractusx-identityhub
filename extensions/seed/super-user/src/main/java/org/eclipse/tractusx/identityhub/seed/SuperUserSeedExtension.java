@@ -1,5 +1,6 @@
 /*
  *   Copyright (c) 2025 Cofinity-X
+ *   Copyright (c) 2026 Technovative Solutions
  *   Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  *   See the NOTICE file(s) distributed with this work for additional
@@ -75,7 +76,7 @@ public class SuperUserSeedExtension implements ServiceExtension {
             return;
         }
         participantContextService.createParticipantContext(ParticipantManifest.Builder.newInstance()
-                        .participantId(superUserParticipantId)
+                        .participantContextId(superUserParticipantId)
                         .did("did:web:%s".formatted(superUserParticipantId)) // doesn't matter, not intended for resolution
                         .active(true)
                         .key(KeyDescriptor.Builder.newInstance()
