@@ -1,0 +1,38 @@
+meta {
+  name: Create Attestation
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{ISSUER_ISS_API}}/v1alpha/participants/{{B64_ISS_ID}}/attestations
+  body: json
+  auth: none
+}
+
+headers {
+  ~x-api-key: {{ISSUER_APIKEY}}
+}
+
+body:json {
+  {
+    "id": "attestation-id",
+    "attestationType": "database",
+    "configuration": {
+        "dataSourceName": "holder",
+        "tableName": "holders"
+      }
+  }
+}
+
+script:pre-request {
+  const btoa = require("btoa");
+  const iss_id = bru.getEnvVar("ISS_ID");
+  bru.setEnvVar("B64_ISS_ID", btoa(iss_id));
+  req.setHeader("x-api-key", bru.getEnvVar("ISSUER_APIKEY"));
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

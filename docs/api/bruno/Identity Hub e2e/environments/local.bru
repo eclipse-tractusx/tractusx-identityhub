@@ -1,0 +1,38 @@
+vars {
+  ISSUER_DID_API: http://localhost:8083
+  ISSUER_ID_API: http://localhost:8087/api/identity
+  ISSUER_ISS_API: http://localhost:8086/api/admin
+  ISSUER_ISSUANCE_API: http://localhost:8082/api/issuance
+  CONSUMER_IDHUB_DID_API: http://localhost:8084
+  CONSUMER_IDHUB_ID_API: http://localhost:8082/api/identity
+  CONSUMER_IDHUB_STS_API: http://localhost:8087/api/sts
+  CONSUMER_IDHUB_CREDS_API: http://localhost:8083/api/credentials
+  PROVIDER_MANAGEMENT: http://dataprovider-controlplane:8081/management
+  CONSUMER_MANAGEMENT: http://dataconsumer-controlplane:8081/management
+  PROVIDER_DATAPLANE_PUBLIC: http://dataprovider-dataplane:8081/api/public
+  PROVIDER_IDHUB_DID_API: http://localhost:8084
+  PROVIDER_IDHUB_ID_API: http://localhost:8082/api/identity
+  PROVIDER_IDHUB_STS_API: http://localhost:8087/api/sts
+  PROVIDER_IDHUB_CREDS_API: http://localhost:8083/api/credentials
+  ISS_ID: did:web:issuerservice-issuance.example.com:issuer
+  CONS_ID: did:web:consumer-identityhub-presentation.example.com:consumer
+  PROV_ID: did:web:provider-identityhub-presentation.example.com:provider
+  B64_CONS_ID: ZGlkOndlYjpjb25zdW1lci1pZGVudGl0eWh1Yi1wcmVzZW50YXRpb24uZXhhbXBsZS5jb206Y29uc3VtZXI=
+  B64_PROV_ID: ZGlkOndlYjpwcm92aWRlci1pZGVudGl0eWh1Yi1wcmVzZW50YXRpb24uZXhhbXBsZS5jb206cHJvdmlkZXI=
+  B64_ISS_ID: ZGlkOndlYjppc3N1ZXJzZXJ2aWNlLWlzc3VhbmNlLmV4YW1wbGUuY29tOmlzc3Vlcg==
+  ISSUER_APIKEY: <ISSUER_API_KEY>
+  CONSUMER_IH_APIKEY: <CONSUMER_IH_API_KEY>
+  CONSUMER_STS_SECRET:
+  PROVIDER_IH_APIKEY: <PROVIDER_IH_API_KEY>
+  PROVIDER_STS_SECRET: 
+  cons_access_token: 
+  prov_access_token: 
+  CONSUMER_EDC_VAULT: http://localhost:8200
+  PROVIDER_EDC_VAULT: http://localhost:8201
+  VAULT_TOKEN: root
+  PROVIDER_API_KEY: TEST2
+  CONSUMER_API_KEY: TEST1
+  PROVIDER_CONTROLPLANE: http://dataprovider-controlplane
+  CONSUMER_CONTROLPLANE: http://dataconsumer-controlplane
+  PROVIDER_DSP: http://dataprovider-controlplane:8084/api/v1/dsp
+}
