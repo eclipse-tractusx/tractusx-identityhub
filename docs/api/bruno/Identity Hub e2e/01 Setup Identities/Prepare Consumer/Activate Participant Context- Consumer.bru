@@ -1,0 +1,24 @@
+meta {
+  name: Activate Participant Context- Consumer
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{CONSUMER_IDHUB_ID_API}}/v1alpha/participants/{{B64_CONS_ID}}/state?isActive=true
+  body: none
+  auth: inherit
+}
+
+params:query {
+  isActive: true
+}
+
+headers {
+  x-api-key: {{CONSUMER_IH_APIKEY}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

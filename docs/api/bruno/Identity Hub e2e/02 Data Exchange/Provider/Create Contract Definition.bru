@@ -1,0 +1,34 @@
+meta {
+  name: Create Contract Definition
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{PROVIDER_MANAGEMENT}}/v3/contractdefinitions
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{PROVIDER_API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "@context": {
+      "@vocab": "https://w3id.org/edc/v0.0.1/ns/"
+    },
+    "@id": "1",
+    "accessPolicyId": "aPolicy",
+    "contractPolicyId": "aPolicy",
+    "assetsSelector": []
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
