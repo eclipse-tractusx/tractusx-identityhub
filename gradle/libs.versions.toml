@@ -6,7 +6,7 @@ edc = "0.15.1"
 edc-build = "1.1.6"
 opentelemetry = "2.24.0"
 postgres = "42.7.8"
-flyway = "11.15.0"
+flyway = "12.5.0"
 
 
 [libraries]
