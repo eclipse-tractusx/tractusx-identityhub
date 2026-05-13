@@ -1,0 +1,28 @@
+meta {
+  name: Get Consumer VC
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{CONSUMER_IDHUB_ID_API}}/v1alpha/participants/{{B64_CONS_ID}}/credentials
+  body: json
+  auth: none
+}
+
+headers {
+  x-api-key: {{CONSUMER_IH_APIKEY}}
+}
+
+script:pre-request {
+  const btoa = require("btoa");
+  const cons_id = bru.getEnvVar("PROV_ID");
+  bru.setEnvVar("B64_CONS_ID", btoa(cons_id));
+  
+  req.setHeader("x-api-key", bru.getEnvVar("CONSUMER_IH_APIKEY"));
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

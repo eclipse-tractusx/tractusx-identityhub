@@ -2,61 +2,221 @@
 
 This migration guide is based on the `chartVersion` of the chart. If you don't rely on the provided helm chart, consider the changes of the chart as mentioned below manually.
 
-## Upgrade to PostgreSQL 18 (CloudPirates)
+## EDC 0.14.0 → 0.15.1
 
-> [!IMPORTANT]
-> **Major Database Version Upgrade (15.4 -> 18.0)**
->
-> This release updates the PostgreSQL database dependency from version 15.4 to 18.0 and switches the upstream chart provider to CloudPirates.
->
-> **Data Compatibility Warning:**
-> The data files between PostgreSQL 15 and 18 are **not compatible**. If you are upgrading an existing installation with persistent data:
-> 1. Automatic upgrades are **not supported**. The database pod will fail to start if it detects an older data version.
-> 2. You must **backup (dump)** your data and restore it manually, or delete the existing Persistent Volume Claim (PVC) if data retention is not required (e.g., in dev/test environments).
+This section documents the steps required to upgrade tractusx-identityhub from EDC 0.14.0 to 0.15.1. See [#198](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/198) for full details.
 
-### Action Required: Remove Legacy Workarounds
+### 1. Build System Changes
 
-The previous workaround for the Bitnami licensing issue (`bitnamilegacy`) has been removed. The chart now defaults to `postgres:18.0`.
+| Component | Before | After | Reason |
+|-----------|--------|-------|--------|
+| EDC | 0.14.0 | 0.15.1 | Upstream upgrade |
+| edc-build plugin | 1.0.0 | 1.1.6 | Aligns with tractusx-edc |
+| Gradle wrapper | 8.12 | 9.3.1 | Required by edc-build 1.1.6 (`getSettingsDirectory()` API) |
+| Shadow plugin | `com.github.johnrengelman.shadow:8.1.1` | `com.gradleup.shadow:9.3.1` | Old plugin incompatible with Gradle 9.x |
 
-#### 1. Changes in `values.yaml` of IH and IS Charts
+**`gradle/libs.versions.toml`** — update the following entries:
 
-If you are overriding values, check your `values.yaml` and **remove** the manual image configuration for PostgreSQL.
-
-**Remove the following block:**
-
-```yaml
-# --------------------------------------------------------
-#  REMOVE THIS BLOCK FROM YOUR VALUES.YAML
-# --------------------------------------------------------
-postgresql:
-  image:
-    repository: bitnamilegacy/postgresql
-    tag: 15.4.0-debian-11-r45
-# --------------------------------------------------------
-
-
-```
-**Add the following block:**
-
-```yaml
-# --------------------------------------------------------
-#  ADD THIS BLOCK FROM YOUR VALUES.YAML
-# --------------------------------------------------------
-postgresql:
-  image:
-    # -- PostgreSQL image registry
-    registry: docker.io
-    # -- PostgreSQL image repository
-    repository: postgres
-    # -- PostgreSQL image tag
-    tag: "18.0@sha256:1ffc019dae94eca6b09a49ca67d37398951346de3c3d0cfe23d8d4ca33da83fb"
+```toml
+edc = "0.15.1"            # was 0.14.0
+edc-build = "1.1.6"       # was 1.0.0
 ```
 
+Update the shadow plugin entry:
+
+```toml
+[plugins]
+shadow = { id = "com.gradleup.shadow", version = "9.3.1" }
+# was: id = "com.github.johnrengelman.shadow", version = "8.1.1"
+```
+
+**Gradle wrapper** — upgrade to 9.3.1:
+
+```bash
+./gradlew wrapper --gradle-version=9.3.1
+```
+
+**`build.gradle.kts`** — the following changes are required for Gradle 9.x compatibility:
+
+- Remove `import com.github.jengelman.gradle.plugins.shadow.ShadowJavaPlugin`
+- Replace `tasks.create(...)` with `tasks.register(...)`
+- Replace `hasPlugin("com.github.johnrengelman.shadow")` with `hasPlugin(libs.plugins.shadow.get().pluginId)`
+- Replace `tasks.named(ShadowJavaPlugin.SHADOW_JAR_TASK_NAME)` with `tasks.named("shadowJar")`
+
+### 2. Java Code Changes
+
+**`SuperUserSeedExtension.java`** — one breaking API rename:
+
+```diff
+- .participantId(superUserParticipantId)
++ .participantContextId(superUserParticipantId)
+```
+
+**Import ordering** — edc-build 1.1.6 enforces a stricter `CustomImportOrder` checkstyle rule. The required order is:
+
+1. `THIRD_PARTY_PACKAGE` (`org.eclipse.edc.*`, `org.eclipse.tractusx.*`, etc.)
+2. `STANDARD_JAVA_PACKAGE` (`java.*`, `javax.*`)
+3. `STATIC` (static imports)
+
+Each group must be separated by a blank line and sorted alphabetically within the group. Verify all Java files comply before building.
+
+### 3. Database Migrations
+
+Six Flyway V0_0_2 migration scripts are required. These run automatically on startup if Flyway is enabled. If you manage schema changes manually, apply the following SQL in order.
+
+Additionally, a new `edc_participant_context_config` table is required by the upstream `participantcontext-config-store-sql` module, which replaces the previous in-memory config store with a persistent PostgreSQL-backed implementation.
+
+#### 3.1 `edc_participant_context_config` — new table
+
+```sql
+CREATE TABLE IF NOT EXISTS edc_participant_context_config
+(
+    participant_context_id VARCHAR NOT NULL PRIMARY KEY,
+    created_date          BIGINT  NOT NULL,
+    last_modified_date    BIGINT,
+    entries               JSON DEFAULT '{}',
+    private_entries       JSON DEFAULT '{}'
+);
+```
+
+> **Note:** This table stores per-participant configuration entries that were previously held in an in-memory store and lost on restart. With this migration, configuration now persists across restarts.
+
+#### 3.2 `credential_resource` — new `usage` column
+
+```sql
+ALTER TABLE credential_resource
+    ADD COLUMN IF NOT EXISTS usage VARCHAR NOT NULL DEFAULT 'holder';
+```
+
+#### 3.3 `keypair_resource` — new `usage` column
+
+```sql
+ALTER TABLE keypair_resource
+    ADD COLUMN IF NOT EXISTS usage VARCHAR NOT NULL DEFAULT '';
+```
+
+#### 3.4 `edc_sts_client` — schema update
+
+```sql
+ALTER TABLE edc_sts_client
+    ADD COLUMN IF NOT EXISTS participant_context_id VARCHAR NOT NULL DEFAULT '';
+
+ALTER TABLE edc_sts_client
+    DROP COLUMN IF EXISTS private_key_alias;
+
+ALTER TABLE edc_sts_client
+    DROP COLUMN IF EXISTS public_key_reference;
+```
+
+> **Warning:** The `private_key_alias` and `public_key_reference` columns are permanently removed. Back up any data in these columns before migrating.
+
+> **Note:** Existing rows will have `participant_context_id` set to `''` (empty string). After migration, you should update this column for each STS client to its correct participant context ID value.
+
+#### 3.5 `holders` — new `anonymous` and `properties` columns
+
+```sql
+ALTER TABLE holders
+    ADD COLUMN IF NOT EXISTS anonymous BOOLEAN NOT NULL DEFAULT FALSE;
+
+ALTER TABLE holders
+    ADD COLUMN IF NOT EXISTS properties JSON DEFAULT '{}';
+```
+
+#### 3.6 `edc_lease` (credentialrequest subsystem) — PK redesign
+
+The `edc_lease` table used by `edc_credential_offers` and `edc_holder_credentialrequest` is replaced with a new schema using a composite primary key `(resource_id, resource_kind)`.
+
+```sql
+-- Drop foreign key references
+ALTER TABLE edc_credential_offers DROP CONSTRAINT IF EXISTS credreq_lease_lease_id_fk;
+ALTER TABLE edc_credential_offers DROP COLUMN IF EXISTS lease_id;
+ALTER TABLE edc_holder_credentialrequest DROP CONSTRAINT IF EXISTS credreq_lease_lease_id_fk;
+ALTER TABLE edc_holder_credentialrequest DROP COLUMN IF EXISTS lease_id;
+
+-- Replace edc_lease with new schema
+DROP INDEX IF EXISTS lease_lease_id_uindex;
+DROP TABLE IF EXISTS edc_lease CASCADE;
+CREATE TABLE IF NOT EXISTS edc_lease (
+    leased_by     VARCHAR NOT NULL,
+    leased_at     BIGINT,
+    lease_duration INTEGER NOT NULL,
+    resource_id   VARCHAR NOT NULL,
+    resource_kind VARCHAR NOT NULL,
+    PRIMARY KEY (resource_id, resource_kind)
+);
+```
+
+> **Warning:** This is a destructive migration. All existing lease data is dropped. Ensure no active leases exist before migrating.
+
+#### 3.7 `edc_lease` (issuanceprocess subsystem) — PK redesign
+
+The same redesign applies to the `edc_lease` table used by `edc_issuance_process`.
+
+```sql
+-- Drop foreign key reference
+ALTER TABLE edc_issuance_process DROP CONSTRAINT IF EXISTS issuance_process_lease_lease_id_fk;
+ALTER TABLE edc_issuance_process DROP COLUMN IF EXISTS lease_id;
+
+-- Replace edc_lease with new schema
+DROP INDEX IF EXISTS lease_lease_id_uindex;
+DROP TABLE IF EXISTS edc_lease CASCADE;
+CREATE TABLE IF NOT EXISTS edc_lease (
+    leased_by     VARCHAR NOT NULL,
+    leased_at     BIGINT,
+    lease_duration INTEGER NOT NULL,
+    resource_id   VARCHAR NOT NULL,
+    resource_kind VARCHAR NOT NULL,
+    PRIMARY KEY (resource_id, resource_kind)
+);
+```
+
+### 4. Verification
+
+After applying all changes, verify the upgrade:
+
+```bash
+# Build and run tests
+./gradlew build
+
+# Build shadow JARs
+./gradlew :runtimes:identityhub:shadowJar :runtimes:issuerservice:shadowJar
+```
+
+All tests should pass and shadow JARs should be produced in `runtimes/*/build/libs/`.
+
+> [!WARNING]
+> Bitnami does change their update and versioning policy starting with 2025-08-28. To install the existing charts with its bitnami dependencies, please consider to manually specify the properties `image.repository` and `image.tag` specifying for the following dependencies:
+> 
+> - postgresql (image: bitnamilegacy/postgresql:15.4.0-debian-11-r45)
+> 
+> You have the following options to specify the container image:
+> 
+> 1. Specify in `values.yaml` below `postgresql`.
+> 
+> ```yaml
+> postgresql: 
+>   image: 
+>     repository: bitnamilegacy/postgresql
+>     tag: 15.4.0-debian-11-r45
+> ```
+> 
+> 2. Set during installation.
+> 
+> ```bash
+> helm install tractusx-identityhub -n tractusx-dev tractusx/tractusx-identityhub \
+>   --set postgresql.image.repository=bitnamilegacy/postgresql \
+>   --set postgresql.image.tag=15.4.0-debian-11-r45
+> ```
+> 
+> Notes:
+> 
+> - Deploying an older version of the software may have used an older postgresql version.
+> - The community is working out on how to resolve the issue.
 
 # NOTICE
 
 This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
 
 * SPDX-License-Identifier: CC-BY-4.0
-* SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
-* Source URL: <https://github.com/eclipse-tractusx/tractus-x-umbrella>
+* SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
+* Source URL: https://github.com/eclipse-tractusx/tractusx-identityhub

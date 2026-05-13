@@ -1,0 +1,33 @@
+meta {
+  name: Verify Activation - Issuer Participant
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{ISSUER_ID_API}}/v1alpha/participants/{{B64_ISS_ID}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  x-api-key: {{ISSUER_APIKEY}}
+}
+
+script:pre-request {
+  const btoa = require("btoa");
+  const iss_id = bru.getEnvVar("ISS_ID");
+  bru.setEnvVar("B64_ISS_ID", btoa(iss_id));
+}
+
+script:post-response {
+  const apiKey = res.getBody().apiKey.trim();
+  if (apiKey) {
+    bru.setEnvVar("ISSUER_APIKEY", apiKey);
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

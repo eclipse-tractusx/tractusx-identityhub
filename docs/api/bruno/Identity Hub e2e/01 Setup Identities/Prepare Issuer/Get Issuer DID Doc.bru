@@ -1,0 +1,20 @@
+meta {
+  name: Get Issuer DID Doc
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{ISSUER_DID_API}}/issuer
+  body: none
+  auth: inherit
+}
+
+headers {
+  Host: <ISSUER_HOSTNAME>
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

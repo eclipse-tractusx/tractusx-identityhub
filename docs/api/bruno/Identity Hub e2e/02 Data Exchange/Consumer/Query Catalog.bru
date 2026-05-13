@@ -1,0 +1,40 @@
+meta {
+  name: Query Catalog
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{CONSUMER_MANAGEMENT}}/v3/catalog/request
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{CONSUMER_API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+    "@context": {
+      "@vocab": "https://w3id.org/edc/v0.0.1/ns/"
+    },
+    "counterPartyAddress": "{{PROVIDER_DSP}}",
+    "counterPartyId": "{{PROV_ID}}",
+    "protocol": "dataspace-protocol-http"
+  
+  }
+}
+
+script:post-response {
+  const offerId = res.getBody()['dcat:dataset']['odrl:hasPolicy']['@id'];
+  
+  bru.setEnvVar("offerId", offerId);
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
