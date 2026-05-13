@@ -25,7 +25,12 @@ import org.eclipse.edc.identityhub.spi.transformation.ScopeToCriterionTransforme
 import org.eclipse.edc.spi.query.Criterion;
 import org.eclipse.edc.spi.result.Result;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.eclipse.edc.spi.result.Result.failure;
 import static org.eclipse.edc.spi.result.Result.success;
@@ -37,10 +42,31 @@ import static org.eclipse.edc.spi.result.Result.success;
 public class TxScopeToCriterionTransformer implements ScopeToCriterionTransformer {
 
     public static final String TYPE_OPERAND = "verifiableCredential.credential.type";
-    public static final String ALIAS_LITERAL = "org.eclipse.tractusx.vc.type";
+    public static final String DEFAULT_ALIAS_LITERAL = "org.eclipse.tractusx.vc.type";
+    public static final String ALIAS_LITERAL = DEFAULT_ALIAS_LITERAL;
     public static final String CONTAINS_OPERATOR = "contains";
     private static final String SCOPE_SEPARATOR = ":";
+    private final Set<String> allowedAliases;
+    private final String allowedAliasesDescription;
     private final List<String> allowedOperations = List.of("read", "*", "all");
+
+    public TxScopeToCriterionTransformer() {
+        this(Set.of(DEFAULT_ALIAS_LITERAL));
+    }
+
+    public TxScopeToCriterionTransformer(Set<String> allowedAliases) {
+        var sanitizedAliases = Objects.requireNonNull(allowedAliases, "allowedAliases").stream()
+                .map(String::trim)
+                .filter(alias -> !alias.isBlank())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        if (sanitizedAliases.isEmpty()) {
+            throw new IllegalArgumentException("allowedAliases cannot be empty");
+        }
+
+        this.allowedAliases = Collections.unmodifiableSet(sanitizedAliases);
+        allowedAliasesDescription = String.join(", ", sanitizedAliases);
+    }
 
     @Override
     public Result<Criterion> transform(String scope) {
@@ -59,8 +85,8 @@ public class TxScopeToCriterionTransformer implements ScopeToCriterionTransforme
         if (tokens.length != 3) {
             return failure("Scope string has invalid format.");
         }
-        if (!ALIAS_LITERAL.equalsIgnoreCase(tokens[0])) {
-            return failure("Scope alias MUST be %s but was %s".formatted(ALIAS_LITERAL, tokens[0]));
+        if (allowedAliases.stream().noneMatch(alias -> alias.equalsIgnoreCase(tokens[0]))) {
+            return failure("Scope alias MUST be one of %s but was %s".formatted(allowedAliasesDescription, tokens[0]));
         }
         if (!allowedOperations.contains(tokens[2])) {
             return failure("Invalid scope operation: " + tokens[2]);

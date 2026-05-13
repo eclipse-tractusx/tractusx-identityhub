@@ -1,0 +1,62 @@
+meta {
+  name: Create Provider Participant
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{PROVIDER_IDHUB_ID_API}}/v1alpha/participants
+  body: json
+  auth: inherit
+}
+
+headers {
+  x-api-key: {{PROVIDER_IH_APIKEY}}
+}
+
+body:json {
+  {
+    "roles": ["ROLE_ADMIN", "admin"],
+    "serviceEndpoints": [
+      {
+        "id": "ProviderCredentialService-ID",
+        "type": "CredentialService",
+        "serviceEndpoint": "{{PROVIDER_IDHUB_CREDS_API}}/v1/participants/{{B64_PROV_ID}}"
+      }
+    ],
+    "active": true,
+    "participantContextId": "{{PROV_ID}}",
+    "participantId": "{{PROV_ID}}",
+    "did": "{{PROV_ID}}",
+    "key": {
+      "keyId": "{{PROV_ID}}#key-1",
+      "privateKeyAlias": "{{PROV_ID}}-alias",
+      "keyGeneratorParams": {
+        "algorithm": "Ec",
+        "curve": "secp256r1"
+      }
+    }
+  }
+}
+
+script:pre-request {
+  const btoa = require("btoa");
+  const prov_id = bru.getEnvVar("PROV_ID");
+  bru.setEnvVar("B64_PROV_ID", btoa(prov_id));
+}
+
+script:post-response {
+  const apiKey = res.getBody().apiKey.trim();
+  if (apiKey) {
+    bru.setEnvVar("PROVIDER_IH_APIKEY", apiKey);
+  }
+  const stsSecret = res.getBody().clientSecret.trim();
+  if (stsSecret) {
+    bru.setEnvVar("PROVIDER_STS_SECRET", stsSecret)
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

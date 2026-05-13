@@ -1,0 +1,20 @@
+meta {
+  name: Get Consumer DID Doc
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{CONSUMER_IDHUB_DID_API}}/consumer
+  body: none
+  auth: inherit
+}
+
+headers {
+  Host: <CONSUMER_IDHUB_HOSTNAME>
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

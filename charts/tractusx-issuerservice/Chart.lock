@@ -5,5 +5,8 @@ dependencies:
 - name: vault
   repository: https://helm.releases.hashicorp.com
   version: 0.29.1
-digest: sha256:82271ea66702870bddf5b805c10e25c02e37ecd1f77dae299bec5e85d8841ddc
-generated: "2025-09-02T10:31:04.944353949+02:00"
+- name: pgadmin4
+  repository: https://helm.runix.net
+  version: 1.25.3
+digest: sha256:1ae14bb6e3f6c9cab2b847f1a4283f667e9a247a725c4c35ad0589118aee6604
+generated: "2026-03-09T09:10:42.458594418+01:00"

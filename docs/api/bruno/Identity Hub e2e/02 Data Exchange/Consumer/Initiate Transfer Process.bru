@@ -1,0 +1,41 @@
+meta {
+  name: Initiate Transfer Process
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{CONSUMER_MANAGEMENT}}/v3/transferprocesses
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{CONSUMER_API_KEY}}
+  placement: header
+}
+
+body:json {
+  {
+      "@context": {
+          "edc": "https://w3id.org/edc/v0.0.1/ns/"
+      },
+      "@type": "TransferRequestDto",
+      "protocol": "dataspace-protocol-http",
+      "contractId": "{{contractId}}",
+      "counterPartyAddress": "{{PROVIDER_DSP}}",
+      "connectorId": "{{PROV_ID}}",
+      "transferType": "HttpData-PULL"
+  }
+}
+
+script:post-response {
+  const transferId = res.getBody()['@id'];
+  bru.setEnvVar("transferId", transferId);
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

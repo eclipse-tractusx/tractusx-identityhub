@@ -1,6 +1,7 @@
 #
 #   Copyright (c) 2025 Cofinity-X
 #   Copyright (c) 2025 LKS Next
+#   Copyright (c) 2026 Technovative Solutions
 #   Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
@@ -29,5 +30,6 @@ org.eclipse.tractusx.store.postgresql.migration.HoldersMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.IssuanceProcessMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.JtiValidationMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.KeyPairResourceMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.ParticipantContextConfigMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.ParticipantContextMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.StsClientMigrationExtension

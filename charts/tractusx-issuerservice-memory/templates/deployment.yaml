@@ -157,8 +157,10 @@ spec:
             - name: {{ $key | quote }}
               value: {{ $value | quote }}
           {{- end }}
-          {{- if and (or .Values.issuerservice.envSecretNames .Values.issuerservice.envConfigMapNames) (or (gt (len .Values.issuerservice.envSecretNames) 0) (gt (len .Values.issuerservice.envConfigMapNames) 0)) }}
           envFrom:
+            - configMapRef:
+                name: {{ include "issuerservice.fullname" . }}-config
+          {{- if and (or .Values.issuerservice.envSecretNames .Values.issuerservice.envConfigMapNames) (or (gt (len .Values.issuerservice.envSecretNames) 0) (gt (len .Values.issuerservice.envConfigMapNames) 0)) }}
           {{- range $value := .Values.issuerservice.envSecretNames }}
             - secretRef:
                 name: {{ $value | quote }}
@@ -176,16 +178,16 @@ spec:
             {{- end }}
             - name: "tmp"
               mountPath: "/tmp"
-            - name: configuration
+            - name: logging-config
               mountPath: /app/logging.properties
               subPath: logging.properties
             - name: logs
               mountPath: {{ .Values.issuerservice.logging.path }}
 
       volumes:
-        - name: "configuration"
+        - name: "logging-config"
           configMap:
-            name: {{ include "issuerservice.fullname" . }}
+            name: {{ include "issuerservice.fullname" . }}-logging-config
             items:
               - key: "logging.properties"
                 path: "logging.properties"

@@ -1,6 +1,6 @@
 #################################################################################
 #  Copyright (c) 2025 Cofinity-X
-#  Copyright (c) 2025 LKS Next
+#  Copyright (c) 2025,2026 LKS Next
 #  Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
 #  See the NOTICE file(s) distributed with this work for additional
@@ -40,7 +40,7 @@ customCaCerts: {}
 
 issuerservice:
   image:
-    repository: ""
+    repository: "tractusx/issuerservice"
     # -- [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use
     pullPolicy: IfNotPresent
     # -- Overrides the image tag whose default is the chart appVersion
@@ -109,6 +109,10 @@ issuerservice:
     identity:
       port: 8087
       path: /api/identity
+    # -- StatusList API, used to check the status of verifiable credentials. Must be internet-facing
+    statuslist:
+      port: 8088
+      path: /statuslist
 
   # -- Whether web DIDs should be interpreted as HTTPS or HTTP
   didweb:
@@ -173,7 +177,9 @@ issuerservice:
   #  - second-secret
 
   # [Kubernetes ConfigMap Resource](https://kubernetes.io/docs/concepts/configuration/configmap/) names to load environment variables from
-  envConfigMapNames: ["issuerservice-config", "issuerservice-datasource-config"]
+  # Note: The chart automatically includes the built-in ConfigMaps (config and datasource-config) with dynamic names based on the release name.
+  # This array is for additional custom ConfigMaps only.
+  envConfigMapNames: []
   #  - first-config-map
   #  - second-config-map
 
@@ -190,6 +196,7 @@ issuerservice:
         - issuance
         - sts
         - did
+        - statuslist
       # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
       className: ""
       # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
@@ -390,9 +397,23 @@ vault:
       enabled: true
       standbyOk: true
     paths:
-      secret: /v1/secret
+      secret: /v1/secret/data
       health: /v1/sys/health
 
 statuslist:
   signing_key:
     alias: default
+  # -- Callback address for statuslist
+  callback:
+    address: "issuerservice.issuance.local"
+# -- pgAdmin4 configuration
+
+pgadmin4:
+  enabled: false
+  env:
+    email: pgadmin4@txtest.org
+    password: tractusxpgadmin4
+  persistentVolume:
+    enabled: false
+  ingress:
+    enabled: false

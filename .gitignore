@@ -1,5 +1,21 @@
+# IntelliJ IDEA
 .idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Build artifacts
 build/
+bin/
 out/
 .gradle/
 **.tgz
