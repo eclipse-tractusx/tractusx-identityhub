@@ -84,9 +84,7 @@ services:
       dockerfile: Dockerfile
       args:
         JAR: build/libs/identityhub.jar
-        # OTEL_JAR is required by the Dockerfile; the main JAR is used as a
-        # placeholder because the javaagent is disabled in the ENTRYPOINT by default.
-        OTEL_JAR: build/libs/identityhub.jar
+        OTEL_JAR: build/resources/otel/opentelemetry-javaagent.jar
         ADDITIONAL_FILES: build/resources/main/logging.properties
     profiles: [sql]
     depends_on:
@@ -116,7 +114,7 @@ services:
       dockerfile: Dockerfile
       args:
         JAR: build/libs/issuerservice.jar
-        OTEL_JAR: build/libs/issuerservice.jar
+        OTEL_JAR: build/resources/otel/opentelemetry-javaagent.jar
         ADDITIONAL_FILES: build/resources/main/logging.properties
     profiles: [sql]
     depends_on:
@@ -147,7 +145,7 @@ services:
       dockerfile: Dockerfile
       args:
         JAR: build/libs/identityhub-memory.jar
-        OTEL_JAR: build/libs/identityhub-memory.jar
+        OTEL_JAR: build/resources/otel/opentelemetry-javaagent.jar
         ADDITIONAL_FILES: build/resources/main/logging.properties
     profiles: [memory]
     volumes:
@@ -172,7 +170,7 @@ services:
       dockerfile: Dockerfile
       args:
         JAR: build/libs/issuerservice-memory.jar
-        OTEL_JAR: build/libs/issuerservice-memory.jar
+        OTEL_JAR: build/resources/otel/opentelemetry-javaagent.jar
         ADDITIONAL_FILES: build/resources/main/logging.properties
     profiles: [memory]
     volumes:

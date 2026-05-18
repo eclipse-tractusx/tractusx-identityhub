@@ -19,3 +19,6 @@ bin/
 out/
 .gradle/
 **.tgz
+
+# Docker Compose local secrets
+deployment/docker/.env

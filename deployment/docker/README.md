@@ -134,15 +134,17 @@ mounted read-only into the containers at `/app/configuration.properties`:
 
 ```
 config/
-  identityhub/configuration.properties        # SQL variant – vault + datasource URLs
-  identityhub-memory/configuration.properties # memory variant – no overrides needed
-  issuerservice/configuration.properties      # SQL variant – vault + datasource URLs
-  issuerservice-memory/configuration.properties # memory variant – no overrides needed
+  identityhub/configuration.properties        # SQL variant – full config with vault + datasource URLs
+  identityhub-memory/configuration.properties # memory variant – full config, no vault/DB settings
+  issuerservice/configuration.properties      # SQL variant – full config with vault + datasource URLs
+  issuerservice-memory/configuration.properties # memory variant – full config, no vault/DB settings
 ```
 
-The SQL override files point all datasources at `postgres:5432` and the Vault client at
-`http://vault:8200` (the compose service names), overriding the `localhost` defaults in
-the bundled `application.properties`.
+> **Important:** EDC's `-Dedc.fs.config` mechanism loads **only** the external file; it does
+> not merge with the `application.properties` bundled in the JAR. Each `configuration.properties`
+> here is therefore self-contained and mirrors the corresponding
+> `runtimes/*/src/main/resources/application.properties`, with the SQL variants also having
+> all datasource URLs and the Vault URL set to the compose service hostnames.
 
 ### Customising credentials
 
@@ -159,8 +161,9 @@ variables are documented in `.env.example`.
   schema initialisation is required beyond the database creation performed by
   `postgres/init/01-create-databases.sh`.
 - The `OTEL_JAR` build argument required by the existing Dockerfiles is satisfied by
-  passing the main runtime JAR as a placeholder. The OpenTelemetry javaagent line in the
-  `ENTRYPOINT` is commented out by default, so the placeholder is never loaded at runtime.
+  the OpenTelemetry agent downloaded to `build/resources/otel/opentelemetry-javaagent.jar`
+  during the Gradle build. The javaagent line in the `ENTRYPOINT` is commented out by
+  default, so it is copied into the image but not activated at runtime.
 
 ---
 
