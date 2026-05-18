@@ -1,0 +1,24 @@
+meta {
+  name: Activate Participant Context- Provider
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{PROVIDER_IDHUB_ID_API}}/v1alpha/participants/{{B64_PROV_ID}}/state?isActive=true
+  body: none
+  auth: inherit
+}
+
+params:query {
+  isActive: true
+}
+
+headers {
+  x-api-key: {{PROVIDER_IH_APIKEY}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

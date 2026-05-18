@@ -1,0 +1,37 @@
+meta {
+  name: Delete Provider Participant
+  type: http
+  seq: 9
+}
+
+delete {
+  url: {{PROVIDER_IDHUB_ID_API}}/v1alpha/participants/{{B64_PROV_ID}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  x-api-key: {{PROVIDER_IH_APIKEY}}
+}
+
+script:pre-request {
+  const btoa = require("btoa");
+  const prov_id = bru.getEnvVar("PROV_ID");
+  bru.setEnvVar("B64_PROV_ID", btoa(prov_id));
+}
+
+script:post-response {
+  const apiKey = res.getBody().apiKey.trim();
+  if (apiKey) {
+    bru.setEnvVar("PROVIDER_IH_APIKEY", apiKey);
+  }
+  const stsSecret = res.getBody().clientSecret.trim();
+  if (stsSecret) {
+    bru.setEnvVar("PROVIDER_STS_SECRET", stsSecret)
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
