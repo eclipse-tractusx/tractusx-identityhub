@@ -192,6 +192,12 @@ helm install issuerservice charts/tractusx-issuerservice/ \
 ```
 For helm chart options and configuration, see [Helm chart documentation](https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/charts/tractusx-issuerservice-memory/README.md)
 
+## Local development with Docker Compose
+
+As an alternative to Minikube and Helm, you can run all four runtimes locally using
+Docker Compose. See [deployment/docker/README.md](deployment/docker/README.md) for
+full usage instructions, including prerequisites and port reference.
+
 # Licenses
 
 - Apache-2.0 for code

@@ -11,6 +11,7 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 
 ### Added
 
+- Add Docker Compose setup for local development under `deployment/docker/` ([BE-202](https://jira.example.org/browse/BE-202))
 - Add Flyway V0_0_2 migration scripts for EDC 0.15.1 DB schema changes ([#198](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/198)):
   - `credential_resource`: new `usage` column
   - `keypair_resource`: new `usage` column
