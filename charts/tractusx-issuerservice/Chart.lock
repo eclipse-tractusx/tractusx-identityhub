@@ -8,5 +8,5 @@ dependencies:
 - name: pgadmin4
   repository: https://helm.runix.net
   version: 1.25.3
-digest: sha256:de03cb62bb95bdc58beb6b45e7f9d2179352500973311e713dd5af866cd5c95b
-generated: "2026-01-07T12:55:33.904349464+01:00"
+digest: sha256:038b7cd8e8e6299e58a1115e76fca9421f498b1d1c5c5037759f746e074f26e5
+generated: "2026-05-19T14:28:42.782397861+02:00"
