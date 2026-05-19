@@ -1,8 +1,8 @@
 #################################################################################
 # Eclipse Tractus-X - Identity Hub
 #
-# Copyright (c) 2025 Contributors to the Eclipse Foundation
-# Copyright (c) 2025 LKS Next
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+# Copyright (c) 2026 LKS Next
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -58,7 +58,6 @@ jobs:
       - name: Update issuerservice helm dependencies
         run: |
           cd charts/tractusx-issuerservice
-          helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add runix https://helm.runix.net
           helm repo add hashicorp https://helm.releases.hashicorp.com
           helm dependency update
@@ -66,7 +65,6 @@ jobs:
       - name: Update issuerservice-memory helm dependencies
         run: |
           cd charts/tractusx-issuerservice-memory
-          helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add runix https://helm.runix.net
           helm dependency update
 

@@ -36,7 +36,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: v0.2.1
+version: v0.3.0
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
@@ -47,10 +47,10 @@ sources:
   - https://github.com/eclipse-tractusx/tractusx-identityhub/tree/main/charts/tractusx-identityhub
 dependencies:
   # PostgreSQL
-  - name: postgresql
+  - name: postgres
     alias: postgresql
-    version: 12.12.x
-    repository: https://charts.bitnami.com/bitnami
+    version: 0.11.0
+    repository: oci://registry-1.docker.io/cloudpirates
     condition: install.postgresql
   # HashiCorp Vault
   - name: vault

@@ -1,12 +1,12 @@
 dependencies:
-- name: postgresql
-  repository: https://charts.bitnami.com/bitnami
-  version: 12.12.10
+- name: postgres
+  repository: oci://registry-1.docker.io/cloudpirates
+  version: 0.11.0
 - name: vault
   repository: https://helm.releases.hashicorp.com
   version: 0.29.1
 - name: pgadmin4
   repository: https://helm.runix.net
   version: 1.25.3
-digest: sha256:1ae14bb6e3f6c9cab2b847f1a4283f667e9a247a725c4c35ad0589118aee6604
-generated: "2026-03-09T09:10:42.458594418+01:00"
+digest: sha256:038b7cd8e8e6299e58a1115e76fca9421f498b1d1c5c5037759f746e074f26e5
+generated: "2026-05-19T14:28:42.782397861+02:00"
