@@ -1,5 +1,6 @@
 #!/bin/bash
 #
+#  Copyright (c) 2026 Technovative Solutions
 #  Copyright (c) 2026 Contributors to the Eclipse Foundation
 #
 #  See the NOTICE file(s) distributed with this work for additional

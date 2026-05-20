@@ -10,6 +10,10 @@ Two **profiles** are available:
 | `memory` | `identityhub-memory`, `issuerservice-memory` | Fastest dev loop; no external dependencies |
 | `sql` | `identityhub`, `issuerservice`, `postgres`, `vault` | Full stack with PostgreSQL + HashiCorp Vault |
 
+> **Note:** The `memory` and `sql` profiles share the same host ports (e.g. `8181`, `8182`,
+> `7171`, `7172`) and therefore **cannot be run simultaneously**. Stop one profile
+> (`docker compose --profile <name> down`) before starting the other.
+
 ---
 
 ## Prerequisites
@@ -50,17 +54,20 @@ The defaults (`postgres`/`postgres` credentials, Vault token `token`) work out o
 
 ```shell
 # Run from this directory (deployment/docker/)
-docker compose --profile memory up --build
+docker compose --profile memory up -d --build
 ```
 
 ### SQL profile (PostgreSQL + HashiCorp Vault)
 
 ```shell
-docker compose --profile sql up --build
+docker compose --profile sql up -d --build
 ```
 
-> **Note:** The `--build` flag is only needed on the first run or after rebuilding the JARs.
-> Subsequent starts can omit it: `docker compose --profile memory up`.
+> **Notes:**
+> - The `--build` flag is only needed on the first run or after rebuilding the JARs.
+>   Subsequent starts can omit it: `docker compose --profile memory up -d`.
+> - The `-d` flag runs containers in detached mode. Omit it to see logs streamed in the
+>   foreground; use `docker compose --profile <name> logs -f` to follow logs when detached.
 
 ---
 
@@ -79,7 +86,9 @@ docker compose --profile sql up --build
 
 ### issuerservice / issuerservice-memory
 
-Host ports that would conflict with identityhub are offset to avoid collisions when both services run simultaneously within the same profile.
+Within a single profile both runtimes start side-by-side, so the issuerservice host ports
+that would otherwise conflict with identityhub are offset by one (e.g. `8182` instead of `8181`).
+Container-internal ports remain identical for both runtimes.
 
 | Endpoint | Host port | Container port | Path |
 |----------|-----------|----------------|------|
@@ -103,12 +112,22 @@ Host ports that would conflict with identityhub are offset to avoid collisions w
 
 ## Quick health check
 
-```shell
-# Version endpoint – identityhub
-curl http://localhost:7171/.well-known/api
+The runtimes expose a JSON health endpoint on the default API port. A healthy response
+returns `"isSystemHealthy":true`; the `sql` profile additionally reports the `Hashicorp
+Vault Health` component.
 
-# Version endpoint – issuerservice
-curl http://localhost:7172/.well-known/api
+```shell
+# identityhub  (both profiles)
+curl http://localhost:8181/api/check/health
+
+# issuerservice  (both profiles)
+curl http://localhost:8182/api/check/health
+```
+
+Example output (SQL profile):
+
+```json
+{"componentResults":[{"failure":null,"component":"Hashicorp Vault Health","isHealthy":true},{"failure":null,"component":"BaseRuntime","isHealthy":true}],"isSystemHealthy":true}
 ```
 
 ---
@@ -157,9 +176,10 @@ variables are documented in `.env.example`.
 
 - **HashiCorp Vault runs in dev mode** — data is stored in memory and lost on container
   restart. This is intentional for local development. Never use dev mode in production.
-- **Liquibase migrations run automatically** at startup for the SQL variants; no manual
+- **Flyway migrations run automatically** at startup for the SQL variants; no manual
   schema initialisation is required beyond the database creation performed by
-  `postgres/init/01-create-databases.sh`.
+  `postgres/init/01-create-databases.sh`. Each store maintains its own
+  `flyway_schema_history_<store>` table in the target database.
 - The `OTEL_JAR` build argument required by the existing Dockerfiles is satisfied by
   the OpenTelemetry agent downloaded to `build/resources/otel/opentelemetry-javaagent.jar`
   during the Gradle build. The javaagent line in the `ENTRYPOINT` is commented out by
