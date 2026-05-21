@@ -1,5 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 ARENA2036 e.V.
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -115,9 +116,9 @@ export const chipTransparentBg = (color: string) => ({
 
 export const whiteDialogPaperProps = {
     sx: {
-        backgroundColor: '#fff',
+        backgroundColor: '#030B1F',
         '& .MuiDialogContent-root': {
-            backgroundColor: '#fff',
+            backgroundColor: '#030B1F',
         },
     },
 };
@@ -170,9 +171,42 @@ export const whiteDialogContentSx = {
     },
 };
 
+export const blueDialogContentSx = {
+    p: 3,
+    backgroundColor: '#ADD8E6',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: 2,
+    pt: '24px !important',
+    '& .MuiTextField-root': {
+        backgroundColor: '#ADD8E6',
+        '& .MuiOutlinedInput-root': {
+            backgroundColor: '#ADD8E6',
+            '& fieldset': { borderColor: 'divider' },
+            '&:hover fieldset': { borderColor: 'primary.main' },
+            '&.Mui-focused fieldset': { borderColor: 'primary.main' },
+        },
+        '& .MuiInputLabel-root': {
+            backgroundColor: '#ADD8E6',
+            padding: '0 8px',
+            '&.Mui-focused': { color: 'primary.main' },
+            '&.MuiInputLabel-shrink': {
+                backgroundColor: '#ADD8E6',
+                padding: '0 8px',
+                transform: 'translate(14px, -9px) scale(0.75)',
+            },
+        },
+    },
+};
 export const whiteDialogActionsSx = {
     p: 3,
     backgroundColor: '#fff',
+    borderTop: '1px solid',
+    borderColor: 'divider',
+};
+export const blueDialogActionsSx = {
+    p: 3,
+    backgroundColor: '#ADD8E6',
     borderTop: '1px solid',
     borderColor: 'divider',
 };

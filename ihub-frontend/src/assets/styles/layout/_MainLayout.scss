@@ -1,5 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 ARENA2036 e.V.
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,8 +23,7 @@
 .contentWrapper {
     background: black;
     background-image:
-        linear-gradient(rgba($brand-dark, 0.3), rgba($brand-dark, 0.6)),
-        url('/stars-background.png') !important;
+        linear-gradient(rgba($brand-dark, 0.8), rgba($brand-primary, 0.3));
     height: 100vh;
     overflow: hidden;
 }

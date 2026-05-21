@@ -1,5 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 ARENA2036 e.V.
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,6 +33,7 @@ class AuthService {
     private keycloak: Keycloak | null = null;
     private initialized = false;
     private initializing = false;
+    private loggingOut = false;
     private authState: AuthState = {
         isAuthenticated: false,
         isLoading: true,
@@ -40,6 +42,9 @@ class AuthService {
         error: null,
     };
     private listeners: ((state: AuthState) => void)[] = [];
+    private tokenRefreshInterval: ReturnType<typeof setInterval> | null = null;
+
+    private refreshingToken = false;
 
     async initialize(): Promise<void> {
         if (this.initialized || this.initializing) return;
@@ -77,6 +82,16 @@ class AuthService {
     private async initializeKeycloak(): Promise<void> {
         const keycloakConfig = environmentService.getKeycloakConfig();
         const initOptions = environmentService.getKeycloakInitOptions();
+
+        console.debug('Initializing Keycloak with config:', {
+            url: keycloakConfig.url,
+            realm: keycloakConfig.realm,
+            clientId: keycloakConfig.clientId,
+            onLoad: initOptions.onLoad,
+            pkceMethod: initOptions.pkceMethod,
+            redirectUri: window.location.origin + window.location.pathname,
+        });
+
         this.keycloak = new Keycloak({
             url: keycloakConfig.url,
             realm: keycloakConfig.realm,
@@ -98,12 +113,14 @@ class AuthService {
             const authenticated = await Promise.race([initPromise, timeoutPromise]);
 
             if (authenticated) {
+                console.debug('Keycloak authentication successful');
                 if (window.location.search.includes('state=') || window.location.search.includes('code=')) {
                     const cleanUrl = window.location.origin + window.location.pathname;
                     window.history.replaceState({}, document.title, cleanUrl);
                 }
                 await this.handleAuthenticationSuccess();
             } else {
+                console.debug('User not authenticated, initiating login flow');
                 await this.keycloak.login({
                     redirectUri: window.location.origin + window.location.pathname
                 });
@@ -113,6 +130,10 @@ class AuthService {
             this.setupKeycloakEvents();
         } catch (error) {
             console.error('Keycloak initialization failed:', error);
+            if (this.tokenRefreshInterval) {
+                clearInterval(this.tokenRefreshInterval);
+                this.tokenRefreshInterval = null;
+            }
             this.setAuthState({
                 isAuthenticated: false,
                 isLoading: false,
@@ -132,7 +153,9 @@ class AuthService {
         const idToken = this.keycloak.idToken;
 
         if (!token || !tokenParsed) {
-            throw new Error('Invalid token received');
+            const errorMsg = !token ? 'No access token received' : 'Failed to parse token';
+            console.error(`Authentication failed: ${errorMsg}`);
+            throw new Error(errorMsg);
         }
 
         const user: AuthUser = {
@@ -145,14 +168,17 @@ class AuthService {
             permissions: tokenParsed.resource_access?.[environmentService.getKeycloakClientId()]?.roles || [],
         };
 
+        const expiresIn = tokenParsed.exp ? tokenParsed.exp - tokenParsed.iat! : 0;
         const tokens: AuthTokens = {
             accessToken: token,
             refreshToken,
             idToken,
             tokenType: 'Bearer',
-            expiresIn: tokenParsed.exp ? tokenParsed.exp - tokenParsed.iat! : 0,
+            expiresIn,
             expiresAt: new Date((tokenParsed.exp || 0) * 1000),
         };
+
+        console.debug(`User authenticated: ${user.username}, token expires in ${expiresIn}s`);
 
         this.setAuthState({
             isAuthenticated: true,
@@ -165,23 +191,51 @@ class AuthService {
 
     private setupTokenRefresh(): void {
         if (!this.keycloak) return;
+
+        if (this.tokenRefreshInterval) {
+            clearInterval(this.tokenRefreshInterval);
+        }
+
         const minValidity = environmentService.getRenewTokenMinValidity();
 
-        setInterval(async () => {
+        this.tokenRefreshInterval = setInterval(async () => {
+            if (this.refreshingToken) return;
+
             if (this.keycloak?.authenticated) {
+                this.refreshingToken = true;
+
                 try {
-                    const refreshed = await this.keycloak.updateToken(minValidity);
-                    if (refreshed) {
-                        await this.handleAuthenticationSuccess();
+                    const tokenParsed = this.keycloak.tokenParsed;
+
+                    if (tokenParsed && tokenParsed.exp) {
+                        const expiresIn = (tokenParsed.exp * 1000) - Date.now();
+
+                        if (expiresIn < 120000) {
+                            console.debug(
+                                `Token expiring in ${Math.round(expiresIn / 1000)}s, refreshing now`
+                            );
+
+                            const refreshed = await this.keycloak.updateToken(minValidity);
+
+                            if (refreshed) {
+                                await this.handleAuthenticationSuccess();
+                            }
+                        }
                     }
                 } catch (error) {
                     console.error('Failed to refresh token:', error);
-                    if (error instanceof Error && error.message.includes('Failed to refresh token')) {
+
+                    if (
+                        error instanceof Error &&
+                        error.message.includes('Failed to refresh token')
+                    ) {
                         await this.logout();
                     }
+                } finally {
+                    this.refreshingToken = false;
                 }
             }
-        }, 60000);
+        }, 30000);
     }
 
     private setupKeycloakEvents(): void {
@@ -224,22 +278,29 @@ class AuthService {
     }
 
     async logout(): Promise<void> {
-        sessionStorage.removeItem('keycloak_authenticated');
-
-        if (this.keycloak?.authenticated) {
-            const logoutUri = environmentService.getLogoutRedirectUri();
-            await this.keycloak.logout({
-                redirectUri: logoutUri || window.location.origin,
-            });
+        if (this.loggingOut) {
+            console.debug('Logout already in progress');
+            return;
         }
 
-        this.setAuthState({
-            isAuthenticated: false,
-            isLoading: false,
-            user: null,
-            tokens: null,
-            error: null,
-        });
+        this.loggingOut = true;
+        try {
+
+            if (this.tokenRefreshInterval) {
+                clearInterval(this.tokenRefreshInterval);
+                this.tokenRefreshInterval = null;
+            }
+
+            this.setAuthState({
+                isAuthenticated: false,
+                isLoading: false,
+                user: null,
+                tokens: null,
+                error: null,
+            });
+        } finally {
+            this.loggingOut = false;
+        }
     }
 
     getAuthState(): AuthState {

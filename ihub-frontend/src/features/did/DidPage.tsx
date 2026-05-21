@@ -1,5 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 ARENA2036 e.V.
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -60,6 +61,7 @@ import {
     whiteDialogActionsSx,
     dialogCancelBtnSx,
     dialogSubmitBtnSx,
+    blueDialogActionsSx,
 } from '../../theme/darkCardStyles';
 
 interface VerificationMethod {
@@ -308,135 +310,438 @@ const DidPage: React.FC = () => {
                 </Box>
             ) : (
                 <>
-                <Box className="custom-cards-list">
-                    {visibleDids.map((d) => (
-                        <Box key={d.document.id} className="custom-card-box">
-                            <Box className="custom-card" sx={{ minHeight: '200px' }}>
-                                <Box className="custom-card-header" sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
-                                    <Chip label={d.state} variant="outlined"
-                                        sx={isPublished(d.state)
-                                            ? { color: '#000', backgroundColor: '#fff', borderRadius: '4px', border: 'none', height: '32px' }
-                                            : { color: 'rgba(255,255,255,0.7)', backgroundColor: 'transparent', borderRadius: '4px', border: '1px dashed rgba(255,255,255,0.4)', height: '32px' }
-                                        }
+                    <Grid2
+                        container
+                        spacing={3}
+                        sx={{
+                            width: '100%',
+                            px: { xs: 1, sm: 2, md: 3 },
+                        }}
+                    >
+                        {visibleDids.map((d) => (
+                            <Grid2
+                                size={{ xs: 12, sm: 6, lg: 3 }}
+                                key={d.document.id}
+                            >
+                                <Box
+                                    sx={{
+                                        height: '100%',
+                                        minHeight: 360,
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        position: 'relative',
+                                        overflow: 'hidden',
+                                        borderRadius: '24px',
+                                        background:
+                                            'linear-gradient(180deg, rgba(9,14,24,0.98) 0%, rgba(4,8,20,0.98) 100%)',
+                                        border: '1px solid rgba(0, 212, 255, 0.15)',
+                                        boxShadow:
+                                            '0 20px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.03)',
+                                        transition: 'all 0.3s ease',
+                                        '&:hover': {
+                                            transform: 'translateY(-6px)',
+                                            borderColor: 'rgba(0, 212, 255, 0.35)',
+                                            boxShadow:
+                                                '0 30px 80px rgba(0,0,0,0.55), 0 0 20px rgba(0,212,255,0.08)',
+                                        },
+                                    }}
+                                >
+                                    {/* Top Glow Line */}
+                                    <Box
+                                        sx={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 24,
+                                            right: 24,
+                                            height: '2px',
+                                            background:
+                                                'linear-gradient(90deg, transparent, #00D4FF, transparent)',
+                                        }}
                                     />
-                                    <Box className="custom-card-header-buttons">
-                                        <Tooltip title={isPublished(d.state) ? 'Unpublish' : 'Publish'} arrow>
-                                            <IconButton
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    if (isPublished(d.state)) { handleUnpublish(d.document.id); } else { handlePublish(d.document.id); }
-                                                }}
-                                            >
-                                                {isPublished(d.state)
-                                                    ? <UnpublishedIcon sx={{ color: '#4caf50' }} />
-                                                    : <PublishIcon sx={{ color: 'rgba(255, 255, 255, 0.5)' }} />
-                                                }
-                                            </IconButton>
-                                        </Tooltip>
-                                        <Tooltip title="More options" arrow>
-                                            <IconButton
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setAnchorEl(e.currentTarget);
-                                                    setSelectedDid(d);
-                                                }}
-                                            >
-                                                <MoreVert sx={{ color: 'rgba(255, 255, 255, 0.68)' }} />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </Box>
-                                </Box>
 
-                                <Box className="custom-card-content" sx={{ overflow: 'hidden', flex: 1, display: 'flex', flexDirection: 'column', pb: 2.5 }}>
-                                    <Tooltip title={d.document.id} arrow placement="top">
-                                        <Typography variant="h5" sx={{ mb: 0.5, cursor: 'help' }}>
-                                            {d.document.id}
-                                        </Typography>
-                                    </Tooltip>
-                                    <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                                        {d.document.verificationMethod.length > 0 && (
-                                            <Box>
-                                                <Typography sx={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.45)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.8px', mb: '2px' }}>
-                                                    Verification Methods
-                                                </Typography>
-                                                <Typography sx={{ fontSize: '0.76rem', color: 'rgba(255,255,255,0.87)', lineHeight: 1.2 }}>
-                                                    {d.document.verificationMethod.length}
-                                                </Typography>
-                                            </Box>
-                                        )}
-                                        <Box>
-                                            <Typography sx={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.45)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.8px', mb: '2px' }}>
+                                    {/* Header */}
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'flex-start',
+                                            justifyContent: 'space-between',
+                                            p: 3,
+                                            pb: 2,
+                                        }}
+                                    >
+                                        <Chip
+                                            label={d.state.toUpperCase()}
+                                            size="small"
+                                            sx={{
+                                                height: 30,
+                                                fontSize: '0.7rem',
+                                                fontWeight: 700,
+                                                letterSpacing: '0.08em',
+                                                borderRadius: '8px',
+                                                ...(isPublished(d.state)
+                                                    ? {
+                                                        color: '#0B0F1A',
+                                                        backgroundColor: '#FFFFFF',
+                                                    }
+                                                    : {
+                                                        color: 'rgba(255,255,255,0.75)',
+                                                        backgroundColor: 'rgba(255,255,255,0.05)',
+                                                        border:
+                                                            '1px dashed rgba(255,255,255,0.20)',
+                                                    }),
+                                            }}
+                                        />
+
+                                        <Box sx={{ display: 'flex', gap: 0.5 }}>
+                                            {/* Publish / Unpublish */}
+                                            <Tooltip
+                                                title={
+                                                    isPublished(d.state)
+                                                        ? 'Unpublish'
+                                                        : 'Publish'
+                                                }
+                                                arrow
+                                            >
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        if (isPublished(d.state)) {
+                                                            handleUnpublish(
+                                                                d.document.id,
+                                                            );
+                                                        } else {
+                                                            handlePublish(
+                                                                d.document.id,
+                                                            );
+                                                        }
+                                                    }}
+                                                    sx={{
+                                                        width: 36,
+                                                        height: 36,
+                                                        color: isPublished(d.state)
+                                                            ? '#22C55E'
+                                                            : 'rgba(255,255,255,0.45)',
+                                                        backgroundColor:
+                                                            'rgba(255,255,255,0.04)',
+                                                        border:
+                                                            '1px solid rgba(255,255,255,0.06)',
+                                                        '&:hover': {
+                                                            backgroundColor:
+                                                                'rgba(255,255,255,0.08)',
+                                                        },
+                                                    }}
+                                                >
+                                                    {isPublished(d.state) ? (
+                                                        <UnpublishedIcon fontSize="small" />
+                                                    ) : (
+                                                        <PublishIcon fontSize="small" />
+                                                    )}
+                                                </IconButton>
+                                            </Tooltip>
+
+                                            {/* Burger Menu */}
+                                            <Tooltip title="More options" arrow>
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setAnchorEl(
+                                                            e.currentTarget,
+                                                        );
+                                                        setSelectedDid(d);
+                                                    }}
+                                                    sx={{
+                                                        width: 36,
+                                                        height: 36,
+                                                        color:
+                                                            'rgba(255,255,255,0.65)',
+                                                        backgroundColor:
+                                                            'rgba(255,255,255,0.04)',
+                                                        border:
+                                                            '1px solid rgba(255,255,255,0.06)',
+                                                        '&:hover': {
+                                                            backgroundColor:
+                                                                'rgba(255,255,255,0.08)',
+                                                        },
+                                                    }}
+                                                >
+                                                    <MoreVert fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Box>
+                                    </Box>
+
+                                    {/* Content */}
+                                    <Box
+                                        sx={{
+                                            px: 3,
+                                            pb: 3,
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            flex: 1,
+                                            color: '#FFFFFF',
+                                        }}
+                                    >
+                                        {/* DID */}
+                                        <Tooltip title={d.document.id} arrow>
+                                            <Typography
+                                                sx={{
+                                                    fontFamily:
+                                                        '"SF Mono", "Roboto Mono", monospace',
+                                                    fontSize: '1.35rem',
+                                                    fontWeight: 700,
+                                                    lineHeight: 1.2,
+                                                    mb: 2,
+                                                    letterSpacing: '-0.02em',
+                                                    wordBreak: 'break-word',
+                                                    cursor: 'help',
+                                                }}
+                                            >
+                                                {d.document.id}
+                                            </Typography>
+                                        </Tooltip>
+
+                                        {/* Verification Methods */}
+                                        <Box sx={{ mb: 2.5 }}>
+                                            <Typography
+                                                sx={{
+                                                    fontSize: '0.65rem',
+                                                    fontWeight: 600,
+                                                    letterSpacing: '0.14em',
+                                                    textTransform: 'uppercase',
+                                                    color:
+                                                        'rgba(255,255,255,0.42)',
+                                                    mb: 0.75,
+                                                }}
+                                            >
+                                                Verification Methods
+                                            </Typography>
+
+                                            <Typography
+                                                sx={{
+                                                    fontSize: '0.82rem',
+                                                    color:
+                                                        'rgba(255,255,255,0.90)',
+                                                }}
+                                            >
+                                                {d.document.verificationMethod.length}
+                                            </Typography>
+                                        </Box>
+
+                                        {/* Service Endpoints */}
+                                        <Box sx={{ mt: 'auto', mb: 2 }}>
+                                            <Typography
+                                                sx={{
+                                                    fontSize: '0.65rem',
+                                                    fontWeight: 600,
+                                                    letterSpacing: '0.14em',
+                                                    textTransform: 'uppercase',
+                                                    color:
+                                                        'rgba(255,255,255,0.42)',
+                                                    mb: 0.75,
+                                                }}
+                                            >
                                                 Service Endpoints
                                             </Typography>
-                                            <Typography sx={{ fontSize: '0.76rem', color: d.document.service.length === 0 ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.87)', lineHeight: 1.2, fontStyle: d.document.service.length === 0 ? 'italic' : 'normal' }}>
-                                                {d.document.service.length === 0 ? 'None' : d.document.service.length}
+
+                                            <Typography
+                                                sx={{
+                                                    fontSize: '0.82rem',
+                                                    color:
+                                                        d.document.service.length === 0
+                                                            ? 'rgba(255,255,255,0.50)'
+                                                            : 'rgba(255,255,255,0.90)',
+                                                    fontStyle:
+                                                        d.document.service.length === 0
+                                                            ? 'italic'
+                                                            : 'normal',
+                                                }}
+                                            >
+                                                {d.document.service.length === 0
+                                                    ? 'None'
+                                                    : d.document.service.length}
                                             </Typography>
+                                        </Box>
+
+                                        {/* Footer */}
+                                        <Box
+                                            sx={{
+                                                pt: 2,
+                                                borderTop:
+                                                    '1px solid rgba(255,255,255,0.08)',
+                                            }}
+                                        >
+                                            <Button
+                                                variant="text"
+                                                size="small"
+                                                onClick={() =>
+                                                    setEndpointsDialogDid(d)
+                                                }
+                                                sx={{
+                                                    p: 0,
+                                                    minWidth: 'auto',
+                                                    fontSize: '0.95rem',
+                                                    fontWeight: 600,
+                                                    textTransform: 'none',
+                                                    color: '#00D4FF',
+                                                    '&:hover': {
+                                                        backgroundColor: 'transparent',
+                                                        color: '#33DDFF',
+                                                    },
+                                                }}
+                                            >
+                                                View Details →
+                                            </Button>
                                         </Box>
                                     </Box>
                                 </Box>
+                            </Grid2>
+                        ))}
+                    </Grid2>
+                    
 
-                            </Box>
-                        </Box>
-                    ))}
                     <Menu
                         anchorEl={anchorEl}
                         open={openMenu}
-                        onClose={() => { setAnchorEl(null); setSelectedDid(null); }}
+                        onClose={() => {
+                            setAnchorEl(null);
+                            setSelectedDid(null);
+                        }}
                         MenuListProps={{ 'aria-labelledby': 'more-options-button' }}
                         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                        PaperProps={{ sx: { backgroundColor: 'white !important' } }}
+                        PaperProps={{
+                            sx: {
+                                backgroundColor: '#ffffff',
+                                borderRadius: '12px',
+                                minWidth: 240,
+                                boxShadow: '0 12px 32px rgba(0,0,0,0.18)',
+                                border: '1px solid rgba(1,86,255,0.12)',
+                                py: 0.5,
+                            },
+                        }}
                     >
                         {selectedDid && (
                             <>
+                                {/* Add Endpoint */}
                                 <Box
                                     onClick={() => {
+                                        // Preserves existing business logic exactly
                                         openEndpointDialog(selectedDid.document.id, 'add');
                                         setAnchorEl(null);
                                         setSelectedDid(null);
                                     }}
-                                    sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 1.5,
+                                        px: 2,
+                                        py: 1,
+                                        cursor: 'pointer',
+                                        '&:hover': {
+                                            backgroundColor: '#f5f9ff',
+                                        },
+                                    }}
                                 >
-                                    <AddIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
-                                    <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Add Endpoint</Box>
+                                    <AddIcon
+                                        fontSize="small"
+                                        sx={{ color: '#0F71CB' }}
+                                    />
+                                    <Typography
+                                        sx={{
+                                            fontSize: '0.875rem',
+                                            color: '#111827',
+                                            fontWeight: 500,
+                                        }}
+                                    >
+                                        Add Endpoint
+                                    </Typography>
                                 </Box>
+
+                                {/* Manage Endpoints */}
                                 <Box
                                     onClick={() => {
+                                        // Preserves existing business logic exactly
                                         setEndpointsDialogDid(selectedDid);
                                         setAnchorEl(null);
                                         setSelectedDid(null);
                                     }}
-                                    sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 1.5,
+                                        px: 2,
+                                        py: 1,
+                                        cursor: 'pointer',
+                                        '&:hover': {
+                                            backgroundColor: '#f5f9ff',
+                                        },
+                                    }}
                                 >
-                                    <DeviceHubIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
-                                    <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Manage Endpoints</Box>
+                                    <DeviceHubIcon
+                                        fontSize="small"
+                                        sx={{ color: '#0F71CB' }}
+                                    />
+                                    <Typography
+                                        sx={{
+                                            fontSize: '0.875rem',
+                                            color: '#111827',
+                                            fontWeight: 500,
+                                        }}
+                                    >
+                                        Manage Endpoints
+                                    </Typography>
                                 </Box>
+
+                                {/* Copy DID */}
                                 <Box
                                     onClick={() => {
+                                        // Preserves existing business logic exactly
                                         copyToClipboard(selectedDid.document.id);
                                         setAnchorEl(null);
                                         setSelectedDid(null);
                                     }}
-                                    sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 1.5,
+                                        px: 2,
+                                        py: 1,
+                                        cursor: 'pointer',
+                                        '&:hover': {
+                                            backgroundColor: '#f5f5f5',
+                                        },
+                                    }}
                                 >
-                                    <ContentCopyIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
-                                    <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Copy DID</Box>
+                                    <ContentCopyIcon
+                                        fontSize="small"
+                                        sx={{ color: '#0F71CB' }}
+                                    />
+                                    <Typography
+                                        sx={{
+                                            fontSize: '0.875rem',
+                                            color: '#111827',
+                                            fontWeight: 500,
+                                        }}
+                                    >
+                                        Copy DID
+                                    </Typography>
                                 </Box>
                             </>
                         )}
                     </Menu>
-                </Box>
-                <Grid2 size={12} className="flex flex-content-center" sx={{ mt: 'auto', pt: 3 }}>
-                    <TablePagination
-                        rowsPerPageOptions={[rowsPerPage]}
-                        component="div"
-                        count={dids.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        className="card-list-pagination"
-                    />
-                </Grid2>
+                    <Grid2 size={12} className="flex flex-content-center" sx={{ mt: 'auto', pt: 3 }}>
+                        <TablePagination
+                            rowsPerPageOptions={[rowsPerPage]}
+                            component="div"
+                            count={dids.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            className="card-list-pagination"
+                        />
+                    </Grid2>
                 </>
             )}
 
@@ -457,7 +762,7 @@ const DidPage: React.FC = () => {
                 <DialogContent sx={{ ...whiteDialogContentSx, gap: 0, p: 0, pt: '0 !important' }}>
                     {endpointsDialogDid?.document.service.length === 0 && (
                         <Box sx={{ py: 4, textAlign: 'center' }}>
-                            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                            <Typography variant="body2" sx={{ color: '#FFFFFF' }}>
                                 No service endpoints configured.
                             </Typography>
                         </Box>
@@ -465,13 +770,13 @@ const DidPage: React.FC = () => {
                     {endpointsDialogDid?.document.service.map((svc) => (
                         <Box key={svc.id} sx={{ display: 'flex', alignItems: 'center', px: 3, py: 1.5, borderBottom: '1px solid', borderColor: 'divider', '&:last-child': { borderBottom: 'none' } }}>
                             <Box sx={{ flex: 1, minWidth: 0 }}>
-                                <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#FFFFFF' }}>
                                     {svc.id}
                                 </Typography>
-                                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
+                                <Typography variant="caption" sx={{ color: '#FFFFFF', display: 'block' }}>
                                     {svc.type}
                                 </Typography>
-                                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                <Typography variant="caption" sx={{ color: '#FFFFFF', display: 'block', fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                     {svc.serviceEndpoint}
                                 </Typography>
                             </Box>
@@ -494,7 +799,7 @@ const DidPage: React.FC = () => {
                         </Box>
                     ))}
                 </DialogContent>
-                <DialogActions sx={whiteDialogActionsSx}>
+                <DialogActions sx={blueDialogActionsSx}>
                     <Button
                         onClick={() => {
                             const did = endpointsDialogDid?.document.id;
@@ -541,7 +846,7 @@ const DidPage: React.FC = () => {
                         helperText={endpointUrl && !/^https?:\/\/.+/.test(endpointUrl) ? 'Must be a valid URL (https://...)' : ''}
                         fullWidth />
                 </DialogContent>
-                <DialogActions sx={whiteDialogActionsSx}>
+                <DialogActions sx={blueDialogActionsSx}>
                     <Button onClick={closeEndpointDialog} variant="outlined" color="primary" size="large"
                         sx={dialogCancelBtnSx}>
                         Cancel

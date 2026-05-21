@@ -1,5 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 ARENA2036 e.V.
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,7 +26,7 @@ const httpClient: AxiosInstance = axios.create({
     timeout: environmentService.getApiConfig().timeout || 30000,
 });
 
-const waitForAuth = async (maxWaitMs: number = 5000): Promise<void> => {
+const waitForAuth = async (maxWaitMs: number = environmentService.getApiConfig().timeout || 30000): Promise<void> => {
     if (!environmentService.isAuthEnabled()) {
         return;
     }
@@ -44,6 +45,16 @@ httpClient.interceptors.request.use(async (config) => {
 
     const envHeaders = environmentService.getApiHeaders();
     const authHeaders = authService.getAuthHeaders();
+    
+    // Debug log
+    if (config.url?.includes('/participants')) {
+        console.debug('[HttpClient] Request to:', config.url, {
+            hasAuthHeader: !!authHeaders.Authorization,
+            token: authHeaders.Authorization ? 'present' : 'missing',
+            authState: authService.getAuthState(),
+        });
+    }
+    
     config.headers = {
         ...(config.headers || {}),
         ...envHeaders,
@@ -60,7 +71,16 @@ httpClient.interceptors.response.use(
     (response) => response,
     async (error: AxiosError) => {
         if (error.response?.status === 401) {
-            try { await authService.logout(); } catch { /* ignore */ }
+            try {
+                const authState = authService.getAuthState();
+                const hadAuthHeader = !!((error.config as any)?.headers?.Authorization || (error.config as any)?.headers?.authorization);
+                // Only logout if user was authenticated or the request included an Authorization header
+                if (authState.isAuthenticated || hadAuthHeader) {
+                    await authService.logout();
+                } else {
+                    console.debug('Received 401 for unauthenticated request; skipping logout');
+                }
+            } catch { /* ignore */ }
         }
         return Promise.reject(error);
     }

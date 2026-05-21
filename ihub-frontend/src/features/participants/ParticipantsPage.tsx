@@ -1,5 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 ARENA2036 e.V.
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -35,6 +36,11 @@ import {
     Grid2,
     Menu,
     TablePagination,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -48,7 +54,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import httpClient from '../../services/HttpClient';
 import { encodeParticipantId } from '../../services/participantUtils';
 import { useParticipant, ParticipantData } from '../../contexts/ParticipantContext';
-import { accentColors, emptyStateSx } from '../../theme/darkCardStyles';
+import { accentColors, blueDialogContentSx, emptyStateSx } from '../../theme/darkCardStyles';
 import {
     whiteDialogPaperProps,
     coloredDialogTitleSx,
@@ -56,6 +62,7 @@ import {
     whiteDialogContentSx,
     whiteDialogActionsSx,
     dialogCancelBtnSx,
+    blueDialogActionsSx,
     dialogSubmitBtnSx,
 } from '../../theme/darkCardStyles';
 import { useCachedList } from '../../hooks/useCachedFetch';
@@ -111,6 +118,9 @@ const ParticipantsPage: React.FC = () => {
     const [snackbar, setSnackbar] = useState<{ message: string; severity: 'success' | 'error' } | null>(null);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedParticipant, setSelectedParticipant] = useState<ParticipantData | null>(null);
+    const [selectedParticipantContextId, setSelectedParticipantContextId] = useState('');
+    const [filteredParticipant, setFilteredParticipant] = useState<ParticipantData | null>(null);
+    const [filterLoading, setFilterLoading] = useState(false);
     const openMenu = Boolean(anchorEl);
 
     // Pagination state
@@ -127,6 +137,10 @@ const ParticipantsPage: React.FC = () => {
     const visibleParticipants = useMemo(() => {
         return [...participants].slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
     }, [page, rowsPerPage, participants]);
+
+    const displayedParticipants = filteredParticipant
+        ? [filteredParticipant]
+        : visibleParticipants;
 
     // Roles dialog state
     const [rolesOpen, setRolesOpen] = useState(false);
@@ -282,6 +296,56 @@ const ParticipantsPage: React.FC = () => {
         setSnackbar({ message: 'Copied to clipboard', severity: 'success' });
     };
 
+    const fetchParticipantByContextId = async (
+        participantContextId: string
+    ): Promise<ParticipantData> => {
+
+        const response = await httpClient.get(
+            `/api/identity/v1alpha/participants/${encodeURIComponent(
+                encodeParticipantId(participantContextId)
+            )}`
+        );
+
+        return response.data;
+    };
+
+    const handleParticipantFilterChange = async (
+        event: SelectChangeEvent<string>
+    ) => {
+
+        const value = event.target.value;
+
+        setSelectedParticipantContextId(value);
+
+        if (!value) {
+            setFilteredParticipant(null);
+            return;
+        }
+
+        try {
+            setFilterLoading(true);
+
+            const data = await fetchParticipantByContextId(value);
+
+            setFilteredParticipant(data);
+
+        } catch (err) {
+
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : 'Failed to fetch participant';
+
+            setSnackbar({
+                message,
+                severity: 'error',
+            });
+
+        } finally {
+            setFilterLoading(false);
+        }
+    };
+
     return (
         <Box sx={{ p: 3, height: '100%', overflow: 'auto' }}>
             <Grid2 container direction="column" alignItems="center" sx={{ mb: 3 }}>
@@ -290,237 +354,604 @@ const ParticipantsPage: React.FC = () => {
                 </Grid2>
             </Grid2>
 
-            <Grid2 size={12} container justifyContent="flex-end" marginRight={6} marginBottom={2} gap={1}>
+            <Grid2
+                container
+                justifyContent="flex-end"
+                alignItems="center"
+                gap={2}
+                marginRight={6}
+                marginBottom={2}
+            >
+                <FormControl
+                    size="small"
+                    sx={{
+                        minWidth: 320,
+
+                        '& .MuiOutlinedInput-root': {
+                            color: '#FFFFFF',
+                            height: '40px',
+
+                            '& fieldset': {
+                                borderColor: '#00C853',
+                            },
+
+                            '&:hover fieldset': {
+                                borderColor: '#00E676',
+                            },
+
+                            '&.Mui-focused fieldset': {
+                                borderColor: '#00E676',
+                            },
+                        },
+
+                        '& .MuiInputLabel-root': {
+                            color: '#FFFFFF',
+                        },
+
+                        '& .MuiInputLabel-root.Mui-focused': {
+                            color: '#FFFFFF',
+                        },
+
+                        '& .MuiSvgIcon-root': {
+                            color: '#FFFFFF',
+                        },
+                    }}
+                >
+                    <InputLabel shrink>
+                        Filter by Participant Context
+                    </InputLabel>
+
+                    <Select
+                        displayEmpty
+                        value={selectedParticipantContextId}
+                        renderValue={(selected) => {
+                            if (!selected) {
+                                return <span style={{ color: '#FFFFFF' }}>All Participants</span>;
+                            }
+
+                            return selected;
+                        }}
+                        label="Filter by Participant Context"
+                        onChange={handleParticipantFilterChange}
+                        MenuProps={{
+                            PaperProps: {
+                                sx: {
+                                    backgroundColor: '#1E1E1E',
+                                    color: '#FFFFFF',
+
+                                    '& .MuiMenuItem-root': {
+                                        color: '#FFFFFF',
+                                    },
+
+                                    '& .MuiMenuItem-root:hover': {
+                                        backgroundColor: 'rgba(255,255,255,0.08)',
+                                    },
+
+                                    '& .MuiMenuItem-root.Mui-selected': {
+                                        backgroundColor: 'rgba(255,255,255,0.12)',
+                                    },
+
+                                    '& .MuiMenuItem-root.Mui-selected:hover': {
+                                        backgroundColor: 'rgba(255,255,255,0.18)',
+                                    },
+                                },
+                            },
+                        }}
+                    >
+                        <MenuItem value="">
+                            All Participants
+                        </MenuItem>
+
+                        {participants.map((participant) => (
+                            <MenuItem
+                                key={participant.participantContextId}
+                                value={participant.participantContextId}
+                            >
+                                {participant.participantContextId}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
                 <Button
                     className="add-button"
                     variant="outlined"
                     size="small"
                     onClick={() => setCreateOpen(true)}
                     startIcon={<AddIcon />}
+                    sx={{
+                        color: '#FFFFFF',
+                        borderColor: '#666',
+                        textTransform: 'none',
+                        height: '40px',
+
+                        '&:hover': {
+                            borderColor: '#FFFFFF',
+                            backgroundColor: 'rgba(255,255,255,0.08)',
+                        },
+                    }}
                 >
                     Create Participant
                 </Button>
             </Grid2>
 
             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', pt: 2 }}>
-            {loading ? (
-                <Box className="custom-cards-list">
-                    {[...Array(3)].map((_, i) => (
-                        <Box key={i} className="custom-card-box">
-                            <Box className="custom-card" sx={{ minHeight: '240px', opacity: 0.5 }}>
-                                <Box className="custom-card-header">
-                                    <Box sx={{ width: '60px', height: '22px', bgcolor: 'rgba(248,249,250,0.1)', borderRadius: '4px' }} />
-                                </Box>
-                                <Box className="custom-card-content">
-                                    <Box sx={{ width: '60%', height: '22px', bgcolor: 'rgba(248,249,250,0.1)', borderRadius: '4px', mb: 1 }} />
-                                    <Box sx={{ width: '80%', height: '14px', bgcolor: 'rgba(248,249,250,0.06)', borderRadius: '4px' }} />
-                                </Box>
-                                <Box className="custom-card-button-box">
-                                    <Box sx={{ height: '36px', bgcolor: 'rgba(35,35,38,0.76)', borderRadius: '0 0 8px 8px' }} />
-                                </Box>
-                            </Box>
-                        </Box>
-                    ))}
-                </Box>
-            ) : participants.length === 0 ? (
-                <Box sx={emptyStateSx}>
-                    <Typography variant="h6" sx={{ color: accentColors.brandText, mb: 1 }}>
-                        No Participants Found
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: accentColors.brandTextMuted }}>
-                        Create a participant context to get started.
-                    </Typography>
-                </Box>
-            ) : (
-                <>
-                <Box className="custom-cards-list">
-                    {visibleParticipants.map((p) => (
-                        <Box key={p.participantContextId} className="custom-card-box">
-                            <Box className="custom-card" sx={{ minHeight: '200px' }}>
-                                <Box className="custom-card-header" sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
-                                    <Chip
-                                        label={stateLabel(p.state)}
-                                        variant="outlined"
-                                        sx={stateChipSx(p.state)}
-                                    />
-                                    <Box className="custom-card-header-buttons">
-                                        <Tooltip title={p.state === 1 ? 'Deactivate' : 'Activate'} arrow>
-                                            <IconButton
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    if (p.state === 1) { handleDeactivate(p.participantContextId); } else { handleActivate(p.participantContextId); }
-                                                }}
-                                            >
-                                                <PowerSettingsNewIcon sx={{ color: p.state === 1 ? '#4caf50' : 'rgba(255, 255, 255, 0.5)' }} />
-                                            </IconButton>
-                                        </Tooltip>
-                                        <Tooltip title="More options" arrow>
-                                            <IconButton
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setAnchorEl(e.currentTarget);
-                                                    setSelectedParticipant(p);
-                                                }}
-                                            >
-                                                <MoreVert sx={{ color: 'rgba(255, 255, 255, 0.68)' }} />
-                                            </IconButton>
-                                        </Tooltip>
+                {loading ? (
+                    <Box className="custom-cards-list">
+                        {[...Array(3)].map((_, i) => (
+                            <Box key={i} className="custom-card-box">
+                                <Box className="custom-card" sx={{ minHeight: '240px', opacity: 0.5 }}>
+                                    <Box className="custom-card-header">
+                                        <Box sx={{ width: '60px', height: '22px', bgcolor: 'rgba(248,249,250,0.1)', borderRadius: '4px' }} />
+                                    </Box>
+                                    <Box className="custom-card-content">
+                                        <Box sx={{ width: '60%', height: '22px', bgcolor: 'rgba(248,249,250,0.1)', borderRadius: '4px', mb: 1 }} />
+                                        <Box sx={{ width: '80%', height: '14px', bgcolor: 'rgba(248,249,250,0.06)', borderRadius: '4px' }} />
+                                    </Box>
+                                    <Box className="custom-card-button-box">
+                                        <Box sx={{ height: '36px', bgcolor: 'rgba(35,35,38,0.76)', borderRadius: '0 0 8px 8px' }} />
                                     </Box>
                                 </Box>
+                            </Box>
+                        ))}
+                    </Box>
+                ) : participants.length === 0 ? (
+                    <Box sx={emptyStateSx}>
+                        <Typography variant="h6" sx={{ color: accentColors.brandText, mb: 1 }}>
+                            No Participants Found
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: accentColors.brandTextMuted }}>
+                            Create a participant context to get started.
+                        </Typography>
+                    </Box>
+                ) : (
+                    <>
+                        <Grid2
+                            container
+                            spacing={3}
+                            sx={{
+                                width: '100%',
+                                px: { xs: 1, sm: 2, md: 3 },
+                            }}
+                        >
+                            {displayedParticipants.map((p) => (
+                                <Grid2
+                                    size={{ xs: 12, sm: 6, lg: 3 }}
+                                    key={p.participantContextId}
+                                >
+                                    <Box
+                                        sx={{
+                                            height: '100%',
+                                            minHeight: 360,
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            position: 'relative',
+                                            overflow: 'hidden',
+                                            borderRadius: '24px',
+                                            background:
+                                                'linear-gradient(180deg, rgba(9,14,24,0.98) 0%, rgba(4,8,20,0.98) 100%)',
+                                            border: '1px solid rgba(0, 212, 255, 0.15)',
+                                            boxShadow:
+                                                '0 20px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.03)',
+                                            transition: 'all 0.3s ease',
+                                            '&:hover': {
+                                                transform: 'translateY(-6px)',
+                                                borderColor: 'rgba(0, 212, 255, 0.35)',
+                                                boxShadow:
+                                                    '0 30px 80px rgba(0,0,0,0.55), 0 0 20px rgba(0,212,255,0.08)',
+                                            },
+                                        }}
+                                    >
+                                        {/* Top Border Glow */}
+                                        <Box
+                                            sx={{
+                                                position: 'absolute',
+                                                top: 0,
+                                                left: 24,
+                                                right: 24,
+                                                height: '2px',
+                                                background:
+                                                    'linear-gradient(90deg, transparent, #00D4FF, transparent)',
+                                            }}
+                                        />
 
-                                <Box className="custom-card-content" sx={{ overflow: 'hidden', flex: 1, display: 'flex', flexDirection: 'column', pb: 2.5 }}>
-                                    <Tooltip title={p.participantContextId} arrow placement="top">
-                                        <Typography variant="h5" sx={{ mb: 0.5, cursor: 'help' }}>
-                                            {p.participantContextId}
-                                        </Typography>
-                                    </Tooltip>
-                                    <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                                        {p.did && (
-                                            <Box>
-                                                <Typography sx={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.45)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.8px', mb: '2px' }}>
-                                                    DID
-                                                </Typography>
-                                                <Tooltip title={p.did} arrow placement="top">
-                                                    <Typography sx={{ fontFamily: 'Monaco, "Lucida Console", monospace', fontSize: '0.76rem', color: 'rgba(255,255,255,0.87)', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'help' }}>
-                                                        {p.did}
-                                                    </Typography>
+                                        {/* Header */}
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                alignItems: 'flex-start',
+                                                justifyContent: 'space-between',
+                                                p: 3,
+                                                pb: 2,
+                                            }}
+                                        >
+                                            <Chip
+                                                label={stateLabel(p.state).toUpperCase()}
+                                                size="small"
+                                                sx={{
+                                                    height: 30,
+                                                    fontSize: '0.7rem',
+                                                    fontWeight: 700,
+                                                    letterSpacing: '0.08em',
+                                                    borderRadius: '8px',
+                                                    ...(p.state === 1
+                                                        ? {
+                                                            color: '#0B0F1A',
+                                                            backgroundColor: '#FFFFFF',
+                                                        }
+                                                        : p.state === 2
+                                                            ? {
+                                                                color: '#FF5A5A',
+                                                                backgroundColor: 'rgba(255,90,90,0.12)',
+                                                                border: '1px solid rgba(255,90,90,0.35)',
+                                                            }
+                                                            : {
+                                                                color: 'rgba(255,255,255,0.75)',
+                                                                backgroundColor: 'rgba(255,255,255,0.05)',
+                                                                border:
+                                                                    '1px dashed rgba(255,255,255,0.20)',
+                                                            }),
+                                                }}
+                                            />
+
+                                            <Box sx={{ display: 'flex', gap: 0.5 }}>
+                                                <Tooltip
+                                                    title={
+                                                        p.state === 1 ? 'Deactivate' : 'Activate'
+                                                    }
+                                                    arrow
+                                                >
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            if (p.state === 1) {
+                                                                handleDeactivate(
+                                                                    p.participantContextId,
+                                                                );
+                                                            } else {
+                                                                handleActivate(
+                                                                    p.participantContextId,
+                                                                );
+                                                            }
+                                                        }}
+                                                        sx={{
+                                                            width: 36,
+                                                            height: 36,
+                                                            color:
+                                                                p.state === 1
+                                                                    ? '#22C55E'
+                                                                    : 'rgba(255,255,255,0.45)',
+                                                            backgroundColor:
+                                                                'rgba(255,255,255,0.04)',
+                                                            border:
+                                                                '1px solid rgba(255,255,255,0.06)',
+                                                            '&:hover': {
+                                                                backgroundColor:
+                                                                    'rgba(255,255,255,0.08)',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <PowerSettingsNewIcon fontSize="small" />
+                                                    </IconButton>
+                                                </Tooltip>
+
+                                                <Tooltip title="More options" arrow>
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setAnchorEl(e.currentTarget);
+                                                            setSelectedParticipant(p);
+                                                        }}
+                                                        sx={{
+                                                            width: 36,
+                                                            height: 36,
+                                                            color:
+                                                                'rgba(255,255,255,0.65)',
+                                                            backgroundColor:
+                                                                'rgba(255,255,255,0.04)',
+                                                            border:
+                                                                '1px solid rgba(255,255,255,0.06)',
+                                                            '&:hover': {
+                                                                backgroundColor:
+                                                                    'rgba(255,255,255,0.08)',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <MoreVert fontSize="small" />
+                                                    </IconButton>
                                                 </Tooltip>
                                             </Box>
-                                        )}
-                                        <Box sx={{ display: 'flex', gap: 3 }}>
-                                            <Box>
-                                                <Typography sx={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.45)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.8px', mb: '2px' }}>
-                                                    Created
+                                        </Box>
+
+                                        {/* Content */}
+                                        <Box
+                                            sx={{
+                                                px: 3,
+                                                pb: 3,
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                flex: 1,
+                                                color: '#FFFFFF',
+                                            }}
+                                        >
+                                            {/* Participant ID */}
+                                            <Tooltip title={p.participantContextId} arrow>
+                                                <Typography
+                                                    sx={{
+                                                        fontFamily:
+                                                            '"SF Mono", "Roboto Mono", monospace',
+                                                        fontSize: '1.9rem',
+                                                        fontWeight: 700,
+                                                        lineHeight: 1.1,
+                                                        mb: 2,
+                                                        letterSpacing: '-0.02em',
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                        whiteSpace: 'nowrap',
+                                                        cursor: 'help',
+                                                    }}
+                                                >
+                                                    {p.participantContextId}
                                                 </Typography>
-                                                <Typography sx={{ fontSize: '0.76rem', color: 'rgba(255,255,255,0.87)', lineHeight: 1.2 }}>
-                                                    {formatDate(p.createdAt)}
-                                                </Typography>
-                                            </Box>
-                                            {p.roles && p.roles.length > 0 && (
-                                                <Box>
-                                                    <Typography sx={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.45)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.8px', mb: '2px' }}>
-                                                        Roles
+                                            </Tooltip>
+
+                                            {/* DID */}
+                                            {p.did && (
+                                                <Box sx={{ mb: 2.5 }}>
+                                                    <Typography
+                                                        sx={{
+                                                            fontSize: '0.65rem',
+                                                            fontWeight: 600,
+                                                            letterSpacing: '0.14em',
+                                                            textTransform: 'uppercase',
+                                                            color:
+                                                                'rgba(255,255,255,0.42)',
+                                                            mb: 0.75,
+                                                        }}
+                                                    >
+                                                        DID
                                                     </Typography>
-                                                    <Typography sx={{ fontSize: '0.76rem', color: 'rgba(255,255,255,0.87)', lineHeight: 1.2 }}>
-                                                        {p.roles.join(', ')}
-                                                    </Typography>
+
+                                                    <Tooltip title={p.did} arrow>
+                                                        <Typography
+                                                            sx={{
+                                                                fontFamily:
+                                                                    '"SF Mono", "Roboto Mono", monospace',
+                                                                fontSize: '0.78rem',
+                                                                lineHeight: 1.5,
+                                                                color:
+                                                                    'rgba(255,255,255,0.90)',
+                                                                overflow: 'hidden',
+                                                                textOverflow: 'ellipsis',
+                                                                whiteSpace: 'nowrap',
+                                                                cursor: 'help',
+                                                            }}
+                                                        >
+                                                            {p.did}
+                                                        </Typography>
+                                                    </Tooltip>
                                                 </Box>
                                             )}
-                                        </Box>
-                                        {p.apiTokenAlias && (
-                                            <Box>
-                                                <Typography sx={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.45)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.8px', mb: '2px' }}>
-                                                    API Token Alias
+
+                                            {/* Roles */}
+                                            {p.roles && p.roles.length > 0 && (
+                                                <Box sx={{ mb: 2.5 }}>
+                                                    <Typography
+                                                        sx={{
+                                                            fontSize: '0.65rem',
+                                                            fontWeight: 600,
+                                                            letterSpacing: '0.14em',
+                                                            textTransform: 'uppercase',
+                                                            color:
+                                                                'rgba(255,255,255,0.42)',
+                                                            mb: 1,
+                                                        }}
+                                                    >
+                                                        Roles
+                                                    </Typography>
+
+                                                    <Box
+                                                        sx={{
+                                                            display: 'flex',
+                                                            flexWrap: 'wrap',
+                                                            gap: 0.75,
+                                                        }}
+                                                    >
+                                                        {p.roles.map((role, idx) => (
+                                                            <Chip
+                                                                key={idx}
+                                                                label={role}
+                                                                size="small"
+                                                                sx={{
+                                                                    height: 24,
+                                                                    borderRadius: '999px',
+                                                                    fontSize: '0.68rem',
+                                                                    fontWeight: 600,
+                                                                    color: '#3FA9FF',
+                                                                    backgroundColor:
+                                                                        'rgba(63,169,255,0.10)',
+                                                                    border:
+                                                                        '1px solid rgba(63,169,255,0.25)',
+                                                                    '& .MuiChip-label': {
+                                                                        px: 1,
+                                                                    },
+                                                                }}
+                                                            />
+                                                        ))}
+                                                    </Box>
+                                                </Box>
+                                            )}
+
+                                            {/* Created Date */}
+                                            <Box sx={{ mt: 'auto', mb: 2 }}>
+                                                <Typography
+                                                    sx={{
+                                                        fontSize: '0.65rem',
+                                                        fontWeight: 600,
+                                                        letterSpacing: '0.14em',
+                                                        textTransform: 'uppercase',
+                                                        color:
+                                                            'rgba(255,255,255,0.42)',
+                                                        mb: 0.75,
+                                                    }}
+                                                >
+                                                    Created
                                                 </Typography>
-                                                <Typography sx={{ fontFamily: 'Monaco, "Lucida Console", monospace', fontSize: '0.76rem', color: 'rgba(255,255,255,0.87)', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                    {p.apiTokenAlias}
+
+                                                <Typography
+                                                    sx={{
+                                                        fontSize: '0.82rem',
+                                                        color:
+                                                            'rgba(255,255,255,0.85)',
+                                                    }}
+                                                >
+                                                    {formatDate(
+                                                        (p as ParticipantData & {
+                                                            createdAt?: number;
+                                                        }).createdAt,
+                                                    )}
                                                 </Typography>
                                             </Box>
-                                        )}
-                                    </Box>
-                                </Box>
 
-                            </Box>
-                        </Box>
-                    ))}
-                    <Menu
-                        anchorEl={anchorEl}
-                        open={openMenu}
-                        onClose={() => { setAnchorEl(null); setSelectedParticipant(null); }}
-                        MenuListProps={{ 'aria-labelledby': 'more-options-button' }}
-                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                        PaperProps={{ sx: { backgroundColor: 'white !important' } }}
-                    >
-                        {selectedParticipant && (
-                            <>
-                                {selectedParticipant.state !== 1 && (
+                                            {/* Footer */}
+                                            <Box
+                                                sx={{
+                                                    pt: 2,
+                                                    borderTop:
+                                                        '1px solid rgba(255,255,255,0.08)',
+                                                }}
+                                            >
+                                                <Button
+                                                    variant="text"
+                                                    size="small"
+                                                    onClick={() => {
+                                                        setRolesParticipantId(
+                                                            p.participantContextId,
+                                                        );
+                                                        setEditRoles(p.roles || []);
+                                                        setRolesOpen(true);
+                                                    }}
+                                                    sx={{
+                                                        p: 0,
+                                                        minWidth: 'auto',
+                                                        fontSize: '0.95rem',
+                                                        fontWeight: 600,
+                                                        textTransform: 'none',
+                                                        color: '#00D4FF',
+                                                        '&:hover': {
+                                                            backgroundColor: 'transparent',
+                                                            color: '#33DDFF',
+                                                        },
+                                                    }}
+                                                >
+                                                    View Details →
+                                                </Button>
+                                            </Box>
+                                        </Box>
+                                    </Box>
+                                </Grid2>
+                            ))}
+                        </Grid2>
+                        <Grid2 size={12} className="flex flex-content-center" sx={{ mt: 'auto', pt: 3 }}>
+                            <TablePagination
+                                rowsPerPageOptions={[rowsPerPage]}
+                                component="div"
+                                count={participants.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                className="card-list-pagination"
+                            />
+                        </Grid2>
+
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={openMenu}
+                            onClose={() => { setAnchorEl(null); setSelectedParticipant(null); }}
+                            MenuListProps={{ 'aria-labelledby': 'more-options-button' }}
+                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                            PaperProps={{ sx: { backgroundColor: 'white !important' } }}
+                        >
+                            {selectedParticipant && (
+                                <>
+                                    {selectedParticipant.state !== 1 && (
+                                        <Box
+                                            onClick={() => {
+                                                handleActivate(selectedParticipant.participantContextId);
+                                                setAnchorEl(null);
+                                                setSelectedParticipant(null);
+                                            }}
+                                            sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
+                                        >
+                                            <PowerSettingsNewIcon fontSize="small" sx={{ marginRight: 1, color: '#4caf50 !important', fill: '#4caf50 !important' }} />
+                                            <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Activate</Box>
+                                        </Box>
+                                    )}
+                                    {selectedParticipant.state === 1 && (
+                                        <Box
+                                            onClick={() => {
+                                                handleDeactivate(selectedParticipant.participantContextId);
+                                                setAnchorEl(null);
+                                                setSelectedParticipant(null);
+                                            }}
+                                            sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
+                                        >
+                                            <PowerSettingsNewIcon fontSize="small" sx={{ marginRight: 1, color: '#ff9800 !important', fill: '#ff9800 !important' }} />
+                                            <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Deactivate</Box>
+                                        </Box>
+                                    )}
                                     <Box
                                         onClick={() => {
-                                            handleActivate(selectedParticipant.participantContextId);
+                                            openRolesDialog(selectedParticipant);
                                             setAnchorEl(null);
                                             setSelectedParticipant(null);
                                         }}
                                         sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
                                     >
-                                        <PowerSettingsNewIcon fontSize="small" sx={{ marginRight: 1, color: '#4caf50 !important', fill: '#4caf50 !important' }} />
-                                        <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Activate</Box>
+                                        <AdminPanelSettingsIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
+                                        <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Manage Roles</Box>
                                     </Box>
-                                )}
-                                {selectedParticipant.state === 1 && (
                                     <Box
                                         onClick={() => {
-                                            handleDeactivate(selectedParticipant.participantContextId);
+                                            handleRegenerateToken(selectedParticipant.participantContextId);
                                             setAnchorEl(null);
                                             setSelectedParticipant(null);
                                         }}
                                         sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
                                     >
-                                        <PowerSettingsNewIcon fontSize="small" sx={{ marginRight: 1, color: '#ff9800 !important', fill: '#ff9800 !important' }} />
-                                        <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Deactivate</Box>
+                                        <SyncIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
+                                        <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Regenerate Token</Box>
                                     </Box>
-                                )}
-                                <Box
-                                    onClick={() => {
-                                        openRolesDialog(selectedParticipant);
-                                        setAnchorEl(null);
-                                        setSelectedParticipant(null);
-                                    }}
-                                    sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
-                                >
-                                    <AdminPanelSettingsIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
-                                    <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Manage Roles</Box>
-                                </Box>
-                                <Box
-                                    onClick={() => {
-                                        handleRegenerateToken(selectedParticipant.participantContextId);
-                                        setAnchorEl(null);
-                                        setSelectedParticipant(null);
-                                    }}
-                                    sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
-                                >
-                                    <SyncIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
-                                    <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Regenerate Token</Box>
-                                </Box>
-                                <Box
-                                    onClick={() => {
-                                        copyToClipboard(selectedParticipant.participantContextId);
-                                        setAnchorEl(null);
-                                        setSelectedParticipant(null);
-                                    }}
-                                    sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
-                                >
-                                    <ContentCopyIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
-                                    <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Copy ID</Box>
-                                </Box>
-                                <Box
-                                    onClick={() => {
-                                        handleDelete(selectedParticipant.participantContextId);
-                                        setAnchorEl(null);
-                                        setSelectedParticipant(null);
-                                    }}
-                                    sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
-                                >
-                                    <DeleteIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
-                                    <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Delete</Box>
-                                </Box>
-                            </>
-                        )}
-                    </Menu>
-                </Box>
-                <Grid2 size={12} className="flex flex-content-center" sx={{ mt: 'auto', pt: 3 }}>
-                    <TablePagination
-                        rowsPerPageOptions={[rowsPerPage]}
-                        component="div"
-                        count={participants.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        className="card-list-pagination"
-                    />
-                </Grid2>
-                </>
-            )}
+                                    <Box
+                                        onClick={() => {
+                                            copyToClipboard(selectedParticipant.participantContextId);
+                                            setAnchorEl(null);
+                                            setSelectedParticipant(null);
+                                        }}
+                                        sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
+                                    >
+                                        <ContentCopyIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
+                                        <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Copy ID</Box>
+                                    </Box>
+                                    <Box
+                                        onClick={() => {
+                                            handleDelete(selectedParticipant.participantContextId);
+                                            setAnchorEl(null);
+                                            setSelectedParticipant(null);
+                                        }}
+                                        sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
+                                    >
+                                        <DeleteIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
+                                        <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Delete</Box>
+                                    </Box>
+                                </>
+                            )}
+                        </Menu>
+                    </>
+                )}
             </Box>
 
             <Dialog open={createOpen} onClose={() => setCreateOpen(false)} maxWidth="sm" fullWidth PaperProps={whiteDialogPaperProps}>
@@ -638,8 +1069,8 @@ const ParticipantsPage: React.FC = () => {
                         <CloseIcon />
                     </IconButton>
                 </DialogTitle>
-                <DialogContent sx={whiteDialogContentSx}>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                <DialogContent sx={blueDialogContentSx}>
+                    <Typography variant="body2" sx={{ color: '#FFFFFF' }}>
                         Manage roles for participant <strong>{rolesParticipantId}</strong>.
                     </Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
@@ -679,13 +1110,34 @@ const ParticipantsPage: React.FC = () => {
                             variant="outlined"
                             onClick={handleAddRole}
                             disabled={!newRole.trim()}
-                            sx={{ textTransform: 'none', minWidth: 'auto', px: 2 }}
+                            sx={{
+                                textTransform: 'none',
+                                minWidth: 'auto',
+                                px: 2,
+
+                                color: '#FFFFFF',
+                                borderColor: '#FFFFFF',
+
+                                // Hover state
+                                '&:hover': {
+                                    color: '#FFFFFF',
+                                    borderColor: '#FFFFFF',
+                                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                                },
+
+                                '&.Mui-disabled': {
+                                    color: '#FFFFFF !important',
+                                    borderColor: 'rgba(255, 255, 255, 0.4)',
+                                    WebkitTextFillColor: '#FFFFFF',
+                                    opacity: 0.5,
+                                },
+                            }}
                         >
                             Add
                         </Button>
                     </Box>
                 </DialogContent>
-                <DialogActions sx={whiteDialogActionsSx}>
+                <DialogActions sx={blueDialogActionsSx}>
                     <Button onClick={() => setRolesOpen(false)} variant="outlined" color="primary" size="large"
                         sx={dialogCancelBtnSx}>
                         Cancel

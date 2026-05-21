@@ -1,5 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 ARENA2036 e.V.
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -148,14 +149,11 @@ class EnvironmentService {
     }
 }
 
-export const getIhubBackendUrl = () => window?.ENV?.IHUB_BACKEND_URL ?? '';
+export const getIhubBackendUrl = () => environmentService.getIhubBackendUrl();
 
-export const getParticipantId = () => window?.ENV?.PARTICIPANT_ID ?? '';
+export const getParticipantId = () => environmentService.getParticipantId();
 
-export const isAuthEnabled = () => {
-    const service = new EnvironmentService();
-    return service.isAuthEnabled();
-};
+export const isAuthEnabled = () => environmentService.isAuthEnabled();
 
 const environmentService = new EnvironmentService();
 

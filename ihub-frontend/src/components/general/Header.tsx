@@ -1,5 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 ARENA2036 e.V.
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -130,7 +131,7 @@ export default function Header() {
                     variant="subtitle1"
                     sx={{ fontWeight: 600, mb: 0.5, color: 'text.primary' }}
                 >
-                    {isAuthenticated && user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username : 'Felipe Bustillo'}
+                    {isAuthenticated && user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username : 'Tractus-X User'}
                 </Typography>
                 {isAuthenticated && user?.email && (
                     <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1 }}>
@@ -328,12 +329,12 @@ export default function Header() {
                 </IconButton>
                 <p>Notifications</p>
             </MenuItem>
-            <MenuItem>
+            {/* <MenuItem>
                 <IconButton size="large" aria-label="configure policies">
                     <Policy />
                 </IconButton>
                 <p>Policy Config</p>
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem onClick={handleProfileMenuOpen}>
                 <IconButton size="large" aria-label="account of current user">
                     <AccountCircle />
@@ -401,7 +402,7 @@ export default function Header() {
                                 </Badge>
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Policy/Governance Configuration is coming soon" arrow>
+                        {/* <Tooltip title="Policy/Governance Configuration is coming soon" arrow>
                             <IconButton
                                 size="large"
                                 aria-label="configure policies"
@@ -417,7 +418,7 @@ export default function Header() {
                             >
                                 <Policy />
                             </IconButton>
-                        </Tooltip>
+                        </Tooltip> */}
                         <IconButton
                             size="large"
                             edge="end"

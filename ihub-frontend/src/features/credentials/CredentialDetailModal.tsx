@@ -1,5 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 ARENA2036 e.V.
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -56,10 +57,10 @@ interface CredentialDetailModalProps {
 function DetailField({ label, value }: { label: string; value: string }) {
     return (
         <Box sx={{ mb: 1.5 }}>
-            <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <Typography variant="caption" sx={{ color: '#c5c5c5', fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 {label}
             </Typography>
-            <Typography variant="body2" sx={{ color: 'text.primary', wordBreak: 'break-all', fontSize: '0.85rem' }}>
+            <Typography variant="body2" sx={{ color: '#FFFFFF', wordBreak: 'break-all', fontSize: '0.85rem' }}>
                 {value}
             </Typography>
         </Box>
@@ -136,14 +137,14 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                 pr: 14,
             }}>
                 <Box>
-                    <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1.1rem', color: 'inherit' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1.1rem', color: '#FFFFFF' }}>
                         {typeName}
                     </Typography>
                     <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5, flexWrap: 'wrap' }}>
                         {expired ? (
                             <Chip label="Expired" size="small" sx={{
                                 bgcolor: 'rgba(255,255,255,0.2)',
-                                color: '#fff',
+                                color: '#ffffff',
                                 border: '1px solid rgba(255,255,255,0.4)',
                                 fontWeight: 600,
                                 fontSize: '0.7rem',
@@ -151,7 +152,7 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                         ) : (
                             <Chip label="Active" size="small" sx={{
                                 bgcolor: 'rgba(255,255,255,0.2)',
-                                color: '#fff',
+                                color: '#ffffff',
                                 border: '1px solid rgba(255,255,255,0.4)',
                                 fontWeight: 600,
                                 fontSize: '0.7rem',
@@ -159,7 +160,7 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                         )}
                         <Chip label={stateName} size="small" sx={{
                             bgcolor: 'rgba(255,255,255,0.2)',
-                            color: '#fff',
+                            color: '#FFFFFF',
                             border: '1px solid rgba(255,255,255,0.4)',
                             fontWeight: 600,
                             fontSize: '0.7rem',
@@ -189,11 +190,11 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                 </Box>
             </DialogTitle>
 
-            <Box sx={{ px: 3, pt: 1, backgroundColor: '#fff' }}>
+            <Box sx={{ px: 3, pt: 1, backgroundColor: '#030B1F' }}>
                 <Tabs value={tab} onChange={(_, v) => setTab(v)}
                     sx={{
-                        '& .MuiTab-root': { color: 'text.secondary', textTransform: 'none', fontWeight: 600, fontSize: '0.85rem' },
-                        '& .Mui-selected': { color: 'primary.main' },
+                        '& .MuiTab-root': { color: '#FFFFFF', textTransform: 'none', fontWeight: 600, fontSize: '0.85rem' },
+                        '& .Mui-selected': { color: '#FFFFFF' },
                         '& .MuiTabs-indicator': { bgcolor: 'primary.main' },
                     }}>
                     <Tab label="Details" />
@@ -203,7 +204,7 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
 
             <Divider />
 
-            <DialogContent sx={{ pt: 2, backgroundColor: '#fff' }}>
+            <DialogContent sx={{ pt: 2, backgroundColor: '#030B1F' }}>
                 {tab === 0 && (
                     <Box>
                         {(canRevoke || canSuspend || canResume) && (
@@ -215,14 +216,14 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                                         color="error"
                                         startIcon={<BlockIcon />}
                                         onClick={() => setRevokeConfirm(true)}
-                                        sx={{ textTransform: 'none', fontSize: '0.8rem' }}
+                                        sx={{ textTransform: 'none', fontSize: '0.8rem', ":hover": { color: '#FFFFFF' } }}
                                     >
                                         Revoke
                                     </Button>
                                 )}
                                 {revokeConfirm && onRevoke && (
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, border: '1px solid', borderColor: 'error.main', borderRadius: 1, p: 1 }}>
-                                        <Typography variant="body2" sx={{ color: 'error.main', fontSize: '0.8rem' }}>
+                                        <Typography variant="body2" sx={{ color: 'error.main', fontSize: '0.8rem', ":hover": { color: '#FFFFFF' } }}>
                                             Revocation is irreversible. Continue?
                                         </Typography>
                                         <Button size="small" variant="contained" color="error"
@@ -231,7 +232,7 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                                             Confirm
                                         </Button>
                                         <Button size="small" onClick={() => setRevokeConfirm(false)}
-                                            sx={{ textTransform: 'none', fontSize: '0.75rem', color: 'text.secondary' }}>
+                                            sx={{ textTransform: 'none', fontSize: '0.75rem', color: '#FFFF', ":hover": { color: '#FFFFFF' } }}>
                                             Cancel
                                         </Button>
                                     </Box>
@@ -243,7 +244,7 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                                         color="warning"
                                         startIcon={<PauseCircleIcon />}
                                         onClick={() => onSuspend(credential.id)}
-                                        sx={{ textTransform: 'none', fontSize: '0.8rem' }}
+                                        sx={{ textTransform: 'none', fontSize: '0.8rem', ":hover": { color: '#FFFFFF' } }}
                                     >
                                         Suspend
                                     </Button>
@@ -255,7 +256,7 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                                         color="success"
                                         startIcon={<PlayCircleIcon />}
                                         onClick={() => onResume(credential.id)}
-                                        sx={{ textTransform: 'none', fontSize: '0.8rem' }}
+                                        sx={{ textTransform: 'none', fontSize: '0.8rem', ":hover": { color: '#FFFFFF' } }}
                                     >
                                         Resume
                                     </Button>
@@ -294,17 +295,17 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                         </Box>
 
                         <Divider sx={{ my: 2 }} />
-                        <Typography variant="subtitle2" sx={{ color: 'primary.main', fontWeight: 600, mb: 1 }}>Types</Typography>
+                        <Typography variant="subtitle2" sx={{ color: '#FFFFFF', fontWeight: 600, mb: 1 }}>Types</Typography>
                         <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
                             {vc.type.map((t, i) => (
-                                <Chip key={i} label={t} size="small" variant="outlined" sx={{ fontSize: '0.75rem' }} />
+                                <Chip key={i} label={t} size="small" variant="outlined" sx={{ fontSize: '0.75rem', color: '#FFFFFF' }} />
                             ))}
                         </Box>
 
                         {vc.credentialSchema && vc.credentialSchema.length > 0 && (
                             <>
                                 <Divider sx={{ my: 2 }} />
-                                <Typography variant="subtitle2" sx={{ color: 'primary.main', fontWeight: 600, mb: 1 }}>Schema</Typography>
+                                <Typography variant="subtitle2" sx={{ color: '#FFFFFF', fontWeight: 600, mb: 1 }}>Schema</Typography>
                                 {vc.credentialSchema.map((schema, i) => (
                                     <Box key={i} sx={{ mb: 1 }}>
                                         <DetailField label="Schema ID" value={schema.id} />
@@ -317,7 +318,7 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                         {vc.credentialStatus && vc.credentialStatus.length > 0 && (
                             <>
                                 <Divider sx={{ my: 2 }} />
-                                <Typography variant="subtitle2" sx={{ color: 'primary.main', fontWeight: 600, mb: 1 }}>Status</Typography>
+                                <Typography variant="subtitle2" sx={{ color: '#FFFFFF', fontWeight: 600, mb: 1 }}>Status</Typography>
                                 {vc.credentialStatus.map((status, i) => (
                                     <Box key={i} sx={{ mb: 1 }}>
                                         <DetailField label="Status ID" value={status.id} />
@@ -336,7 +337,7 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                             {editing && (
                                 <>
                                     <Button size="small" onClick={() => { setEditing(false); setEditError(null); }}
-                                        sx={{ textTransform: 'none', color: 'text.secondary', fontSize: '0.8rem' }}>
+                                        sx={{ textTransform: 'none', color: '#FFFFFF', fontSize: '0.8rem' }}>
                                         Cancel
                                     </Button>
                                     <Button size="small" variant="outlined" color="success" onClick={() => {
@@ -354,7 +355,7 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                                 </>
                             )}
                             <Button size="small" startIcon={<ContentCopyIcon />} onClick={handleCopyJson}
-                                sx={{ textTransform: 'none', color: 'primary.main', fontSize: '0.8rem' }}>
+                                sx={{ textTransform: 'none', color: '#FFFFFF', fontSize: '0.8rem' }}>
                                 {copied ? 'Copied!' : 'Copy JSON'}
                             </Button>
                         </Box>
@@ -368,13 +369,13 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                                 fullWidth multiline minRows={14} maxRows={20} value={editJson}
                                 onChange={(e) => { setEditJson(e.target.value); setEditError(null); }}
                                 sx={{
-                                    backgroundColor: '#fff',
+                                    backgroundColor: '#FFFFFF',
                                     '& .MuiOutlinedInput-root': {
-                                        backgroundColor: '#fff',
+                                        backgroundColor: '#FFFFFF',
                                         fontFamily: 'monospace',
                                         fontSize: '0.8rem',
                                         '& fieldset': { borderColor: 'divider' },
-                                        '&:hover fieldset': { borderColor: 'primary.main' },
+                                        '&:hover fieldset': { borderColor: '#ffffff' },
                                         '&.Mui-focused fieldset': { borderColor: 'primary.main' },
                                     },
                                 }}
@@ -383,7 +384,7 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                             <Box
                                 component="pre"
                                 sx={{
-                                    background: '#f5f5f5',
+                                    background: '#9ab1c0',
                                     color: 'text.primary',
                                     p: 2,
                                     borderRadius: 1,
