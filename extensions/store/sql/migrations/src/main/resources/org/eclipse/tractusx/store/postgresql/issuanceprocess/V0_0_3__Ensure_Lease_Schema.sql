@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation
  * Copyright (c) 2026 Technovative Solutions
  *
  * See the NOTICE file(s) distributed with this work for additional
