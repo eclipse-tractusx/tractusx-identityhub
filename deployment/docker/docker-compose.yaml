@@ -1,0 +1,196 @@
+#################################################################################
+#  Copyright (c) 2026 Technovative Solutions
+#  Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+#  See the NOTICE file(s) distributed with this work for additional
+#  information regarding copyright ownership.
+#
+#  This program and the accompanying materials are made available under the
+#  terms of the Apache License, Version 2.0 which is available at
+#  https://www.apache.org/licenses/LICENSE-2.0.
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#  License for the specific language governing permissions and limitations
+#  under the License.
+#
+#  SPDX-License-Identifier: Apache-2.0
+#################################################################################
+#
+# Run in-memory profile (no Postgres, no Vault):
+#   docker compose --profile memory up
+#
+# Run SQL profile (Postgres + HashiCorp Vault):
+#   docker compose --profile sql up
+#
+# Prerequisites: run ./gradlew shadowJar from the repository root first.
+# See deployment/docker/README.md for full usage instructions.
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL – SQL profile only
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    profiles: [sql]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: postgres
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    networks:
+      - tractusx-identityhub
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ---------------------------------------------------------------------------
+  # HashiCorp Vault (dev mode) – SQL profile only
+  # WARNING: dev mode is for local development only; never use in production.
+  # ---------------------------------------------------------------------------
+  vault:
+    image: hashicorp/vault:1.17
+    profiles: [sql]
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_TOKEN:-token}
+      VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - "${VAULT_PORT:-8200}:8200"
+    networks:
+      - tractusx-identityhub
+    healthcheck:
+      test: ["CMD", "vault", "status", "-address=http://127.0.0.1:8200"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ---------------------------------------------------------------------------
+  # IdentityHub (SQL + HashiCorp Vault) – SQL profile
+  # ---------------------------------------------------------------------------
+  identityhub:
+    build:
+      context: ../../runtimes/identityhub
+      dockerfile: Dockerfile
+      args:
+        JAR: build/libs/identityhub.jar
+        OTEL_JAR: build/resources/otel/opentelemetry-javaagent.jar
+        ADDITIONAL_FILES: build/resources/main/logging.properties
+    profiles: [sql]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      vault:
+        condition: service_healthy
+    volumes:
+      - ./config/identityhub/configuration.properties:/app/configuration.properties:ro
+    ports:
+      - "8181:8181"   # default API      – /api
+      - "7171:7171"   # version          – /.well-known/api
+      - "13131:13131" # credentials API  – /api/credentials
+      - "10100:10100" # DID              – /
+      - "15151:15151" # identity API     – /api/identity
+      - "9292:9292"   # STS              – /api/sts
+    networks:
+      - tractusx-identityhub
+
+  # ---------------------------------------------------------------------------
+  # IssuerService (SQL + HashiCorp Vault) – SQL profile
+  # Host ports for endpoints shared with identityhub are offset to avoid conflicts.
+  # ---------------------------------------------------------------------------
+  issuerservice:
+    build:
+      context: ../../runtimes/issuerservice
+      dockerfile: Dockerfile
+      args:
+        JAR: build/libs/issuerservice.jar
+        OTEL_JAR: build/resources/otel/opentelemetry-javaagent.jar
+        ADDITIONAL_FILES: build/resources/main/logging.properties
+    profiles: [sql]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      vault:
+        condition: service_healthy
+    volumes:
+      - ./config/issuerservice/configuration.properties:/app/configuration.properties:ro
+    ports:
+      - "8182:8181"   # default API      – /api
+      - "7172:7171"   # version          – /.well-known/api
+      - "13132:13132" # issuance API     – /api/issuance
+      - "10101:10100" # DID              – /
+      - "15251:15151" # identity API     – /api/identity
+      - "15152:15152" # issuer admin API – /api/issuer
+      - "9392:9292"   # STS              – /api/sts
+      - "9999:9999"   # status list      – /statuslist
+    networks:
+      - tractusx-identityhub
+
+  # ---------------------------------------------------------------------------
+  # IdentityHub (in-memory) – memory profile
+  # ---------------------------------------------------------------------------
+  identityhub-memory:
+    build:
+      context: ../../runtimes/identityhub-memory
+      dockerfile: Dockerfile
+      args:
+        JAR: build/libs/identityhub-memory.jar
+        OTEL_JAR: build/resources/otel/opentelemetry-javaagent.jar
+        ADDITIONAL_FILES: build/resources/main/logging.properties
+    profiles: [memory]
+    volumes:
+      - ./config/identityhub-memory/configuration.properties:/app/configuration.properties:ro
+    ports:
+      - "8181:8181"   # default API      – /api
+      - "7171:7171"   # version          – /.well-known/api
+      - "13131:13131" # credentials API  – /api/credentials
+      - "10100:10100" # DID              – /
+      - "15151:15151" # identity API     – /api/identity
+      - "9292:9292"   # STS              – /api/sts
+    networks:
+      - tractusx-identityhub
+
+  # ---------------------------------------------------------------------------
+  # IssuerService (in-memory) – memory profile
+  # Host ports for endpoints shared with identityhub-memory are offset to avoid conflicts.
+  # ---------------------------------------------------------------------------
+  issuerservice-memory:
+    build:
+      context: ../../runtimes/issuerservice-memory
+      dockerfile: Dockerfile
+      args:
+        JAR: build/libs/issuerservice-memory.jar
+        OTEL_JAR: build/resources/otel/opentelemetry-javaagent.jar
+        ADDITIONAL_FILES: build/resources/main/logging.properties
+    profiles: [memory]
+    volumes:
+      - ./config/issuerservice-memory/configuration.properties:/app/configuration.properties:ro
+    ports:
+      - "8182:8181"   # default API      – /api
+      - "7172:7171"   # version          – /.well-known/api
+      - "13132:13132" # issuance API     – /api/issuance
+      - "10101:10100" # DID              – /
+      - "15251:15151" # identity API     – /api/identity
+      - "15152:15152" # issuer admin API – /api/issuer
+      - "9392:9292"   # STS              – /api/sts
+      - "9999:9999"   # status list      – /statuslist
+    networks:
+      - tractusx-identityhub
+
+networks:
+  tractusx-identityhub:
+    driver: bridge
+
+volumes:
+  pg_data:
