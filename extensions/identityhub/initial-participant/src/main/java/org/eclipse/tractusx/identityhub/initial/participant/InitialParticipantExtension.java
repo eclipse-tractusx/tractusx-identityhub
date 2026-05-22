@@ -30,9 +30,9 @@ import org.eclipse.edc.identityhub.spi.authentication.ServicePrincipal;
 import org.eclipse.edc.identityhub.spi.did.DidDocumentService;
 import org.eclipse.edc.identityhub.spi.keypair.KeyPairService;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.KeyDescriptor;
-import org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantContext;
-import org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantContextState;
-import org.eclipse.edc.identityhub.spi.participantcontext.store.ParticipantContextStore;
+import org.eclipse.edc.identityhub.spi.participantcontext.model.IdentityHubParticipantContext;
+import org.eclipse.edc.participantcontext.spi.store.ParticipantContextStore;
+import org.eclipse.edc.participantcontext.spi.types.ParticipantContextState;
 import org.eclipse.edc.participantcontext.spi.config.model.ParticipantContextConfiguration;
 import org.eclipse.edc.participantcontext.spi.config.service.ParticipantContextConfigService;
 import org.eclipse.edc.runtime.metamodel.annotation.Extension;
@@ -145,7 +145,7 @@ public class InitialParticipantExtension implements ServiceExtension {
             return;
         }
 
-        ParticipantContext context = getParticipantContext();
+        IdentityHubParticipantContext context = getParticipantContext();
         var createResult = participantContextStore.create(context);
         if (createResult.failed()) {
             monitor.severe("Error storing participantContext into storage, error details: %s"
@@ -153,8 +153,7 @@ public class InitialParticipantExtension implements ServiceExtension {
             return;
         }
 
-        // EDC 0.15.1: ParticipantContextConfiguration must exist for per-participant
-        // config lookups.
+        // ParticipantContextConfiguration must exist for per-participant config lookups.
         // Since we bypass ParticipantContextService (which auto-creates it), we must
         // create it explicitly.
         var cfg = ParticipantContextConfiguration.Builder.newInstance()
@@ -239,9 +238,9 @@ public class InitialParticipantExtension implements ServiceExtension {
                 .build();
     }
 
-    private ParticipantContext getParticipantContext() {
+    private IdentityHubParticipantContext getParticipantContext() {
         long timestamp = Instant.now().toEpochMilli();
-        return ParticipantContext.Builder.newInstance()
+        return IdentityHubParticipantContext.Builder.newInstance()
                 .did(participantId)
                 .participantContextId(participantId)
                 .createdAt(timestamp)
