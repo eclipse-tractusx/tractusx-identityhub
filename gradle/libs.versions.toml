@@ -2,7 +2,7 @@
 format.version = "1.1"
 
 [versions]
-edc = "0.15.1"
+edc = "0.16.0"
 edc-build = "1.1.6"
 opentelemetry = "2.27.0"
 postgres = "42.7.8"
