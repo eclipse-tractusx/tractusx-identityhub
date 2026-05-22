@@ -72,3 +72,12 @@ data:
   edc.statuslist.callback.address: {{ .Values.statuslist.callback.address | quote }}
   edc.iam.did.web.use.https: {{ .Values.issuerservice.didweb.https | quote }}
   edc.iam.accesstoken.jti.validation:  {{ .Values.issuerservice.jtivalidation | quote}}
+
+  ##################
+  ## ENCRYPTION   ##
+  ##################
+  # EDC 0.16.0 introduced strict encryption of sensitive participant-config
+  # entries (default algorithm: aes). Set strict=false to preserve pre-0.16.0
+  # behaviour; to enable encryption, set this to "true" and provide
+  # edc.encryption.aes.key.alias pointing at a vault entry holding an AES key.
+  edc.encryption.strict: "false"

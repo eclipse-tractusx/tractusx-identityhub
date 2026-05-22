@@ -73,3 +73,12 @@ data:
   edc.tractusx.ih.participant.configurable.api.key: {{ .Values.identityhub.iatp.sts.oauth.client.x_api_key | quote }}
 
   edc.iam.did.web.use.https: {{ .Values.identityhub.didweb.https | quote }}
+
+  ##################
+  ## ENCRYPTION   ##
+  ##################
+  # EDC 0.16.0 introduced strict encryption of sensitive participant-config
+  # entries (default algorithm: aes). Set strict=false to preserve pre-0.16.0
+  # behaviour; to enable encryption, set this to "true" and provide
+  # edc.encryption.aes.key.alias pointing at a vault entry holding an AES key.
+  edc.encryption.strict: "false"
