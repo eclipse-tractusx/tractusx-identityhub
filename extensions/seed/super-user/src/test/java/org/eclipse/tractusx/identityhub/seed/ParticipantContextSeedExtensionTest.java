@@ -167,6 +167,7 @@ class ParticipantContextSeedExtensionTest {
     private IdentityHubParticipantContext.Builder superUserContext() {
         return IdentityHubParticipantContext.Builder.newInstance()
                 .participantContextId(SUPER_USER)
+                .did("did:web:" + SUPER_USER)
                 .apiTokenAlias("super-user-apikey");
 
     }
