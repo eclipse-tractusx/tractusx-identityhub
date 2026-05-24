@@ -74,6 +74,10 @@ data:
 
   edc.iam.did.web.use.https: {{ .Values.identityhub.didweb.https | quote }}
 
+  # EDC 0.16.0: must be a valid MIME type ('*' alone is rejected by
+  # StatusListCredentialController). Wildcard '*/*' preserves prior behaviour.
+  edc.iam.credential.revocation.mimetype: "*/*"
+
   ##################
   ## ENCRYPTION   ##
   ##################
