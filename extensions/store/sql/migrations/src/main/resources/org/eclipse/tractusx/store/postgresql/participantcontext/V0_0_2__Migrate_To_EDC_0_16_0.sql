@@ -35,6 +35,27 @@ UPDATE participant_context
    SET identity = participant_context_id
  WHERE identity IS NULL;
 
+-- V0_0_1 did not enforce uniqueness on the did column, so the backfill above could
+-- produce duplicate identity values in deployments that allowed duplicate DIDs.
+-- The new schema requires identity UNIQUE NOT NULL, so fail loudly with a clear,
+-- actionable message rather than letting the ADD CONSTRAINT step fail cryptically.
+DO $$
+DECLARE
+  duplicate_count INT;
+BEGIN
+  SELECT COUNT(*) INTO duplicate_count
+    FROM (
+      SELECT identity
+        FROM participant_context
+       WHERE identity IS NOT NULL
+       GROUP BY identity
+      HAVING COUNT(*) > 1
+    ) AS dups;
+  IF duplicate_count > 0 THEN
+    RAISE EXCEPTION 'V0_0_2 migration: % duplicate identity value(s) detected in participant_context (backfilled from the did column, which V0_0_1 did not enforce as UNIQUE). Resolve duplicates before retrying.', duplicate_count;
+  END IF;
+END $$;
+
 UPDATE participant_context
    SET properties = COALESCE(properties::jsonb, '{}'::jsonb)
                     || jsonb_build_object('apiTokenAlias', api_token_alias)
@@ -42,7 +63,18 @@ UPDATE participant_context
  WHERE api_token_alias IS NOT NULL OR roles IS NOT NULL;
 
 ALTER TABLE participant_context ALTER COLUMN identity SET NOT NULL;
-ALTER TABLE participant_context ADD CONSTRAINT participant_context_identity_unique UNIQUE (identity);
+
+-- Postgres does not support ADD CONSTRAINT IF NOT EXISTS; emulate it via pg_constraint
+-- so the migration is idempotent against partial reruns / restored snapshots.
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'participant_context_identity_unique'
+  ) THEN
+    ALTER TABLE participant_context
+      ADD CONSTRAINT participant_context_identity_unique UNIQUE (identity);
+  END IF;
+END $$;
 
 ALTER TABLE participant_context DROP COLUMN IF EXISTS api_token_alias;
 ALTER TABLE participant_context DROP COLUMN IF EXISTS did;
