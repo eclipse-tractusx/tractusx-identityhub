@@ -1,5 +1,6 @@
 #################################################################################
 # Copyright (c) 2026 Contributors to the Eclipse Foundation
+# Copyright (c) 2026 ARENA2036 e.V.
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -33,7 +34,7 @@ COPY vite.config.ts ./
 COPY tsconfig*.json ./
 
 ENV NODE_ENV=production
-
+COPY .env.production .env
 RUN npm run build
 
 
