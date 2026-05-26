@@ -1,6 +1,6 @@
 <!--
-  Copyright (c) 2026 Contributors to the Eclipse Foundation
   Copyright (c) 2026 ARENA2036 e.V.
+  Copyright (c) 2026 Contributors to the Eclipse Foundation
 
   See the NOTICE file(s) distributed with this work for additional
   information regarding copyright ownership.
@@ -20,79 +20,82 @@
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/logo-tractus-x-min.ico" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Identity Hub - Eclipse Tractus-X</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script>
-      const ENV = {
-        APP_ENVIRONMENT: "development",
-        APP_VERSION: "0.1.0",
 
-        IHUB_BACKEND_URL: "",
-        API_TIMEOUT: "30000",
-        API_RETRY_ATTEMPTS: "3",
-        REQUIRE_HTTPS_URL_PATTERN: "false",
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="/logo-tractus-x-min.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Identity Hub - Eclipse Tractus-X</title>
+</head>
 
-        API_KEY: "c3VwZXItdXNlcg==.your-api-key-here",
-        API_KEY_HEADER: "X-API-Key",
+<body>
+  <div id="root"></div>
+  <script>
+    const ENV = {
+      APP_ENVIRONMENT: "development",
+      APP_VERSION: "0.1.0",
 
-        AUTH_ENABLED: "true",
-        AUTH_PROVIDER: "keycloak",
+      IHUB_BACKEND_URL: "",
+      API_TIMEOUT: "30000",
+      API_RETRY_ATTEMPTS: "3",
+      REQUIRE_HTTPS_URL_PATTERN: "false",
 
-        KEYCLOAK_URL: "https://auth.hanka.ai",
-        KEYCLOAK_REALM: "hanka",
-        KEYCLOAK_CLIENT_ID: "ihub-frontend",
-        KEYCLOAK_ON_LOAD: "check-sso",
-        KEYCLOAK_CHECK_LOGIN_IFRAME: "false",
-        KEYCLOAK_SILENT_CHECK_SSO_REDIRECT_URI: "",
-        KEYCLOAK_PKCE_METHOD: "S256",
-        KEYCLOAK_ENABLE_LOGGING: "true",
-        KEYCLOAK_MIN_VALIDITY: "30",
-        KEYCLOAK_CHECK_LOGIN_IFRAME_INTERVAL: "5",
-        KEYCLOAK_FLOW: "standard",
+      API_KEY: "c3VwZXItdXNlcg==.your-api-key-here",
+      API_KEY_HEADER: "X-API-Key",
 
-        AUTH_SESSION_TIMEOUT: "3600000",
-        AUTH_RENEW_TOKEN_MIN_VALIDITY: "300",
-        AUTH_LOGOUT_REDIRECT_URI: "",
+      AUTH_ENABLED: "true",
+      AUTH_PROVIDER: "keycloak",
 
-        PARTICIPANT_ID: "BPNL00000003CRHK",
+      KEYCLOAK_URL: "https://auth.hanka.ai",
+      KEYCLOAK_REALM: "hanka",
+      KEYCLOAK_CLIENT_ID: "ihub-frontend",
+      KEYCLOAK_ON_LOAD: "check-sso",
+      KEYCLOAK_CHECK_LOGIN_IFRAME: "false",
+      KEYCLOAK_SILENT_CHECK_SSO_REDIRECT_URI: "",
+      KEYCLOAK_PKCE_METHOD: "S256",
+      KEYCLOAK_ENABLE_LOGGING: "true",
+      KEYCLOAK_MIN_VALIDITY: "30",
+      KEYCLOAK_CHECK_LOGIN_IFRAME_INTERVAL: "5",
+      KEYCLOAK_FLOW: "standard",
 
-        ENABLE_ADVANCED_LOGGING: "true",
-        ENABLE_PERFORMANCE_MONITORING: "false",
-        ENABLE_DEV_TOOLS: "true",
+      AUTH_SESSION_TIMEOUT: "3600000",
+      AUTH_RENEW_TOKEN_MIN_VALIDITY: "300",
+      AUTH_LOGOUT_REDIRECT_URI: "",
 
-        UI_THEME: "auto",
-        UI_LOCALE: "en",
-        UI_COMPACT_MODE: "false"
+      PARTICIPANT_ID: "BPNL00000003CRHK",
+
+      ENABLE_ADVANCED_LOGGING: "true",
+      ENABLE_PERFORMANCE_MONITORING: "false",
+      ENABLE_DEV_TOOLS: "true",
+
+      UI_THEME: "auto",
+      UI_LOCALE: "en",
+      UI_COMPACT_MODE: "false"
+    }
+
+    Object.keys(ENV).forEach(key => {
+      if (ENV[key] === 'undefined' || ENV[key] === '') {
+        delete ENV[key];
       }
+    });
 
-      Object.keys(ENV).forEach(key => {
-        if (ENV[key] === 'undefined' || ENV[key] === '') {
-          delete ENV[key];
-        }
-      });
+    window.ENV = ENV;
 
-      window.ENV = ENV;
+    if (ENV.ENABLE_DEV_TOOLS === 'true') {
+      try {
+        console.log('CONFIG LOADED:', {
+          AUTH_ENABLED: ENV.AUTH_ENABLED,
+          AUTH_PROVIDER: ENV.AUTH_PROVIDER,
+          IHUB_BACKEND_URL: ENV.IHUB_BACKEND_URL,
+          timestamp: new Date().toISOString()
+        });
+      } catch (e) { }
+    }
+  </script>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
 
-      if (ENV.ENABLE_DEV_TOOLS === 'true') {
-        try {
-          console.log('CONFIG LOADED:', {
-            AUTH_ENABLED: ENV.AUTH_ENABLED,
-            AUTH_PROVIDER: ENV.AUTH_PROVIDER,
-            IHUB_BACKEND_URL: ENV.IHUB_BACKEND_URL,
-            timestamp: new Date().toISOString()
-          });
-        } catch (e) {}
-      }
-    </script>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
 </html>
