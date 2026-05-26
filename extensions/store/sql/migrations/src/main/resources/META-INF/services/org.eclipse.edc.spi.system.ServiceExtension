@@ -24,6 +24,7 @@ org.eclipse.tractusx.store.postgresql.migration.AttestationDefinitionMigrationEx
 org.eclipse.tractusx.store.postgresql.migration.CredentialDefinitionMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.CredentialOfferMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.CredentialResourceMigrationExtension
+org.eclipse.tractusx.store.postgresql.migration.CustomAttestationsMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.DidResourceMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.HolderCredentialRequestMigrationExtension
 org.eclipse.tractusx.store.postgresql.migration.HoldersMigrationExtension
