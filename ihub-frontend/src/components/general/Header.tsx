@@ -351,7 +351,7 @@ export default function Header() {
                     <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', justifyContent: 'flex-start' }}>
                         <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
                             <img
-                                src="/241117_Tractus_X_Logo_Only_RGB.png"
+                                src="/tractus-x-logo.png"
                                 alt="Eclipse Tractus-X logo"
                                 className='small-logo'
                                 style={{ display: 'block' }}
@@ -361,7 +361,7 @@ export default function Header() {
                     <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', justifyContent: 'flex-start' }}>
                         <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
                             <img
-                                src="/241117_Tractus_X_Logo_RGB_Light_Version.png"
+                                src="/tractus-x-logo-light-version.png"
                                 alt="Eclipse Tractus-X logo"
                                 className='main-logo'
                                 style={{ display: 'block' }}
