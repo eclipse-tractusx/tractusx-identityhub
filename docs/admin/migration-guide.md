@@ -2,6 +2,95 @@
 
 This migration guide is based on the `chartVersion` of the chart. If you don't rely on the provided helm chart, consider the changes of the chart as mentioned below manually.
 
+## EDC 0.15.1 → 0.16.0
+
+This section documents the steps required to upgrade tractusx-identityhub from EDC 0.15.1 to 0.16.0. See [#280](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/280) for full details.
+
+### 1. Build System Changes
+
+| Component | Before | After | Reason |
+|-----------|--------|-------|--------|
+| EDC | 0.15.1 | 0.16.0 | Upstream upgrade |
+| edc-build plugin | 1.1.6 | 1.1.6 | No change (both upstream versions pin 1.1.6) |
+| Gradle wrapper | 9.3.1 | 9.3.1 | No change |
+
+**`gradle/libs.versions.toml`** — update the single `edc` entry:
+
+```toml
+edc = "0.16.0"           # was 0.15.1
+```
+
+No alias renames are required — all existing module aliases resolve unchanged under 0.16.0.
+
+### 2. Java Code Changes
+
+Upstream IdentityHub PR [#875](https://github.com/eclipse-edc/IdentityHub/pull/875) harmonizes the participant-context SPI onto EDC Connector's generic types. Downstream code must adopt the new type names and packages:
+
+| Old type | New type |
+|----------|----------|
+| `org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantContext` | `org.eclipse.edc.identityhub.spi.participantcontext.model.IdentityHubParticipantContext` |
+| `org.eclipse.edc.identityhub.spi.participantcontext.ParticipantContextService` | `org.eclipse.edc.identityhub.spi.participantcontext.IdentityHubParticipantContextService` |
+| `org.eclipse.edc.identityhub.spi.participantcontext.store.ParticipantContextStore` | `org.eclipse.edc.participantcontext.spi.store.ParticipantContextStore` |
+| `org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantContextState` | `org.eclipse.edc.participantcontext.spi.types.ParticipantContextState` |
+
+The fluent builder API is preserved (`.did(...)`, `.participantContextId(...)`, `.apiTokenAlias(...)`, `.roles(...)`, `.state(...)`, `.properties(...)`).
+
+> **Note:** `IdentityHubParticipantContext.Builder.build()` now validates that `did` (the new `identity` field) is non-null. Any code constructing a participant context — including test fixtures — must set `.did(...)`.
+
+### 3. Configuration Changes
+
+Two new settings must be applied to every runtime config (runtime defaults, docker compose configs, and Helm chart ConfigMaps):
+
+| Setting | Value | Reason |
+|---------|-------|--------|
+| `edc.encryption.strict` | `false` | EDC 0.16.0 introduced an `EncryptionAlgorithmRegistry` and enables config encryption by default (`edc.participants.config.encryption.algorithm=aes`). The bundled AES extension only registers the `aes` algorithm when `edc.encryption.aes.key.alias` is set; without it, the runtime fails to start with `Failed to encrypt entries: Unsupported encryption algorithm: aes`. Setting `strict=false` preserves pre-0.16.0 behaviour. To enable at-rest encryption instead, set `strict=true` and provide `edc.encryption.aes.key.alias` pointing at an AES key in the vault. |
+| `edc.iam.credential.revocation.mimetype` | `*/*` | 0.16.0's `StatusListCredentialController` rejects the bare `*` (not a valid MIME type). The default is now `*/*`; any explicit `*` value must be corrected. |
+
+### 4. Database Migrations
+
+A single Flyway migration `V0_0_2__Migrate_To_EDC_0_16_0.sql` reshapes the `participant_context` table. It runs automatically on startup if Flyway is enabled. If you manage schema changes manually, apply the following in order:
+
+```sql
+-- Add the new identity column
+ALTER TABLE participant_context ADD COLUMN IF NOT EXISTS identity VARCHAR;
+
+-- Backfill identity from did, falling back to participant_context_id for legacy rows
+UPDATE participant_context SET identity = did WHERE identity IS NULL AND did IS NOT NULL;
+UPDATE participant_context SET identity = participant_context_id WHERE identity IS NULL;
+
+-- Move apiTokenAlias and roles into the properties JSON column
+UPDATE participant_context
+   SET properties = COALESCE(properties::jsonb, '{}'::jsonb)
+                    || jsonb_build_object('apiTokenAlias', api_token_alias)
+                    || jsonb_build_object('roles', COALESCE(roles::jsonb, '[]'::jsonb))
+ WHERE api_token_alias IS NOT NULL OR roles IS NOT NULL;
+
+-- Apply NOT NULL + UNIQUE on identity, then drop the obsolete columns
+ALTER TABLE participant_context ALTER COLUMN identity SET NOT NULL;
+ALTER TABLE participant_context ADD CONSTRAINT participant_context_identity_unique UNIQUE (identity);
+ALTER TABLE participant_context DROP COLUMN IF EXISTS api_token_alias;
+ALTER TABLE participant_context DROP COLUMN IF EXISTS did;
+ALTER TABLE participant_context DROP COLUMN IF EXISTS roles;
+```
+
+> **Warning:** The new schema requires `identity` to be `UNIQUE`. V0_0_1 did not enforce uniqueness on `did`, so if your deployment contains duplicate `did` values the migration will fail with an explicit error naming the duplicate count. Resolve duplicates before retrying. The shipped Flyway script is fully idempotent and performs this duplicate check automatically before the destructive steps.
+
+> **Note:** The `api_token_alias`, `did`, and `roles` columns are permanently removed; their values are preserved inside the `properties` JSON column (`identity` replaces `did`). Back up your database before migrating.
+
+### 5. Verification
+
+After applying all changes, verify the upgrade:
+
+```bash
+# Build and run tests
+./gradlew build
+
+# Build shadow JARs
+./gradlew :runtimes:identityhub:shadowJar :runtimes:issuerservice:shadowJar
+```
+
+All tests should pass and shadow JARs should be produced in `runtimes/*/build/libs/`.
+
 ## EDC 0.14.0 → 0.15.1
 
 This section documents the steps required to upgrade tractusx-identityhub from EDC 0.14.0 to 0.15.1. See [#198](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/198) for full details.

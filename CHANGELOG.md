@@ -31,6 +31,9 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
   - `org.eclipse.edc.identityhub.spi.participantcontext.ParticipantContextService` replaced by `IdentityHubParticipantContextService`
   - `org.eclipse.edc.identityhub.spi.participantcontext.store.ParticipantContextStore` replaced by `org.eclipse.edc.participantcontext.spi.store.ParticipantContextStore`
   - `ParticipantContextState` moved to `org.eclipse.edc.participantcontext.spi.types.ParticipantContextState`
+  - New setting `edc.encryption.strict=false` added to all runtimes, docker configs, and Helm charts — 0.16.0 enables config encryption by default (`edc.participants.config.encryption.algorithm=aes`) and the runtime fails to start unless an AES key alias is provided or strict mode is disabled
+  - `edc.iam.credential.revocation.mimetype` corrected from `*` to `*/*` (0.16.0's `StatusListCredentialController` rejects the bare `*`)
+  - See [docs/admin/migration-guide.md](docs/admin/migration-guide.md) for the full operator upgrade walkthrough
 - **BREAKING:** Upgrade EDC from 0.14.0 to 0.15.1 ([#198](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/198)):
   - `ParticipantManifest.Builder.participantId()` renamed to `participantContextId()`
   - `edc_sts_client` table: `private_key_alias` and `public_key_reference` columns removed, `participant_context_id` added
