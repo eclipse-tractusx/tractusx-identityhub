@@ -109,3 +109,8 @@ data:
   edc.datasource.participantcontextconfig.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
   edc.datasource.participantcontextconfig.user: {{ .Values.postgresql.auth.username | quote }}
   edc.datasource.participantcontextconfig.password: {{ .Values.postgresql.auth.password | quote }}
+
+  edc.sql.store.customattestations.datasource: "customattestations"
+  edc.datasource.customattestations.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
+  edc.datasource.customattestations.user: {{ .Values.postgresql.auth.username | quote }}
+  edc.datasource.customattestations.password: {{ .Values.postgresql.auth.password | quote }}
