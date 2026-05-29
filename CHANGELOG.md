@@ -22,6 +22,7 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
   - Adds `identity VARCHAR UNIQUE NOT NULL` (populated from `did`)
   - Moves `api_token_alias` and `roles` into the `properties` JSON column
   - Drops columns `api_token_alias`, `did`, `roles`
+  - Remaps the `state` column from the legacy IH-owned ParticipantContextState codes `{0, 1, 2}` to the new connector-owned codes `{100, 200, 300}` — without this, the new `SqlParticipantContextStore` NPEs while deserializing any pre-existing row
   - **Applied automatically by Flyway on startup; back up your database before upgrading**
 
 ### Changed

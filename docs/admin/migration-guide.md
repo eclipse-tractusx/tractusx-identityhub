@@ -48,7 +48,7 @@ Two new settings must be applied to every runtime config (runtime defaults, dock
 
 ### 4. Database Migrations
 
-A single Flyway migration `V0_0_2__Migrate_To_EDC_0_16_0.sql` reshapes the `participant_context` table. It runs automatically on startup if Flyway is enabled. If you manage schema changes manually, apply the following in order:
+A single Flyway migration `V0_0_2__Migrate_To_EDC_0_16_0.sql` reshapes the `participant_context` table and remaps the `state` column to the new enum codes. It runs automatically on startup if Flyway is enabled. If you manage schema changes manually, apply the following in order:
 
 ```sql
 -- Add the new identity column
@@ -57,6 +57,14 @@ ALTER TABLE participant_context ADD COLUMN IF NOT EXISTS identity VARCHAR;
 -- Backfill identity from did, falling back to participant_context_id for legacy rows
 UPDATE participant_context SET identity = did WHERE identity IS NULL AND did IS NOT NULL;
 UPDATE participant_context SET identity = participant_context_id WHERE identity IS NULL;
+
+-- Remap legacy ParticipantContextState codes: 0.15.1 wrote {CREATED=0, ACTIVATED=1, DEACTIVATED=2};
+-- 0.16.0's connector-owned enum uses {CREATED=100, ACTIVATED=200, DEACTIVATED=300}. Without
+-- this remap the new SqlParticipantContextStore returns null from from(int) and NPEs in the
+-- builder when reading any pre-existing participant_context row.
+UPDATE participant_context
+   SET state = CASE state WHEN 0 THEN 100 WHEN 1 THEN 200 WHEN 2 THEN 300 END
+ WHERE state IN (0, 1, 2);
 
 -- Move apiTokenAlias and roles into the properties JSON column
 UPDATE participant_context

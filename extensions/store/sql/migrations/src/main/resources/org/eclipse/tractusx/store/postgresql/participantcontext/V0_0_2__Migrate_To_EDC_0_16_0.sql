@@ -22,6 +22,11 @@
 --   - Added column:   identity (UNIQUE NOT NULL) — replaces did
 --   - Removed columns: api_token_alias, did, roles
 --     (api_token_alias and roles are now stored in the properties JSON column)
+--   - state column values remapped: the legacy IH-owned ParticipantContextState
+--     enum used ordinal codes {CREATED=0, ACTIVATED=1, DEACTIVATED=2}; the new
+--     connector-owned enum uses {CREATED=100, ACTIVATED=200, DEACTIVATED=300}.
+--     SqlParticipantContextStore reads the column via from(int) which returns
+--     null for unknown codes, causing an NPE in ParticipantContext.Builder.
 
 -- Step 1: add the new identity column. Idempotent on its own (IF NOT EXISTS).
 ALTER TABLE participant_context ADD COLUMN IF NOT EXISTS identity VARCHAR;
@@ -72,6 +77,19 @@ BEGIN
   IF duplicate_count > 0 THEN
     RAISE EXCEPTION 'V0_0_2 migration: % duplicate identity value(s) detected in participant_context (backfilled from the did column, which V0_0_1 did not enforce as UNIQUE). Resolve duplicates before retrying.', duplicate_count;
   END IF;
+
+  -- Remap legacy ParticipantContextState codes. EDC 0.15.1 wrote {0,1,2}
+  -- (IH-owned enum ordinals); 0.16.0's connector-owned enum uses {100,200,300}.
+  -- Rows already on the new codes are untouched; any other value is left as-is
+  -- (it will fail deserialization with a clear NPE, which is the right signal
+  -- that something hand-edited the table).
+  UPDATE participant_context
+     SET state = CASE state
+                   WHEN 0 THEN 100
+                   WHEN 1 THEN 200
+                   WHEN 2 THEN 300
+                 END
+   WHERE state IN (0, 1, 2);
 
   -- Move apiTokenAlias and roles into the properties JSON column
   UPDATE participant_context
