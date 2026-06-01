@@ -1,4 +1,5 @@
 /********************************************************************************
+ * Copyright (c) 2026 ARENA2036 e.V.
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -98,7 +99,7 @@ const KeyPairsPage: React.FC = () => {
     );
 
     const fetchKeyPairsList = useCallback(async (): Promise<KeyPairResource[]> => {
-        const response = await httpClient.get(`${API_BASE}/participants/${getPid()}/keypairs`);
+        const response = await httpClient.get(`${API_BASE}/keypairs`);
         return Array.isArray(response.data) ? response.data : [];
     }, [getPid]);
 
@@ -338,136 +339,436 @@ const KeyPairsPage: React.FC = () => {
                 </Box>
             ) : (
                 <>
-                <Box className="custom-cards-list">
-                    {visibleKeyPairs.map((kp) => {
-                        const stateStyle = getStateStyle(kp.state);
-                        return (
-                            <Box key={kp.keyId} className="custom-card-box">
-                                <Box className="custom-card" sx={{ minHeight: '200px' }}>
-                                    <Box className="custom-card-header" sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
-                                        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', flex: 1 }}>
-                                            <Chip label={stateStyle.label} variant="outlined"
-                                                sx={stateChipSx(kp.state)} />
-                                            {kp.defaultPair && (
-                                                <Chip label="Default" size="small"
-                                                    sx={{ color: 'rgba(255,255,255,0.7)', backgroundColor: 'transparent', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.3)', height: '32px' }} />
-                                            )}
-                                        </Box>
-                                        <Box className="custom-card-header-buttons">
-                                            <Tooltip title="More options" arrow>
-                                                <IconButton
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setAnchorEl(e.currentTarget);
-                                                        setSelectedKp(kp);
-                                                    }}
-                                                >
-                                                    <MoreVert sx={{ color: 'rgba(255, 255, 255, 0.68)' }} />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </Box>
-                                    </Box>
 
-                                    <Box className="custom-card-content" sx={{ overflow: 'hidden', flex: 1, display: 'flex', flexDirection: 'column', pb: 2.5 }}>
-                                        <Tooltip title={kp.keyId} arrow placement="top">
-                                            <Typography variant="h5" sx={{ mb: 0.5, cursor: 'help' }}>
-                                                {kp.keyId}
-                                            </Typography>
-                                        </Tooltip>
-                                        <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                                            {kp.privateKeyAlias && (
-                                                <Box>
-                                                    <Typography sx={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.45)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.8px', mb: '2px' }}>
-                                                        Private Key Alias
-                                                    </Typography>
-                                                    <Tooltip title={kp.privateKeyAlias} arrow placement="top">
-                                                        <Typography sx={{ fontFamily: 'Monaco, "Lucida Console", monospace', fontSize: '0.76rem', color: 'rgba(255,255,255,0.87)', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'help' }}>
-                                                            {kp.privateKeyAlias}
-                                                        </Typography>
-                                                    </Tooltip>
-                                                </Box>
-                                            )}
-                                            {kp.timestamp && (
-                                                <Box>
-                                                    <Typography sx={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.45)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.8px', mb: '2px' }}>
-                                                        Created
-                                                    </Typography>
-                                                    <Typography sx={{ fontSize: '0.76rem', color: 'rgba(255,255,255,0.87)', lineHeight: 1.2 }}>
-                                                        {new Date(kp.timestamp).toLocaleDateString()}
-                                                    </Typography>
-                                                </Box>
-                                            )}
-                                        </Box>
-                                    </Box>
-                                </Box>
-                            </Box>
-                        );
-                    })}
-                    <Menu
-                        anchorEl={anchorEl}
-                        open={openMenu}
-                        onClose={() => { setAnchorEl(null); setSelectedKp(null); }}
-                        MenuListProps={{ 'aria-labelledby': 'more-options-button' }}
-                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                        PaperProps={{ sx: { backgroundColor: 'white !important' } }}
+<Box
+    sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 3,
+        width: '100%',
+        px: { xs: 0, sm: 1, md: 2 },
+    }}
+>
+    {visibleKeyPairs.map((kp) => {
+        const stateStyle = getStateStyle(kp.state);
+
+        return (
+            <Box
+                key={kp.keyId}
+                sx={{
+                    position: 'relative',
+                    width: '100%',
+                    borderRadius: '24px',
+                    background:
+                        'linear-gradient(180deg, rgba(3,8,18,0.98) 0%, rgba(0,0,0,0.98) 100%)',
+                    border: '1px solid rgba(0, 212, 255, 0.12)',
+                    boxShadow:
+                        '0 20px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.03)',
+                    px: { xs: 3, md: 4 },
+                    py: { xs: 3, md: 4 },
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        transform: 'translateY(-2px)',
+                        borderColor: 'rgba(0,212,255,0.25)',
+                        boxShadow:
+                            '0 24px 80px rgba(0,0,0,0.55), 0 0 20px rgba(0,212,255,0.06)',
+                    },
+                }}
+            >
+                {/* Header */}
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-start',
+                        gap: 2,
+                        mb: 3,
+                    }}
+                >
+                    {/* Left Side */}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: 2,
+                            flex: 1,
+                            minWidth: 0,
+                        }}
                     >
-                        {selectedKp && (
-                            <>
-                                {selectedKp.state === 200 && (
-                                    <Box
-                                        onClick={() => {
-                                            openRotateDialog(selectedKp.id);
-                                            setAnchorEl(null);
-                                            setSelectedKp(null);
+                        {/* Key Icon */}
+                        <Box
+                            sx={{
+                                width: 42,
+                                height: 42,
+                                borderRadius: '12px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexShrink: 0,
+                                background:
+                                    'linear-gradient(135deg, rgba(1,32,96,0.95) 0%, rgba(15,113,203,0.85) 100%)',
+                                border: '1px solid rgba(0,212,255,0.18)',
+                                boxShadow:
+                                    '0 4px 12px rgba(1,40,119,0.25)',
+                            }}
+                        >
+                            <VpnKeyIcon
+                                sx={{
+                                    fontSize: 22,
+                                    color: '#8FD3FF',
+                                }}
+                            />
+                        </Box>
+
+                        {/* Title + Meta */}
+                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    flexWrap: 'wrap',
+                                    gap: 1,
+                                    mb: 0.5,
+                                }}
+                            >
+                                <Tooltip title={kp.keyId} arrow>
+                                    <Typography
+                                        sx={{
+                                            fontFamily:
+                                                '"Roboto Mono", monospace',
+                                            fontSize: {
+                                                xs: '1.4rem',
+                                                sm: '1.6rem',
+                                                md: '2rem',
+                                            },
+                                            fontWeight: 700,
+                                            lineHeight: 1.1,
+                                            color: '#FFFFFF',
+                                            cursor: 'help',
+                                            wordBreak: 'break-word',
                                         }}
-                                        sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
                                     >
-                                        <RotateLeftIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
-                                        <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Rotate</Box>
-                                    </Box>
-                                )}
-                                {selectedKp.state === 200 && (
-                                    <Box
-                                        onClick={() => {
-                                            openRevokeDialog(selectedKp.id);
-                                            setAnchorEl(null);
-                                            setSelectedKp(null);
+                                        {kp.keyId}
+                                    </Typography>
+                                </Tooltip>
+
+                                {/* DEFAULT badge */}
+                                {kp.defaultPair && (
+                                    <Chip
+                                        label="DEFAULT"
+                                        size="small"
+                                        sx={{
+                                            height: 24,
+                                            borderRadius: '999px',
+                                            fontSize: '0.65rem',
+                                            fontWeight: 700,
+                                            letterSpacing: '0.05em',
+                                            color: '#00E676',
+                                            backgroundColor:
+                                                'rgba(0,230,118,0.10)',
+                                            border:
+                                                '1px solid rgba(0,230,118,0.25)',
                                         }}
-                                        sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
-                                    >
-                                        <BlockIcon fontSize="small" sx={{ marginRight: 1, color: '#ff9800 !important', fill: '#ff9800 !important' }} />
-                                        <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Revoke</Box>
-                                    </Box>
+                                    />
                                 )}
-                                {selectedKp.state === 100 && (
-                                    <Box
-                                        onClick={() => {
-                                            handleActivate(selectedKp.id);
-                                            setAnchorEl(null);
-                                            setSelectedKp(null);
+
+                                {/* State badge if not default */}
+                                {!kp.defaultPair && (
+                                    <Chip
+                                        label={stateStyle.label.toUpperCase()}
+                                        size="small"
+                                        sx={{
+                                            ...stateChipSx(kp.state),
+                                            height: 24,
+                                            fontSize: '0.65rem',
+                                            fontWeight: 700,
                                         }}
-                                        sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
-                                    >
-                                        <CheckCircleIcon fontSize="small" sx={{ marginRight: 1, color: '#4caf50 !important', fill: '#4caf50 !important' }} />
-                                        <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Activate</Box>
-                                    </Box>
+                                    />
                                 )}
-                                <Box
-                                    onClick={() => {
-                                        copyToClipboard(selectedKp.keyId);
-                                        setAnchorEl(null);
-                                        setSelectedKp(null);
+                            </Box>
+
+                            {/* Created Timestamp */}
+                            {kp.timestamp && (
+                                <Typography
+                                    sx={{
+                                        fontFamily:
+                                            '"Roboto Mono", monospace',
+                                        fontSize: '0.82rem',
+                                        color:
+                                            'rgba(255,255,255,0.45)',
                                     }}
-                                    sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
                                 >
-                                    <ContentCopyIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
-                                    <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Copy Key ID</Box>
-                                </Box>
-                            </>
-                        )}
-                    </Menu>
+                                    Created{' '}
+                                    {new Date(
+                                        kp.timestamp,
+                                    ).toLocaleString()}
+                                </Typography>
+                            )}
+                        </Box>
+                    </Box>
+
+                    {/* Right Side Actions */}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 0.5,
+                            flexShrink: 0,
+                        }}
+                    >
+                    
+
+                        {/* More Menu */}
+                        <Tooltip title="More options" arrow>
+                            <IconButton
+                                size="small"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setAnchorEl(
+                                        e.currentTarget,
+                                    );
+                                    setSelectedKp(kp);
+                                }}
+                                sx={{
+                                    color:
+                                        'rgba(255,255,255,0.55)',
+                                    '&:hover': {
+                                        color: '#00D4FF',
+                                        backgroundColor:
+                                            'rgba(0,212,255,0.08)',
+                                    },
+                                }}
+                            >
+                                <MoreVert fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
                 </Box>
+
+                {/* Public Key Identifier Section */}
+                {kp.serializedPublicKey && (
+                    <Box>
+                        <Typography
+                            sx={{
+                                fontSize: '0.72rem',
+                                fontWeight: 700,
+                                letterSpacing: '0.14em',
+                                textTransform: 'uppercase',
+                                color:
+                                    'rgba(255,255,255,0.45)',
+                                mb: 1,
+                            }}
+                        >
+                            Public Key Identifier
+                        </Typography>
+
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 1,
+                                px: 2,
+                                py: 1.5,
+                                borderRadius: '14px',
+                                backgroundColor:
+                                    'rgba(0,0,0,0.55)',
+                                border:
+                                    '1px solid rgba(255,255,255,0.08)',
+                            }}
+                        >
+                            <Tooltip
+                                title={kp.serializedPublicKey}
+                                arrow
+                            >
+                                <Typography
+                                    sx={{
+                                        flex: 1,
+                                        minWidth: 0,
+                                        fontFamily:
+                                            '"Roboto Mono", monospace',
+                                        fontSize: '0.9rem',
+                                        color:
+                                            'rgba(255,255,255,0.88)',
+                                        overflow: 'hidden',
+                                        textOverflow:
+                                            'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                        cursor: 'help',
+                                    }}
+                                >
+                                    {kp.serializedPublicKey}
+                                </Typography>
+                            </Tooltip>
+
+                            <Tooltip title="Copy" arrow>
+                                <IconButton
+                                    size="small"
+                                    onClick={() =>
+                                        copyToClipboard(
+                                            kp.serializedPublicKey ||
+                                                '',
+                                        )
+                                    }
+                                    sx={{
+                                        color:
+                                            'rgba(255,255,255,0.55)',
+                                        '&:hover': {
+                                            color: '#00D4FF',
+                                            backgroundColor:
+                                                'rgba(0,212,255,0.08)',
+                                        },
+                                    }}
+                                >
+                                    <ContentCopyIcon
+                                        fontSize="small"
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
+                    </Box>
+                )}
+            </Box>
+        );
+    })}
+</Box>
+<Menu
+    anchorEl={anchorEl}
+    open={openMenu}
+    onClose={() => {
+        setAnchorEl(null);
+        setSelectedKp(null);
+    }}
+    MenuListProps={{ 'aria-labelledby': 'more-options-button' }}
+    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+    PaperProps={{
+        sx: {
+            backgroundColor: '#ffffff',
+            borderRadius: '12px',
+            minWidth: 220,
+            boxShadow: '0 12px 32px rgba(0,0,0,0.18)',
+            border: '1px solid rgba(1,86,255,0.12)',
+            py: 0.5,
+        },
+    }}
+>
+    {selectedKp && (
+        <>
+           
+            {selectedKp.state === 200 && (
+                <Box
+                    onClick={() => {
+                        
+                        openRotateDialog(selectedKp.id);
+                        setAnchorEl(null);
+                        setSelectedKp(null);
+                    }}
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1.5,
+                        px: 2,
+                        py: 1,
+                        cursor: 'pointer',
+                        '&:hover': {
+                            backgroundColor: '#f5f9ff',
+                        },
+                    }}
+                >
+                    <RotateLeftIcon
+                        fontSize="small"
+                        sx={{ color: '#0F71CB' }}
+                    />
+                    <Typography
+                        sx={{
+                            fontSize: '0.875rem',
+                            color: '#111827',
+                            fontWeight: 500,
+                        }}
+                    >
+                        Rotate
+                    </Typography>
+                </Box>
+            )}
+
+        
+            {selectedKp.state === 200 && (
+                <Box
+                    onClick={() => {
+                        
+                        openRevokeDialog(selectedKp.id);
+                        setAnchorEl(null);
+                        setSelectedKp(null);
+                    }}
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1.5,
+                        px: 2,
+                        py: 1,
+                        cursor: 'pointer',
+                        '&:hover': {
+                            backgroundColor: '#fff8f0',
+                        },
+                    }}
+                >
+                    <BlockIcon
+                        fontSize="small"
+                        sx={{ color: '#F59E0B' }}
+                    />
+                    <Typography
+                        sx={{
+                            fontSize: '0.875rem',
+                            color: '#111827',
+                            fontWeight: 500,
+                        }}
+                    >
+                        Revoke
+                    </Typography>
+                </Box>
+            )}
+
+            {selectedKp.state === 100 && (
+                <Box
+                    onClick={() => {
+                    
+                        handleActivate(selectedKp.id);
+                        setAnchorEl(null);
+                        setSelectedKp(null);
+                    }}
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1.5,
+                        px: 2,
+                        py: 1,
+                        cursor: 'pointer',
+                        '&:hover': {
+                            backgroundColor: '#f0fff4',
+                        },
+                    }}
+                >
+                    <CheckCircleIcon
+                        fontSize="small"
+                        sx={{ color: '#22C55E' }}
+                    />
+                    <Typography
+                        sx={{
+                            fontSize: '0.875rem',
+                            color: '#111827',
+                            fontWeight: 500,
+                        }}
+                    >
+                        Activate
+                    </Typography>
+                </Box>
+            )}
+
+        
+        </>
+    )}
+</Menu>
+
                 <Grid2 size={12} className="flex flex-content-center" sx={{ mt: 'auto', pt: 3 }}>
                     <TablePagination
                         rowsPerPageOptions={[rowsPerPage]}
@@ -499,7 +800,7 @@ const KeyPairsPage: React.FC = () => {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent sx={whiteDialogContentSx}>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    <Typography variant="body2" sx={{ color: '#FFFFFF' }}>
                         Create a new key pair for the active participant context.
                     </Typography>
                     <TextField label="Key ID (optional)" value={newKeyId}
@@ -519,7 +820,7 @@ const KeyPairsPage: React.FC = () => {
                             />
                         }
                         label="Set as default key pair"
-                        sx={{ color: 'text.primary' }}
+                        sx={{ color: '#FFFFFF' }}
                     />
                 </DialogContent>
                 <DialogActions sx={whiteDialogActionsSx}>

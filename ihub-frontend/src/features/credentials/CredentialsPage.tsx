@@ -1,4 +1,5 @@
 /********************************************************************************
+ * Copyright (c) 2026 ARENA2036 e.V.
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -75,6 +76,7 @@ const CredentialsPage: React.FC = () => {
     const [reqIssuerDid, setReqIssuerDid] = useState('');
     const [reqHolderPid, setReqHolderPid] = useState('');
     const [reqCredType, setReqCredType] = useState('');
+    const [reqCredentialId, setReqCredentialId] = useState('');
     const [reqCredFormat, setReqCredFormat] = useState('ldp_vc');
     const [requesting, setRequesting] = useState(false);
     const [snackbar, setSnackbar] = useState<{ message: string; severity: 'success' | 'error' } | null>(null);
@@ -241,15 +243,16 @@ const CredentialsPage: React.FC = () => {
                 >
                     Request
                 </Button>
-                <Button
+                {/* <Button
                     className="add-button"
                     variant="outlined"
                     size="small"
                     startIcon={<AddIcon />}
                     onClick={() => setAddOpen(true)}
                 >
+                
                     Add Credential
-                </Button>
+                </Button> */}
             </Grid2>
 
             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', pt: 2 }}>
@@ -365,6 +368,11 @@ const CredentialsPage: React.FC = () => {
                         fullWidth label="Credential Type" value={reqCredType}
                         onChange={(e) => setReqCredType(e.target.value)}
                         placeholder="MembershipCredential"
+                    />
+                    <TextField
+                        fullWidth label="Type" value={reqCredentialId}
+                        onChange={(e) => setReqCredentialId(e.target.value)}
+                        placeholder="tx-membershipCredential"
                     />
                     <TextField
                         fullWidth label="Format" value={reqCredFormat}

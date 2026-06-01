@@ -22,8 +22,7 @@
 .contentWrapper {
     background: black;
     background-image:
-        linear-gradient(rgba($brand-dark, 0.3), rgba($brand-dark, 0.6)),
-        url('/stars-background.png') !important;
+        linear-gradient(rgba($brand-dark, 0.8), rgba($brand-primary, 0.3));
     height: 100vh;
     overflow: hidden;
 }

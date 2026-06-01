@@ -1,4 +1,5 @@
 /********************************************************************************
+ * Copyright (c) 2026 ARENA2036 e.V.
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional

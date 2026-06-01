@@ -148,14 +148,11 @@ class EnvironmentService {
     }
 }
 
-export const getIhubBackendUrl = () => window?.ENV?.IHUB_BACKEND_URL ?? '';
+export const getIhubBackendUrl = () => environmentService.getIhubBackendUrl();
 
-export const getParticipantId = () => window?.ENV?.PARTICIPANT_ID ?? '';
+export const getParticipantId = () => environmentService.getParticipantId();
 
-export const isAuthEnabled = () => {
-    const service = new EnvironmentService();
-    return service.isAuthEnabled();
-};
+export const isAuthEnabled = () => environmentService.isAuthEnabled();
 
 const environmentService = new EnvironmentService();
 

@@ -130,7 +130,7 @@ export default function Header() {
                     variant="subtitle1"
                     sx={{ fontWeight: 600, mb: 0.5, color: 'text.primary' }}
                 >
-                    {isAuthenticated && user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username : 'Felipe Bustillo'}
+                    {isAuthenticated && user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username : 'Tractus-X User'}
                 </Typography>
                 {isAuthenticated && user?.email && (
                     <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1 }}>
@@ -328,12 +328,12 @@ export default function Header() {
                 </IconButton>
                 <p>Notifications</p>
             </MenuItem>
-            <MenuItem>
+            {/* <MenuItem>
                 <IconButton size="large" aria-label="configure policies">
                     <Policy />
                 </IconButton>
                 <p>Policy Config</p>
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem onClick={handleProfileMenuOpen}>
                 <IconButton size="large" aria-label="account of current user">
                     <AccountCircle />
@@ -350,7 +350,7 @@ export default function Header() {
                     <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', justifyContent: 'flex-start' }}>
                         <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
                             <img
-                                src="/241117_Tractus_X_Logo_Only_RGB.png"
+                                src="/tractus-x-logo.png"
                                 alt="Eclipse Tractus-X logo"
                                 className='small-logo'
                                 style={{ display: 'block' }}
@@ -360,7 +360,7 @@ export default function Header() {
                     <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', justifyContent: 'flex-start' }}>
                         <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
                             <img
-                                src="/241117_Tractus_X_Logo_RGB_Light_Version.png"
+                                src="/tractus-x-logo-light-version.png"
                                 alt="Eclipse Tractus-X logo"
                                 className='main-logo'
                                 style={{ display: 'block' }}
@@ -401,7 +401,7 @@ export default function Header() {
                                 </Badge>
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Policy/Governance Configuration is coming soon" arrow>
+                        {/* <Tooltip title="Policy/Governance Configuration is coming soon" arrow>
                             <IconButton
                                 size="large"
                                 aria-label="configure policies"
@@ -417,7 +417,7 @@ export default function Header() {
                             >
                                 <Policy />
                             </IconButton>
-                        </Tooltip>
+                        </Tooltip> */}
                         <IconButton
                             size="large"
                             edge="end"

@@ -1,4 +1,5 @@
 /********************************************************************************
+ * Copyright (c) 2026 ARENA2036 e.V.
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -28,8 +29,7 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-    const hasStoredAuth = sessionStorage.getItem('keycloak_authenticated') === 'true';
-    const [isInitialized, setIsInitialized] = useState(hasStoredAuth);
+    const [isInitialized, setIsInitialized] = useState(false);
     const [initError, setInitError] = useState<string | null>(null);
 
     useEffect(() => {
