@@ -25,10 +25,10 @@ package org.eclipse.tractusx.identityhub.initial.participant;
 import org.eclipse.edc.iam.decentralizedclaims.sts.spi.store.StsAccountStore;
 import org.eclipse.edc.identityhub.spi.did.DidDocumentService;
 import org.eclipse.edc.identityhub.spi.keypair.KeyPairService;
-import org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantContext;
-import org.eclipse.edc.identityhub.spi.participantcontext.store.ParticipantContextStore;
+import org.eclipse.edc.identityhub.spi.participantcontext.model.IdentityHubParticipantContext;
 import org.eclipse.edc.junit.extensions.DependencyInjectionExtension;
 import org.eclipse.edc.participantcontext.spi.config.service.ParticipantContextConfigService;
+import org.eclipse.edc.participantcontext.spi.store.ParticipantContextStore;
 import org.eclipse.edc.spi.EdcException;
 import org.eclipse.edc.spi.monitor.Monitor;
 import org.eclipse.edc.spi.result.Result;
@@ -89,7 +89,7 @@ public class InitialParticipantExtensionTest {
                 enableParticipant, useHttps);
 
         // Arrange
-        when(participantContextStore.create(any(ParticipantContext.class)))
+        when(participantContextStore.create(any(IdentityHubParticipantContext.class)))
                 .thenReturn(StoreResult.success());
         when(vault.storeSecret(anyString(), anyString()))
                 .thenReturn(Result.success());
@@ -107,7 +107,7 @@ public class InitialParticipantExtensionTest {
         extension.start();
 
         // Assert
-        verify(participantContextStore).create(any(ParticipantContext.class));
+        verify(participantContextStore).create(any(IdentityHubParticipantContext.class));
         verify(vault).storeSecret(eq(participantSecretAlias), eq(participantSecret));
         verify(vault).storeSecret(eq(participantDid + "-apikey"), eq(participantApiKey));
         verify(didDocumentService).store(any(), eq(participantDid));

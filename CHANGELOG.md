@@ -18,9 +18,23 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
   - `edc_sts_client`: added `participant_context_id`, removed `private_key_alias` and `public_key_reference`
   - `holders`: new `anonymous` and `properties` columns
   - `edc_lease` (credentialrequest, issuanceprocess): redesigned PK from `lease_id` to composite `(resource_id, resource_kind)`
+- Add Flyway `V0_0_2__Migrate_To_EDC_0_16_0.sql` for `participant_context` table reshape ([#280](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/280)):
+  - Adds `identity VARCHAR UNIQUE NOT NULL` (populated from `did`)
+  - Moves `api_token_alias` and `roles` into the `properties` JSON column
+  - Drops columns `api_token_alias`, `did`, `roles`
+  - Remaps the `state` column from the legacy IH-owned ParticipantContextState codes `{0, 1, 2}` to the new connector-owned codes `{100, 200, 300}` — without this, the new `SqlParticipantContextStore` NPEs while deserializing any pre-existing row
+  - **Applied automatically by Flyway on startup; back up your database before upgrading**
 
 ### Changed
 
+- **BREAKING:** Upgrade EDC and IdentityHub from 0.15.1 to 0.16.0 ([#280](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/280)):
+  - `org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantContext` replaced by `IdentityHubParticipantContext`
+  - `org.eclipse.edc.identityhub.spi.participantcontext.ParticipantContextService` replaced by `IdentityHubParticipantContextService`
+  - `org.eclipse.edc.identityhub.spi.participantcontext.store.ParticipantContextStore` replaced by `org.eclipse.edc.participantcontext.spi.store.ParticipantContextStore`
+  - `ParticipantContextState` moved to `org.eclipse.edc.participantcontext.spi.types.ParticipantContextState`
+  - New setting `edc.encryption.strict=false` added to all runtimes, docker configs, and Helm charts — 0.16.0 enables config encryption by default (`edc.participants.config.encryption.algorithm=aes`) and the runtime fails to start unless an AES key alias is provided or strict mode is disabled
+  - `edc.iam.credential.revocation.mimetype` corrected from `*` to `*/*` (0.16.0's `StatusListCredentialController` rejects the bare `*`)
+  - See [docs/admin/migration-guide.md](docs/admin/migration-guide.md) for the full operator upgrade walkthrough
 - **BREAKING:** Upgrade EDC from 0.14.0 to 0.15.1 ([#198](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/198)):
   - `ParticipantManifest.Builder.participantId()` renamed to `participantContextId()`
   - `edc_sts_client` table: `private_key_alias` and `public_key_reference` columns removed, `participant_context_id` added

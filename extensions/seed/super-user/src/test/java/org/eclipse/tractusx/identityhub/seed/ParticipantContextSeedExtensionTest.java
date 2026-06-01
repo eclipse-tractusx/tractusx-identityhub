@@ -22,9 +22,9 @@
 
 package org.eclipse.tractusx.identityhub.seed;
 
-import org.eclipse.edc.identityhub.spi.participantcontext.ParticipantContextService;
+import org.eclipse.edc.identityhub.spi.participantcontext.IdentityHubParticipantContextService;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.CreateParticipantContextResponse;
-import org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantContext;
+import org.eclipse.edc.identityhub.spi.participantcontext.model.IdentityHubParticipantContext;
 import org.eclipse.edc.junit.extensions.DependencyInjectionExtension;
 import org.eclipse.edc.spi.EdcException;
 import org.eclipse.edc.spi.monitor.Monitor;
@@ -50,13 +50,13 @@ import static org.mockito.Mockito.when;
 class ParticipantContextSeedExtensionTest {
 
     public static final String SUPER_USER = "super-user";
-    private final ParticipantContextService participantContextService = mock();
+    private final IdentityHubParticipantContextService participantContextService = mock();
     private final Vault vault = mock();
     private final Monitor monitor = mock();
 
     @BeforeEach
     void setup(ServiceExtensionContext context) {
-        context.registerService(ParticipantContextService.class, participantContextService);
+        context.registerService(IdentityHubParticipantContextService.class, participantContextService);
         context.registerService(Vault.class, vault);
         context.registerService(Monitor.class, monitor);
         when(participantContextService.getParticipantContext(eq(SUPER_USER))).thenReturn(ServiceResult.notFound("foobar"));
@@ -164,9 +164,10 @@ class ParticipantContextSeedExtensionTest {
         verifyNoMoreInteractions(participantContextService, vault);
     }
 
-    private ParticipantContext.Builder superUserContext() {
-        return ParticipantContext.Builder.newInstance()
+    private IdentityHubParticipantContext.Builder superUserContext() {
+        return IdentityHubParticipantContext.Builder.newInstance()
                 .participantContextId(SUPER_USER)
+                .did("did:web:" + SUPER_USER)
                 .apiTokenAlias("super-user-apikey");
 
     }

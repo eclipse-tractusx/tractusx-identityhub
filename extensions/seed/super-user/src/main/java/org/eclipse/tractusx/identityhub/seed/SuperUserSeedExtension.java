@@ -23,7 +23,7 @@
 package org.eclipse.tractusx.identityhub.seed;
 
 import org.eclipse.edc.identityhub.spi.authentication.ServicePrincipal;
-import org.eclipse.edc.identityhub.spi.participantcontext.ParticipantContextService;
+import org.eclipse.edc.identityhub.spi.participantcontext.IdentityHubParticipantContextService;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.KeyDescriptor;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantManifest;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
@@ -52,7 +52,7 @@ public class SuperUserSeedExtension implements ServiceExtension {
     private String superUserApiKey;
     private Monitor monitor;
     @Inject
-    private ParticipantContextService participantContextService;
+    private IdentityHubParticipantContextService participantContextService;
     @Inject
     private Vault vault;
 

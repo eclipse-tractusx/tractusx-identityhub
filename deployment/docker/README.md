@@ -170,6 +170,36 @@ config/
 Edit `.env` or set environment variables before running `docker compose`. The available
 variables are documented in `.env.example`.
 
+### DID resolution over HTTP vs HTTPS
+
+The `edc.iam.did.web.use.https` setting controls how `did:web` DIDs are resolved:
+
+| Value | Resolves `did:web:host%3Aport:path` via | Use for |
+|-------|------------------------------------------|---------|
+| `true` (default) | `https://host:port/path/did.json` | **Production** — DID documents are served over TLS |
+| `false` | `http://host:port/path/did.json` | **Local docker / dev** — inter-container traffic is plain HTTP |
+
+The bundled configs here do **not** set this key, so it defaults to `true`. The flows this
+setup primarily demonstrates (health checks, super-user seeding) never resolve a `did:web`
+DID, so they work as-is.
+
+A full **DCP credential-exchange flow** between the bundled runtimes (e.g. the issuerservice
+resolving a holder's `did:web` document over the compose network) *does* trigger resolution.
+Because containers reach each other over plain HTTP (`http://issuerservice:10100/...`), the
+default HTTPS resolver fails with `Unsupported or unrecognized SSL message`. To exercise such
+flows locally, add the following to the relevant `config/*/configuration.properties` before
+starting the stack:
+
+```properties
+# Local docker only — inter-container did:web endpoints are plain HTTP.
+edc.iam.did.web.use.https=false
+```
+
+> **Security:** Never set `edc.iam.did.web.use.https=false` in production. A DID document
+> fetched over plain HTTP can be tampered with in transit, undermining the trust anchor of
+> the whole credential exchange. Production deployments must serve DIDs over HTTPS and leave
+> this setting at its `true` default.
+
 ---
 
 ## Notes
