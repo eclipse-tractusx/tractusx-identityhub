@@ -1,0 +1,132 @@
+/********************************************************************************
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ ********************************************************************************/
+
+@use "../config/variables" as *;
+
+.sidebarContainer {
+    display: flex;
+    background: $blue-gradient-bg;
+    box-shadow: 2px 0 5px rgba($brand-dark, 0.1);
+    height: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px 0 0 0;
+    z-index: 1000000;
+    justify-content: space-between;
+}
+
+.regularItems {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    flex: 1;
+}
+
+.iconButton {
+    background: none;
+    border: none;
+    color: $brand-text;
+    font-size: 2rem;
+    margin: 8px 12px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    border-radius: 8px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    .iconWrapper {
+        background: transparent;
+        border-radius: 8px;
+        padding: 10px;
+        color: inherit;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: none;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        height: 48px;
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        svg {
+            width: 1.4rem;
+            height: 1.4rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        &.active {
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+            svg {
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+                transform: scale(1.15);
+            }
+        }
+    }
+
+    &:hover {
+        opacity: 1;
+
+        .iconWrapper {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+            &::before {
+                left: 100%;
+            }
+
+            svg {
+                transform: scale(1.05);
+                filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+            }
+
+            &.active {
+                background: rgba(0, 0, 0, 0.4);
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+                svg {
+                    transform: scale(1.2);
+                }
+            }
+        }
+    }
+
+    &.active {
+        opacity: 1;
+    }
+}
