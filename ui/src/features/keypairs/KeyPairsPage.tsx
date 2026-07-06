@@ -434,8 +434,6 @@ const KeyPairsPage: React.FC = () => {
                                 <Tooltip title={kp.keyId} arrow>
                                     <Typography
                                         sx={{
-                                            fontFamily:
-                                                '"Roboto Mono", monospace',
                                             fontSize: {
                                                 xs: '1.4rem',
                                                 sm: '1.6rem',
@@ -491,8 +489,6 @@ const KeyPairsPage: React.FC = () => {
                             {kp.timestamp && (
                                 <Typography
                                     sx={{
-                                        fontFamily:
-                                            '"Roboto Mono", monospace',
                                         fontSize: '0.82rem',
                                         color:
                                             'rgba(255,255,255,0.45)',
@@ -584,8 +580,6 @@ const KeyPairsPage: React.FC = () => {
                                     sx={{
                                         flex: 1,
                                         minWidth: 0,
-                                        fontFamily:
-                                            '"Roboto Mono", monospace',
                                         fontSize: '0.9rem',
                                         color:
                                             'rgba(255,255,255,0.88)',
@@ -643,11 +637,11 @@ const KeyPairsPage: React.FC = () => {
     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
     PaperProps={{
         sx: {
-            backgroundColor: '#ffffff',
+            backgroundColor: '#030B1F',
             borderRadius: '12px',
             minWidth: 220,
-            boxShadow: '0 12px 32px rgba(0,0,0,0.18)',
-            border: '1px solid rgba(1,86,255,0.12)',
+            boxShadow: '0 12px 32px rgba(0,0,0,0.45)',
+            border: `1px solid ${accentColors.brandBorder}`,
             py: 0.5,
         },
     }}
@@ -671,18 +665,18 @@ const KeyPairsPage: React.FC = () => {
                         py: 1,
                         cursor: 'pointer',
                         '&:hover': {
-                            backgroundColor: '#f5f9ff',
+                            backgroundColor: 'rgba(1,32,96,0.35)',
                         },
                     }}
                 >
                     <RotateLeftIcon
                         fontSize="small"
-                        sx={{ color: '#0F71CB' }}
+                        sx={{ color: accentColors.brandLightBlue }}
                     />
                     <Typography
                         sx={{
                             fontSize: '0.875rem',
-                            color: '#111827',
+                            color: accentColors.brandText,
                             fontWeight: 500,
                         }}
                     >
@@ -708,7 +702,7 @@ const KeyPairsPage: React.FC = () => {
                         py: 1,
                         cursor: 'pointer',
                         '&:hover': {
-                            backgroundColor: '#fff8f0',
+                            backgroundColor: 'rgba(245,158,11,0.12)',
                         },
                     }}
                 >
@@ -719,7 +713,7 @@ const KeyPairsPage: React.FC = () => {
                     <Typography
                         sx={{
                             fontSize: '0.875rem',
-                            color: '#111827',
+                            color: accentColors.brandText,
                             fontWeight: 500,
                         }}
                     >
@@ -744,7 +738,7 @@ const KeyPairsPage: React.FC = () => {
                         py: 1,
                         cursor: 'pointer',
                         '&:hover': {
-                            backgroundColor: '#f0fff4',
+                            backgroundColor: 'rgba(34,197,94,0.12)',
                         },
                     }}
                 >
@@ -755,7 +749,7 @@ const KeyPairsPage: React.FC = () => {
                     <Typography
                         sx={{
                             fontSize: '0.875rem',
-                            color: '#111827',
+                            color: accentColors.brandText,
                             fontWeight: 500,
                         }}
                     >

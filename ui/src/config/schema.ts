@@ -84,7 +84,7 @@ export interface AppConfig {
     };
 
     ui: {
-        theme: 'light' | 'dark' | 'auto';
+        theme: 'light' | 'dark' | 'arena2036' | 'auto';
         locale: string;
         compactMode: boolean;
     };

@@ -195,6 +195,7 @@ const CredentialsPage: React.FC = () => {
         setReqIssuerDid('');
         setReqHolderPid('');
         setReqCredType('');
+        setReqCredentialId('');
         setReqCredFormat('ldp_vc');
     };
 
@@ -370,7 +371,7 @@ const CredentialsPage: React.FC = () => {
                         placeholder="MembershipCredential"
                     />
                     <TextField
-                        fullWidth label="Type" value={reqCredentialId}
+                        fullWidth label="Credential ID" value={reqCredentialId}
                         onChange={(e) => setReqCredentialId(e.target.value)}
                         placeholder="tx-membershipCredential"
                     />

@@ -23,6 +23,8 @@ Manage participant contexts in the Identity Hub. Each participant represents an 
 | GET | `/participants` | List all participant contexts |
 | POST | `/participants` | Create a new participant |
 | DELETE | `/participants/{participantId}` | Delete a participant |
+| POST | `/participants/{participantId}/state?isActive={true|false}` | Activate/deactivate participant |
+| PUT | `/participants/{participantId}/roles` | Replace participant roles |
 | POST | `/participants/{participantId}/token` | Regenerate API token |
 
 ### Actions

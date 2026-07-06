@@ -72,7 +72,7 @@ const stateLabel = (state?: number): string => {
         case 0: return 'Created';
         case 1: return 'Active';
         case 2: return 'Deactivated';
-        default: return 'Unknown';
+        default: return 'Active';
     }
 };
 
@@ -372,15 +372,15 @@ const ParticipantsPage: React.FC = () => {
                             height: '40px',
 
                             '& fieldset': {
-                                borderColor: '#00C853',
+                                borderColor: accentColors.brandBorder,
                             },
 
                             '&:hover fieldset': {
-                                borderColor: '#00E676',
+                                borderColor: accentColors.brandLightBlue,
                             },
 
                             '&.Mui-focused fieldset': {
-                                borderColor: '#00E676',
+                                borderColor: accentColors.brandLightBlue,
                             },
                         },
 
@@ -680,8 +680,6 @@ const ParticipantsPage: React.FC = () => {
                                             <Tooltip title={p.participantContextId} arrow>
                                                 <Typography
                                                     sx={{
-                                                        fontFamily:
-                                                            '"SF Mono", "Roboto Mono", monospace',
                                                         fontSize: '1.9rem',
                                                         fontWeight: 700,
                                                         lineHeight: 1.1,
@@ -717,8 +715,6 @@ const ParticipantsPage: React.FC = () => {
                                                     <Tooltip title={p.did} arrow>
                                                         <Typography
                                                             sx={{
-                                                                fontFamily:
-                                                                    '"SF Mono", "Roboto Mono", monospace',
                                                                 fontSize: '0.78rem',
                                                                 lineHeight: 1.5,
                                                                 color:
@@ -873,7 +869,16 @@ const ParticipantsPage: React.FC = () => {
                             MenuListProps={{ 'aria-labelledby': 'more-options-button' }}
                             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                            PaperProps={{ sx: { backgroundColor: 'white !important' } }}
+                            PaperProps={{
+                                sx: {
+                                    backgroundColor: '#030B1F',
+                                    borderRadius: '12px',
+                                    minWidth: 240,
+                                    boxShadow: '0 12px 32px rgba(0,0,0,0.45)',
+                                    border: `1px solid ${accentColors.brandBorder}`,
+                                    py: 0.5,
+                                },
+                            }}
                         >
                             {selectedParticipant && (
                                 <>
@@ -884,10 +889,10 @@ const ParticipantsPage: React.FC = () => {
                                                 setAnchorEl(null);
                                                 setSelectedParticipant(null);
                                             }}
-                                            sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
+                                            sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: 'rgba(1,32,96,0.35)' } }}
                                         >
-                                            <PowerSettingsNewIcon fontSize="small" sx={{ marginRight: 1, color: '#4caf50 !important', fill: '#4caf50 !important' }} />
-                                            <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Activate</Box>
+                                            <PowerSettingsNewIcon fontSize="small" sx={{ marginRight: 1, color: '#22C55E' }} />
+                                            <Box component="span" sx={{ fontSize: '0.875rem', color: accentColors.brandText }}>Activate</Box>
                                         </Box>
                                     )}
                                     {selectedParticipant.state === 1 && (
@@ -897,10 +902,10 @@ const ParticipantsPage: React.FC = () => {
                                                 setAnchorEl(null);
                                                 setSelectedParticipant(null);
                                             }}
-                                            sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
+                                            sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: 'rgba(1,32,96,0.35)' } }}
                                         >
-                                            <PowerSettingsNewIcon fontSize="small" sx={{ marginRight: 1, color: '#ff9800 !important', fill: '#ff9800 !important' }} />
-                                            <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Deactivate</Box>
+                                            <PowerSettingsNewIcon fontSize="small" sx={{ marginRight: 1, color: '#F59E0B' }} />
+                                            <Box component="span" sx={{ fontSize: '0.875rem', color: accentColors.brandText }}>Deactivate</Box>
                                         </Box>
                                     )}
                                     <Box
@@ -909,10 +914,10 @@ const ParticipantsPage: React.FC = () => {
                                             setAnchorEl(null);
                                             setSelectedParticipant(null);
                                         }}
-                                        sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
+                                        sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: 'rgba(1,32,96,0.35)' } }}
                                     >
-                                        <AdminPanelSettingsIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
-                                        <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Manage Roles</Box>
+                                        <AdminPanelSettingsIcon fontSize="small" sx={{ marginRight: 1, color: accentColors.brandLightBlue }} />
+                                        <Box component="span" sx={{ fontSize: '0.875rem', color: accentColors.brandText }}>Manage Roles</Box>
                                     </Box>
                                     <Box
                                         onClick={() => {
@@ -920,10 +925,10 @@ const ParticipantsPage: React.FC = () => {
                                             setAnchorEl(null);
                                             setSelectedParticipant(null);
                                         }}
-                                        sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
+                                        sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: 'rgba(1,32,96,0.35)' } }}
                                     >
-                                        <SyncIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
-                                        <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Regenerate Token</Box>
+                                        <SyncIcon fontSize="small" sx={{ marginRight: 1, color: accentColors.brandLightBlue }} />
+                                        <Box component="span" sx={{ fontSize: '0.875rem', color: accentColors.brandText }}>Regenerate Token</Box>
                                     </Box>
                                     <Box
                                         onClick={() => {
@@ -931,10 +936,10 @@ const ParticipantsPage: React.FC = () => {
                                             setAnchorEl(null);
                                             setSelectedParticipant(null);
                                         }}
-                                        sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
+                                        sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: 'rgba(1,32,96,0.35)' } }}
                                     >
-                                        <ContentCopyIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
-                                        <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Copy ID</Box>
+                                        <ContentCopyIcon fontSize="small" sx={{ marginRight: 1, color: accentColors.brandLightBlue }} />
+                                        <Box component="span" sx={{ fontSize: '0.875rem', color: accentColors.brandText }}>Copy ID</Box>
                                     </Box>
                                     <Box
                                         onClick={() => {
@@ -942,10 +947,10 @@ const ParticipantsPage: React.FC = () => {
                                             setAnchorEl(null);
                                             setSelectedParticipant(null);
                                         }}
-                                        sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
+                                        sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: 'rgba(217,30,24,0.15)' } }}
                                     >
-                                        <DeleteIcon fontSize="small" sx={{ marginRight: 1, color: '#000 !important', fill: '#000 !important' }} />
-                                        <Box component="span" sx={{ fontSize: '0.875rem', color: 'black' }}>Delete</Box>
+                                        <DeleteIcon fontSize="small" sx={{ marginRight: 1, color: '#FF5A5A' }} />
+                                        <Box component="span" sx={{ fontSize: '0.875rem', color: accentColors.brandText }}>Delete</Box>
                                     </Box>
                                 </>
                             )}
@@ -1030,11 +1035,11 @@ const ParticipantsPage: React.FC = () => {
                             </Typography>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
                                 <Typography variant="body2" sx={{
-                                    fontFamily: 'monospace', fontSize: '0.85rem',
+                                    fontSize: '0.85rem',
                                     wordBreak: 'break-all', flex: 1,
                                     p: 1.5, borderRadius: '4px',
-                                    bgcolor: 'grey.100', color: 'text.primary',
-                                    border: '1px solid', borderColor: 'divider',
+                                        bgcolor: '#06122F', color: accentColors.brandText,
+                                        border: `1px solid ${accentColors.brandBorder}`,
                                 }}>
                                     {String(value)}
                                 </Typography>

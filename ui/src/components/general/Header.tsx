@@ -34,6 +34,28 @@ import { Logout, ContentCopy, Settings, SwapHoriz } from '@mui/icons-material';
 import useAuth from '../../hooks/useAuth';
 import { useParticipant } from '../../contexts/ParticipantContext';
 
+const participantStateLabel = (state?: number): string => {
+    switch (state) {
+        case 1:
+            return 'Active';
+        case 2:
+            return 'Deactivated';
+        default:
+            return 'Active';
+    }
+};
+
+const participantStateColor = (state?: number): string => {
+    switch (state) {
+        case 1:
+            return '#00aa55';
+        case 2:
+            return '#D91E18';
+        default:
+            return '#00aa55';
+    }
+};
+
 export default function Header() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
@@ -104,10 +126,12 @@ export default function Header() {
                 elevation: 8,
                 sx: {
                     overflow: 'visible',
-                    filter: 'drop-shadow(0px 4px 20px rgba(0,0,0,0.15))',
+                    filter: 'drop-shadow(0px 8px 24px rgba(0,0,0,0.45))',
                     mt: 1.5,
                     minWidth: 280,
                     borderRadius: 2,
+                    backgroundColor: '#030B1F',
+                    border: '1px solid rgba(1,86,255,0.26)',
                     '&:before': {
                         content: '""',
                         display: 'block',
@@ -116,7 +140,7 @@ export default function Header() {
                         right: 14,
                         width: 10,
                         height: 10,
-                        bgcolor: 'background.paper',
+                        bgcolor: '#030B1F',
                         transform: 'translateY(-50%) rotate(45deg)',
                         zIndex: 0,
                     },
@@ -125,15 +149,15 @@ export default function Header() {
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
-            <Box sx={{ px: 2, py: 2, background: 'linear-gradient(135deg, rgba(66, 165, 245, 0.1) 0%, rgba(25, 118, 210, 0.05) 100%)' }}>
+            <Box sx={{ px: 2, py: 2, background: 'linear-gradient(135deg, rgba(15, 113, 203, 0.18) 0%, rgba(3, 11, 31, 0.6) 100%)' }}>
                 <Typography
                     variant="subtitle1"
-                    sx={{ fontWeight: 600, mb: 0.5, color: 'text.primary' }}
+                    sx={{ fontWeight: 600, mb: 0.5, color: 'rgb(248,249,250)' }}
                 >
                     {isAuthenticated && user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username : 'Tractus-X User'}
                 </Typography>
                 {isAuthenticated && user?.email && (
-                    <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1 }}>
+                    <Typography variant="caption" sx={{ color: 'rgba(248,249,250,0.7)', display: 'block', mb: 1 }}>
                         {user.email}
                     </Typography>
                 )}
@@ -142,9 +166,9 @@ export default function Header() {
                         mt: 1,
                         px: 1.5,
                         py: 0.75,
-                        backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                        backgroundColor: 'rgba(1, 32, 96, 0.45)',
                         borderRadius: 1,
-                        border: '1px solid rgba(25, 118, 210, 0.2)',
+                        border: '1px solid rgba(1,86,255,0.26)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
@@ -154,7 +178,7 @@ export default function Header() {
                     <Typography
                         variant="caption"
                         sx={{
-                            color: 'primary.main',
+                            color: 'rgb(248,249,250)',
                             fontWeight: 600,
                             fontSize: '0.75rem',
                             letterSpacing: '0.3px',
@@ -170,9 +194,9 @@ export default function Header() {
                                 onClick={handleCopyParticipantId}
                                 sx={{
                                     padding: '4px',
-                                    color: 'primary.main',
+                                    color: 'rgb(15,113,203)',
                                     '&:hover': {
-                                        backgroundColor: 'rgba(25, 118, 210, 0.15)'
+                                        backgroundColor: 'rgba(1,32,96,0.35)'
                                     }
                                 }}
                             >
@@ -186,9 +210,9 @@ export default function Header() {
                                     onClick={() => setShowParticipants(!showParticipants)}
                                     sx={{
                                         padding: '4px',
-                                        color: 'primary.main',
+                                        color: 'rgb(15,113,203)',
                                         '&:hover': {
-                                            backgroundColor: 'rgba(25, 118, 210, 0.15)'
+                                            backgroundColor: 'rgba(1,32,96,0.35)'
                                         }
                                     }}
                                 >
@@ -217,41 +241,40 @@ export default function Header() {
                                     gap: 1,
                                     borderRadius: 1,
                                     bgcolor: p.participantContextId === activeParticipantId
-                                        ? 'rgba(25, 118, 210, 0.12)'
+                                        ? 'rgba(1, 32, 96, 0.5)'
                                         : 'transparent',
                                     borderLeft: p.participantContextId === activeParticipantId
                                         ? '3px solid'
                                         : '3px solid transparent',
                                     borderLeftColor: p.participantContextId === activeParticipantId
-                                        ? 'primary.main'
+                                        ? 'rgb(15,113,203)'
                                         : 'transparent',
-                                    '&:hover': { bgcolor: 'rgba(25, 118, 210, 0.08)' },
+                                    '&:hover': { bgcolor: 'rgba(1, 32, 96, 0.35)' },
                                 }}
                             >
                                 <Typography
                                     variant="caption"
                                     sx={{
-                                        fontFamily: 'monospace',
                                         fontSize: '0.7rem',
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis',
                                         whiteSpace: 'nowrap',
-                                        color: 'text.primary',
+                                        color: 'rgb(248,249,250)',
                                     }}
                                 >
                                     {p.participantContextId}
                                 </Typography>
                                 <Chip
-                                    label={p.state === 1 ? 'Active' : p.state === 0 ? 'Created' : p.state === 2 ? 'Deactivated' : 'Unknown'}
+                                    label={participantStateLabel(p.state)}
                                     size="small"
                                     sx={{
                                         height: 18,
                                         fontSize: '0.6rem',
                                         fontWeight: 600,
                                         bgcolor: 'transparent',
-                                        color: p.state === 1 ? '#00aa55' : p.state === 0 ? '#ffa602' : p.state === 2 ? '#D91E18' : '#888',
+                                        color: participantStateColor(p.state),
                                         border: '1px solid',
-                                        borderColor: p.state === 1 ? '#00aa55' : p.state === 0 ? '#ffa602' : p.state === 2 ? '#D91E18' : '#888',
+                                        borderColor: participantStateColor(p.state),
                                         flexShrink: 0,
                                     }}
                                 />
@@ -268,13 +291,14 @@ export default function Header() {
                 sx={{
                     py: 1.25,
                     px: 2,
-                    '&:hover': { backgroundColor: 'rgba(66, 165, 245, 0.08)' }
+                    color: 'rgb(248,249,250)',
+                    '&:hover': { backgroundColor: 'rgba(1, 32, 96, 0.35)' }
                 }}
             >
                 <ListItemIcon>
-                    <AccountCircle fontSize="small" sx={{ color: 'primary.main' }} />
+                    <AccountCircle fontSize="small" sx={{ color: 'rgb(15,113,203)' }} />
                 </ListItemIcon>
-                <Typography variant="body2">Profile</Typography>
+                <Typography variant="body2" sx={{ color: 'rgb(248,249,250)' }}>Profile</Typography>
             </MenuItem>
 
             <MenuItem
@@ -282,13 +306,14 @@ export default function Header() {
                 sx={{
                     py: 1.25,
                     px: 2,
-                    '&:hover': { backgroundColor: 'rgba(66, 165, 245, 0.08)' }
+                    color: 'rgb(248,249,250)',
+                    '&:hover': { backgroundColor: 'rgba(1, 32, 96, 0.35)' }
                 }}
             >
                 <ListItemIcon>
-                    <Settings fontSize="small" sx={{ color: 'primary.main' }} />
+                    <Settings fontSize="small" sx={{ color: 'rgb(15,113,203)' }} />
                 </ListItemIcon>
-                <Typography variant="body2">Settings</Typography>
+                <Typography variant="body2" sx={{ color: 'rgb(248,249,250)' }}>Settings</Typography>
             </MenuItem>
 
             <Divider sx={{ my: 1 }} />
@@ -298,7 +323,7 @@ export default function Header() {
                 sx={{
                     py: 1.25,
                     px: 2,
-                    '&:hover': { backgroundColor: 'rgba(211, 47, 47, 0.08)' }
+                    '&:hover': { backgroundColor: 'rgba(217, 30, 24, 0.15)' }
                 }}
             >
                 <ListItemIcon>
@@ -319,11 +344,17 @@ export default function Header() {
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
+            PaperProps={{
+                sx: {
+                    backgroundColor: '#030B1F',
+                    border: '1px solid rgba(1,86,255,0.26)',
+                },
+            }}
         >
-            <MenuItem>
+            <MenuItem sx={{ color: 'rgb(248,249,250)', '&:hover': { backgroundColor: 'rgba(1, 32, 96, 0.35)' } }}>
                 <IconButton size="large" aria-label="show notifications">
                     <Badge badgeContent={17} color="error">
-                        <NotificationsIcon />
+                        <NotificationsIcon sx={{ color: 'rgb(248,249,250)' }} />
                     </Badge>
                 </IconButton>
                 <p>Notifications</p>
@@ -334,9 +365,9 @@ export default function Header() {
                 </IconButton>
                 <p>Policy Config</p>
             </MenuItem> */}
-            <MenuItem onClick={handleProfileMenuOpen}>
+            <MenuItem onClick={handleProfileMenuOpen} sx={{ color: 'rgb(248,249,250)', '&:hover': { backgroundColor: 'rgba(1, 32, 96, 0.35)' } }}>
                 <IconButton size="large" aria-label="account of current user">
-                    <AccountCircle />
+                    <AccountCircle sx={{ color: 'rgb(248,249,250)' }} />
                 </IconButton>
                 <p>Profile</p>
             </MenuItem>
