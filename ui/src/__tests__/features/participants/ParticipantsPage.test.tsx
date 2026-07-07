@@ -203,7 +203,10 @@ describe('ParticipantsPage', () => {
         await waitFor(() => {
             expect(httpClient.post).toHaveBeenCalledWith(
                 '/api/identity/v1alpha/participants',
-                expect.objectContaining({ participantId: 'BPNL00000003NEW1' })
+                expect.objectContaining({
+                    participantContextId: 'BPNL00000003NEW1',
+                    participantId: 'BPNL00000003NEW1',
+                })
             );
         });
     });

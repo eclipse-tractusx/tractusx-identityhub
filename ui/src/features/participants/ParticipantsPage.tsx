@@ -170,6 +170,7 @@ const ParticipantsPage: React.FC = () => {
                 keyGeneratorParams: { algorithm: 'EdDSA', curve: 'Ed25519' },
             };
             const body: Record<string, unknown> = {
+                participantContextId: pid,
                 participantId: pid,
                 active: true,
                 did: newDid.trim() || `did:web:${pid}`,
