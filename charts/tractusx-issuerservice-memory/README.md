@@ -1,6 +1,6 @@
 # tractusx-issuerservice-memory
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: v0.3.2](https://img.shields.io/badge/Version-v0.3.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.3.2](https://img.shields.io/badge/AppVersion-0.3.2-informational?style=flat-square)
 
 A Helm chart for Tractus-X IssuerService, that deploys the IssuerService with in-memory persistance
 
@@ -40,26 +40,30 @@ helm install issuerservice-memory tractusx-dev/tractusx-issuerservice-memory
 | issuerservice.debug.enabled | bool | `false` |  |
 | issuerservice.debug.port | int | `1044` |  |
 | issuerservice.debug.suspendOnStart | bool | `false` |  |
-| issuerservice.endpoints | object | `{"default":{"path":"/api","port":8081},"did":{"path":"/","port":8083},"issuance":{"path":"/api/issuance","port":8082},"version":{"path":"/.well-known/api","port":8084}}` | endpoints of the control plane |
+| issuerservice.didweb | object | `{"https":false}` | Whether web DIDs should be interpreted as HTTPS or HTTP |
+| issuerservice.endpoints | object | `{"default":{"path":"/api","port":8081},"did":{"path":"/","port":8083},"identity":{"path":"/api/identity","port":8087},"issuance":{"path":"/api/issuance","port":8082},"issueradmin":{"path":"/api/admin","port":8086},"statuslist":{"path":"/statuslist","port":8088},"sts":{"path":"/api/sts","port":8085}}` | endpoints of the control plane |
 | issuerservice.endpoints.default | object | `{"path":"/api","port":8081}` | default api for health checks, should not be added to any ingress |
 | issuerservice.endpoints.default.path | string | `"/api"` | path for incoming api calls |
 | issuerservice.endpoints.default.port | int | `8081` | port for incoming api calls |
 | issuerservice.endpoints.did | object | `{"path":"/","port":8083}` | DID API, used to resolve the issuer's DID document. Must be internet-facing |
+| issuerservice.endpoints.identity | object | `{"path":"/api/identity","port":8087}` | Identity API, used to manage certain identity aspects such as DID documents, key pairs etc. Should not be internet-facing |
 | issuerservice.endpoints.issuance | object | `{"path":"/api/issuance","port":8082}` | DCP Issuance API. Must be internet-facing. |
-| issuerservice.endpoints.version | object | `{"path":"/.well-known/api","port":8084}` | Version API, used to obtain exact version information about all APIs at runtime. Should not be internet-facing |
+| issuerservice.endpoints.issueradmin | object | `{"path":"/api/admin","port":8086}` | Issuer Admin API to manage data of the IssuerService. Should not be internet-facing |
+| issuerservice.endpoints.statuslist | object | `{"path":"/statuslist","port":8088}` | StatusList API, used to check the status of verifiable credentials. Must be internet-facing |
+| issuerservice.endpoints.sts | object | `{"path":"/api/sts","port":8085}` | STS Token API, for the IssuerService to create Self-Issued ID tokens |
 | issuerservice.env | object | `{}` |  |
-| issuerservice.envConfigMapNames[0] | string | `"issuerservice-config"` |  |
+| issuerservice.envConfigMapNames | list | `[]` |  |
 | issuerservice.envSecretNames | list | `[]` |  |
 | issuerservice.envValueFrom | object | `{}` |  |
 | issuerservice.image.pullPolicy | string | `"IfNotPresent"` | [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use |
-| issuerservice.image.repository | string | `""` |  |
+| issuerservice.image.repository | string | `"tractusx/issuerservice-memory"` |  |
 | issuerservice.image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion |
 | issuerservice.ingresses[0].annotations | object | `{}` | Additional ingress annotations to add |
 | issuerservice.ingresses[0].certManager.clusterIssuer | string | `""` | If preset enables certificate generation via cert-manager cluster-wide issuer |
 | issuerservice.ingresses[0].certManager.issuer | string | `""` | If preset enables certificate generation via cert-manager namespace scoped issuer |
 | issuerservice.ingresses[0].className | string | `""` | Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use |
 | issuerservice.ingresses[0].enabled | bool | `false` |  |
-| issuerservice.ingresses[0].endpoints | list | `["issuance"]` | EDC endpoints exposed by this ingress resource |
+| issuerservice.ingresses[0].endpoints | list | `["issuance","sts","did","statuslist"]` | EDC endpoints exposed by this ingress resource |
 | issuerservice.ingresses[0].hostname | string | `"issuerservice.issuance.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
 | issuerservice.ingresses[0].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
 | issuerservice.ingresses[0].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
@@ -69,7 +73,7 @@ helm install issuerservice-memory tractusx-dev/tractusx-issuerservice-memory
 | issuerservice.ingresses[1].certManager.issuer | string | `""` | If preset enables certificate generation via cert-manager namespace scoped issuer |
 | issuerservice.ingresses[1].className | string | `""` | Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use |
 | issuerservice.ingresses[1].enabled | bool | `false` |  |
-| issuerservice.ingresses[1].endpoints | list | `["did"]` | EDC endpoints exposed by this ingress resource |
+| issuerservice.ingresses[1].endpoints | list | `["issueradmin","identity"]` | EDC endpoints exposed by this ingress resource |
 | issuerservice.ingresses[1].hostname | string | `"issuerservice.did.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
 | issuerservice.ingresses[1].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
 | issuerservice.ingresses[1].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
@@ -135,6 +139,7 @@ helm install issuerservice-memory tractusx-dev/tractusx-issuerservice-memory
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.imagePullSecrets | list | `[]` | Existing image pull secret bound to the service account to use to [obtain the container image from private registries](https://kubernetes.io/docs/concepts/containers/images/#using-a-private-registry) |
 | serviceAccount.name | string | `""` |  |
+| statuslist.callback.address | string | `"https://issuerservice.issuance.local/statuslist"` | Base URL that issued credentials embed as their `credentialStatus.statusListCredential` endpoint. Must be a FULL URL (scheme://host[:port]/statuslist) reachable by verifiers and holders — e.g. the public ingress URL, or the in-cluster service address `http://<release>-tractusx-issuerservice:<statuslist-port>/statuslist` for cluster-internal verification. A bare hostname produces broken status URLs in every issued credential. |
 | statuslist.signing_key.alias | string | `"default"` |  |
 | tests | object | `{"hookDeletePolicy":"before-hook-creation,hook-succeeded"}` | Configurations for Helm tests |
 | tests.hookDeletePolicy | string | `"before-hook-creation,hook-succeeded"` | Configure the hook-delete-policy for Helm tests |

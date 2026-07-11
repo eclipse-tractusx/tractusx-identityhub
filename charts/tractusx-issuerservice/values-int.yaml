@@ -1,6 +1,7 @@
 ###############################################################
 # Eclipse Tractus-X - issuer-service
 #
+# Copyright (c) 2026 Technovative Solutions
 # Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
@@ -49,10 +50,6 @@ issuerservice:
     did:
       port: 8083
       path: /
-    version:
-      port: 8084
-      path: /.well-known/api
-      pathType: ImplementationSpecific
     sts:
       port: 8085
       path: /api/sts
@@ -85,7 +82,6 @@ issuerservice:
         - statuslist
         - issueradmin
         - identity
-        - version
       # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
       tls:
         # -- Enables TLS on the ingress resource

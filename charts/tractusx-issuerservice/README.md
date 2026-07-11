@@ -1,6 +1,6 @@
-# Tractusx-issuerservice
+# tractusx-issuerservice
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: v0.3.2](https://img.shields.io/badge/Version-v0.3.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.3.2](https://img.shields.io/badge/AppVersion-0.3.2-informational?style=flat-square)
 
 A Helm chart for Tractus-X IssuerService, that deploys the IssuerService with postgresql and vault charts for persistance
 
@@ -27,8 +27,9 @@ helm install issuerservice tractusx-dev/tractusx-issuerservice
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://github.com/CloudPirates-io/helm-charts| postgres(postgresql) | 0.11.0  |
-| https://helm.releases.hashicorp.com | vault(vault) | 0.29.1  |
+| https://helm.releases.hashicorp.com | vault(vault) | 0.29.1 |
+| https://helm.runix.net | pgadmin4 | 1.25.x |
+| oci://registry-1.docker.io/cloudpirates | postgresql(postgres) | 0.11.0 |
 
 ## Values
 
@@ -50,7 +51,7 @@ helm install issuerservice tractusx-dev/tractusx-issuerservice
 | issuerservice.debug.port | int | `1044` |  |
 | issuerservice.debug.suspendOnStart | bool | `false` |  |
 | issuerservice.didweb | object | `{"https":false}` | Whether web DIDs should be interpreted as HTTPS or HTTP |
-| issuerservice.endpoints | object | `{"default":{"path":"/api","port":8081},"did":{"path":"/","port":8083},"identity":{"path":"/api/identity","port":8087},"issuance":{"path":"/api/issuance","port":8082},"issueradmin":{"path":"/api/admin","port":8086},"sts":{"path":"/api/sts","port":8085},"version":{"path":"/.well-known/api","port":8084}}` | endpoints of the control plane |
+| issuerservice.endpoints | object | `{"default":{"path":"/api","port":8081},"did":{"path":"/","port":8083},"identity":{"path":"/api/identity","port":8087},"issuance":{"path":"/api/issuance","port":8082},"issueradmin":{"path":"/api/admin","port":8086},"statuslist":{"path":"/statuslist","port":8088},"sts":{"path":"/api/sts","port":8085}}` | endpoints of the control plane |
 | issuerservice.endpoints.default | object | `{"path":"/api","port":8081}` | default api for health checks, should not be added to any ingress |
 | issuerservice.endpoints.default.path | string | `"/api"` | path for incoming api calls |
 | issuerservice.endpoints.default.port | int | `8081` | port for incoming api calls |
@@ -58,22 +59,21 @@ helm install issuerservice tractusx-dev/tractusx-issuerservice
 | issuerservice.endpoints.identity | object | `{"path":"/api/identity","port":8087}` | Identity API, used to manage certain identity aspects such as DID documents, key pairs etc. Should not be internet-facing |
 | issuerservice.endpoints.issuance | object | `{"path":"/api/issuance","port":8082}` | DCP Issuance API. Must be internet-facing. |
 | issuerservice.endpoints.issueradmin | object | `{"path":"/api/admin","port":8086}` | Issuer Admin API to manage data of the IssuerService. Should not be internet-facing |
+| issuerservice.endpoints.statuslist | object | `{"path":"/statuslist","port":8088}` | StatusList API, used to check the status of verifiable credentials. Must be internet-facing |
 | issuerservice.endpoints.sts | object | `{"path":"/api/sts","port":8085}` | STS Token API, for the IssuerService to create Self-Issued ID tokens |
-| issuerservice.endpoints.version | object | `{"path":"/.well-known/api","port":8084}` | Version API, used to obtain exact version information about all APIs at runtime. Should not be internet-facing |
 | issuerservice.env | object | `{}` |  |
-| issuerservice.envConfigMapNames[0] | string | `"issuerservice-config"` |  |
-| issuerservice.envConfigMapNames[1] | string | `"issuerservice-datasource-config"` |  |
+| issuerservice.envConfigMapNames | list | `[]` |  |
 | issuerservice.envSecretNames | list | `[]` |  |
 | issuerservice.envValueFrom | object | `{}` |  |
 | issuerservice.image.pullPolicy | string | `"IfNotPresent"` | [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use |
-| issuerservice.image.repository | string | `""` |  |
+| issuerservice.image.repository | string | `"tractusx/issuerservice"` |  |
 | issuerservice.image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion |
 | issuerservice.ingresses[0].annotations | object | `{}` | Additional ingress annotations to add |
 | issuerservice.ingresses[0].certManager.clusterIssuer | string | `""` | If preset enables certificate generation via cert-manager cluster-wide issuer |
 | issuerservice.ingresses[0].certManager.issuer | string | `""` | If preset enables certificate generation via cert-manager namespace scoped issuer |
 | issuerservice.ingresses[0].className | string | `""` | Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use |
 | issuerservice.ingresses[0].enabled | bool | `false` |  |
-| issuerservice.ingresses[0].endpoints | list | `["issuance"]` | EDC endpoints exposed by this ingress resource |
+| issuerservice.ingresses[0].endpoints | list | `["issuance","sts","did","statuslist"]` | EDC endpoints exposed by this ingress resource |
 | issuerservice.ingresses[0].hostname | string | `"issuerservice.issuance.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
 | issuerservice.ingresses[0].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
 | issuerservice.ingresses[0].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
@@ -83,7 +83,7 @@ helm install issuerservice tractusx-dev/tractusx-issuerservice
 | issuerservice.ingresses[1].certManager.issuer | string | `""` | If preset enables certificate generation via cert-manager namespace scoped issuer |
 | issuerservice.ingresses[1].className | string | `""` | Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use |
 | issuerservice.ingresses[1].enabled | bool | `false` |  |
-| issuerservice.ingresses[1].endpoints | list | `["did"]` | EDC endpoints exposed by this ingress resource |
+| issuerservice.ingresses[1].endpoints | list | `["issueradmin","identity"]` | EDC endpoints exposed by this ingress resource |
 | issuerservice.ingresses[1].hostname | string | `"issuerservice.did.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
 | issuerservice.ingresses[1].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
 | issuerservice.ingresses[1].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
@@ -145,12 +145,20 @@ helm install issuerservice tractusx-dev/tractusx-issuerservice
 | issuerservice.useSVE | bool | `false` |  |
 | issuerservice.volumeMounts | list | `[]` | declare where to mount [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) into the container |
 | issuerservice.volumes | list | `[]` | [volume](https://kubernetes.io/docs/concepts/storage/volumes/) directories |
+| issuerservice.waitForDependencies.enabled | bool | `true` | Enables the built-in wait-for-dependencies initContainer |
+| issuerservice.waitForDependencies.image | string | `"busybox:1.37"` | Image used for the TCP wait loop; must provide `nc` (netcat) and `sh` |
 | nameOverride | string | `""` |  |
+| pgadmin4.enabled | bool | `false` |  |
+| pgadmin4.env.email | string | `"pgadmin4@txtest.org"` |  |
+| pgadmin4.env.password | string | `"tractusxpgadmin4"` |  |
+| pgadmin4.ingress.enabled | bool | `false` |  |
+| pgadmin4.persistentVolume.enabled | bool | `false` |  |
 | postgresql.auth.database | string | `"issuer"` |  |
 | postgresql.auth.password | string | `"password"` |  |
 | postgresql.auth.username | string | `"user"` |  |
-| postgresql.image.repository | string | `"bitnamilegacy/postgresql"` | workaround to use bitnamilegacy chart for version 12.12.x till committers align on new postgresql charts |
-| postgresql.image.tag | string | `"15.4.0-debian-11-r45"` | workaround to use bitnamilegacy chart for version 12.12.x till committers align on new postgresql charts |
+| postgresql.image.registry | string | `"docker.io"` | PostgreSQL image registry |
+| postgresql.image.repository | string | `"postgres"` | PostgreSQL image repository |
+| postgresql.image.tag | string | `"18.0@sha256:1ffc019dae94eca6b09a49ca67d37398951346de3c3d0cfe23d8d4ca33da83fb"` | PostgreSQL image tag |
 | postgresql.jdbcUrl | string | `"jdbc:postgresql://{{ .Release.Name }}-postgresql:5432/issuer"` |  |
 | postgresql.primary.persistence.enabled | bool | `false` |  |
 | postgresql.primary.resources.limits.cpu | int | `1` |  |
@@ -166,13 +174,14 @@ helm install issuerservice tractusx-dev/tractusx-issuerservice
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.imagePullSecrets | list | `[]` | Existing image pull secret bound to the service account to use to [obtain the container image from private registries](https://kubernetes.io/docs/concepts/containers/images/#using-a-private-registry) |
 | serviceAccount.name | string | `""` |  |
+| statuslist.callback.address | string | `"https://issuerservice.issuance.local/statuslist"` | Base URL that issued credentials embed as their `credentialStatus.statusListCredential` endpoint. Must be a FULL URL (scheme://host[:port]/statuslist) reachable by verifiers and holders — e.g. the public ingress URL, or the in-cluster service address `http://<release>-tractusx-issuerservice:<statuslist-port>/statuslist` for cluster-internal verification. A bare hostname produces broken status URLs in every issued credential. |
 | statuslist.signing_key.alias | string | `"default"` |  |
 | tests | object | `{"hookDeletePolicy":"before-hook-creation,hook-succeeded"}` | Configurations for Helm tests |
 | tests.hookDeletePolicy | string | `"before-hook-creation,hook-succeeded"` | Configure the hook-delete-policy for Helm tests |
 | vault.hashicorp.healthCheck.enabled | bool | `true` |  |
 | vault.hashicorp.healthCheck.standbyOk | bool | `true` |  |
 | vault.hashicorp.paths.health | string | `"/v1/sys/health"` |  |
-| vault.hashicorp.paths.secret | string | `"/v1/secret"` |  |
+| vault.hashicorp.paths.secret | string | `"/v1/secret/data"` |  |
 | vault.hashicorp.timeout | int | `30` |  |
 | vault.hashicorp.token | string | `"root"` |  |
 | vault.hashicorp.url | string | `"http://{{ .Release.Name }}-vault:8200"` |  |

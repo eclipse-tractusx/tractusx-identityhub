@@ -1,6 +1,7 @@
 #
   #  Copyright (c) 2025 Cofinity-X
   #  Copyright (c) 2025 LKS Next
+  #  Copyright (c) 2026 Technovative Solutions
   #  Copyright (c) 2025 Contributors to the Eclipse Foundation
   #
   #  See the NOTICE file(s) distributed with this work for additional
@@ -52,8 +53,28 @@ spec:
       serviceAccountName: {{ include "identityhub.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.identityhub.podSecurityContext | nindent 8 }}
-      {{- if or .Values.identityhub.initContainers .Values.customCaCerts }}
+      {{- $waitForDeps := and .Values.identityhub.waitForDependencies.enabled (or .Values.install.postgresql .Values.install.vault) }}
+      {{- if or .Values.identityhub.initContainers .Values.customCaCerts $waitForDeps }}
       initContainers:
+        {{- if $waitForDeps }}
+        # Blocks startup until the bundled subcharts accept TCP connections; the runtime
+        # otherwise races them on first install and crash-loops until the DB is up.
+        - name: wait-for-dependencies
+          image: {{ .Values.identityhub.waitForDependencies.image }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              {{- if .Values.install.postgresql }}
+              until nc -z {{ .Release.Name }}-postgresql 5432; do echo "waiting for postgresql"; sleep 2; done
+              {{- end }}
+              {{- if .Values.install.vault }}
+              until nc -z {{ .Release.Name }}-vault 8200; do echo "waiting for vault"; sleep 2; done
+              {{- end }}
+              echo "dependencies are reachable"
+          securityContext:
+            {{- toYaml .Values.identityhub.securityContext | nindent 12 }}
+        {{- end }}
         {{- if .Values.identityhub.initContainers }}
         {{- toYaml .Values.identityhub.initContainers | nindent 8 }}
         {{- end }}

@@ -1,6 +1,7 @@
 #################################################################################
 #  Copyright (c) 2025 Cofinity-X
 #  Copyright (c) 2025,2026 LKS Next
+#  Copyright (c) 2026 Technovative Solutions
 #  Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
 #  See the NOTICE file(s) distributed with this work for additional
@@ -89,10 +90,6 @@ issuerservice:
     did:
       port: 8083
       path: /
-    # -- Version API, used to obtain exact version information about all APIs at runtime. Should not be internet-facing
-    version:
-      port: 8084
-      path: /.well-known/api
     # -- STS Token API, for the IssuerService to create Self-Issued ID tokens
     sts:
       port: 8085
@@ -345,6 +342,10 @@ tests:
 statuslist:
   signing_key:
     alias: default
-  # -- Callback address for statuslist
   callback:
-    address: "issuerservice.issuance.local"
+    # -- Base URL that issued credentials embed as their `credentialStatus.statusListCredential`
+    # endpoint. Must be a FULL URL (scheme://host[:port]/statuslist) reachable by verifiers and
+    # holders — e.g. the public ingress URL, or the in-cluster service address
+    # `http://<release>-tractusx-issuerservice:<statuslist-port>/statuslist` for cluster-internal
+    # verification. A bare hostname produces broken status URLs in every issued credential.
+    address: "https://issuerservice.issuance.local/statuslist"

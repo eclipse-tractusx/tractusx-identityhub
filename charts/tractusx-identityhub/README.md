@@ -1,6 +1,6 @@
-# Tractusx-identityhub
+# tractusx-identityhub
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: v0.3.2](https://img.shields.io/badge/Version-v0.3.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.3.2](https://img.shields.io/badge/AppVersion-0.3.2-informational?style=flat-square)
 
 A Helm chart for Tractus-X IdentityHub, that deploys the IdentityHub with postgresql and vault charts for persistance
 
@@ -27,8 +27,8 @@ helm install identityhub tractusx-dev/tractusx-identityhub
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://github.com/CloudPirates-io/helm-charts| postgres(postgresql) | 0.11.0  |
-| https://helm.releases.hashicorp.com | vault(vault) | 0.29.1  |
+| https://helm.releases.hashicorp.com | vault(vault) | 0.29.1 |
+| oci://registry-1.docker.io/cloudpirates | postgresql(postgres) | 0.11.0 |
 
 ## Values
 
@@ -46,8 +46,8 @@ helm install identityhub tractusx-dev/tractusx-identityhub
 | identityhub.debug.enabled | bool | `false` |  |
 | identityhub.debug.port | int | `1044` |  |
 | identityhub.debug.suspendOnStart | bool | `false` |  |
-| identityhub.endpoints | object | `{"accounts":{"authKeyAlias":"sup3r$3cr3t","path":"/api/accounts","port":8085},"credentials":{"path":"/api/credentials","port":8083},"default":{"path":"/api","port":8081},"did":{"path":"/","port":8084},"identity":{"authKeyAlias":"sup3r$3cr3t","path":"/api/identity","port":8082},"sts":{"path":"/api/sts","port":8087},"version":{"path":"/.well-known/api","port":8086}}` | endpoints of the control plane |
-| identityhub.endpoints.accounts | object | `{"authKeyAlias":"sup3r$3cr3t","path":"/api/accounts","port":8085}` | STS Accounts API, used to manipulate STS accounts |
+| identityhub.didweb | object | `{"https":false}` | Whether web DIDs should be interpreted as HTTPS or HTTP |
+| identityhub.endpoints | object | `{"credentials":{"path":"/api/credentials","port":8083},"default":{"path":"/api","port":8081},"did":{"path":"/","port":8084},"identity":{"authKeyAlias":"sup3r$3cr3t","path":"/api/identity","port":8082},"sts":{"path":"/api/sts","port":8087}}` | endpoints of the control plane |
 | identityhub.endpoints.credentials | object | `{"path":"/api/credentials","port":8083}` | DCP Presentation API endpoint |
 | identityhub.endpoints.credentials.path | string | `"/api/credentials"` | path for incoming api calls |
 | identityhub.endpoints.credentials.port | int | `8083` | port for incoming api calls |
@@ -62,14 +62,18 @@ helm install identityhub tractusx-dev/tractusx-identityhub
 | identityhub.endpoints.identity.path | string | `"/api/identity"` | path for incoming api calls |
 | identityhub.endpoints.identity.port | int | `8082` | port for incoming api calls |
 | identityhub.endpoints.sts | object | `{"path":"/api/sts","port":8087}` | STS Endpoint, used to obtain tokens |
-| identityhub.endpoints.version | object | `{"path":"/.well-known/api","port":8086}` | Version API, used to obtain exact version information about all APIs at runtime |
 | identityhub.env | object | `{}` |  |
-| identityhub.envConfigMapNames[0] | string | `"identityhub-config"` |  |
-| identityhub.envConfigMapNames[1] | string | `"identityhub-datasource-config"` |  |
+| identityhub.envConfigMapNames | list | `[]` |  |
 | identityhub.envSecretNames | list | `[]` |  |
 | identityhub.envValueFrom | object | `{}` |  |
+| identityhub.iatp | object | `{"sts":{"oauth":{"client":{"enabled":false,"id":"did:web:identityhub.presentation.local","secret":"testme","secret_alias":"sts-secret","x_api_key":"ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"}}}}` | Initial participant context configuration |
+| identityhub.iatp.sts.oauth.client.enabled | bool | `false` | Enable participant context client configuration |
+| identityhub.iatp.sts.oauth.client.id | string | `"did:web:identityhub.presentation.local"` | Client ID // Did of the initial participant |
+| identityhub.iatp.sts.oauth.client.secret | string | `"testme"` | The client secret that is stored in the vault for requesting OAuth2 access token for Presentation API access |
+| identityhub.iatp.sts.oauth.client.secret_alias | string | `"sts-secret"` | Alias under which the client secret is stored in the vault |
+| identityhub.iatp.sts.oauth.client.x_api_key | string | `"ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"` | The x-api-key that is stored in the vault for the initial participant |
 | identityhub.image.pullPolicy | string | `"IfNotPresent"` | [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use |
-| identityhub.image.repository | string | `""` |  |
+| identityhub.image.repository | string | `"tractusx/identityhub"` |  |
 | identityhub.image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion |
 | identityhub.ingresses[0].annotations | object | `{}` | Additional ingress annotations to add |
 | identityhub.ingresses[0].certManager.clusterIssuer | string | `""` | If preset enables certificate generation via cert-manager cluster-wide issuer |
@@ -86,7 +90,7 @@ helm install identityhub tractusx-dev/tractusx-identityhub
 | identityhub.ingresses[1].certManager.issuer | string | `""` | If preset enables certificate generation via cert-manager namespace scoped issuer |
 | identityhub.ingresses[1].className | string | `""` | Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use |
 | identityhub.ingresses[1].enabled | bool | `false` |  |
-| identityhub.ingresses[1].endpoints | list | `["identity","accounts","version"]` | EDC endpoints exposed by this ingress resource |
+| identityhub.ingresses[1].endpoints | list | `["identity"]` | EDC endpoints exposed by this ingress resource |
 | identityhub.ingresses[1].hostname | string | `"identityhub.identity.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
 | identityhub.ingresses[1].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
 | identityhub.ingresses[1].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
@@ -147,6 +151,8 @@ helm install identityhub tractusx-dev/tractusx-identityhub
 | identityhub.useSVE | bool | `false` |  |
 | identityhub.volumeMounts | list | `[]` | declare where to mount [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) into the container |
 | identityhub.volumes | list | `[]` | [volume](https://kubernetes.io/docs/concepts/storage/volumes/) directories |
+| identityhub.waitForDependencies.enabled | bool | `true` | Enables the built-in wait-for-dependencies initContainer |
+| identityhub.waitForDependencies.image | string | `"busybox:1.37"` | Image used for the TCP wait loop; must provide `nc` (netcat) and `sh` |
 | imagePullSecrets | list | `[]` | Existing image pull secret to use to [obtain the container image from private registries](https://kubernetes.io/docs/concepts/containers/images/#using-a-private-registry) |
 | install.postgresql | bool | `true` |  |
 | install.vault | bool | `true` |  |
@@ -154,8 +160,9 @@ helm install identityhub tractusx-dev/tractusx-identityhub
 | postgresql.auth.database | string | `"ih"` |  |
 | postgresql.auth.password | string | `"password"` |  |
 | postgresql.auth.username | string | `"user"` |  |
-| postgresql.image.repository | string | `"bitnamilegacy/postgresql"` | workaround to use bitnamilegacy chart for version 12.12.x till committers align on new postgresql charts |
-| postgresql.image.tag | string | `"15.4.0-debian-11-r45"` | workaround to use bitnamilegacy chart for version 12.12.x till committers align on new postgresql charts |
+| postgresql.image.registry | string | `"docker.io"` | PostgreSQL image registry |
+| postgresql.image.repository | string | `"postgres"` | PostgreSQL image repository |
+| postgresql.image.tag | string | `"18.0@sha256:1ffc019dae94eca6b09a49ca67d37398951346de3c3d0cfe23d8d4ca33da83fb"` | PostgreSQL image tag |
 | postgresql.jdbcUrl | string | `"jdbc:postgresql://{{ .Release.Name }}-postgresql:5432/ih"` |  |
 | postgresql.primary.persistence.enabled | bool | `false` |  |
 | postgresql.primary.resources.limits.cpu | int | `1` |  |
