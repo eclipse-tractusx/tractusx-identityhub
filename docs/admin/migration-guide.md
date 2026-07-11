@@ -2,6 +2,49 @@
 
 This migration guide is based on the `chartVersion` of the chart. If you don't rely on the provided helm chart, consider the changes of the chart as mentioned below manually.
 
+## 0.3.2 → Unreleased
+
+### 1. Chart values — `version` and `accounts` endpoints removed ([#322](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/322))
+
+EDC 0.17.0 never binds a dedicated `version` web context (version info is served on the
+**default** context at `GET <default-path>/v1/version`), and the STS Accounts API was removed
+upstream. The corresponding dead configuration has been removed from all four charts:
+
+| Removed value | Charts |
+|---|---|
+| `identityhub.endpoints.version` | `tractusx-identityhub`, `tractusx-identityhub-memory` |
+| `identityhub.endpoints.accounts` | `tractusx-identityhub`, `tractusx-identityhub-memory` |
+| `issuerservice.endpoints.version` | `tractusx-issuerservice`, `tractusx-issuerservice-memory` |
+
+**Action required** if your custom values reference them:
+
+- Remove `version` / `accounts` from any `ingresses[].endpoints` list — entries for removed
+  endpoints are silently ignored and would otherwise suggest a route that cannot exist.
+  (Exposing `version` via ingress also failed nginx admission: `/.well-known/api` is rejected
+  with `pathType: Prefix`, see [#232](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/232).)
+- Replace any monitoring/tooling that called `/.well-known/api/...` with
+  `GET <default-endpoint>/v1/version` (e.g. `http://<host>:8081/api/v1/version`).
+- Remove `web.http.version.*` (and identityhub `web.http.accounts.*`) from custom
+  `configuration.properties` — the runtime ignores them.
+
+### 2. Chart values — new `waitForDependencies` initContainer ([#237](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/237))
+
+The persistence charts now gate runtime startup on the bundled PostgreSQL/Vault subcharts
+accepting TCP connections (busybox `nc` loop, digest-pinned image, on by default). No action
+needed for default installs. Disable via `identityhub.waitForDependencies.enabled=false`
+(resp. `issuerservice.…`) if you override the subcharts' `fullnameOverride`/ports or use
+external services — the wait targets the default `<release>-postgresql:5432` /
+`<release>-vault:8200` addresses.
+
+### 3. Chart values — `statuslist.callback.address` must be a full URL
+
+The issuerservice charts' `statuslist.callback.address` default changed from a bare hostname
+to a full URL (`https://issuerservice.issuance.local/statuslist`). Issued credentials embed
+this value as their `credentialStatus.statusListCredential` endpoint — set it to a URL that
+**verifiers and holders can reach** (public ingress URL, or the in-cluster service address
+for cluster-internal verification). A bare hostname produces broken status URLs in every
+issued credential.
+
 ## EDC 0.16.0 → 0.17.0
 
 This section documents the steps required to upgrade tractusx-identityhub from EDC 0.16.0 to 0.17.0. See [#308](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/308) for full details.
@@ -373,4 +416,5 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 
 * SPDX-License-Identifier: CC-BY-4.0
 * SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
+* SPDX-FileCopyrightText: 2026 Technovative Solutions
 * Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/docs/admin/migration-guide.md>

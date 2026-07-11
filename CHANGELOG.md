@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog](https://github.com/eclipse-tractusx/tractus-x-release/blob/main/CHANGELOG.md).
 
+## [Unreleased]
+
+### Added
+- Self-contained E2E Postman collection `docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json` covering the full DCP flow (issuance → presentation → revocation) against the Docker Compose stack; runs unattended via newman ([#321](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/321), [#197](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/197))
+- `waitForDependencies` initContainer in the persistence charts: blocks runtime startup until the bundled PostgreSQL/Vault accept connections, eliminating first-install CrashLoopBackOff ([#237](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/237))
+- Ingress `pathType` configurable per endpoint in all four charts
+- CI workflow running the E2E Postman collection (newman) against the compose stack on every PR
+
+### Changed
+- **BREAKING (charts):** removed the `version` and `accounts` endpoints from all chart values, templates and default ingress lists — EDC 0.17.0 never serves them; version info is at `GET <default>/api/v1/version`. See the [migration guide](docs/admin/migration-guide.md) ([#322](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/322))
+- `statuslist.callback.address` chart default is now a full URL; it must be reachable by verifiers/holders
+- Docker Compose SQL profile uses distinct super-user IDs per runtime (`ih-super-user`/`is-super-user`) to avoid overwriting each other's secrets in the shared dev Vault ([#321](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/321))
+
+### Fixed
+- Chart ingress deployment failed nginx admission for `/.well-known/api` with `pathType: Prefix` ([#232](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/232))
+- Runtime pods crash-looped racing the bundled PostgreSQL on first chart install ([#237](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/237))
+- Docker Compose DCP flow: did:web resolution over HTTP, reachable status-list callback, short DID-resolver cache, `PKCS12` keystore-type typo, super-user API key no longer buried in JDBC debug logs ([#321](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/321))
+- Reference Postman collection auth (`x-api-key`/`SI_TOKEN`) and `participantId` → `participantContextId` in all example bodies (Postman, Bruno, walkthrough) for EDC 0.17.0
+- Eclipse Dash dependency check: restored the mangled extraction regex and refreshed `DEPENDENCIES` metadata (failing on every push since 2026-06-24)
+
+### Removed
+- `docs/api/postman/DCP_IngressPostgresqlTestFlow.json` — incompatible with EDC 0.17.0 (base64url participant IDs in URL paths) and hardwired to a Catena-X integration environment; superseded by the E2E collection
+
 ## [0.3.2] - 2026-06-16
 
 ### Added
