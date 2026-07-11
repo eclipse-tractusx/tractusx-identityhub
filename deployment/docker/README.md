@@ -148,6 +148,20 @@ docker compose --profile sql logs identityhub   | grep "API Key"
 docker compose --profile sql logs issuerservice | grep "API Key"
 ```
 
+> **Grep returns nothing?** The key is only printed when the super-user is first
+> *created*. If a runtime container was recreated (e.g. `up -d --build` after an earlier
+> session) while the postgres volume persisted, the seed finds the existing super-user and
+> stays silent. Recover the keys from the still-running dev Vault:
+>
+> ```shell
+> docker exec docker-vault-1 sh -c 'VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=token vault kv get -field=content secret/ih-super-user-apikey'
+> docker exec docker-vault-1 sh -c 'VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=token vault kv get -field=content secret/is-super-user-apikey'
+> ```
+>
+> This works only while the Vault container survives (dev-mode Vault is in-memory). If
+> Vault was recreated too, the stored keys are gone — reset for a clean seed:
+> `docker compose --profile sql down -v && docker compose --profile sql up -d`.
+
 The SQL profile deliberately uses **different super-user IDs** per runtime
 (`ih-super-user` / `is-super-user`, set via `edc.ih.api.superuser.id`): both runtimes share
 the single dev-mode Vault, and the seed extension derives its Vault aliases from this ID —
