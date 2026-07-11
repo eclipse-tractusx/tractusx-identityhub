@@ -30,7 +30,7 @@ curl -X POST "${ISSUER_URL}/api/identity/v1alpha/participants" \
       "type": "JsonWebKey2020",
       "privateKeyAlias": "did:web:issuer-service.example.com-privatekey-alias"
     },
-    "participantId": "issuer-participant",
+    "participantContextId": "issuer-participant",
     "roles": ["ROLE_ADMIN", "admin"],
     "serviceEndpoints": [
       {
@@ -75,7 +75,7 @@ export ISSUER_CONTEXT="issuer-participant"
 | `key.keyId` | The key ID that will appear in the DID document |
 | `key.type` | Verification method type (`JsonWebKey2020`) |
 | `key.privateKeyAlias` | Alias under which the private key is stored in Vault |
-| `participantId` | Unique ID for this participant context |
+| `participantContextId` | Unique ID for this participant context (renamed from `participantId` in EDC 0.17.0) |
 | `roles` | Roles assigned to this participant |
 | `serviceEndpoints` | Service endpoints published in the DID document |
 | `apiKeyAlias` | Vault alias for storing the generated API key |
@@ -92,4 +92,5 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 - SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
 - SPDX-FileCopyrightText: 2026 Catena-X Automotive Network e.V.
 - SPDX-FileCopyrightText: 2026 LKS Next
+- SPDX-FileCopyrightText: 2026 Technovative Solutions
 - Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/docs/usage/dcp-api-walkthrough/01_create_issuer_participant.md>

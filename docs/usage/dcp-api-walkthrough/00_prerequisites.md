@@ -52,7 +52,7 @@ Before starting, ensure you have:
 3. **curl** or an API client (Postman, Bruno) — this guide uses `curl`
 4. Both services accessible via their hostnames
 
-> **Tip**: A ready-to-use Postman collection is available at [`docs/api/postman/DCP_IngressPostgresqlTestFlow.json`](../../api/postman/DCP_IngressPostgresqlTestFlow.json). Import it and fill in the API keys to run the full flow automatically.
+> **Tip**: A ready-to-use Postman collection that automates this entire walkthrough (and adds presentation + revocation) is available at [`docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json`](../../api/postman/Tractus-X_IdentityHub_Local_E2E.json). Import it, set the two super-user API keys, and run the folders in order — see [docs/api/README.md](../../api/README.md).
 
 ---
 
@@ -66,4 +66,5 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 - SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
 - SPDX-FileCopyrightText: 2026 Catena-X Automotive Network e.V.
 - SPDX-FileCopyrightText: 2026 LKS Next
+- SPDX-FileCopyrightText: 2026 Technovative Solutions
 - Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/docs/usage/dcp-api-walkthrough/00_prerequisites.md>

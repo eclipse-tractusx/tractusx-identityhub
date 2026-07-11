@@ -48,13 +48,34 @@ A comprehensive **step-by-step walkthrough** of the full DCP credential issuance
 | [09 — Retrieve Credentials](../usage/dcp-api-walkthrough/09_retrieve_credentials.md) | Retrieve the issued credential |
 | [10 — Verify Credential](../usage/dcp-api-walkthrough/10_verify_credential.md) | Verify signature, temporal claims, and revocation |
 
-### DCP: Issuance Flow Test
+### Postman Collections
 
-A postman collection that replicates the DCP issuance flow with little user input in a live environment.
-The necessary inputs that the developer has to do is to copy the super-user generated x-api-key and paste it in the script.
+Two collections live in `/docs/api/postman` (import via *File → Import* in Postman):
 
-To start with this collection, import the `DCP_IngressPostgresqlTestFlow.json` in `/docs/api/postman` and 
-launch the `IdentityHub` and `IssuerService` with helm chart with `postgresql`, `vault` and `ingress` enabled.
+1. **`Tractus-X_IdentityHub_Local_E2E.json`** — a guided, fully automated end-to-end flow
+   (participant setup → DCP credential issuance → presentation → revocation → cleanup) against
+   the local [Docker Compose stack](../../deployment/docker/README.md). All variables live
+   inside the collection; the only manual input is the two super-user API keys from the runtime
+   startup logs. Every request chains its outputs into the next one via test scripts, so the
+   whole collection also runs unattended in the Collection Runner or with
+   [newman](https://github.com/postmanlabs/newman):
+
+   ```shell
+   newman run docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json \
+     --env-var "IH_SUPERUSER_KEY=<identityhub super-user key>" \
+     --env-var "IS_SUPERUSER_KEY=<issuerservice super-user key>"
+   ```
+
+   To target a Helm/ingress deployment instead, adjust the `*_URL` collection variables.
+
+2. **`Eclipse Tractus-X Identity Hub.json`** — a per-endpoint reference collection covering
+   every REST endpoint of both runtimes, grouped by API. Defaults target the compose stack;
+   set the `API_KEY` (management APIs) and `SI_TOKEN` (DCP protocol APIs) variables.
+
+> **EDC 0.17.0 note**: `participantContextId` URL path segments take the **plain** participant
+> id (base64url-encoded ids return 404, [IH #937](https://github.com/eclipse-edc/IdentityHub/pull/937)),
+> and the create-participant body field is `participantContextId` (formerly `participantId`).
+> Both collections already reflect this.
 
 ## Additional Information
 
@@ -71,5 +92,6 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 
 - SPDX-License-Identifier: CC-BY-4.0
 - SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
-* SPDX-FileCopyrightText: 2026 LKS Next
+- SPDX-FileCopyrightText: 2026 LKS Next
+- SPDX-FileCopyrightText: 2026 Technovative Solutions
 - Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/docs/api/README.md>

@@ -1,0 +1,1662 @@
+{
+  "info": {
+    "name": "Tractus-X IdentityHub \u00b7 Local E2E Flow (DCP)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "End-to-end DCP credential **issuance**, **presentation** and **revocation** against a locally running Tractus-X IdentityHub + IssuerService (EDC 0.17.0).\n\n## Prerequisites\n1. Start the stack from `deployment/docker/`: `./gradlew shadowJar && docker compose --profile sql up -d --build`\n2. Copy the two super-user API keys from the startup logs into the collection variables `IH_SUPERUSER_KEY` and `IS_SUPERUSER_KEY`:\n   - `docker compose --profile sql logs identityhub | grep \"API Key\"`\n   - `docker compose --profile sql logs issuerservice | grep \"API Key\"`\n\n**That's all.** Every other variable is either a working default for the compose stack or is captured automatically by test scripts as you execute the folders in order (00 \u2192 07). The whole collection also runs unattended in the Collection Runner or newman.\n\n## EDC 0.17.0 gotchas encoded in this collection\n- URL path segments take the **plain** `participantContextId` \u2014 base64url-encoded ids return 404 (IH #937). Only the API-key **prefix** is still base64url-encoded.\n- The create-participant body field is `participantContextId` (formerly `participantId`).\n- Presentation scopes must use the Tractus-X aliases (`org.eclipse.tractusx.vc.type` / `org.eclipse.dspace.dcp.vc.type`); the upstream `org.eclipse.edc.vc.type` alias is rejected.\n\n## Adapting to another deployment (Helm/ingress)\nChange the `*_URL` collection variables to your ingress hosts, and the `*_INTERNAL_*` / `*_DID` variables to hostnames the two runtimes can reach **from inside the cluster**.\n"
+  },
+  "variable": [
+    {
+      "key": "IH_SUPERUSER_KEY",
+      "value": "",
+      "type": "secret",
+      "description": "IdentityHub super-user API key. Copy from startup logs: docker compose --profile sql logs identityhub | grep 'API Key'"
+    },
+    {
+      "key": "IS_SUPERUSER_KEY",
+      "value": "",
+      "type": "secret",
+      "description": "IssuerService super-user API key. Copy from startup logs: docker compose --profile sql logs issuerservice | grep 'API Key'"
+    },
+    {
+      "key": "IH_DEFAULT_URL",
+      "value": "http://localhost:8181/api",
+      "type": "string",
+      "description": "IdentityHub default API (health checks)"
+    },
+    {
+      "key": "IH_IDENTITY_URL",
+      "value": "http://localhost:15151/api/identity",
+      "type": "string",
+      "description": "IdentityHub Identity API"
+    },
+    {
+      "key": "IH_CREDENTIALS_URL",
+      "value": "http://localhost:13131/api/credentials",
+      "type": "string",
+      "description": "IdentityHub Credentials API (DCP presentation)"
+    },
+    {
+      "key": "IH_STS_URL",
+      "value": "http://localhost:9292/api/sts",
+      "type": "string",
+      "description": "IdentityHub Secure Token Service"
+    },
+    {
+      "key": "IS_DEFAULT_URL",
+      "value": "http://localhost:8182/api",
+      "type": "string",
+      "description": "IssuerService default API (health checks)"
+    },
+    {
+      "key": "IS_IDENTITY_URL",
+      "value": "http://localhost:15251/api/identity",
+      "type": "string",
+      "description": "IssuerService Identity API"
+    },
+    {
+      "key": "IS_ADMIN_URL",
+      "value": "http://localhost:15152/api/issuer",
+      "type": "string",
+      "description": "IssuerService IssuerAdmin API"
+    },
+    {
+      "key": "IS_ISSUANCE_URL",
+      "value": "http://localhost:13132/api/issuance",
+      "type": "string",
+      "description": "IssuerService DCP Issuance API"
+    },
+    {
+      "key": "IS_STATUSLIST_URL",
+      "value": "http://localhost:9999/statuslist",
+      "type": "string",
+      "description": "IssuerService StatusList API"
+    },
+    {
+      "key": "ISSUER_INTERNAL_ISSUANCE_URL",
+      "value": "http://issuerservice:13132/api/issuance",
+      "type": "string",
+      "description": "Issuance endpoint as reachable FROM the identityhub container (compose service hostname)"
+    },
+    {
+      "key": "HOLDER_INTERNAL_CREDENTIALS_URL",
+      "value": "http://identityhub:13131/api/credentials",
+      "type": "string",
+      "description": "Credentials endpoint as reachable FROM the issuerservice container (compose service hostname)"
+    },
+    {
+      "key": "ISSUER_DID",
+      "value": "did:web:issuerservice%3A10100:issuer",
+      "type": "string",
+      "description": "Issuer DID. did:web resolved INSIDE the compose network: http://issuerservice:10100/issuer/did.json"
+    },
+    {
+      "key": "HOLDER_DID",
+      "value": "did:web:identityhub%3A10100:holder",
+      "type": "string",
+      "description": "Holder DID. did:web resolved INSIDE the compose network: http://identityhub:10100/holder/did.json"
+    },
+    {
+      "key": "ISSUER_CONTEXT_ID",
+      "value": "issuer",
+      "type": "string",
+      "description": "Issuer participantContextId. Since EDC 0.17.0 URL paths use this PLAIN value (no base64!)"
+    },
+    {
+      "key": "HOLDER_CONTEXT_ID",
+      "value": "holder",
+      "type": "string",
+      "description": "Holder participantContextId. Since EDC 0.17.0 URL paths use this PLAIN value (no base64!)"
+    },
+    {
+      "key": "ATTESTATION_ID",
+      "value": "membership-attestation",
+      "type": "string",
+      "description": "ID of the attestation definition created in folder 03"
+    },
+    {
+      "key": "CREDENTIAL_DEFINITION_ID",
+      "value": "membership-credential-def",
+      "type": "string",
+      "description": "ID of the credential definition created in folder 03"
+    },
+    {
+      "key": "CREDENTIAL_TYPE",
+      "value": "MembershipCredential",
+      "type": "string",
+      "description": "Credential type issued by this flow"
+    },
+    {
+      "key": "HOLDER_BPN",
+      "value": "BPNL00000003AYRE",
+      "type": "string",
+      "description": "Business Partner Number mapped into credentialSubject.holderIdentifier"
+    },
+    {
+      "key": "ISSUER_API_KEY",
+      "value": "",
+      "type": "secret",
+      "description": "AUTO: captured when the issuer participant is created (01)"
+    },
+    {
+      "key": "ISSUER_CLIENT_SECRET",
+      "value": "",
+      "type": "secret",
+      "description": "AUTO: captured when the issuer participant is created (01)"
+    },
+    {
+      "key": "HOLDER_API_KEY",
+      "value": "",
+      "type": "secret",
+      "description": "AUTO: captured when the holder participant is created (02)"
+    },
+    {
+      "key": "HOLDER_CLIENT_SECRET",
+      "value": "",
+      "type": "secret",
+      "description": "AUTO: captured when the holder participant is created (02); used for STS in 05"
+    },
+    {
+      "key": "HOLDER_KEYPAIR_ID",
+      "value": "",
+      "type": "string",
+      "description": "AUTO: captured in 02"
+    },
+    {
+      "key": "HOLDER_REQUEST_ID",
+      "value": "",
+      "type": "string",
+      "description": "AUTO: generated per issuance request (04)"
+    },
+    {
+      "key": "HOLDER_CREDENTIAL_ID",
+      "value": "",
+      "type": "string",
+      "description": "AUTO: id of the credential stored on the holder (04)"
+    },
+    {
+      "key": "STATUSLIST_CREDENTIAL_ID",
+      "value": "",
+      "type": "string",
+      "description": "AUTO: id of the issuer's BitstringStatusList credential (04)"
+    },
+    {
+      "key": "ISSUED_CREDENTIAL_ID",
+      "value": "",
+      "type": "string",
+      "description": "AUTO: issuer-side id of the issued credential (06)"
+    },
+    {
+      "key": "STS_TOKEN",
+      "value": "",
+      "type": "secret",
+      "description": "AUTO: self-issued ID token from the STS (05)"
+    },
+    {
+      "key": "POLL_ATTEMPTS",
+      "value": "0",
+      "type": "string",
+      "description": "AUTO: internal counter for issuance-status polling"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 \u00b7 Health",
+      "description": "Smoke checks. Both runtimes expose an anonymous health endpoint on their default API port. Run these first \u2014 everything else assumes both containers are up.",
+      "item": [
+        {
+          "name": "IdentityHub Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{IH_DEFAULT_URL}}/check/health",
+            "description": "Liveness/readiness of the IdentityHub runtime. The SQL profile additionally reports the 'Hashicorp Vault Health' component."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('IdentityHub is healthy', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().isSystemHealthy).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "IssuerService Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{IS_DEFAULT_URL}}/check/health",
+            "description": "Liveness/readiness of the IssuerService runtime."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('IssuerService is healthy', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().isSystemHealthy).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "IdentityHub API Versions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{IH_DEFAULT_URL}}/v1/version",
+            "description": "Version metadata of every API context. NOTE: in EDC 0.17.0 this lives on the DEFAULT context \u2014 there is no dedicated version port and `web.http.version.*` settings are ignored by the runtime."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('IdentityHub version info served on the default context', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var apis = Object.keys(pm.response.json());",
+                  "    console.log('IdentityHub API contexts: ' + apis.join(', '));",
+                  "    pm.expect(apis).to.include('identity');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "IssuerService API Versions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{IS_DEFAULT_URL}}/v1/version",
+            "description": "Version metadata of every API context (served on the default context, see above)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('IssuerService version info served on the default context', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var apis = Object.keys(pm.response.json());",
+                  "    console.log('IssuerService API contexts: ' + apis.join(', '));",
+                  "    pm.expect(apis).to.include('issuer-admin-api');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "01 \u00b7 Issuer Setup",
+      "description": "Creates the ParticipantContext that acts as the credential ISSUER on the IssuerService. This generates an EC P-256 keypair, publishes a did:web document with an `IssuerService` service endpoint (the address the holder's IdentityHub will call over DCP), and returns a fresh API key + STS client secret, which the scripts capture for all later requests.\n\nNOTE (EDC 0.17.0): the request body field is `participantContextId` (formerly `participantId`), and URL path segments use the PLAIN participant id \u2014 base64url-encoded ids in paths return 404 since IH #937.",
+      "item": [
+        {
+          "name": "Create Issuer ParticipantContext",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{IS_SUPERUSER_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{IS_IDENTITY_URL}}/v1alpha/participants",
+            "description": "Creates + activates the issuer participant. Response contains `apiKey` (auth for the IssuerAdmin API) and `clientSecret` (STS client credentials) \u2014 both captured automatically.\n\nRe-running against a non-fresh stack returns 409: run '99 \u00b7 Cleanup' first or reset with `docker compose --profile sql down -v`.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": true,\n  \"did\": \"{{ISSUER_DID}}\",\n  \"key\": {\n    \"keyGeneratorParams\": {\n      \"algorithm\": \"Ec\",\n      \"curve\": \"secp256r1\"\n    },\n    \"keyId\": \"{{ISSUER_DID}}#key-1\",\n    \"type\": \"JsonWebKey2020\",\n    \"privateKeyAlias\": \"issuer-privatekey-alias\"\n  },\n  \"participantContextId\": \"{{ISSUER_CONTEXT_ID}}\",\n  \"roles\": [\n    \"admin\"\n  ],\n  \"serviceEndpoints\": [\n    {\n      \"id\": \"issuer-service-1\",\n      \"type\": \"IssuerService\",\n      \"serviceEndpoint\": \"{{ISSUER_INTERNAL_ISSUANCE_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}\"\n    }\n  ],\n  \"apiKeyAlias\": \"issuer-api-key-alias\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('IS_SUPERUSER_KEY')) {",
+                  "    throw new Error('Collection variable IS_SUPERUSER_KEY is not set. Copy it from the IssuerService startup logs: docker compose --profile sql logs issuerservice | grep \"API Key\"');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 409) {",
+                  "    console.warn('Participant already exists \u2014 run the 99 \u00b7 Cleanup folder, or reset the stack: docker compose --profile sql down -v');",
+                  "}",
+                  "pm.test('Issuer ParticipantContext created (200)', function () { pm.response.to.have.status(200); });",
+                  "var json = pm.response.json();",
+                  "pm.expect(json.apiKey, 'response must contain apiKey').to.be.a('string');",
+                  "pm.collectionVariables.set('ISSUER_API_KEY', json.apiKey);",
+                  "if (json.clientSecret) { pm.collectionVariables.set('ISSUER_CLIENT_SECRET', json.clientSecret); }",
+                  "console.log('Captured ISSUER_API_KEY and ISSUER_CLIENT_SECRET');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Issuer ParticipantContext",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IS_IDENTITY_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}",
+            "description": "Verifies the freshly captured issuer API key works and the context is active. Note: unlike the IdentityHub, the IssuerService runtime does NOT ship the DID management API (`/dids/*` returns 404 here \u2014 it is not part of the upstream issuer BOM), so the issuer's DID publication is proven implicitly when the holder resolves it during the DCP flow in folder 04."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('ISSUER_API_KEY')) {",
+                  "    throw new Error('Collection variable ISSUER_API_KEY is not set. Run \"Create Issuer ParticipantContext\" first.');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Issuer ParticipantContext is active', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var pc = pm.response.json();",
+                  "    pm.expect(pc.did).to.eql(pm.collectionVariables.get('ISSUER_DID'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 \u00b7 Holder Setup",
+      "description": "Creates the ParticipantContext that acts as the credential HOLDER (wallet) on the IdentityHub. Its did:web document advertises a `CredentialService` endpoint \u2014 that is where the IssuerService delivers issued credentials during the async DCP flow.",
+      "item": [
+        {
+          "name": "Create Holder ParticipantContext",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{IH_SUPERUSER_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants",
+            "description": "Creates + activates the holder participant on the IdentityHub. The captured `clientSecret` is what the STS uses in folder 05 to mint self-issued tokens on the holder's behalf.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": true,\n  \"did\": \"{{HOLDER_DID}}\",\n  \"key\": {\n    \"keyGeneratorParams\": {\n      \"algorithm\": \"Ec\",\n      \"curve\": \"secp256r1\"\n    },\n    \"keyId\": \"{{HOLDER_DID}}#key-1\",\n    \"type\": \"JsonWebKey2020\",\n    \"privateKeyAlias\": \"holder-privatekey-alias\"\n  },\n  \"participantContextId\": \"{{HOLDER_CONTEXT_ID}}\",\n  \"roles\": [],\n  \"serviceEndpoints\": [\n    {\n      \"id\": \"holder-credential-service-1\",\n      \"type\": \"CredentialService\",\n      \"serviceEndpoint\": \"{{HOLDER_INTERNAL_CREDENTIALS_URL}}/v1/participants/{{HOLDER_CONTEXT_ID}}\"\n    }\n  ],\n  \"apiKeyAlias\": \"holder-api-key-alias\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('IH_SUPERUSER_KEY')) {",
+                  "    throw new Error('Collection variable IH_SUPERUSER_KEY is not set. Copy it from the IdentityHub startup logs: docker compose --profile sql logs identityhub | grep \"API Key\"');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 409) {",
+                  "    console.warn('Participant already exists \u2014 run the 99 \u00b7 Cleanup folder, or reset the stack: docker compose --profile sql down -v');",
+                  "}",
+                  "pm.test('Holder ParticipantContext created (200)', function () { pm.response.to.have.status(200); });",
+                  "var json = pm.response.json();",
+                  "pm.expect(json.apiKey, 'response must contain apiKey').to.be.a('string');",
+                  "pm.collectionVariables.set('HOLDER_API_KEY', json.apiKey);",
+                  "if (json.clientSecret) { pm.collectionVariables.set('HOLDER_CLIENT_SECRET', json.clientSecret); }",
+                  "console.log('Captured HOLDER_API_KEY and HOLDER_CLIENT_SECRET');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify Holder DID is Published",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{HOLDER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants/{{HOLDER_CONTEXT_ID}}/dids/state",
+            "description": "Expected: PUBLISHED (see 01 for why we don't fetch did.json from the host). Retries itself a few times since publication is asynchronous.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"did\": \"{{HOLDER_DID}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('HOLDER_API_KEY')) {",
+                  "    throw new Error('Collection variable HOLDER_API_KEY is not set. Run \"Create Holder ParticipantContext\" first.');",
+                  "}",
+                  "// publication is async \u2014 give it a moment",
+                  "setTimeout(function () {}, 1000);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var attempts = parseInt(pm.collectionVariables.get('POLL_ATTEMPTS') || '0', 10);",
+                  "if (pm.response.code === 404 && attempts < 5) {",
+                  "    console.log('DID not published yet \u2014 retrying (' + (attempts + 1) + '/5)');",
+                  "    pm.collectionVariables.set('POLL_ATTEMPTS', String(attempts + 1));",
+                  "    postman.setNextRequest('Verify Holder DID is Published');",
+                  "} else {",
+                  "    pm.collectionVariables.set('POLL_ATTEMPTS', '0');",
+                  "    pm.test('Holder DID is PUBLISHED', function () {",
+                  "        pm.response.to.have.status(200);",
+                  "        pm.expect(pm.response.text()).to.include('PUBLISHED');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Holder KeyPairs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{HOLDER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants/{{HOLDER_CONTEXT_ID}}/keypairs",
+            "description": "The keypair generated at participant creation signs the holder's self-issued tokens and presentations."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Holder has an active keypair', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var kps = pm.response.json();",
+                  "    pm.expect(kps.length).to.be.above(0);",
+                  "    pm.collectionVariables.set('HOLDER_KEYPAIR_ID', kps[0].id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 \u00b7 Issuance Configuration (Issuer)",
+      "description": "Configures WHAT the issuer can issue and TO WHOM:\n1. an attestation (how holder claims are verified \u2014 here: a lookup in the internal `holders` DB table),\n2. a credential definition (credential type, format, validity and how attestation data maps into the credentialSubject),\n3. the holder registration (populates the `holders` table the attestation reads from).",
+      "item": [
+        {
+          "name": "Create Attestation Definition",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/attestations",
+            "description": "A `database` attestation reads holder rows from the issuer's own `holders` table at issuance time.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{ATTESTATION_ID}}\",\n  \"attestationType\": \"database\",\n  \"configuration\": {\n    \"dataSourceName\": \"holder\",\n    \"tableName\": \"holders\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('ISSUER_API_KEY')) {",
+                  "    throw new Error('Collection variable ISSUER_API_KEY is not set. Run folder 01 first.');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Attestation definition created (201)', function () { pm.response.to.have.status(201); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Credential Definition",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentialdefinitions",
+            "description": "Defines the MembershipCredential: JWT format, 1 year validity, and mappings from `holders` table columns (`did`, `holder_id`) into the credentialSubject.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{CREDENTIAL_DEFINITION_ID}}\",\n  \"credentialType\": \"{{CREDENTIAL_TYPE}}\",\n  \"format\": \"VC1_0_JWT\",\n  \"jsonSchema\": \"{}\",\n  \"jsonSchemaUrl\": \"https://raw.githubusercontent.com/eclipse-tractusx/tractusx-profiles/main/cx/credentials/membership.credential.schema.json\",\n  \"attestations\": [\n    \"{{ATTESTATION_ID}}\"\n  ],\n  \"mappings\": [\n    {\n      \"input\": \"did\",\n      \"output\": \"credentialSubject.id\",\n      \"required\": true\n    },\n    {\n      \"input\": \"holder_id\",\n      \"output\": \"credentialSubject.holderIdentifier\",\n      \"required\": true\n    }\n  ],\n  \"validity\": 31536000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Credential definition created (201)', function () { pm.response.to.have.status(201); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register Holder",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/holders",
+            "description": "Registers the IdentityHub participant as a known holder. The row this creates is exactly what the database attestation looks up when the credential request arrives. Holder registrations survive the 99 \u00b7 Cleanup folder (there is no delete API for them), so on a re-run 409 'already registered' is fine.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"did\": \"{{HOLDER_DID}}\",\n  \"holderId\": \"{{HOLDER_BPN}}\",\n  \"name\": \"local-holder\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 409) { console.log('Holder already registered from a previous run \u2014 OK'); }",
+                  "pm.test('Holder registered (201, or 409 on re-run)', function () {",
+                  "    pm.expect([201, 409]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Issuer DCP Metadata",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{IS_ISSUANCE_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/metadata",
+            "description": "Public (unauthenticated) DCP endpoint advertising which credentials this issuer offers. Verifies the credential definition is live."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Issuer metadata advertises the credential', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var meta = pm.response.json();",
+                  "    var types = (meta.credentialsSupported || []).map(function (c) { return c.credentialType; });",
+                  "    pm.expect(types).to.include(pm.collectionVariables.get('CREDENTIAL_TYPE'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 \u00b7 Request Credential (DCP Issuance)",
+      "description": "The holder asks the issuer for a credential. One API call triggers the whole asynchronous DCP protocol:\nIdentityHub resolves the issuer DID \u2192 finds the IssuerService endpoint \u2192 sends a signed CredentialRequestMessage \u2192 IssuerService verifies the token, evaluates the attestation, signs the credential and DELIVERS it back to the holder's CredentialService endpoint. Poll the status until it becomes ISSUED, then fetch the stored credential.",
+      "item": [
+        {
+          "name": "Request Credential from Issuer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{HOLDER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants/{{HOLDER_CONTEXT_ID}}/credentials/request",
+            "description": "`holderPid` is a client-chosen correlation id for THIS request (generated fresh each run by the pre-request script); poll the status endpoint with it. The `credentials` entries must match the credential definition: same id, type and format.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"issuerDid\": \"{{ISSUER_DID}}\",\n  \"holderPid\": \"{{HOLDER_REQUEST_ID}}\",\n  \"credentials\": [\n    {\n      \"id\": \"{{CREDENTIAL_DEFINITION_ID}}\",\n      \"type\": \"{{CREDENTIAL_TYPE}}\",\n      \"format\": \"VC1_0_JWT\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('HOLDER_API_KEY')) {",
+                  "    throw new Error('Collection variable HOLDER_API_KEY is not set. Run folder 02 first.');",
+                  "}",
+                  "pm.collectionVariables.set('HOLDER_REQUEST_ID', pm.variables.replaceIn('{{$guid}}'));",
+                  "pm.collectionVariables.set('POLL_ATTEMPTS', '0');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Credential request accepted (201) \u2014 issuance now runs asynchronously', function () { pm.response.to.have.status(201); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Check Issuance Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{HOLDER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants/{{HOLDER_CONTEXT_ID}}/credentials/request/{{HOLDER_REQUEST_ID}}",
+            "description": "Issuance is asynchronous \u2014 expect REQUESTED for a few seconds, then ISSUED. In the Collection Runner / newman this request re-runs itself automatically (max 10 tries, 3 s apart). Running manually? Just re-send until the status is ISSUED. ERROR usually means DID resolution or attestation failed \u2014 check `docker compose --profile sql logs identityhub issuerservice`."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// small delay so the async DCP round-trip can complete",
+                  "setTimeout(function () {}, 3000);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var json = pm.response.json();",
+                  "console.log('Issuance status: ' + json.status);",
+                  "var attempts = parseInt(pm.collectionVariables.get('POLL_ATTEMPTS') || '0', 10);",
+                  "if (json.status !== 'ISSUED' && json.status !== 'ERROR' && attempts < 10) {",
+                  "    pm.collectionVariables.set('POLL_ATTEMPTS', String(attempts + 1));",
+                  "    postman.setNextRequest('Check Issuance Status');",
+                  "} else {",
+                  "    pm.collectionVariables.set('POLL_ATTEMPTS', '0');",
+                  "    pm.test('Credential issuance completed (status = ISSUED)', function () {",
+                  "        pm.expect(json.status).to.eql('ISSUED');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Stored Credentials (Holder)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{HOLDER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants/{{HOLDER_CONTEXT_ID}}/credentials",
+            "description": "Lists the holder's wallet. The test script decodes the credential JWT, prints the credentialSubject to the console and captures the ids needed by folder 06."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function jwtPayload(jwt) {",
+                  "    var p = jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');",
+                  "    while (p.length % 4) { p += '='; }",
+                  "    return JSON.parse(atob(p));",
+                  "}",
+                  "pm.test('Holder wallet contains a credential', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().length).to.be.above(0);",
+                  "});",
+                  "var res = pm.response.json()[0];",
+                  "pm.collectionVariables.set('HOLDER_CREDENTIAL_ID', res.id);",
+                  "var claims = jwtPayload(res.verifiableCredential.rawVc);",
+                  "var vc = claims.vc || claims;",
+                  "console.log('credentialSubject: ' + JSON.stringify(vc.credentialSubject));",
+                  "var st = vc.credentialStatus;",
+                  "if (st) {",
+                  "    st = Array.isArray(st) ? st[0] : st;",
+                  "    console.log('credentialStatus: ' + JSON.stringify(st));",
+                  "    // statusListCredential points at the container-internal hostname; keep only the id",
+                  "    pm.collectionVariables.set('STATUSLIST_CREDENTIAL_ID', st.statusListCredential.split('/').pop());",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 \u00b7 Present Credential (DCP Presentation)",
+      "description": "What a verifier (e.g. an EDC connector) does during the DCP presentation flow: obtain a self-issued token from the holder's STS, then query the holder's Credentials API for a Verifiable Presentation.\n\nIMPORTANT (Tractus-X flavor): scope strings must use the `org.eclipse.tractusx.vc.type` (or `org.eclipse.dspace.dcp.vc.type`) alias \u2014 the upstream `org.eclipse.edc.vc.type` alias is REJECTED by this distribution.",
+      "item": [
+        {
+          "name": "Get STS Token (Self-Issued)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{IH_STS_URL}}/token",
+            "description": "OAuth2 client-credentials against the holder's embedded STS. `client_id` is the holder DID; `client_secret` was captured when the participant was created (02). `bearer_access_scope` embeds the read scope for the credential type into the token.",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{HOLDER_DID}}"
+                },
+                {
+                  "key": "client_secret",
+                  "value": "{{HOLDER_CLIENT_SECRET}}"
+                },
+                {
+                  "key": "audience",
+                  "value": "{{HOLDER_DID}}"
+                },
+                {
+                  "key": "bearer_access_scope",
+                  "value": "org.eclipse.tractusx.vc.type:{{CREDENTIAL_TYPE}}:read"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('HOLDER_CLIENT_SECRET')) {",
+                  "    throw new Error('Collection variable HOLDER_CLIENT_SECRET is not set. Run folder 02 first.');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('STS issued an access token', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var tok = pm.response.json().access_token;",
+                  "    pm.expect(tok).to.be.a('string');",
+                  "    pm.collectionVariables.set('STS_TOKEN', tok);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Presentation Query",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{STS_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{IH_CREDENTIALS_URL}}/v1/participants/{{HOLDER_CONTEXT_ID}}/presentations/query",
+            "description": "DCP PresentationQueryMessage authenticated with the self-issued Bearer token. Returns a PresentationResponseMessage containing a signed Verifiable Presentation (JWT). Note this API is versioned `/v1/` (stable), unlike the management APIs (`/v1alpha/`).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"@context\": [\n    \"https://w3id.org/dspace-dcp/v1.0/dcp.jsonld\"\n  ],\n  \"type\": \"PresentationQueryMessage\",\n  \"scope\": [\n    \"org.eclipse.tractusx.vc.type:{{CREDENTIAL_TYPE}}:read\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('STS_TOKEN')) {",
+                  "    throw new Error('Collection variable STS_TOKEN is not set. Run \"Get STS Token (Self-Issued)\" first.');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function jwtPayload(jwt) {",
+                  "    var p = jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');",
+                  "    while (p.length % 4) { p += '='; }",
+                  "    return JSON.parse(atob(p));",
+                  "}",
+                  "pm.test('Verifiable Presentation returned', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.type).to.eql('PresentationResponseMessage');",
+                  "    pm.expect(json.presentation.length).to.be.above(0);",
+                  "});",
+                  "var vp = jwtPayload(pm.response.json().presentation[0]);",
+                  "console.log('VP holder: ' + vp.iss);",
+                  "console.log('VP contains ' + ((vp.vp && vp.vp.verifiableCredential) || []).length + ' credential(s)');"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 \u00b7 Credential Lifecycle (Issuer)",
+      "description": "Revocation management on the issuer side, backed by a BitstringStatusList credential with purpose `revocation`.\n\n\u26a0\ufe0f Revocation is PERMANENT: per the W3C Bitstring Status List model only `suspension` is reversible, and this stack provisions a revocation-purpose list. `suspend` and `resume` therefore both return 501 Not Implemented here \u2014 the final request demonstrates that on purpose. Re-run folder 04 to issue a fresh credential afterwards.",
+      "item": [
+        {
+          "name": "Query Issued Credentials",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentials/query",
+            "description": "The issuer stores both the issued credential(s) AND its own BitstringStatusList credential \u2014 the test script picks the issued (non-status-list) one.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"offset\": 0,\n  \"limit\": 50\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('ISSUER_API_KEY')) {",
+                  "    throw new Error('Collection variable ISSUER_API_KEY is not set. Run folder 01 first.');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('An issued credential exists on the issuer', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var issued = pm.response.json().filter(function (r) {",
+                  "        var types = (r.credential && r.credential.type) || [];",
+                  "        return types.indexOf('BitstringStatusListCredential') === -1;",
+                  "    });",
+                  "    pm.expect(issued.length).to.be.above(0);",
+                  "    // several runs may have issued several credentials \u2014 take the newest",
+                  "    issued.sort(function (a, b) {",
+                  "        return new Date(b.credential.issuanceDate) - new Date(a.credential.issuanceDate);",
+                  "    });",
+                  "    pm.collectionVariables.set('ISSUED_CREDENTIAL_ID', issued[0].id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Check Status (before revoke)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentials/{{ISSUED_CREDENTIAL_ID}}/status",
+            "description": "`status: null` means the credential is active (not on the revocation list)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Credential is active (status = null)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().status).to.be.null;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Fetch StatusList Credential",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{IS_STATUSLIST_URL}}/{{STATUSLIST_CREDENTIAL_ID}}",
+            "description": "The public, signed BitstringStatusList credential (JWT) that verifiers download to check revocation. Inside the compose network its URL is http://issuerservice:9999/statuslist/... \u2014 from the host we use the mapped port. The id was captured in folder 04."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('STATUSLIST_CREDENTIAL_ID')) {",
+                  "    throw new Error('Collection variable STATUSLIST_CREDENTIAL_ID is not set. Run folder 04 first (it captures the status list id from the issued credential).');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function jwtPayload(jwt) {",
+                  "    var p = jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');",
+                  "    while (p.length % 4) { p += '='; }",
+                  "    return JSON.parse(atob(p));",
+                  "}",
+                  "pm.test('StatusList credential is served', function () { pm.response.to.have.status(200); });",
+                  "var claims = jwtPayload(pm.response.text());",
+                  "var subj = (claims.vc || claims).credentialSubject;",
+                  "subj = Array.isArray(subj) ? subj[0] : subj;",
+                  "console.log('statusPurpose: ' + subj.statusPurpose + ', encodedList: ' + subj.encodedList);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Revoke Credential",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentials/{{ISSUED_CREDENTIAL_ID}}/revoke",
+            "description": "Flips the credential's bit in the BitstringStatusList. Verifiers checking the statusListCredential URL embedded in the credential will now see it as revoked. \u26a0\ufe0f This is permanent \u2014 see the folder description. Re-run folder 04 to issue a fresh credential."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Credential revoked (204)', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Check Status (after revoke)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentials/{{ISSUED_CREDENTIAL_ID}}/status",
+            "description": "Expected: `status: \"revocation\"`."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Credential is revoked (status = revocation)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().status).to.eql('revocation');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Resume Credential (expect 501)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentials/{{ISSUED_CREDENTIAL_ID}}/resume",
+            "description": "Demonstrates that revocation is irreversible on this stack: `resume` (like `suspend`) only applies to a suspension-purpose status list, which the default setup does not provision \u2014 upstream answers 501 Not Implemented."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Resume is not implemented for a revocation-purpose list (501)', function () {",
+                  "    pm.response.to.have.status(501);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "07 \u00b7 Introspection (Super-User)",
+      "description": "Cross-participant admin views. These endpoints require elevated access, i.e. the super-user API keys. The pre-request scripts show how the participant id is recovered from an API key: the key prefix (before the first '.') is the base64url-encoded participant id \u2014 note that URL paths themselves take the PLAIN id.",
+      "item": [
+        {
+          "name": "Get All Participants (IdentityHub)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{IH_SUPERUSER_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants",
+            "description": "All ParticipantContexts on the IdentityHub \u2014 expect the super-user and the holder."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('IH_SUPERUSER_KEY')) {",
+                  "    throw new Error('Collection variable IH_SUPERUSER_KEY is not set. Copy it from the IdentityHub startup logs.');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Participants listed', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    console.log('participants: ' + pm.response.json().map(function (p) { return p.participantContextId; }).join(', '));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All KeyPairs (IdentityHub)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{IH_SUPERUSER_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IH_IDENTITY_URL}}/v1alpha/keypairs",
+            "description": "All keypair resources across participants."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('KeyPairs listed (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All DIDs (IdentityHub)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{IH_SUPERUSER_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IH_IDENTITY_URL}}/v1alpha/dids",
+            "description": "All DID documents across participants."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('DIDs listed (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Credentials (IdentityHub)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{IH_SUPERUSER_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IH_IDENTITY_URL}}/v1alpha/credentials",
+            "description": "All credential resources across participants."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Credentials listed (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Super-User ParticipantContext (IdentityHub)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{IH_SUPERUSER_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants/{{IH_SUPERUSER_CONTEXT_ID}}",
+            "description": "Demonstrates deriving the participant id from the API key (see pre-request script) and using it PLAIN in the URL path."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// the part of the API key before the first '.' is the base64url-encoded participant id \u2014",
+                  "// that encoding is part of the API-KEY format only; URL paths use the PLAIN id (EDC 0.17.0, IH #937)",
+                  "function ctxFromKey(key) {",
+                  "    var p = key.split('.')[0].replace(/-/g, '+').replace(/_/g, '/');",
+                  "    while (p.length % 4) { p += '='; }",
+                  "    return atob(p);",
+                  "}",
+                  "pm.collectionVariables.set('IH_SUPERUSER_CONTEXT_ID', ctxFromKey(pm.variables.get('IH_SUPERUSER_KEY')));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Super-user context returned (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Query Holders (IssuerService)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/holders/query",
+            "description": "The issuer's holder registry (the `holders` table used by the database attestation).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"offset\": 0,\n  \"limit\": 50\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Holders listed (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Query Attestation Definitions (IssuerService)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/attestations/query",
+            "description": "All attestation definitions of the issuer participant.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"offset\": 0,\n  \"limit\": 50\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Attestations listed (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Query Credential Definitions (IssuerService)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentialdefinitions/query",
+            "description": "All credential definitions of the issuer participant.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"offset\": 0,\n  \"limit\": 50\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Credential definitions listed (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Query Issuance Processes (IssuerService)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/issuanceprocesses/query",
+            "description": "Every DCP issuance the issuer processed, with state machine details.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"offset\": 0,\n  \"limit\": 50\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Issuance processes listed (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "99 \u00b7 Cleanup",
+      "description": "Deletes the flow's participants and issuer configuration so folders 01\u201306 can be re-run against the same stack. Holder-registry rows, issued credentials and issuance processes have no delete API \u2014 for a fully pristine state reset the stack: `docker compose --profile sql down -v && docker compose --profile sql up -d`.",
+      "item": [
+        {
+          "name": "Delete Credential Definition",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentialdefinitions/{{CREDENTIAL_DEFINITION_ID}}",
+            "description": "204 on success, 404 if already gone."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Credential definition deleted (204/404)', function () { pm.expect([204, 404]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Attestation Definition",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{ISSUER_API_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/attestations/{{ATTESTATION_ID}}",
+            "description": "204 on success, 404 if already gone."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Attestation deleted (204/404)', function () { pm.expect([204, 404]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Holder ParticipantContext",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{IH_SUPERUSER_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants/{{HOLDER_CONTEXT_ID}}",
+            "description": "Removes the holder participant (and its DID/keypairs) from the IdentityHub."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Holder participant deleted (204/404)', function () { pm.expect([204, 404]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Issuer ParticipantContext",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{IS_SUPERUSER_KEY}}",
+                "description": "Admin/participant API key (captured automatically by an earlier request)"
+              }
+            ],
+            "url": "{{IS_IDENTITY_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}",
+            "description": "Removes the issuer participant from the IssuerService."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Issuer participant deleted (204/404)', function () { pm.expect([204, 404]).to.include(pm.response.code); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
