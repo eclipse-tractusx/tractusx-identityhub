@@ -97,7 +97,6 @@ services:
       - ./config/identityhub/configuration.properties:/app/configuration.properties:ro
     ports:
       - "8181:8181"   # default API      – /api
-      - "7171:7171"   # version          – /.well-known/api
       - "13131:13131" # credentials API  – /api/credentials
       - "10100:10100" # DID              – /
       - "15151:15151" # identity API     – /api/identity
@@ -127,7 +126,6 @@ services:
       - ./config/issuerservice/configuration.properties:/app/configuration.properties:ro
     ports:
       - "8182:8181"   # default API      – /api
-      - "7172:7171"   # version          – /.well-known/api
       - "13132:13132" # issuance API     – /api/issuance
       - "10101:10100" # DID              – /
       - "15251:15151" # identity API     – /api/identity
@@ -153,7 +151,6 @@ services:
       - ./config/identityhub-memory/configuration.properties:/app/configuration.properties:ro
     ports:
       - "8181:8181"   # default API      – /api
-      - "7171:7171"   # version          – /.well-known/api
       - "13131:13131" # credentials API  – /api/credentials
       - "10100:10100" # DID              – /
       - "15151:15151" # identity API     – /api/identity
@@ -178,7 +175,6 @@ services:
       - ./config/issuerservice-memory/configuration.properties:/app/configuration.properties:ro
     ports:
       - "8182:8181"   # default API      – /api
-      - "7172:7171"   # version          – /.well-known/api
       - "13132:13132" # issuance API     – /api/issuance
       - "10101:10100" # DID              – /
       - "15251:15151" # identity API     – /api/identity

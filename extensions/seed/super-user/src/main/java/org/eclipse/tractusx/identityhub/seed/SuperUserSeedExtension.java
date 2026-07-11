@@ -100,7 +100,7 @@ public class SuperUserSeedExtension implements ServiceExtension {
                                 return overrideKey;
                             })
                             .orElse(generatedKey.apiKey());
-                    monitor.info("Created user 'super-user'. Please take note of the API Key: %s".formatted(apiKey));
+                    monitor.info("Created user '%s'. Please take note of the API Key: %s".formatted(superUserParticipantId, apiKey));
                 })
                 .orElseThrow(f -> new EdcException("Error creating Super-User: " + f.getFailureDetail()));
     }

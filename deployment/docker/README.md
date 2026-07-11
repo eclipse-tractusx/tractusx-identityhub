@@ -11,7 +11,7 @@ Two **profiles** are available:
 | `sql` | `identityhub`, `issuerservice`, `postgres`, `vault` | Full stack with PostgreSQL + HashiCorp Vault |
 
 > **Note:** The `memory` and `sql` profiles share the same host ports (e.g. `8181`, `8182`,
-> `7171`, `7172`) and therefore **cannot be run simultaneously**. Stop one profile
+> `15151`, `15251`) and therefore **cannot be run simultaneously**. Stop one profile
 > (`docker compose --profile <name> down`) before starting the other.
 
 ---
@@ -78,7 +78,6 @@ docker compose --profile sql up -d --build
 | Endpoint | Host port | Container port | Path |
 |----------|-----------|----------------|------|
 | Default API | 8181 | 8181 | `/api` |
-| Version | 7171 | 7171 | `/.well-known/api` |
 | Credentials API | 13131 | 13131 | `/api/credentials` |
 | DID | 10100 | 10100 | `/` |
 | Identity API | 15151 | 15151 | `/api/identity` |
@@ -93,7 +92,6 @@ Container-internal ports remain identical for both runtimes.
 | Endpoint | Host port | Container port | Path |
 |----------|-----------|----------------|------|
 | Default API | 8182 | 8181 | `/api` |
-| Version | 7172 | 7171 | `/.well-known/api` |
 | Issuance API | 13132 | 13132 | `/api/issuance` |
 | DID | 10101 | 10100 | `/` |
 | Identity API | 15251 | 15151 | `/api/identity` |
@@ -129,6 +127,37 @@ Example output (SQL profile):
 ```json
 {"componentResults":[{"failure":null,"component":"Hashicorp Vault Health","isHealthy":true},{"failure":null,"component":"BaseRuntime","isHealthy":true}],"isSystemHealthy":true}
 ```
+
+API version information is served on the **default** context (there is no dedicated
+version port in EDC 0.17.0 — the runtime ignores `web.http.version.*` settings):
+
+```shell
+curl http://localhost:8181/api/v1/version   # identityhub
+curl http://localhost:8182/api/v1/version   # issuerservice
+```
+
+---
+
+## Super-user API keys
+
+On first start each runtime seeds an admin (super-user) participant and prints its API key
+once to the logs — grab them with:
+
+```shell
+docker compose --profile sql logs identityhub   | grep "API Key"
+docker compose --profile sql logs issuerservice | grep "API Key"
+```
+
+The SQL profile deliberately uses **different super-user IDs** per runtime
+(`ih-super-user` / `is-super-user`, set via `edc.ih.api.superuser.id`): both runtimes share
+the single dev-mode Vault, and the seed extension derives its Vault aliases from this ID —
+with identical IDs the runtime that starts second would silently overwrite the first one's
+secrets, invalidating its logged API key.
+
+With the two keys you can drive the full DCP issuance/presentation/revocation flow using the
+Postman collection at
+[`docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json`](../../docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json)
+— all other variables are pre-set for this compose stack (usage: [docs/api/README.md](../../docs/api/README.md)).
 
 ---
 
@@ -179,20 +208,20 @@ The `edc.iam.did.web.use.https` setting controls how `did:web` DIDs are resolved
 | `true` (default) | `https://host:port/path/did.json` | **Production** — DID documents are served over TLS |
 | `false` | `http://host:port/path/did.json` | **Local docker / dev** — inter-container traffic is plain HTTP |
 
-The bundled configs here do **not** set this key, so it defaults to `true`. The flows this
-setup primarily demonstrates (health checks, super-user seeding) never resolve a `did:web`
-DID, so they work as-is.
+The bundled `config/*/configuration.properties` files set this to `false`, because a full
+**DCP credential-exchange flow** between the bundled runtimes (e.g. the issuerservice
+resolving a holder's `did:web` document over the compose network) requires resolution over
+plain HTTP — containers reach each other via `http://issuerservice:10100/...`, and the
+HTTPS resolver would fail with `Unsupported or unrecognized SSL message`.
 
-A full **DCP credential-exchange flow** between the bundled runtimes (e.g. the issuerservice
-resolving a holder's `did:web` document over the compose network) *does* trigger resolution.
-Because containers reach each other over plain HTTP (`http://issuerservice:10100/...`), the
-default HTTPS resolver fails with `Unsupported or unrecognized SSL message`. To exercise such
-flows locally, add the following to the relevant `config/*/configuration.properties` before
-starting the stack:
+Two more settings in the bundled configs exist solely to make the local DCP flow work:
 
 ```properties
-# Local docker only — inter-container did:web endpoints are plain HTTP.
-edc.iam.did.web.use.https=false
+# Status-list credentials must embed a URL the OTHER container can reach
+edc.statuslist.callback.address=http://issuerservice:9999/statuslist
+# Short DID cache: re-created participants get fresh keys; a long cache would
+# serve stale DID documents and fail signature checks until it expires
+edc.did.resolver.cache.expiry=10000
 ```
 
 > **Security:** Never set `edc.iam.did.web.use.https=false` in production. A DID document
@@ -228,4 +257,5 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 
 - SPDX-License-Identifier: CC-BY-4.0
 - SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
+- SPDX-FileCopyrightText: 2026 Technovative Solutions
 - Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/deployment/docker/README.md>
