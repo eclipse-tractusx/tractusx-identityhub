@@ -3125,7 +3125,7 @@
       "key": "DID",
       "value": "",
       "type": "string",
-      "description": "A DID, e.g. did:web:localhost%3A10100:participant"
+      "description": "DID for /dids/{did}/... path segments — must be base64url-encoded (e.g. ZGlkOndlYjpzdXBlci11c2Vy for did:web:super-user). Unlike participantContextId, the DID path segment is still base64url-decoded by the API in EDC 0.17.0."
     },
     {
       "key": "KEY_PAIR_ID",

@@ -1,6 +1,17 @@
-# Tractus-X Identity Hub API Collection
+# Tractus-X Identity Hub API Collections
 
-This [directory](./bruno/Eclipse%20Tractus-X%20Identity%20Hub/) contains a [Bruno](https://www.usebruno.com/) API collection for testing and interacting with the Tractus-X Identity Hub API endpoints.
+This directory contains API collections for both [Postman](https://www.postman.com/downloads/) and [Bruno](https://www.usebruno.com/) — pick whichever client your team uses; **all collections are maintained in parallel**:
+
+| Collection | Tool | Purpose |
+|---|---|---|
+| [`postman/Tractus-X_IdentityHub_Local_E2E.json`](./postman/Tractus-X_IdentityHub_Local_E2E.json) | Postman | Guided, automated end-to-end DCP flow against the local compose stack (CI-verified) |
+| [`postman/Eclipse Tractus-X Identity Hub.json`](./postman/) | Postman | Per-endpoint reference covering every REST endpoint |
+| [`bruno/Eclipse Tractus-X Identity Hub/`](./bruno/Eclipse%20Tractus-X%20Identity%20Hub/) | Bruno | Per-endpoint reference (Bruno counterpart, compose-stack defaults) |
+| [`bruno/Identity Hub e2e/`](./bruno/Identity%20Hub%20e2e/) | Bruno | Three-party dataspace walkthrough (issuer + two IdentityHubs + two EDC connectors); targets a Kubernetes deployment, **not** the compose stack |
+
+> **Path-encoding rules (EDC 0.17.0)** baked into all collections: `participantContextId`
+> URL segments are **plain** (base64url returns 404, [IH #937](https://github.com/eclipse-edc/IdentityHub/pull/937)),
+> while the `{did}` segment of `/dids/{did}/...` requests **is still base64url-encoded**.
 
 ## Prerequisites
 
