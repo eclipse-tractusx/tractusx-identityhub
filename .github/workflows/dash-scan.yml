@@ -1,5 +1,6 @@
 #################################################################################
 #  Copyright (c) 2025 Cofinity-X
+#  Copyright (c) 2026 Technovative Solutions
 #  Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
 #  See the NOTICE file(s) distributed with this work for additional
@@ -43,7 +44,7 @@ jobs:
 
       - name: generate dependency list
         run: |
-          ./gradlew allDependencies | grep -Poh "(?<=s)[w.-]+:[w.-]+:[^:s\[\]]+" | sort | uniq > dependency-list
+          ./gradlew allDependencies | grep -Poh '(?<=\s)[\w.-]+:[\w.-]+:[^:\s\[\]]+' | sort | uniq > dependency-list
           cat dependency-list
 
       - name: Run dash
