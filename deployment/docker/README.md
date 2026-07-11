@@ -154,9 +154,13 @@ docker compose --profile sql logs issuerservice | grep "API Key"
 > stays silent. Recover the keys from the still-running dev Vault:
 >
 > ```shell
-> docker exec docker-vault-1 sh -c 'VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=token vault kv get -field=content secret/ih-super-user-apikey'
-> docker exec docker-vault-1 sh -c 'VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=token vault kv get -field=content secret/is-super-user-apikey'
+> docker exec docker-vault-1 sh -c 'VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=token vault kv get -field=content secret/ih-super-user-apikey'; echo
+> docker exec docker-vault-1 sh -c 'VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=token vault kv get -field=content secret/is-super-user-apikey'; echo
 > ```
+>
+> (The trailing `; echo` matters when copying from the terminal: the raw output has no
+> final newline, so zsh appends a reverse-video `%` marker that is easy to copy into the
+> key by accident — a key pasted with that `%` fails with 401 `Invalid API token`.)
 >
 > This works only while the Vault container survives (dev-mode Vault is in-memory). If
 > Vault was recreated too, the stored keys are gone — reset for a clean seed:
