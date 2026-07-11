@@ -66,7 +66,14 @@ Two collections live in `/docs/api/postman` (import via *File → Import* in Pos
      --env-var "IS_SUPERUSER_KEY=<issuerservice super-user key>"
    ```
 
-   To target a Helm/ingress deployment instead, adjust the `*_URL` collection variables.
+   To target a Helm/ingress deployment instead, adjust the `*_URL` collection variables
+   (and the `*_DID` / `*_INTERNAL_*` variables to hostnames the two runtimes can reach
+   from inside the cluster).
+
+   > **Note**: the E2E collection requires the **`sql`** compose profile (or the
+   > persistence Helm charts). The issuance flow uses the `database` attestation type,
+   > which only exists in the SQL runtimes — the `*-memory` runtimes reject it with
+   > `Unknown attestation type: database`, so the flow cannot complete there.
 
 2. **`Eclipse Tractus-X Identity Hub.json`** — a per-endpoint reference collection covering
    every REST endpoint of both runtimes, grouped by API. Defaults target the compose stack;
