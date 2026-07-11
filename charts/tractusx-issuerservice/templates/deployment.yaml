@@ -74,6 +74,8 @@ spec:
               echo "dependencies are reachable"
           securityContext:
             {{- toYaml .Values.issuerservice.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.issuerservice.waitForDependencies.resources | nindent 12 }}
         {{- end }}
         {{- if .Values.issuerservice.initContainers }}
         {{- toYaml .Values.issuerservice.initContainers | nindent 8 }}

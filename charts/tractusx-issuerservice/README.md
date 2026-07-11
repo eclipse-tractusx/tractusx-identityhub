@@ -146,7 +146,8 @@ helm install issuerservice tractusx-dev/tractusx-issuerservice
 | issuerservice.volumeMounts | list | `[]` | declare where to mount [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) into the container |
 | issuerservice.volumes | list | `[]` | [volume](https://kubernetes.io/docs/concepts/storage/volumes/) directories |
 | issuerservice.waitForDependencies.enabled | bool | `true` | Enables the built-in wait-for-dependencies initContainer |
-| issuerservice.waitForDependencies.image | string | `"busybox:1.37"` | Image used for the TCP wait loop; must provide `nc` (netcat) and `sh` |
+| issuerservice.waitForDependencies.image | string | `"busybox:1.37@sha256:9532d8c39891ca2ecde4d30d7710e01fb739c87a8b9299685c63704296b16028"` | Image used for the TCP wait loop; must provide `nc` (netcat) and `sh` |
+| issuerservice.waitForDependencies.resources | object | `{"limits":{"cpu":"50m","memory":"32Mi"},"requests":{"cpu":"10m","memory":"16Mi"}}` | [Resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) for the wait initContainer |
 | nameOverride | string | `""` |  |
 | pgadmin4.enabled | bool | `false` |  |
 | pgadmin4.env.email | string | `"pgadmin4@txtest.org"` |  |

@@ -50,13 +50,24 @@ issuerservice:
   # Waits for the bundled PostgreSQL/Vault subcharts to accept TCP connections before
   # starting the runtime. Without it, the runtime races the subcharts on first install
   # and crash-loops with "Connection to <release>-postgresql:5432 refused" until the
-  # database is up. Only applies while install.postgresql / install.vault are enabled;
-  # for external services add your own check via `initContainers`.
+  # database is up. Only applies while install.postgresql / install.vault are enabled.
+  # NOTE: the wait targets the DEFAULT subchart service names and ports
+  # (<release>-postgresql:5432, <release>-vault:8200); if you override a subchart's
+  # fullnameOverride or ports, disable this and add your own check via `initContainers`.
+  # For external services use `initContainers` as well.
   waitForDependencies:
     # -- Enables the built-in wait-for-dependencies initContainer
     enabled: true
     # -- Image used for the TCP wait loop; must provide `nc` (netcat) and `sh`
-    image: busybox:1.37
+    image: busybox:1.37@sha256:9532d8c39891ca2ecde4d30d7710e01fb739c87a8b9299685c63704296b16028
+    # -- [Resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) for the wait initContainer
+    resources:
+      requests:
+        cpu: 10m
+        memory: 16Mi
+      limits:
+        cpu: 50m
+        memory: 32Mi
   useSVE: false
   debug:
     enabled: false

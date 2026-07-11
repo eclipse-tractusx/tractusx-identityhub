@@ -74,6 +74,8 @@ spec:
               echo "dependencies are reachable"
           securityContext:
             {{- toYaml .Values.identityhub.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.identityhub.waitForDependencies.resources | nindent 12 }}
         {{- end }}
         {{- if .Values.identityhub.initContainers }}
         {{- toYaml .Values.identityhub.initContainers | nindent 8 }}
