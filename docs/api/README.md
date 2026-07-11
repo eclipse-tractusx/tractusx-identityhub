@@ -66,6 +66,11 @@ Two collections live in `/docs/api/postman` (import via *File → Import* in Pos
      --env-var "IS_SUPERUSER_KEY=<issuerservice super-user key>"
    ```
 
+   A successful run reports **37/37 assertions** with zero failures. When re-running,
+   wait ~10 seconds between runs and see the collection description's *Re-running*
+   section for the holder-registry caveat. The same run also executes in CI on every
+   PR (`.github/workflows/postman-e2e-test.yaml`).
+
    To target a Helm/ingress deployment instead, adjust the `*_URL` collection variables
    (and the `*_DID` / `*_INTERNAL_*` variables to hostnames the two runtimes can reach
    from inside the cluster).
