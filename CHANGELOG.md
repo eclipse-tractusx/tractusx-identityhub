@@ -24,7 +24,9 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 - Chart ingress deployment failed nginx admission for `/.well-known/api` with `pathType: Prefix` ([#232](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/232))
 - Runtime pods crash-looped racing the bundled PostgreSQL on first chart install ([#237](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/237))
 - Docker Compose DCP flow: did:web resolution over HTTP, reachable status-list callback, short DID-resolver cache, `PKCS12` keystore-type typo, super-user API key no longer buried in JDBC debug logs ([#321](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/321))
-- Reference Postman collection auth (`x-api-key`/`SI_TOKEN`) and `participantId` → `participantContextId` in all example bodies (Postman, Bruno, walkthrough) for EDC 0.17.0
+- Postman reference collection (`Eclipse Tractus-X Identity Hub.json`): `x-api-key`/`SI_TOKEN` auth, compose-stack default URLs, `participantId` → `participantContextId`, and the plain-vs-base64url path-encoding rules for EDC 0.17.0
+- Bruno reference collection (`bruno/Eclipse Tractus-X Identity Hub/`): brought to 0.17.0 parity with the Postman collection and verified request-by-request against a running stack. Fixed defects that made shipped examples fail or misbehave — the *Activate ParticipantContext* request silently **deactivated** participants (missing `isActive=true`), key pair examples created keys that could never sign a token (bare key IDs, unsupported `Ed25519VerificationKey2020` type), body-less POSTs returned 415, stale presentation context/scope alias, and variable defaults pointed at ports matching no deployment
+- `participantId` → `participantContextId` in the DCP walkthrough and Bruno e2e example bodies for EDC 0.17.0
 - Eclipse Dash dependency check: restored the mangled extraction regex and refreshed `DEPENDENCIES` metadata (failing on every push since 2026-06-24)
 
 ### Removed

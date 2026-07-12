@@ -53,8 +53,8 @@ jobs:
     secrets: inherit
 
   dcp-e2e-test:
+    # no secrets: the job builds and drives an ephemeral local compose stack
     uses: ./.github/workflows/postman-e2e-test.yaml
-    secrets: inherit
 
   upgradeability-test:
     if: false

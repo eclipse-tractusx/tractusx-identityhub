@@ -28,7 +28,7 @@ This directory contains API collections for both [Postman](https://www.postman.c
 3. Navigate to this directory (`/docs/api/bruno`) and select it
 4. The collection will be loaded with all available API endpoints
 
-### 1. Open the Postman Collection
+### 2. Open the Postman Collection
 
 1. Launch Postman
 2. Click "File" > "Import"

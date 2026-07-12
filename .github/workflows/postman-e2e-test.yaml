@@ -25,6 +25,10 @@ on:
   workflow_call:
   workflow_dispatch:
 
+# Least privilege: this job only builds and drives an ephemeral local stack.
+permissions:
+  contents: read
+
 jobs:
   dcp-e2e-compose:
     runs-on: ubuntu-latest
@@ -75,7 +79,8 @@ jobs:
 
       - name: Run the E2E collection (issuance -> presentation -> revocation)
         run: |
-          npx --yes newman@6 run "docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json" \
+          # pinned exact version (avoid pulling a floating major at runtime)
+          npx --yes newman@6.2.2 run "docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json" \
             --env-var "IH_SUPERUSER_KEY=${{ steps.keys.outputs.ih_key }}" \
             --env-var "IS_SUPERUSER_KEY=${{ steps.keys.outputs.is_key }}"
 
