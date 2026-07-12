@@ -94,7 +94,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"@context\": [\n    \"https://w3id.org/tractusx-trust/v0.8\",\n    \"https://identity.foundation/presentation-exchange/submission/v1\"\n  ],\n  \"type\": \"PresentationQueryMessage\",\n  \"presentationDefinition\": null,\n  \"scope\": [\n    \"org.eclipse.dspace.dcp.vc.type:SomeCredential_0.3.5:write\",\n    \"org.eclipse.dspace.dcp.vc.type:SomeOtherCredential:read\",\n    \"org.eclipse.dspace.dcp.vc.type:ThirdCredential:*\"\n  ]\n}",
+                  "raw": "{\n  \"@context\": [\n    \"https://w3id.org/dspace-dcp/v1.0/dcp.jsonld\"\n  ],\n  \"type\": \"PresentationQueryMessage\",\n  \"presentationDefinition\": null,\n  \"scope\": [\n    \"org.eclipse.dspace.dcp.vc.type:SomeCredential_0.3.5:write\",\n    \"org.eclipse.dspace.dcp.vc.type:SomeOtherCredential:read\",\n    \"org.eclipse.dspace.dcp.vc.type:ThirdCredential:*\"\n  ]\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -349,7 +349,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"did\": \"did:web:super-user\"\n}",
+                  "raw": "{\n  \"did\": \"{{DID_PLAIN}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -404,7 +404,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"did\": \"did:web:super-user\"\n}",
+                  "raw": "{\n  \"did\": \"{{DID_PLAIN}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -612,7 +612,7 @@
                     }
                   ]
                 },
-                "description": "",
+                "description": "Un-publishes a DID document. Requires the ParticipantContext to be DEACTIVATED first (POST /participants/{id}/state?isActive=false) — returns 400 on an ACTIVATED participant.",
                 "url": {
                   "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/unpublish",
                   "protocol": "",
@@ -631,7 +631,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"did\": \"did:web:super-user\"\n}",
+                  "raw": "{\n  \"did\": \"{{DID_PLAIN}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -695,7 +695,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"my-new-key\",\n  \"privateKeyAlias\": \"my-new-private-key-alias\",\n  \"type\": \"Ed25519VerificationKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key\"\n}",
+                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"{{DID_PLAIN}}#added-key\",\n  \"privateKeyAlias\": \"added-key-alias\",\n  \"type\": \"JsonWebKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -894,7 +894,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"my-new-key2\",\n  \"privateKeyAlias\": \"my-new-private-key2-alias\",\n  \"type\": \"Ed25519VerificationKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key2\"\n}",
+                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"{{DID_PLAIN}}#revoked-successor\",\n  \"privateKeyAlias\": \"revoked-successor-alias\",\n  \"type\": \"JsonWebKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key2\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -955,7 +955,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"my-new-key3\",\n  \"privateKeyAlias\": \"my-new-private-key3-alias\",\n  \"type\": \"Ed25519VerificationKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key3\"\n}",
+                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"{{DID_PLAIN}}#rotated-successor\",\n  \"privateKeyAlias\": \"rotated-successor-alias\",\n  \"type\": \"JsonWebKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key3\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1052,9 +1052,9 @@
                     }
                   ]
                 },
-                "description": "",
+                "description": "Activates (or with isActive=false deactivates) a ParticipantContext. ⚠️ Keep isActive=true in the URL — omitting it deactivates the participant, and its key pairs stay deactivated even after re-activation (reactivate via keypairs/{id}/activate is only possible from ACTIVE/CREATED states, so a fresh key pair may be required).",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/state",
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/state?isActive=true",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
@@ -1068,7 +1068,8 @@
                   "query": [
                     {
                       "key": "isActive",
-                      "value": "true"
+                      "value": "true",
+                      "description": "REQUIRED in the URL: without it the API defaults to isActive=false and this request silently DEACTIVATES the participant (its key pairs stay deactivated even after re-activation)."
                     }
                   ],
                   "variable": []
@@ -3126,6 +3127,12 @@
       "value": "",
       "type": "string",
       "description": "DID for /dids/{did}/... path segments — must be base64url-encoded (e.g. ZGlkOndlYjpzdXBlci11c2Vy for did:web:super-user). Unlike participantContextId, the DID path segment is still base64url-decoded by the API in EDC 0.17.0."
+    },
+    {
+      "key": "DID_PLAIN",
+      "value": "did:web:ih-super-user",
+      "type": "string",
+      "description": "Plain (non-encoded) DID for request BODIES, e.g. the dids/state, publish and unpublish payloads."
     },
     {
       "key": "KEY_PAIR_ID",

@@ -18,6 +18,12 @@ auth:apikey {
 
 body:json {
   {
-    "did": "did:web:super-user"
+    "did": "{{DID_PLAIN}}"
   }
+}
+
+docs {
+  Un-publishing requires the ParticipantContext to be in DEACTIVATED state first
+  (POST /participants/{id}/state?isActive=false) - on an ACTIVATED participant
+  this request returns 400.
 }
