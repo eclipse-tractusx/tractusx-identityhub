@@ -59,19 +59,34 @@ spec:
         {{- if $waitForDeps }}
         # Blocks startup until the bundled subcharts accept TCP connections; the runtime
         # otherwise races them on first install and crash-loops until the DB is up.
+        # Bounded (waitForDependencies.retries): fails loudly if a dependency never
+        # becomes reachable, rather than hanging the pod in Init indefinitely.
         - name: wait-for-dependencies
           image: {{ .Values.identityhub.waitForDependencies.image }}
           command:
             - /bin/sh
             - -c
             - |
+              wait_for() {
+                name="$1"; host="$2"; port="$3"; i=0
+                while [ "$i" -lt {{ .Values.identityhub.waitForDependencies.retries }} ]; do
+                  if nc -w 3 -z "$host" "$port"; then
+                    echo "$name ($host:$port) is reachable"; return 0
+                  fi
+                  i=$((i + 1))
+                  echo "waiting for $name ($host:$port) [$i/{{ .Values.identityhub.waitForDependencies.retries }}]"
+                  sleep 2
+                done
+                echo "ERROR: $name ($host:$port) not reachable after {{ .Values.identityhub.waitForDependencies.retries }} attempts; failing init"
+                return 1
+              }
               {{- if .Values.install.postgresql }}
-              until nc -z {{ .Release.Name }}-postgresql 5432; do echo "waiting for postgresql"; sleep 2; done
+              wait_for postgresql {{ .Release.Name }}-postgresql 5432 || exit 1
               {{- end }}
               {{- if .Values.install.vault }}
-              until nc -z {{ .Release.Name }}-vault 8200; do echo "waiting for vault"; sleep 2; done
+              wait_for vault {{ .Release.Name }}-vault 8200 || exit 1
               {{- end }}
-              echo "dependencies are reachable"
+              echo "all dependencies are reachable"
           securityContext:
             {{- toYaml .Values.identityhub.securityContext | nindent 12 }}
           resources:

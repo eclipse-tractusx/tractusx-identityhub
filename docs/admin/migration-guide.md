@@ -31,7 +31,10 @@ upstream. The corresponding dead configuration has been removed from all four ch
 
 The persistence charts now gate runtime startup on the bundled PostgreSQL/Vault subcharts
 accepting TCP connections (busybox `nc` loop, digest-pinned image, on by default). No action
-needed for default installs. Disable via `identityhub.waitForDependencies.enabled=false`
+needed for default installs. The wait is **bounded** — after
+`waitForDependencies.retries` attempts (default 60, ≈5 min) the initContainer exits
+non-zero so the pod fails loudly instead of hanging in `Init` forever; tune it if your
+database is slow to start. Disable via `identityhub.waitForDependencies.enabled=false`
 (resp. `issuerservice.…`) if you override the subcharts' `fullnameOverride`/ports or use
 external services — the wait targets the default `<release>-postgresql:5432` /
 `<release>-vault:8200` addresses.

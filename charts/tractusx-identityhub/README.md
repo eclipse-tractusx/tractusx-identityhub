@@ -152,8 +152,9 @@ helm install identityhub tractusx-dev/tractusx-identityhub
 | identityhub.volumeMounts | list | `[]` | declare where to mount [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) into the container |
 | identityhub.volumes | list | `[]` | [volume](https://kubernetes.io/docs/concepts/storage/volumes/) directories |
 | identityhub.waitForDependencies.enabled | bool | `true` | Enables the built-in wait-for-dependencies initContainer |
-| identityhub.waitForDependencies.image | string | `"busybox:1.37@sha256:9532d8c39891ca2ecde4d30d7710e01fb739c87a8b9299685c63704296b16028"` | Image used for the TCP wait loop; must provide `nc` (netcat) and `sh` |
+| identityhub.waitForDependencies.image | string | `"busybox:1.37@sha256:9532d8c39891ca2ecde4d30d7710e01fb739c87a8b9299685c63704296b16028"` | Image used for the TCP wait loop; must provide `nc` (netcat with `-w`/`-z`) and `sh` |
 | identityhub.waitForDependencies.resources | object | `{"limits":{"cpu":"50m","memory":"32Mi"},"requests":{"cpu":"10m","memory":"16Mi"}}` | [Resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) for the wait initContainer |
+| identityhub.waitForDependencies.retries | int | `60` | Max probe attempts per dependency (2s apart, each probe capped at a 3s connect timeout). After this the initContainer exits non-zero and the pod fails loudly instead of hanging in Init forever. 60 ≈ up to ~5 min. |
 | imagePullSecrets | list | `[]` | Existing image pull secret to use to [obtain the container image from private registries](https://kubernetes.io/docs/concepts/containers/images/#using-a-private-registry) |
 | install.postgresql | bool | `true` |  |
 | install.vault | bool | `true` |  |

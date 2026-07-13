@@ -58,8 +58,12 @@ issuerservice:
   waitForDependencies:
     # -- Enables the built-in wait-for-dependencies initContainer
     enabled: true
-    # -- Image used for the TCP wait loop; must provide `nc` (netcat) and `sh`
+    # -- Image used for the TCP wait loop; must provide `nc` (netcat with `-w`/`-z`) and `sh`
     image: busybox:1.37@sha256:9532d8c39891ca2ecde4d30d7710e01fb739c87a8b9299685c63704296b16028
+    # -- Max probe attempts per dependency (2s apart, each probe capped at a 3s connect
+    # timeout). After this the initContainer exits non-zero and the pod fails loudly
+    # instead of hanging in Init forever. 60 ≈ up to ~5 min.
+    retries: 60
     # -- [Resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) for the wait initContainer
     resources:
       requests:
