@@ -15,7 +15,7 @@ This step:
 ## Request
 
 ```bash
-curl -X POST "${ISSUER_URL}/api/identity/v1alpha/participants" \
+curl -X POST "${ISSUER_IDENTITY}/v1alpha/participants" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${ISSUER_ADMIN_KEY}" \
   -d '{

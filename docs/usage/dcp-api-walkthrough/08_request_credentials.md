@@ -9,7 +9,7 @@ Trigger the actual DCP Issuance Flow. The IdentityHub (Holder) sends a credentia
 ## Request
 
 ```bash
-curl -X POST "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}/credentials/request" \
+curl -X POST "${IDH_IDENTITY}/v1alpha/participants/${IDH_CONTEXT}/credentials/request" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${IDH_API_KEY}" \
   -d '{

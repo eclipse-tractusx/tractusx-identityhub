@@ -9,7 +9,7 @@ Query the IdentityHub to check if the credential was delivered successfully.
 ## Request
 
 ```bash
-curl -s "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}/credentials" \
+curl -s "${IDH_IDENTITY}/v1alpha/participants/${IDH_CONTEXT}/credentials" \
   -H "x-api-key: ${IDH_API_KEY}" | jq .
 ```
 
@@ -73,7 +73,7 @@ echo "<rawVc>" | cut -d. -f2 | base64 -d 2>/dev/null | jq .
       "type": "BitstringStatusListEntry",
       "statusPurpose": "revocation",
       "statusListIndex": 0,
-      "statusListCredential": "https://issuer-service.example.com/statuslist/62d95fd4-..."
+      "statusListCredential": "${STATUSLIST}/62d95fd4-..."
     }
   }
 }
@@ -96,7 +96,7 @@ echo "<rawVc>" | cut -d. -f2 | base64 -d 2>/dev/null | jq .
 If the credential list is empty, the issuance may still be in progress or may have failed. Check the [issuance process status](07_register_holder.md):
 
 ```bash
-curl -X POST "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/issuanceprocesses/query" \
+curl -X POST "${ISSUER_ADMIN}/v1alpha/participants/${ISSUER_CONTEXT}/issuanceprocesses/query" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${ISSUER_API_KEY}" \
   -d '{}' | jq .

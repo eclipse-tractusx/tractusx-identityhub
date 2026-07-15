@@ -6,6 +6,18 @@
 
 After creating and activating participant contexts, verify that the DID documents are published and resolvable. This is essential — the DCP flow relies on both parties being able to resolve each other's DIDs.
 
+> **Which method applies to your deployment?** The `curl .../.well-known/did.json` commands
+> below assume **domain-root DIDs** served over a public hostname (the Helm/ingress model, e.g.
+> `did:web:issuer-service.example.com`). On **Docker Compose** the DIDs are container-internal
+> (`did:web:issuerservice%3A10100:issuer`) and are not resolvable from the host — instead check
+> the published state via the Identity API:
+>
+> ```bash
+> curl -X POST "${ISSUER_IDENTITY}/v1alpha/participants/${ISSUER_CONTEXT}/dids/state" \
+>   -H "Content-Type: application/json" -H "x-api-key: ${ISSUER_API_KEY}" \
+>   -d '{"did": "did:web:issuerservice%3A10100:issuer"}'    # expect: PUBLISHED
+> ```
+
 ## Issuer DID Document
 
 ```bash

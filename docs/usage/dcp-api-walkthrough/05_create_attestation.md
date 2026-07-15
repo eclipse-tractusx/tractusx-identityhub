@@ -9,7 +9,7 @@ Attestations define how the IssuerService verifies claims before issuing credent
 ## Request
 
 ```bash
-curl -X POST "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/attestations" \
+curl -X POST "${ISSUER_ADMIN}/v1alpha/participants/${ISSUER_CONTEXT}/attestations" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${ISSUER_API_KEY}" \
   -d '{

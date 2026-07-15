@@ -9,7 +9,7 @@ Create a participant context on the **IdentityHub** that will act as the credent
 ## Request
 
 ```bash
-curl -X POST "${IDH_URL}/api/identity/v1alpha/participants" \
+curl -X POST "${IDH_IDENTITY}/v1alpha/participants" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${IDH_ADMIN_KEY}" \
   -d '{

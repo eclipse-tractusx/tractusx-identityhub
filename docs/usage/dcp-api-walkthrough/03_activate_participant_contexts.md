@@ -11,7 +11,7 @@ After creating participant contexts, they may be in `CREATED` state and not yet 
 ## Activate the Issuer Participant Context
 
 ```bash
-curl -X POST "${ISSUER_URL}/api/identity/v1alpha/participants/${ISSUER_CONTEXT}/state?isActive=true" \
+curl -X POST "${ISSUER_IDENTITY}/v1alpha/participants/${ISSUER_CONTEXT}/state?isActive=true" \
   -H "x-api-key: ${ISSUER_ADMIN_KEY}"
 ```
 
@@ -22,7 +22,7 @@ curl -X POST "${ISSUER_URL}/api/identity/v1alpha/participants/${ISSUER_CONTEXT}/
 ## Activate the Holder Participant Context
 
 ```bash
-curl -X POST "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}/state?isActive=true" \
+curl -X POST "${IDH_IDENTITY}/v1alpha/participants/${IDH_CONTEXT}/state?isActive=true" \
   -H "x-api-key: ${IDH_ADMIN_KEY}"
 ```
 
@@ -34,11 +34,11 @@ You can confirm the state by retrieving the participant context details:
 
 ```bash
 # Check Issuer participant state
-curl -s "${ISSUER_URL}/api/identity/v1alpha/participants/${ISSUER_CONTEXT}" \
+curl -s "${ISSUER_IDENTITY}/v1alpha/participants/${ISSUER_CONTEXT}" \
   -H "x-api-key: ${ISSUER_ADMIN_KEY}" | jq .state
 
 # Check Holder participant state
-curl -s "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}" \
+curl -s "${IDH_IDENTITY}/v1alpha/participants/${IDH_CONTEXT}" \
   -H "x-api-key: ${IDH_ADMIN_KEY}" | jq .state
 ```
 
@@ -57,7 +57,7 @@ The state should be `ACTIVATED`.
 To deactivate a participant context (e.g., for maintenance):
 
 ```bash
-curl -X POST "${ISSUER_URL}/api/identity/v1alpha/participants/${ISSUER_CONTEXT}/state?isActive=false" \
+curl -X POST "${ISSUER_IDENTITY}/v1alpha/participants/${ISSUER_CONTEXT}/state?isActive=false" \
   -H "x-api-key: ${ISSUER_ADMIN_KEY}"
 ```
 
