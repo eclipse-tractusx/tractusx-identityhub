@@ -59,7 +59,6 @@ sequenceDiagram
 | Default | 8081 | `/api` | Internal | General API |
 | Issuance | 8082 | `/api/issuance` | Public | DCP credential request endpoint |
 | DID | 8083 | `/` | Public | DID document resolution (`/.well-known/did.json`) |
-| Version | 8084 | `/.well-known/api` | Internal | Runtime version info |
 | STS | 8085 | `/api/sts` | Internal | Self-Issued ID token creation |
 | Admin | 8086 | `/api/admin` | Internal | Manage attestations, definitions, holders |
 | Identity | 8087 | `/api/identity` | Internal | Manage participants, DIDs, key pairs |
@@ -70,11 +69,10 @@ sequenceDiagram
 | Endpoint | Port | Path | Visibility | Purpose |
 |----------|------|------|------------|---------|
 | Default | 8081 | `/api` | Internal | General API |
-| Credentials | 8082 | `/api/credentials` | Public | DCP credential storage & presentation |
-| DID | 8083 | `/` | Public | DID document resolution |
-| Version | 8084 | `/.well-known/api` | Internal | Runtime version info |
-| STS | 8085 | `/api/sts` | Internal | Self-Issued ID token creation |
-| Identity | 8086 | `/api/identity` | Internal | Manage participants, DIDs, key pairs |
+| Identity | 8082 | `/api/identity` | Internal | Manage participants, DIDs, key pairs |
+| Credentials | 8083 | `/api/credentials` | Public | DCP credential storage & presentation |
+| DID | 8084 | `/` | Public | DID document resolution |
+| STS | 8087 | `/api/sts` | Internal | Self-Issued ID token creation |
 
 ## Authentication
 
@@ -93,7 +91,7 @@ The API key encodes both the participant context and the authorization token. Th
 | [Prerequisites](00_prerequisites.md) | — | — | Super-user API keys and environment setup |
 | [Create Issuer Participant](01_create_issuer_participant.md) | Identity API | `POST /v1alpha/participants` | Create the Issuer's ParticipantContext on IssuerService |
 | [Create Holder Participant](02_create_holder_participant.md) | Identity API | `POST /v1alpha/participants` | Create the Holder's ParticipantContext on IdentityHub |
-| [Activate Participant Contexts](03_activate_participant_contexts.md) | Identity API | `PUT /v1alpha/participants/{id}/state` | Activate participant contexts so DID documents are published |
+| [Activate Participant Contexts](03_activate_participant_contexts.md) | Identity API | `POST /v1alpha/participants/{id}/state` | Activate participant contexts so DID documents are published |
 | [Verify DID Documents](04_verify_did_documents.md) | DID | `GET /.well-known/did.json` | Verify that DID documents are published and resolvable |
 | [Create Attestation](05_create_attestation.md) | Admin API | `POST /v1alpha/participants/{id}/attestations` | Define how the IssuerService verifies holder claims |
 | [Create Credential Definition](06_create_credential_definition.md) | Admin API | `POST /v1alpha/participants/{id}/credentialdefinitions` | Configure what credentials can be issued |
@@ -110,7 +108,7 @@ The API key encodes both the participant context and the authorization token. Th
 |--------|------|-------------|
 | `POST` | `/v1alpha/participants` | Create a new participant context |
 | `GET` | `/v1alpha/participants/{id}` | Get participant context details |
-| `PUT` | `/v1alpha/participants/{id}/state?isActive=true` | Activate/deactivate participant |
+| `POST` | `/v1alpha/participants/{id}/state?isActive=true` | Activate/deactivate participant |
 | `POST` | `/v1alpha/participants/{id}/credentials/request` | Request credentials from an issuer |
 | `GET` | `/v1alpha/participants/{id}/credentials` | List credentials for a participant |
 

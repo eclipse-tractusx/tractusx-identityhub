@@ -27,6 +27,7 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 - Postman reference collection (`Eclipse Tractus-X Identity Hub.json`): `x-api-key`/`SI_TOKEN` auth, compose-stack default URLs, `participantId` → `participantContextId`, and the plain-vs-base64url path-encoding rules for EDC 0.17.0
 - Bruno reference collection (`bruno/Eclipse Tractus-X Identity Hub/`): brought to 0.17.0 parity with the Postman collection and verified request-by-request against a running stack. Fixed defects that made shipped examples fail or misbehave — the *Activate ParticipantContext* request silently **deactivated** participants (missing `isActive=true`), key pair examples created keys that could never sign a token (bare key IDs, unsupported `Ed25519VerificationKey2020` type), body-less POSTs returned 415, stale presentation context/scope alias, and variable defaults pointed at ports matching no deployment
 - `participantId` → `participantContextId` in the DCP walkthrough and Bruno e2e example bodies for EDC 0.17.0
+- DCP API walkthrough correctness: `POST` (not `PUT`) on the participant `/state` activate endpoint, health checks at `/api/check/readiness` (the `/.well-known/api` version context was removed), and the endpoint port tables corrected to match the charts (removed the phantom `version` endpoint, fixed the IdentityHub ports)
 - Eclipse Dash dependency check: restored the mangled extraction regex and refreshed `DEPENDENCIES` metadata (failing on every push since 2026-06-24)
 
 ### Removed

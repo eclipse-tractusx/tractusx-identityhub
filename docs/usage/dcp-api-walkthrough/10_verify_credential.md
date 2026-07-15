@@ -131,11 +131,11 @@ curl -X POST "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}/dids/u
 
 ```bash
 # IdentityHub readiness
-curl -s "${IDH_URL}/.well-known/api/check/readiness"
+curl -s "${IDH_URL}/api/check/readiness"
 # Returns 204 No Content when ready
 
 # IssuerService readiness
-curl -s "${ISSUER_URL}/.well-known/api/check/readiness"
+curl -s "${ISSUER_URL}/api/check/readiness"
 # Returns 204 No Content when ready
 ```
 
