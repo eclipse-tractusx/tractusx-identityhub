@@ -52,27 +52,35 @@ sequenceDiagram
 
 ## Service Endpoints
 
+The **Docker Compose port** is the host port from the `sql` profile (see the
+[full host-port reference](../../../deployment/docker/README.md)); the **Helm chart port** is the
+in-cluster port (`*.endpoints.*.port` in each chart's `README.md`).
+
 **IssuerService:**
 
-| Endpoint | Port | Path | Visibility | Purpose |
-|----------|------|------|------------|---------|
-| Default | 8081 | `/api` | Internal | General API |
-| Issuance | 8082 | `/api/issuance` | Public | DCP credential request endpoint |
-| DID | 8083 | `/` | Public | DID document resolution (`/.well-known/did.json`) |
-| STS | 8085 | `/api/sts` | Internal | Self-Issued ID token creation |
-| Admin | 8086 | `/api/admin` | Internal | Manage attestations, definitions, holders |
-| Identity | 8087 | `/api/identity` | Internal | Manage participants, DIDs, key pairs |
-| StatusList | 8088 | `/statuslist` | Public | Credential revocation status lists |
+| Endpoint | Docker Compose Port | Helm Chart Port | Path | Visibility | Purpose |
+|----------|----------------------|------------------|------|------------|---------|
+| Default | 8182 | 8081 | `/api` | Internal | General API |
+| Issuance | 13132 | 8082 | `/api/issuance` | Public | DCP credential request endpoint |
+| DID | 10101 | 8083 | `/` | Public | DID document resolution (`/.well-known/did.json`) |
+| STS | 9392 | 8085 | `/api/sts` | Internal | Self-Issued ID token creation |
+| Admin | 15152 | 8086 | `/api/admin` † | Internal | Manage attestations, definitions, holders |
+| Identity | 15251 | 8087 | `/api/identity` | Internal | Manage participants, DIDs, key pairs |
+| StatusList | 9999 | 8088 | `/statuslist` | Public | Credential revocation status lists |
+
+> **† The Admin API path differs on Docker Compose**: `/api/issuer` there vs `/api/admin` on the
+> Helm chart. See the `ISSUER_ADMIN` note in [Prerequisites](00_prerequisites.md) — always use
+> the full base-URL variable rather than hardcoding a path.
 
 **IdentityHub:**
 
-| Endpoint | Port | Path | Visibility | Purpose |
-|----------|------|------|------------|---------|
-| Default | 8081 | `/api` | Internal | General API |
-| Identity | 8082 | `/api/identity` | Internal | Manage participants, DIDs, key pairs |
-| Credentials | 8083 | `/api/credentials` | Public | DCP credential storage & presentation |
-| DID | 8084 | `/` | Public | DID document resolution |
-| STS | 8087 | `/api/sts` | Internal | Self-Issued ID token creation |
+| Endpoint | Docker Compose port | Helm chart port | Path | Visibility | Purpose |
+|----------|----------------------|------------------|------|------------|---------|
+| Default | 8181 | 8081 | `/api` | Internal | General API |
+| Identity | 15151 | 8082 | `/api/identity` | Internal | Manage participants, DIDs, key pairs |
+| Credentials | 13131 | 8083 | `/api/credentials` | Public | DCP credential storage & presentation |
+| DID | 10100 | 8084 | `/` | Public | DID document resolution |
+| STS | 9292 | 8087 | `/api/sts` | Internal | Self-Issued ID token creation |
 
 ## Authentication
 
@@ -140,4 +148,5 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 - SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
 - SPDX-FileCopyrightText: 2026 Catena-X Automotive Network e.V.
 - SPDX-FileCopyrightText: 2026 LKS Next
+- SPDX-FileCopyrightText: 2026 Technovative Solutions
 - Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/docs/usage/dcp-api-walkthrough/README.md>

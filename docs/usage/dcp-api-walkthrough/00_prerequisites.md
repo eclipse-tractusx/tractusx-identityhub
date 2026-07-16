@@ -10,10 +10,10 @@ When both services start, the `SuperUserSeedExtension` generates a super-user pa
 
 ```
 IssuerService log:
-  [SuperUserSeedExtension] Super-user API key: c3VwZXItdXNlcg==.xxxxxxxxxxxxxxxx
+  [SuperUserSeedExtension] Created user 'ih-super-user'. Please take note of the API Key: aWgtc3VwZXItdXNlcg==..xxxxxxxxxxxxxxxx
 
 IdentityHub log:
-  [SuperUserSeedExtension] Super-user API key: c3VwZXItdXNlcg==.yyyyyyyyyyyyyyyy
+  [SuperUserSeedExtension] Created user 'is-super-user'. Please take note of the API Key: aXMtc3VwZXItdXNlcg==.yyyyyyyyyyyyyyyy
 ```
 
 Save these keys — they are the **admin credentials** for each service.
