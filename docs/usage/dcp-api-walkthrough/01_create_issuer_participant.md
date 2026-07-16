@@ -52,7 +52,8 @@ curl -X POST "${ISSUER_IDENTITY}/v1alpha/participants" \
 ```json
 {
   "apiKey": "aXNzdWVyLXBhcnRpY2lwYW50.<generated-token>",
-  "clientId": "issuer-participant"
+  "clientId": "issuer-participant",
+  "clientSecret": "<generated-client-secret>"
 }
 ```
 

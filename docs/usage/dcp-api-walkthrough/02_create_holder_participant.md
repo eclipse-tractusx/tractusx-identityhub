@@ -46,7 +46,8 @@ curl -X POST "${IDH_IDENTITY}/v1alpha/participants" \
 ```json
 {
   "apiKey": "aWRoLXBhcnRpY2lwYW50.<generated-token>",
-  "clientId": "idh-participant"
+  "clientId": "idh-participant",
+  "clientSecret": "<generated-client-secret>"
 }
 ```
 
