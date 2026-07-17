@@ -46,7 +46,7 @@ The state should be `200`.
 
 ## Participant Context States
 
-| State Code | State Meaning | Description |
+| State | State Meaning | Description |
 |------------|---------------|-------------|
 | 100 | `CREATED` | Participant context exists but is not yet active; DID document is not published |
 | 200 | `ACTIVATED` | Participant context is active; DID document is published and resolvable |
