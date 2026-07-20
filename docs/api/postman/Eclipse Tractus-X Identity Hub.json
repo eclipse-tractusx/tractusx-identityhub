@@ -94,7 +94,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"@context\": [\n    \"https://w3id.org/dspace-dcp/v1.0/dcp.jsonld\"\n  ],\n  \"type\": \"PresentationQueryMessage\",\n  \"presentationDefinition\": null,\n  \"scope\": [\n    \"org.eclipse.dspace.dcp.vc.type:SomeCredential_0.3.5:write\",\n    \"org.eclipse.dspace.dcp.vc.type:SomeOtherCredential:read\",\n    \"org.eclipse.dspace.dcp.vc.type:ThirdCredential:*\"\n  ]\n}",
+                  "raw": "{\n  \"@context\": [\n    \"https://w3id.org/dspace-dcp/v1.0/dcp.jsonld\"\n  ],\n  \"type\": \"PresentationQueryMessage\",\n  \"presentationDefinition\": null,\n  \"scope\": [\n    \"org.eclipse.tractusx.vc.type:SomeCredential_0.3.5:write\",\n    \"org.eclipse.tractusx.vc.type:SomeOtherCredential:read\",\n    \"org.eclipse.tractusx.vc.type:ThirdCredential:*\"\n  ]\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1717,7 +1717,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"credentials\": [\n    {\n      \"format\": \"ldp_vc\",\n      \"id\": \"1f36af58-0fc0-4b24-9b1c-e37d59668089\",\n      \"type\": \"MembershipCredential\"\n    }\n  ],\n  \"holderPid\": \"did:web:super-user\",\n  \"issuerDid\": \"did:web:super-user\"\n}",
+                  "raw": "{\n  \"credentials\": [\n    {\n      \"format\": \"VC1_0_JWT\",\n      \"id\": \"1f36af58-0fc0-4b24-9b1c-e37d59668089\",\n      \"type\": \"MembershipCredential\"\n    }\n  ],\n  \"holderPid\": \"did:web:super-user\",\n  \"issuerDid\": \"did:web:super-user\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1824,7 +1824,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"@context\": [\n    \"https://w3id.org/dspace-dcp/v1.0/dcp.jsonld\"//,\n    //\"https://w3id.org/dspace-dcp/v1.0/credentials\",\n    //\"https://w3id.org/dspace-dcp/v1.0/holderPid\"\n  ],\n  \"type\": \"CredentialRequestMessage\",\n  \"credentials\": [\n    {\n      \"id\": \"string\"\n    }\n  ],\n  \"issuerPid\": \"BPN\",\n  \"holderPid\": \"BPN\",\n  \"status\": \"ISSUED\",\n  \"requestId\": \"requestId\"\n}",
+                  "raw": "{\n  \"@context\": [\n    \"https://w3id.org/dspace-dcp/v1.0/dcp.jsonld\"\n  ],\n  \"type\": \"CredentialRequestMessage\",\n  \"credentials\": [\n    {\n      \"id\": \"string\"\n    }\n  ],\n  \"holderPid\": \"BPN\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2077,7 +2077,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  //\"filterExpression\": [\n   // {\n   //   \"operandLeft\": {},\n   //   \"operandRight\": {},\n   //   \"operator\": \"string\"\n   // }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "raw": "{\n  \"limit\": 10,\n  \"offset\": 0,\n  \"sortOrder\": \"ASC\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2136,7 +2136,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"attestations\": [],\n  \"credentialType\": \"string\",\n  \"format\": \"VC1_0_JWT\",\n  \"id\": \"string\",\n  \"jsonSchema\": \"string\",\n  \"jsonSchemaUrl\": \"string\",\n  \"mappings\": [\n    {\n      \"input\": \"string\",\n      \"output\": \"string\",\n      \"required\": true\n    }\n  ],\n  //\"rules\": [\n  //  {\n  //    \"configuration\": {\n  //      \"additionalProp1\": {},\n  //      \"additionalProp2\": {},\n  //      \"additionalProp3\": {}\n  //    },\n  //    \"type\": \"string\"\n  //  }\n  //],\n  \"validity\": 0\n}",
+                  "raw": "{\n  \"attestations\": [],\n  \"credentialType\": \"string\",\n  \"format\": \"VC1_0_JWT\",\n  \"id\": \"string\",\n  \"jsonSchema\": \"string\",\n  \"jsonSchemaUrl\": \"string\",\n  \"mappings\": [\n    {\n      \"input\": \"string\",\n      \"output\": \"string\",\n      \"required\": true\n    }\n  ],\n  \"validity\": 0\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2283,7 +2283,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  //\"filterExpression\": [\n  //  {\n  //    \"operandLeft\": {},\n  //    \"operandRight\": {},\n  //    \"operator\": \"string\"\n  //  }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "raw": "{\n  \"limit\": 10,\n  \"offset\": 0,\n  \"sortOrder\": \"ASC\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2337,7 +2337,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"attestations\": [],\n  \"credentialType\": \"string\",\n  \"format\": \"VC1_0_JWT\",\n  \"id\": \"string\",\n  \"jsonSchema\": \"string\",\n  \"jsonSchemaUrl\": \"string\",\n  \"mappings\": [\n    {\n      \"input\": \"string\",\n      \"output\": \"string\",\n      \"required\": true\n    }\n  ],\n  //\"rules\": [\n  //  {\n  //    \"configuration\": {\n  //      \"additionalProp1\": {},\n  //      \"additionalProp2\": {},\n  //      \"additionalProp3\": {}\n  //    },\n  //    \"type\": \"string\"\n  //  }\n  //],\n  \"validity\": 10\n}",
+                  "raw": "{\n  \"attestations\": [],\n  \"credentialType\": \"string\",\n  \"format\": \"VC1_0_JWT\",\n  \"id\": \"string\",\n  \"jsonSchema\": \"string\",\n  \"jsonSchemaUrl\": \"string\",\n  \"mappings\": [\n    {\n      \"input\": \"string\",\n      \"output\": \"string\",\n      \"required\": true\n    }\n  ],\n  \"validity\": 10\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2444,7 +2444,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  //\"filterExpression\": [\n  //  {\n  //    \"operandLeft\": {},\n  //    \"operandRight\": {},\n  //    \"operator\": \"string\"\n  //  }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "raw": "{\n  \"limit\": 10,\n  \"offset\": 0,\n  \"sortOrder\": \"ASC\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2754,7 +2754,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  //\"filterExpression\": [\n  //  {\n  //    \"operandLeft\": {},\n  //    \"operandRight\": {},\n  //    \"operator\": \"string\"\n  //  }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "raw": "{\n  \"limit\": 10,\n  \"offset\": 0,\n  \"sortOrder\": \"ASC\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2914,7 +2914,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  //\"filterExpression\": [\n  //  {\n  //    \"operandLeft\": {},\n  //    \"operandRight\": {},\n  //    \"operator\": \"string\"\n  //  }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "raw": "{\n  \"limit\": 10,\n  \"offset\": 0,\n  \"sortOrder\": \"ASC\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
