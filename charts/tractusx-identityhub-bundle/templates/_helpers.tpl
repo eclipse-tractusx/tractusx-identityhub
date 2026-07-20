@@ -93,7 +93,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Frontend Selector labels
+Backend Selector labels
 */}}
 {{- define "identityhub.backend.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "identityhub.fullname.backend" . }}
@@ -101,7 +101,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Backend Selector labels
+Frontend Selector labels
 */}}
 {{- define "identityhub.frontend.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "identityhub.fullname.frontend" . }}

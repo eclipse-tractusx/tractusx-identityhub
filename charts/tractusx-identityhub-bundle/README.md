@@ -38,8 +38,8 @@ A Helm chart for Kubernetes
 | backend.identityhub.ingresses[0].enabled | bool | `false` |  |
 | backend.identityhub.ingresses[0].endpoints | list | `["credentials","did","sts"]` | EDC endpoints exposed by this ingress resource |
 | backend.identityhub.ingresses[0].hostname | string | `"identityhub.presentation.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
-| backend.identityhub.ingresses[0].tls | object | `{"enabled":true,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
-| backend.identityhub.ingresses[0].tls.enabled | bool | `true` | Enables TLS on the ingress resource |
+| backend.identityhub.ingresses[0].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
+| backend.identityhub.ingresses[0].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
 | backend.identityhub.ingresses[0].tls.secretName | string | `""` | If present overwrites the default secret name |
 | backend.identityhub.ingresses[1].annotations | object | `{}` | Additional ingress annotations to add |
 | backend.identityhub.ingresses[1].certManager.clusterIssuer | string | `""` | If preset enables certificate generation via cert-manager cluster-wide issuer |
@@ -48,8 +48,8 @@ A Helm chart for Kubernetes
 | backend.identityhub.ingresses[1].enabled | bool | `false` |  |
 | backend.identityhub.ingresses[1].endpoints | list | `["identity","accounts","version"]` | EDC endpoints exposed by this ingress resource |
 | backend.identityhub.ingresses[1].hostname | string | `"identityhub.identity.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
-| backend.identityhub.ingresses[1].tls | object | `{"enabled":true,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
-| backend.identityhub.ingresses[1].tls.enabled | bool | `true` | Enables TLS on the ingress resource |
+| backend.identityhub.ingresses[1].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
+| backend.identityhub.ingresses[1].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
 | backend.identityhub.ingresses[1].tls.secretName | string | `""` | If present overwrites the default secret name |
 | backend.identityhub.volumeMounts | list | `[]` | declare where to mount [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) into the container |
 | backend.identityhub.volumes | list | `[]` | [volume](https://kubernetes.io/docs/concepts/storage/volumes/) directories |
