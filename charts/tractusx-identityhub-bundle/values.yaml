@@ -72,7 +72,7 @@ frontend:
           - path: /
             pathType: ImplementationSpecific
     tls:
-      - secretName: idhub-frontend-tls 
+      - secretName: idhub-frontend-tls
         hosts:
           - *frontendHostname
 
