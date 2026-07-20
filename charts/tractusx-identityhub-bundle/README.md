@@ -19,7 +19,7 @@ A Helm chart for Kubernetes
 | autoscaling.maxReplicas | int | `100` |  |
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| backend.enabled | bool | `true` |  |
+| backend.enabled | bool | `false` |  |
 | backend.fullnameOverride | string | `""` |  |
 | backend.identityhub.didweb | object | `{"https":false}` | Whether web DIDs should be interpreted as HTTPS or HTTP |
 | backend.identityhub.iatp | object | `{"sts":{"oauth":{"client":{"enabled":true,"id":"did:web:identityhub.presentation.local","secret":"testme","secret_alias":"sts-secret","x_api_key":"ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"}}}}` | Initial participant context configuration |
@@ -76,7 +76,7 @@ A Helm chart for Kubernetes
 | frontend.readinessProbe.httpGet.port | string | `"http"` |  |
 | frontend.resources.limits.cpu | string | `"500m"` |  |
 | frontend.resources.limits.memory | string | `"128Mi"` |  |
-| frontend.resources.requests.cpu | string | `"2500m"` |  |
+| frontend.resources.requests.cpu | string | `"250m"` |  |
 | frontend.resources.requests.memory | string | `"128Mi"` |  |
 | frontend.securityContext | object | `{}` |  |
 | frontend.service.port | int | `8080` |  |
