@@ -191,6 +191,40 @@ docker compose --profile sql down
 docker compose --profile sql down -v
 ```
 
+> **⚠️ SQL profile: always restart the stack as a unit.** The super-user's
+> participant context is stored in **PostgreSQL** (persisted via the `pg_data`
+> volume), but its API-key secret is stored in **HashiCorp Vault**, which runs in
+> **dev mode with no persistence** and is wiped on every restart. Any restart that
+> keeps Postgres while resetting Vault — `docker compose stop` then `start`, or even
+> `down` (without `-v`) then `up` — leaves the super-user row in Postgres pointing at
+> an API key that no longer exists in Vault. The runtime then boots fine, but every
+> authenticated request fails (see the troubleshooting note below). To restart
+> cleanly, reset both stores together:
+>
+> ```shell
+> docker compose --profile sql down -v && docker compose --profile sql up -d
+> ```
+>
+> The `memory` profile is immune (participant context and secrets share the same
+> in-memory store, so they reset together). Persisting state across restarts would
+> require running Vault outside dev mode with a storage backend + volume + unseal.
+
+### Troubleshooting: all requests except Health fail with a `NullPointerException`
+
+Symptom — after a `stop`/`start` or bare `down`/`up` on the SQL profile, the Health
+endpoints work but every other request returns HTTP 500, with this in the logs:
+
+```
+SEVERE JerseyExtension: Unexpected exception caught
+java.lang.NullPointerException: Cannot invoke "String.equals(Object)" because the
+  return value of "...ServicePrincipal.getCredential()" is null
+```
+
+This is the Vault-vs-Postgres divergence described above: the super-user still exists
+in Postgres, but its API-key secret is gone from the wiped dev-mode Vault, so the auth
+filter reads a `null` credential. The fix is a full reset:
+`docker compose --profile sql down -v && docker compose --profile sql up -d`.
+
 ---
 
 ## Configuration
@@ -253,6 +287,8 @@ edc.did.resolver.cache.expiry=10000
 
 - **HashiCorp Vault runs in dev mode** — data is stored in memory and lost on container
   restart. This is intentional for local development. Never use dev mode in production.
+  Because Postgres *is* persisted while Vault is not, the SQL stack must be restarted as
+  a unit — see the warning under [Stopping and cleaning up](#stopping-and-cleaning-up).
 - **Flyway migrations run automatically** at startup for the SQL variants; no manual
   schema initialisation is required beyond the database creation performed by
   `postgres/init/01-create-databases.sh`. Each store maintains its own

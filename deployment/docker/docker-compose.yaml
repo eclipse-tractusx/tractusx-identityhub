@@ -88,6 +88,10 @@ services:
         OTEL_JAR: build/resources/otel/opentelemetry-javaagent.jar
         ADDITIONAL_FILES: build/resources/main/logging.properties
     profiles: [sql]
+    # `docker compose start` does NOT re-apply the depends_on health gate, so on a
+    # restart this runtime can boot before postgres/vault are ready and exit. Retry
+    # until its dependencies are up instead of staying down.
+    restart: on-failure
     depends_on:
       postgres:
         condition: service_healthy
@@ -117,6 +121,9 @@ services:
         OTEL_JAR: build/resources/otel/opentelemetry-javaagent.jar
         ADDITIONAL_FILES: build/resources/main/logging.properties
     profiles: [sql]
+    # See the identityhub service: `docker compose start` skips the depends_on
+    # health gate, so retry on failure until postgres/vault are ready.
+    restart: on-failure
     depends_on:
       postgres:
         condition: service_healthy
