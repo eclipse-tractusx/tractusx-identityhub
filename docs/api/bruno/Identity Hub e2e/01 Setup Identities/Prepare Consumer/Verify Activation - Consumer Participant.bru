@@ -14,15 +14,13 @@ headers {
   x-api-key: {{CONSUMER_IH_APIKEY}}
 }
 
-script:pre-request {
-}
 
 script:post-response {
-  const apiKey = res.getBody().apiKey.trim();
+  const apiKey = ((res.getBody()||{}).apiKey||"").trim();
   if (apiKey) {
     bru.setEnvVar("CONSUMER_IH_APIKEY", apiKey);
   }
-  const stsSecret = res.getBody().clientSecret.trim();
+  const stsSecret = ((res.getBody()||{}).clientSecret||"").trim();
   if (stsSecret) {
     bru.setEnvVar("CONSUMER_STS_SECRET", stsSecret)
   }

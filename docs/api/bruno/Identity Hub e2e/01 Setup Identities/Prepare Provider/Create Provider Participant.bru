@@ -38,15 +38,13 @@ body:json {
   }
 }
 
-script:pre-request {
-}
 
 script:post-response {
-  const apiKey = res.getBody().apiKey.trim();
+  const apiKey = ((res.getBody()||{}).apiKey||"").trim();
   if (apiKey) {
     bru.setEnvVar("PROVIDER_IH_APIKEY", apiKey);
   }
-  const stsSecret = res.getBody().clientSecret.trim();
+  const stsSecret = ((res.getBody()||{}).clientSecret||"").trim();
   if (stsSecret) {
     bru.setEnvVar("PROVIDER_STS_SECRET", stsSecret)
   }
