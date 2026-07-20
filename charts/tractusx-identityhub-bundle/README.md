@@ -19,7 +19,7 @@ A Helm chart for Kubernetes
 | autoscaling.maxReplicas | int | `100` |  |
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| backend.enabled | bool | `true` |  |
+| backend.enabled | bool | `false` |  |
 | backend.fullnameOverride | string | `""` |  |
 | backend.identityhub.didweb | object | `{"https":false}` | Whether web DIDs should be interpreted as HTTPS or HTTP |
 | backend.identityhub.iatp | object | `{"sts":{"oauth":{"client":{"enabled":true,"id":"did:web:identityhub.presentation.local","secret":"testme","secret_alias":"sts-secret","x_api_key":"ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"}}}}` | Initial participant context configuration |
@@ -35,11 +35,11 @@ A Helm chart for Kubernetes
 | backend.identityhub.ingresses[0].certManager.clusterIssuer | string | `""` | If preset enables certificate generation via cert-manager cluster-wide issuer |
 | backend.identityhub.ingresses[0].certManager.issuer | string | `""` | If preset enables certificate generation via cert-manager namespace scoped issuer |
 | backend.identityhub.ingresses[0].className | string | `""` | Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use |
-| backend.identityhub.ingresses[0].enabled | bool | `true` |  |
+| backend.identityhub.ingresses[0].enabled | bool | `false` |  |
 | backend.identityhub.ingresses[0].endpoints | list | `["credentials","did","sts"]` | EDC endpoints exposed by this ingress resource |
 | backend.identityhub.ingresses[0].hostname | string | `"identityhub.presentation.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
-| backend.identityhub.ingresses[0].tls | object | `{"enabled":true,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
-| backend.identityhub.ingresses[0].tls.enabled | bool | `true` | Enables TLS on the ingress resource |
+| backend.identityhub.ingresses[0].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
+| backend.identityhub.ingresses[0].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
 | backend.identityhub.ingresses[0].tls.secretName | string | `""` | If present overwrites the default secret name |
 | backend.identityhub.ingresses[1].annotations | object | `{}` | Additional ingress annotations to add |
 | backend.identityhub.ingresses[1].certManager.clusterIssuer | string | `""` | If preset enables certificate generation via cert-manager cluster-wide issuer |
@@ -48,8 +48,8 @@ A Helm chart for Kubernetes
 | backend.identityhub.ingresses[1].enabled | bool | `false` |  |
 | backend.identityhub.ingresses[1].endpoints | list | `["identity","accounts","version"]` | EDC endpoints exposed by this ingress resource |
 | backend.identityhub.ingresses[1].hostname | string | `"identityhub.identity.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
-| backend.identityhub.ingresses[1].tls | object | `{"enabled":true,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
-| backend.identityhub.ingresses[1].tls.enabled | bool | `true` | Enables TLS on the ingress resource |
+| backend.identityhub.ingresses[1].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
+| backend.identityhub.ingresses[1].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
 | backend.identityhub.ingresses[1].tls.secretName | string | `""` | If present overwrites the default secret name |
 | backend.identityhub.volumeMounts | list | `[]` | declare where to mount [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) into the container |
 | backend.identityhub.volumes | list | `[]` | [volume](https://kubernetes.io/docs/concepts/storage/volumes/) directories |
@@ -76,7 +76,7 @@ A Helm chart for Kubernetes
 | frontend.readinessProbe.httpGet.port | string | `"http"` |  |
 | frontend.resources.limits.cpu | string | `"500m"` |  |
 | frontend.resources.limits.memory | string | `"128Mi"` |  |
-| frontend.resources.requests.cpu | string | `"2500m"` |  |
+| frontend.resources.requests.cpu | string | `"250m"` |  |
 | frontend.resources.requests.memory | string | `"128Mi"` |  |
 | frontend.securityContext | object | `{}` |  |
 | frontend.service.port | int | `8080` |  |
