@@ -38,6 +38,7 @@ dependencies {
     runtimeOnly(project(":extensions:seed:super-user"))
     runtimeOnly(project(":extensions:identityhub:initial-participant"))
     runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
+    runtimeOnly(project(":extensions:api:swagger-ui"))
 
     // used for custom extensions
     implementation(libs.edc.core.connector)
@@ -46,6 +47,13 @@ dependencies {
     testImplementation(libs.edc.lib.crypto)
     testImplementation(libs.edc.lib.keys)
     testImplementation(libs.edc.junit)
+}
+
+// Bundle the build-time-generated OpenAPI spec so the Swagger UI can serve it.
+tasks.named<ProcessResources>("processResources") {
+    from(project(":openapi:identityhub-spec").tasks.named("resolve")) {
+        include("openapi.yaml")
+    }
 }
 
 tasks.shadowJar {
