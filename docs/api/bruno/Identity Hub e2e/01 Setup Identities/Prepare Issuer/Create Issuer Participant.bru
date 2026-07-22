@@ -38,11 +38,9 @@ body:json {
   }
 }
 
-script:pre-request {
-}
 
 script:post-response {
-  const apiKey = res.getBody().apiKey.trim();
+  const apiKey = ((res.getBody()||{}).apiKey||"").trim();
   if (apiKey) {
     bru.setEnvVar("ISSUER_APIKEY", apiKey);
   }

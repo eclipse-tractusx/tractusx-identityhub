@@ -20,7 +20,7 @@ body:form-urlencoded {
 
 script:post-response {
   const atob = require("atob");
-  const accessToken = res.getBody().access_token.trim();
+  const accessToken = ((res.getBody()||{}).access_token||"").trim();
   const parts = accessToken.split(".");
   const payload = atob(parts[1]);
   const payloadObject = JSON.parse(payload);
