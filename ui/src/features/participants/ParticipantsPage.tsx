@@ -1031,7 +1031,7 @@ const ParticipantsPage: React.FC = () => {
                     </Alert>
                     {createResult && Object.entries(createResult).map(([key, value]) => (
                         <Box key={key}>
-                            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                            <Typography variant="caption" sx={{ color: 'text.tertiary', fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                                 {key}
                             </Typography>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
