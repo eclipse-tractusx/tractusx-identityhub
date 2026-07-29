@@ -149,7 +149,7 @@ export class ConfigFactory {
                 enableDevTools: raw.VITE_ENABLE_DEV_TOOLS === 'true' || isDevelopment,
             },
             ui: {
-                theme: (raw.VITE_UI_THEME as 'light' | 'dark' | 'arena2036' | 'auto') || 'auto',
+                theme: (raw.VITE_UI_THEME as 'light' | 'dark' | 'auto') || 'auto',
                 locale: raw.VITE_UI_LOCALE || 'en',
                 compactMode: raw.VITE_UI_COMPACT_MODE === 'true',
             },
