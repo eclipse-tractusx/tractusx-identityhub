@@ -944,7 +944,7 @@ paths:
                       type: string
                     privateKeyAlias:
                       type: string
-                participantId:
+                participantContextId:
                   type: string
                 roles:
                   type: array
@@ -960,7 +960,7 @@ paths:
                   curve: Ed25519
                 keyId: eclipse-tractus-x-key
                 privateKeyAlias: eclipse-tractus-x-alias
-              participantId: eclipse-tractus-x
+              participantContextId: eclipse-tractus-x
               roles:
                 - ROLE_ADMIN
     get:
