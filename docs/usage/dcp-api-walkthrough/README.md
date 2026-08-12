@@ -52,29 +52,35 @@ sequenceDiagram
 
 ## Service Endpoints
 
+The **Docker Compose port** is the host port from the `sql` profile (see the
+[full host-port reference](../../../deployment/docker/README.md)); the **Helm chart port** is the
+in-cluster port (`*.endpoints.*.port` in each chart's `README.md`).
+
 **IssuerService:**
 
-| Endpoint | Port | Path | Visibility | Purpose |
-|----------|------|------|------------|---------|
-| Default | 8081 | `/api` | Internal | General API |
-| Issuance | 8082 | `/api/issuance` | Public | DCP credential request endpoint |
-| DID | 8083 | `/` | Public | DID document resolution (`/.well-known/did.json`) |
-| Version | 8084 | `/.well-known/api` | Internal | Runtime version info |
-| STS | 8085 | `/api/sts` | Internal | Self-Issued ID token creation |
-| Admin | 8086 | `/api/admin` | Internal | Manage attestations, definitions, holders |
-| Identity | 8087 | `/api/identity` | Internal | Manage participants, DIDs, key pairs |
-| StatusList | 8088 | `/statuslist` | Public | Credential revocation status lists |
+| Endpoint | Docker Compose Port | Helm Chart Port | Path | Visibility | Purpose |
+|----------|----------------------|------------------|------|------------|---------|
+| Default | 8182 | 8081 | `/api` | Internal | General API |
+| Issuance | 13132 | 8082 | `/api/issuance` | Public | DCP credential request endpoint |
+| DID | 10101 | 8083 | `/` | Public | DID document resolution (`/.well-known/did.json`) |
+| STS | 9392 | 8085 | `/api/sts` | Internal | Self-Issued ID token creation |
+| Admin | 15152 | 8086 | `/api/admin` † | Internal | Manage attestations, definitions, holders |
+| Identity | 15251 | 8087 | `/api/identity` | Internal | Manage participants, DIDs, key pairs |
+| StatusList | 9999 | 8088 | `/statuslist` | Public | Credential revocation status lists |
+
+> **† The Admin API path differs on Docker Compose**: `/api/issuer` there vs `/api/admin` on the
+> Helm chart. See the `ISSUER_ADMIN` note in [Prerequisites](00_prerequisites.md) — always use
+> the full base-URL variable rather than hardcoding a path.
 
 **IdentityHub:**
 
-| Endpoint | Port | Path | Visibility | Purpose |
-|----------|------|------|------------|---------|
-| Default | 8081 | `/api` | Internal | General API |
-| Credentials | 8082 | `/api/credentials` | Public | DCP credential storage & presentation |
-| DID | 8083 | `/` | Public | DID document resolution |
-| Version | 8084 | `/.well-known/api` | Internal | Runtime version info |
-| STS | 8085 | `/api/sts` | Internal | Self-Issued ID token creation |
-| Identity | 8086 | `/api/identity` | Internal | Manage participants, DIDs, key pairs |
+| Endpoint | Docker Compose port | Helm chart port | Path | Visibility | Purpose |
+|----------|----------------------|------------------|------|------------|---------|
+| Default | 8181 | 8081 | `/api` | Internal | General API |
+| Identity | 15151 | 8082 | `/api/identity` | Internal | Manage participants, DIDs, key pairs |
+| Credentials | 13131 | 8083 | `/api/credentials` | Public | DCP credential storage & presentation |
+| DID | 10100 | 8084 | `/` | Public | DID document resolution |
+| STS | 9292 | 8087 | `/api/sts` | Internal | Self-Issued ID token creation |
 
 ## Authentication
 
@@ -93,7 +99,7 @@ The API key encodes both the participant context and the authorization token. Th
 | [Prerequisites](00_prerequisites.md) | — | — | Super-user API keys and environment setup |
 | [Create Issuer Participant](01_create_issuer_participant.md) | Identity API | `POST /v1alpha/participants` | Create the Issuer's ParticipantContext on IssuerService |
 | [Create Holder Participant](02_create_holder_participant.md) | Identity API | `POST /v1alpha/participants` | Create the Holder's ParticipantContext on IdentityHub |
-| [Activate Participant Contexts](03_activate_participant_contexts.md) | Identity API | `PUT /v1alpha/participants/{id}/state` | Activate participant contexts so DID documents are published |
+| [Activate Participant Contexts](03_activate_participant_contexts.md) | Identity API | `POST /v1alpha/participants/{id}/state` | Activate participant contexts so DID documents are published |
 | [Verify DID Documents](04_verify_did_documents.md) | DID | `GET /.well-known/did.json` | Verify that DID documents are published and resolvable |
 | [Create Attestation](05_create_attestation.md) | Admin API | `POST /v1alpha/participants/{id}/attestations` | Define how the IssuerService verifies holder claims |
 | [Create Credential Definition](06_create_credential_definition.md) | Admin API | `POST /v1alpha/participants/{id}/credentialdefinitions` | Configure what credentials can be issued |
@@ -110,7 +116,7 @@ The API key encodes both the participant context and the authorization token. Th
 |--------|------|-------------|
 | `POST` | `/v1alpha/participants` | Create a new participant context |
 | `GET` | `/v1alpha/participants/{id}` | Get participant context details |
-| `PUT` | `/v1alpha/participants/{id}/state?isActive=true` | Activate/deactivate participant |
+| `POST` | `/v1alpha/participants/{id}/state?isActive=true` | Activate/deactivate participant |
 | `POST` | `/v1alpha/participants/{id}/credentials/request` | Request credentials from an issuer |
 | `GET` | `/v1alpha/participants/{id}/credentials` | List credentials for a participant |
 
@@ -142,4 +148,5 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 - SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
 - SPDX-FileCopyrightText: 2026 Catena-X Automotive Network e.V.
 - SPDX-FileCopyrightText: 2026 LKS Next
+- SPDX-FileCopyrightText: 2026 Technovative Solutions
 - Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/docs/usage/dcp-api-walkthrough/README.md>

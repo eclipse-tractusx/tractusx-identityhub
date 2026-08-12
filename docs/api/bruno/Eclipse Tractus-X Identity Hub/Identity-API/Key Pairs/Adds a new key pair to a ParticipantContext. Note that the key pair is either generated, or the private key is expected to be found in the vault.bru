@@ -23,9 +23,9 @@ auth:apikey {
 body:json {
   {
     "active": true,
-    "keyId": "my-new-key",
-    "privateKeyAlias": "my-new-private-key-alias",
-    "type": "Ed25519VerificationKey2020",
+    "keyId": "{{DID_PLAIN}}#added-key",
+    "privateKeyAlias": "added-key-alias",
+    "type": "JsonWebKey2020",
     "keyGeneratorParams": {
       "algorithm": "EdDSA",
       "curve": "Ed25519"

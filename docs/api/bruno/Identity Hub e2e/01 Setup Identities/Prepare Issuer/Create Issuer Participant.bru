@@ -26,7 +26,6 @@ body:json {
     ],
     "active": true,
     "participantContextId": "{{ISS_ID}}",
-    "participantId": "{{ISS_ID}}",
     "did": "{{ISS_ID}}",
     "key": {
       "keyId": "{{ISS_ID}}#key-1",
@@ -39,11 +38,9 @@ body:json {
   }
 }
 
-script:pre-request {
-}
 
 script:post-response {
-  const apiKey = res.getBody().apiKey.trim();
+  const apiKey = ((res.getBody()||{}).apiKey||"").trim();
   if (apiKey) {
     bru.setEnvVar("ISSUER_APIKEY", apiKey);
   }

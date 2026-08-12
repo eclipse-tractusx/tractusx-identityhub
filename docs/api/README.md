@@ -1,6 +1,17 @@
-# Tractus-X Identity Hub API Collection
+# Tractus-X Identity Hub API Collections
 
-This [directory](./bruno/Eclipse%20Tractus-X%20Identity%20Hub/) contains a [Bruno](https://www.usebruno.com/) API collection for testing and interacting with the Tractus-X Identity Hub API endpoints.
+This directory contains API collections for both [Postman](https://www.postman.com/downloads/) and [Bruno](https://www.usebruno.com/) — pick whichever client your team uses; **all collections are maintained in parallel**:
+
+| Collection | Tool | Purpose |
+|---|---|---|
+| [`postman/Tractus-X_IdentityHub_Local_E2E.json`](./postman/Tractus-X_IdentityHub_Local_E2E.json) | Postman | Guided, automated end-to-end DCP flow against the local compose stack (CI-verified) |
+| [`postman/Eclipse Tractus-X Identity Hub.json`](./postman/) | Postman | Per-endpoint reference covering every REST endpoint |
+| [`bruno/Eclipse Tractus-X Identity Hub/`](./bruno/Eclipse%20Tractus-X%20Identity%20Hub/) | Bruno | Per-endpoint reference (Bruno counterpart, compose-stack defaults) |
+| [`bruno/Identity Hub e2e/`](./bruno/Identity%20Hub%20e2e/) | Bruno | Three-party dataspace walkthrough (issuer + two IdentityHubs + two EDC connectors); targets a Kubernetes deployment, **not** the compose stack |
+
+> **Path-encoding rules (EDC 0.17.0)** baked into all collections: `participantContextId`
+> URL segments are **plain** (base64url returns 404, [IH #937](https://github.com/eclipse-edc/IdentityHub/pull/937)),
+> while the `{did}` segment of `/dids/{did}/...` requests **is still base64url-encoded**.
 
 ## Prerequisites
 
@@ -17,7 +28,7 @@ This [directory](./bruno/Eclipse%20Tractus-X%20Identity%20Hub/) contains a [Brun
 3. Navigate to this directory (`/docs/api/bruno`) and select it
 4. The collection will be loaded with all available API endpoints
 
-### 1. Open the Postman Collection
+### 2. Open the Postman Collection
 
 1. Launch Postman
 2. Click "File" > "Import"
@@ -48,13 +59,46 @@ A comprehensive **step-by-step walkthrough** of the full DCP credential issuance
 | [09 — Retrieve Credentials](../usage/dcp-api-walkthrough/09_retrieve_credentials.md) | Retrieve the issued credential |
 | [10 — Verify Credential](../usage/dcp-api-walkthrough/10_verify_credential.md) | Verify signature, temporal claims, and revocation |
 
-### DCP: Issuance Flow Test
+### Postman Collections
 
-A postman collection that replicates the DCP issuance flow with little user input in a live environment.
-The necessary inputs that the developer has to do is to copy the super-user generated x-api-key and paste it in the script.
+Two collections live in `/docs/api/postman` (import via *File → Import* in Postman):
 
-To start with this collection, import the `DCP_IngressPostgresqlTestFlow.json` in `/docs/api/postman` and 
-launch the `IdentityHub` and `IssuerService` with helm chart with `postgresql`, `vault` and `ingress` enabled.
+1. **`Tractus-X_IdentityHub_Local_E2E.json`** — a guided, fully automated end-to-end flow
+   (participant setup → DCP credential issuance → presentation → revocation → cleanup) against
+   the local [Docker Compose stack](../../deployment/docker/README.md). All variables live
+   inside the collection; the only manual input is the two super-user API keys from the runtime
+   startup logs. Every request chains its outputs into the next one via test scripts, so the
+   whole collection also runs unattended in the Collection Runner or with
+   [newman](https://github.com/postmanlabs/newman):
+
+   ```shell
+   newman run docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json \
+     --env-var "IH_SUPERUSER_KEY=<identityhub super-user key>" \
+     --env-var "IS_SUPERUSER_KEY=<issuerservice super-user key>"
+   ```
+
+   A successful run reports **37/37 assertions** with zero failures. When re-running,
+   wait ~10 seconds between runs and see the collection description's *Re-running*
+   section for the holder-registry caveat. The same run also executes in CI on every
+   PR (`.github/workflows/postman-e2e-test.yaml`).
+
+   To target a Helm/ingress deployment instead, adjust the `*_URL` collection variables
+   (and the `*_DID` / `*_INTERNAL_*` variables to hostnames the two runtimes can reach
+   from inside the cluster).
+
+   > **Note**: the E2E collection requires the **`sql`** compose profile (or the
+   > persistence Helm charts). The issuance flow uses the `database` attestation type,
+   > which only exists in the SQL runtimes — the `*-memory` runtimes reject it with
+   > `Unknown attestation type: database`, so the flow cannot complete there.
+
+2. **`Eclipse Tractus-X Identity Hub.json`** — a per-endpoint reference collection covering
+   every REST endpoint of both runtimes, grouped by API. Defaults target the compose stack;
+   set the `API_KEY` (management APIs) and `SI_TOKEN` (DCP protocol APIs) variables.
+
+> **EDC 0.17.0 note**: `participantContextId` URL path segments take the **plain** participant
+> id (base64url-encoded ids return 404, [IH #937](https://github.com/eclipse-edc/IdentityHub/pull/937)),
+> and the create-participant body field is `participantContextId` (formerly `participantId`).
+> Both collections already reflect this.
 
 ## Additional Information
 
@@ -71,5 +115,6 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 
 - SPDX-License-Identifier: CC-BY-4.0
 - SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
-* SPDX-FileCopyrightText: 2026 LKS Next
+- SPDX-FileCopyrightText: 2026 LKS Next
+- SPDX-FileCopyrightText: 2026 Technovative Solutions
 - Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/docs/api/README.md>

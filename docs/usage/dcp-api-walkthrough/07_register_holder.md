@@ -9,7 +9,7 @@ Register the IdentityHub as a known holder with the IssuerService. This enables 
 ## Request
 
 ```bash
-curl -X POST "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/holders" \
+curl -X POST "${ISSUER_ADMIN}/v1alpha/participants/${ISSUER_CONTEXT}/holders" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${ISSUER_API_KEY}" \
   -d '{

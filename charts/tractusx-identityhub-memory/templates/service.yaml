@@ -1,5 +1,6 @@
 #
   #  Copyright (c) 2025 Cofinity-X
+  #  Copyright (c) 2026 Technovative Solutions
   #  Copyright (c) 2025 Contributors to the Eclipse Foundation
   #
   #  See the NOTICE file(s) distributed with this work for additional
@@ -45,10 +46,6 @@ spec:
       targetPort: credentials
       protocol: TCP
       name: credentials
-    - port: {{ .Values.identityhub.endpoints.version.port }}
-      targetPort: version
-      protocol: TCP
-      name: version
     - port: {{ .Values.identityhub.endpoints.sts.port }}
       targetPort: sts
       protocol: TCP

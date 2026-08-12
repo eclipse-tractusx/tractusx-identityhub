@@ -1,6 +1,7 @@
 #
   #  Copyright (c) 2025 Cofinity-X
   #  Copyright (c) 2025 LKS Next
+  #  Copyright (c) 2026 Technovative Solutions
   #  Copyright (c) 2025 Contributors to the Eclipse Foundation
   #
   #  See the NOTICE file(s) distributed with this work for additional
@@ -52,8 +53,45 @@ spec:
       serviceAccountName: {{ include "issuerservice.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.issuerservice.podSecurityContext | nindent 8 }}
-      {{- if or .Values.issuerservice.initContainers .Values.customCaCerts }}
+      {{- $waitForDeps := and .Values.issuerservice.waitForDependencies.enabled (or .Values.install.postgresql .Values.install.vault) }}
+      {{- if or .Values.issuerservice.initContainers .Values.customCaCerts $waitForDeps }}
       initContainers:
+        {{- if $waitForDeps }}
+        # Blocks startup until the bundled subcharts accept TCP connections; the runtime
+        # otherwise races them on first install and crash-loops until the DB is up.
+        # Bounded (waitForDependencies.retries): fails loudly if a dependency never
+        # becomes reachable, rather than hanging the pod in Init indefinitely.
+        - name: wait-for-dependencies
+          image: {{ .Values.issuerservice.waitForDependencies.image }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              wait_for() {
+                name="$1"; host="$2"; port="$3"; i=0
+                while [ "$i" -lt {{ .Values.issuerservice.waitForDependencies.retries }} ]; do
+                  if nc -w 3 -z "$host" "$port"; then
+                    echo "$name ($host:$port) is reachable"; return 0
+                  fi
+                  i=$((i + 1))
+                  echo "waiting for $name ($host:$port) [$i/{{ .Values.issuerservice.waitForDependencies.retries }}]"
+                  sleep 2
+                done
+                echo "ERROR: $name ($host:$port) not reachable after {{ .Values.issuerservice.waitForDependencies.retries }} attempts; failing init"
+                return 1
+              }
+              {{- if .Values.install.postgresql }}
+              wait_for postgresql {{ .Release.Name }}-postgresql 5432 || exit 1
+              {{- end }}
+              {{- if .Values.install.vault }}
+              wait_for vault {{ .Release.Name }}-vault 8200 || exit 1
+              {{- end }}
+              echo "all dependencies are reachable"
+          securityContext:
+            {{- toYaml .Values.issuerservice.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.issuerservice.waitForDependencies.resources | nindent 12 }}
+        {{- end }}
         {{- if .Values.issuerservice.initContainers }}
         {{- toYaml .Values.issuerservice.initContainers | nindent 8 }}
         {{- end }}

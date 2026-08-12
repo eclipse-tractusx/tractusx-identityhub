@@ -11,7 +11,7 @@ Two **profiles** are available:
 | `sql` | `identityhub`, `issuerservice`, `postgres`, `vault` | Full stack with PostgreSQL + HashiCorp Vault |
 
 > **Note:** The `memory` and `sql` profiles share the same host ports (e.g. `8181`, `8182`,
-> `7171`, `7172`) and therefore **cannot be run simultaneously**. Stop one profile
+> `15151`, `15251`) and therefore **cannot be run simultaneously**. Stop one profile
 > (`docker compose --profile <name> down`) before starting the other.
 
 ---
@@ -78,7 +78,6 @@ docker compose --profile sql up -d --build
 | Endpoint | Host port | Container port | Path |
 |----------|-----------|----------------|------|
 | Default API | 8181 | 8181 | `/api` |
-| Version | 7171 | 7171 | `/.well-known/api` |
 | Credentials API | 13131 | 13131 | `/api/credentials` |
 | DID | 10100 | 10100 | `/` |
 | Identity API | 15151 | 15151 | `/api/identity` |
@@ -93,7 +92,6 @@ Container-internal ports remain identical for both runtimes.
 | Endpoint | Host port | Container port | Path |
 |----------|-----------|----------------|------|
 | Default API | 8182 | 8181 | `/api` |
-| Version | 7172 | 7171 | `/.well-known/api` |
 | Issuance API | 13132 | 13132 | `/api/issuance` |
 | DID | 10101 | 10100 | `/` |
 | Identity API | 15251 | 15151 | `/api/identity` |
@@ -130,6 +128,55 @@ Example output (SQL profile):
 {"componentResults":[{"failure":null,"component":"Hashicorp Vault Health","isHealthy":true},{"failure":null,"component":"BaseRuntime","isHealthy":true}],"isSystemHealthy":true}
 ```
 
+API version information is served on the **default** context (there is no dedicated
+version port in EDC 0.17.0 — the runtime ignores `web.http.version.*` settings):
+
+```shell
+curl http://localhost:8181/api/v1/version   # identityhub
+curl http://localhost:8182/api/v1/version   # issuerservice
+```
+
+---
+
+## Super-user API keys
+
+On first start each runtime seeds an admin (super-user) participant and prints its API key
+once to the logs — grab them with:
+
+```shell
+docker compose --profile sql logs identityhub   | grep "API Key"
+docker compose --profile sql logs issuerservice | grep "API Key"
+```
+
+> **Grep returns nothing?** The key is only printed when the super-user is first
+> *created*. If a runtime container was recreated (e.g. `up -d --build` after an earlier
+> session) while the postgres volume persisted, the seed finds the existing super-user and
+> stays silent. Recover the keys from the still-running dev Vault:
+>
+> ```shell
+> docker exec docker-vault-1 sh -c 'VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=token vault kv get -field=content secret/ih-super-user-apikey'; echo
+> docker exec docker-vault-1 sh -c 'VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=token vault kv get -field=content secret/is-super-user-apikey'; echo
+> ```
+>
+> (The trailing `; echo` matters when copying from the terminal: the raw output has no
+> final newline, so zsh appends a reverse-video `%` marker that is easy to copy into the
+> key by accident — a key pasted with that `%` fails with 401 `Invalid API token`.)
+>
+> This works only while the Vault container survives (dev-mode Vault is in-memory). If
+> Vault was recreated too, the stored keys are gone — reset for a clean seed:
+> `docker compose --profile sql down -v && docker compose --profile sql up -d`.
+
+The SQL profile deliberately uses **different super-user IDs** per runtime
+(`ih-super-user` / `is-super-user`, set via `edc.ih.api.superuser.id`): both runtimes share
+the single dev-mode Vault, and the seed extension derives its Vault aliases from this ID —
+with identical IDs the runtime that starts second would silently overwrite the first one's
+secrets, invalidating its logged API key.
+
+With the two keys you can drive the full DCP issuance/presentation/revocation flow using the
+Postman collection at
+[`docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json`](../../docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json)
+— all other variables are pre-set for this compose stack (usage: [docs/api/README.md](../../docs/api/README.md)).
+
 ---
 
 ## Stopping and cleaning up
@@ -143,6 +190,40 @@ docker compose --profile sql down
 # Remove containers AND the postgres volume (full reset)
 docker compose --profile sql down -v
 ```
+
+> **⚠️ SQL profile: always restart the stack as a unit.** The super-user's
+> participant context is stored in **PostgreSQL** (persisted via the `pg_data`
+> volume), but its API-key secret is stored in **HashiCorp Vault**, which runs in
+> **dev mode with no persistence** and is wiped on every restart. Any restart that
+> keeps Postgres while resetting Vault — `docker compose stop` then `start`, or even
+> `down` (without `-v`) then `up` — leaves the super-user row in Postgres pointing at
+> an API key that no longer exists in Vault. The runtime then boots fine, but every
+> authenticated request fails (see the troubleshooting note below). To restart
+> cleanly, reset both stores together:
+>
+> ```shell
+> docker compose --profile sql down -v && docker compose --profile sql up -d
+> ```
+>
+> The `memory` profile is immune (participant context and secrets share the same
+> in-memory store, so they reset together). Persisting state across restarts would
+> require running Vault outside dev mode with a storage backend + volume + unseal.
+
+### Troubleshooting: all requests except Health fail with a `NullPointerException`
+
+Symptom — after a `stop`/`start` or bare `down`/`up` on the SQL profile, the Health
+endpoints work but every other request returns HTTP 500, with this in the logs:
+
+```
+SEVERE JerseyExtension: Unexpected exception caught
+java.lang.NullPointerException: Cannot invoke "String.equals(Object)" because the
+  return value of "...ServicePrincipal.getCredential()" is null
+```
+
+This is the Vault-vs-Postgres divergence described above: the super-user still exists
+in Postgres, but its API-key secret is gone from the wiped dev-mode Vault, so the auth
+filter reads a `null` credential. The fix is a full reset:
+`docker compose --profile sql down -v && docker compose --profile sql up -d`.
 
 ---
 
@@ -179,20 +260,20 @@ The `edc.iam.did.web.use.https` setting controls how `did:web` DIDs are resolved
 | `true` (default) | `https://host:port/path/did.json` | **Production** — DID documents are served over TLS |
 | `false` | `http://host:port/path/did.json` | **Local docker / dev** — inter-container traffic is plain HTTP |
 
-The bundled configs here do **not** set this key, so it defaults to `true`. The flows this
-setup primarily demonstrates (health checks, super-user seeding) never resolve a `did:web`
-DID, so they work as-is.
+The bundled `config/*/configuration.properties` files set this to `false`, because a full
+**DCP credential-exchange flow** between the bundled runtimes (e.g. the issuerservice
+resolving a holder's `did:web` document over the compose network) requires resolution over
+plain HTTP — containers reach each other via `http://issuerservice:10100/...`, and the
+HTTPS resolver would fail with `Unsupported or unrecognized SSL message`.
 
-A full **DCP credential-exchange flow** between the bundled runtimes (e.g. the issuerservice
-resolving a holder's `did:web` document over the compose network) *does* trigger resolution.
-Because containers reach each other over plain HTTP (`http://issuerservice:10100/...`), the
-default HTTPS resolver fails with `Unsupported or unrecognized SSL message`. To exercise such
-flows locally, add the following to the relevant `config/*/configuration.properties` before
-starting the stack:
+Two more settings in the bundled configs exist solely to make the local DCP flow work:
 
 ```properties
-# Local docker only — inter-container did:web endpoints are plain HTTP.
-edc.iam.did.web.use.https=false
+# Status-list credentials must embed a URL the OTHER container can reach
+edc.statuslist.callback.address=http://issuerservice:9999/statuslist
+# Short DID cache: re-created participants get fresh keys; a long cache would
+# serve stale DID documents and fail signature checks until it expires
+edc.did.resolver.cache.expiry=10000
 ```
 
 > **Security:** Never set `edc.iam.did.web.use.https=false` in production. A DID document
@@ -206,6 +287,8 @@ edc.iam.did.web.use.https=false
 
 - **HashiCorp Vault runs in dev mode** — data is stored in memory and lost on container
   restart. This is intentional for local development. Never use dev mode in production.
+  Because Postgres *is* persisted while Vault is not, the SQL stack must be restarted as
+  a unit — see the warning under [Stopping and cleaning up](#stopping-and-cleaning-up).
 - **Flyway migrations run automatically** at startup for the SQL variants; no manual
   schema initialisation is required beyond the database creation performed by
   `postgres/init/01-create-databases.sh`. Each store maintains its own
@@ -228,4 +311,5 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 
 - SPDX-License-Identifier: CC-BY-4.0
 - SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
+- SPDX-FileCopyrightText: 2026 Technovative Solutions
 - Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/deployment/docker/README.md>

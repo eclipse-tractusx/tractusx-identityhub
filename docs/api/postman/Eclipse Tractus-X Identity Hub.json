@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Eclipse Tractus-X Identity Hub",
-    "description": "",
+    "description": "Reference collection covering every REST endpoint of Tractus-X IdentityHub and IssuerService (EDC 0.17.0), grouped by API.\n\nDefaults target the local docker-compose stack (deployment/docker, --profile sql). Set API_KEY to a super-user key from the runtime startup logs; the DCP protocol endpoints (Credentials-API, Issuance-API) instead take a self-issued token via SI_TOKEN, obtainable from the STS-API request.\n\nEDC 0.17.0: participant ids in URL paths are PLAIN (no base64url) — see the PARTICIPANT_CONTEXT_ID variable description.\n\nFor a guided, fully automated end-to-end flow (issuance → presentation → revocation) use the companion collection: Tractus-X_IdentityHub_Local_E2E.json.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -19,7 +19,7 @@
                 "header": [
                   {
                     "key": "Authorization",
-                    "value": "Bearer ads",
+                    "value": "Bearer {{SI_TOKEN}}",
                     "disabled": false,
                     "type": "default"
                   }
@@ -67,7 +67,7 @@
                 "header": [
                   {
                     "key": "Authorization",
-                    "value": "Bearer ads",
+                    "value": "Bearer {{SI_TOKEN}}",
                     "disabled": false,
                     "type": "default"
                   }
@@ -94,7 +94,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"@context\": [\n    \"https://w3id.org/tractusx-trust/v0.8\",\n    \"https://identity.foundation/presentation-exchange/submission/v1\"\n  ],\n  \"type\": \"PresentationQueryMessage\",\n  \"presentationDefinition\": null,\n  \"scope\": [\n    \"org.eclipse.dspace.dcp.vc.type:SomeCredential_0.3.5:write\",\n    \"org.eclipse.dspace.dcp.vc.type:SomeOtherCredential:read\",\n    \"org.eclipse.dspace.dcp.vc.type:ThirdCredential:*\"\n  ]\n}",
+                  "raw": "{\n  \"@context\": [\n    \"https://w3id.org/dspace-dcp/v1.0/dcp.jsonld\"\n  ],\n  \"type\": \"PresentationQueryMessage\",\n  \"presentationDefinition\": null,\n  \"scope\": [\n    \"org.eclipse.tractusx.vc.type:SomeCredential_0.3.5:write\",\n    \"org.eclipse.tractusx.vc.type:SomeOtherCredential:read\",\n    \"org.eclipse.tractusx.vc.type:ThirdCredential:*\"\n  ]\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -116,7 +116,7 @@
                 "header": [
                   {
                     "key": "Authorization",
-                    "value": "Bearer asdas",
+                    "value": "Bearer {{SI_TOKEN}}",
                     "disabled": false,
                     "type": "default"
                   }
@@ -204,7 +204,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -259,7 +265,13 @@
               "event": [],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -296,7 +308,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -331,7 +349,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"did\": \"did:web:super-user\"\n}",
+                  "raw": "{\n  \"did\": \"{{DID_PLAIN}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -345,7 +363,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -380,7 +404,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"did\": \"did:web:super-user\"\n}",
+                  "raw": "{\n  \"did\": \"{{DID_PLAIN}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -394,7 +418,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -443,7 +473,13 @@
               "event": [],
               "request": {
                 "method": "DELETE",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -493,7 +529,13 @@
               "event": [],
               "request": {
                 "method": "PATCH",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -548,7 +590,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -564,7 +612,7 @@
                     }
                   ]
                 },
-                "description": "",
+                "description": "Un-publishes a DID document. Requires the ParticipantContext to be DEACTIVATED first (POST /participants/{id}/state?isActive=false) — returns 400 on an ACTIVATED participant.",
                 "url": {
                   "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/unpublish",
                   "protocol": "",
@@ -583,7 +631,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"did\": \"did:web:super-user\"\n}",
+                  "raw": "{\n  \"did\": \"{{DID_PLAIN}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -602,7 +650,13 @@
               "event": [],
               "request": {
                 "method": "PUT",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -641,7 +695,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"my-new-key\",\n  \"privateKeyAlias\": \"my-new-private-key-alias\",\n  \"type\": \"Ed25519VerificationKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key\"\n}",
+                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"{{DID_PLAIN}}#added-key\",\n  \"privateKeyAlias\": \"added-key-alias\",\n  \"type\": \"JsonWebKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -655,7 +709,13 @@
               "event": [],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -695,7 +755,13 @@
               "event": [],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -734,7 +800,13 @@
               "event": [],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -780,7 +852,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -816,7 +894,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"my-new-key2\",\n  \"privateKeyAlias\": \"my-new-private-key2-alias\",\n  \"type\": \"Ed25519VerificationKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key2\"\n}",
+                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"{{DID_PLAIN}}#revoked-successor\",\n  \"privateKeyAlias\": \"revoked-successor-alias\",\n  \"type\": \"JsonWebKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key2\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -830,7 +908,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -871,7 +955,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"my-new-key3\",\n  \"privateKeyAlias\": \"my-new-private-key3-alias\",\n  \"type\": \"Ed25519VerificationKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key3\"\n}",
+                  "raw": "{\n  \"active\": true,\n  \"keyId\": \"{{DID_PLAIN}}#rotated-successor\",\n  \"privateKeyAlias\": \"rotated-successor-alias\",\n  \"type\": \"JsonWebKey2020\",\n  \"keyGeneratorParams\": {\n    \"algorithm\": \"EdDSA\",\n    \"curve\": \"Ed25519\"\n  },\n  \"publicKeyJwk\": null,\n  \"publicKeyPem\": null,\n  \"resourceId\": \"resource-new-key3\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -885,7 +969,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -940,7 +1030,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -956,9 +1052,9 @@
                     }
                   ]
                 },
-                "description": "",
+                "description": "Activates (or with isActive=false deactivates) a ParticipantContext. ⚠️ Keep isActive=true in the URL — omitting it deactivates the participant, and its key pairs stay deactivated even after re-activation (reactivate via keypairs/{id}/activate is only possible from ACTIVE/CREATED states, so a fresh key pair may be required).",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/state",
+                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/state?isActive=true",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
@@ -972,7 +1068,8 @@
                   "query": [
                     {
                       "key": "isActive",
-                      "value": "true"
+                      "value": "true",
+                      "description": "REQUIRED in the URL: without it the API defaults to isActive=false and this request silently DEACTIVATES the participant (its key pairs stay deactivated even after re-activation)."
                     }
                   ],
                   "variable": []
@@ -993,7 +1090,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1025,7 +1128,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"active\": true,\n  \"did\": \"did:web:eclipse-tractus-x\",\n\n  \"key\": {\n    \"keyGeneratorParams\": {\n      \"algorithm\": \"EdDSA\",\n      \"curve\": \"Ed25519\"\n    },\n    \"keyId\": \"eclipse-tractus-x-key\",\n    \"privateKeyAlias\": \"eclipse-tractus-x-alias\"\n  },\n  \"participantId\": \"eclipse-tractus-x\",\n  \"roles\": [\n    \"ROLE_ADMIN\"\n  ]\n}",
+                  "raw": "{\n  \"active\": true,\n  \"did\": \"did:web:eclipse-tractus-x\",\n\n  \"key\": {\n    \"keyGeneratorParams\": {\n      \"algorithm\": \"EdDSA\",\n      \"curve\": \"Ed25519\"\n    },\n    \"keyId\": \"eclipse-tractus-x-key\",\n    \"privateKeyAlias\": \"eclipse-tractus-x-alias\"\n  },\n  \"participantContextId\": \"eclipse-tractus-x\",\n  \"roles\": [\n    \"ROLE_ADMIN\"\n  ]\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1039,7 +1142,13 @@
               "event": [],
               "request": {
                 "method": "DELETE",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1077,7 +1186,13 @@
               "event": [],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1123,7 +1238,13 @@
               "event": [],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1161,7 +1282,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1209,7 +1336,13 @@
               "event": [],
               "request": {
                 "method": "PUT",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1262,7 +1395,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1310,7 +1449,13 @@
               "event": [],
               "request": {
                 "method": "DELETE",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1350,7 +1495,13 @@
               "event": [],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1390,7 +1541,13 @@
               "event": [],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1431,7 +1588,13 @@
               "event": [],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1468,7 +1631,13 @@
               "event": [],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1507,7 +1676,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1542,7 +1717,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"credentials\": [\n    {\n      \"format\": \"ldp_vc\",\n      \"id\": \"1f36af58-0fc0-4b24-9b1c-e37d59668089\",\n      \"type\": \"MembershipCredential\"\n    }\n  ],\n  \"holderPid\": \"did:web:super-user\",\n  \"issuerDid\": \"did:web:super-user\"\n}",
+                  "raw": "{\n  \"credentials\": [\n    {\n      \"format\": \"VC1_0_JWT\",\n      \"id\": \"1f36af58-0fc0-4b24-9b1c-e37d59668089\",\n      \"type\": \"MembershipCredential\"\n    }\n  ],\n  \"holderPid\": \"did:web:super-user\",\n  \"issuerDid\": \"did:web:super-user\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1556,7 +1731,13 @@
               "event": [],
               "request": {
                 "method": "PUT",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1617,7 +1798,7 @@
                 "header": [
                   {
                     "key": "Authorization",
-                    "value": "Bearer asdas",
+                    "value": "Bearer {{SI_TOKEN}}",
                     "disabled": false,
                     "type": "default"
                   }
@@ -1643,7 +1824,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"@context\": [\n    \"https://w3id.org/dspace-dcp/v1.0/dcp.jsonld\"//,\n    //\"https://w3id.org/dspace-dcp/v1.0/credentials\",\n    //\"https://w3id.org/dspace-dcp/v1.0/holderPid\"\n  ],\n  \"type\": \"CredentialRequestMessage\",\n  \"credentials\": [\n    {\n      \"id\": \"string\"\n    }\n  ],\n  \"issuerPid\": \"BPN\",\n  \"holderPid\": \"BPN\",\n  \"status\": \"ISSUED\",\n  \"requestId\": \"requestId\"\n}",
+                  "raw": "{\n  \"@context\": [\n    \"https://w3id.org/dspace-dcp/v1.0/dcp.jsonld\"\n  ],\n  \"type\": \"CredentialRequestMessage\",\n  \"credentials\": [\n    {\n      \"id\": \"string\"\n    }\n  ],\n  \"holderPid\": \"BPN\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1665,7 +1846,7 @@
                 "header": [
                   {
                     "key": "Authorization",
-                    "value": "Bearer asdas",
+                    "value": "Bearer {{SI_TOKEN}}",
                     "disabled": false,
                     "type": "default"
                   }
@@ -1705,7 +1886,7 @@
                 "header": [
                   {
                     "key": "Authorization",
-                    "value": "Bearer asdas",
+                    "value": "Bearer {{SI_TOKEN}}",
                     "disabled": false,
                     "type": "default"
                   }
@@ -1746,7 +1927,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1794,7 +1981,13 @@
               "event": [],
               "request": {
                 "method": "DELETE",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1843,7 +2036,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1878,7 +2077,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  //\"filterExpression\": [\n   // {\n   //   \"operandLeft\": {},\n   //   \"operandRight\": {},\n   //   \"operator\": \"string\"\n   // }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "raw": "{\n  \"limit\": 10,\n  \"offset\": 0,\n  \"sortOrder\": \"ASC\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1897,7 +2096,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1931,7 +2136,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"attestations\": [],\n  \"credentialType\": \"string\",\n  \"format\": \"VC1_0_JWT\",\n  \"id\": \"string\",\n  \"jsonSchema\": \"string\",\n  \"jsonSchemaUrl\": \"string\",\n  \"mappings\": [\n    {\n      \"input\": \"string\",\n      \"output\": \"string\",\n      \"required\": true\n    }\n  ],\n  //\"rules\": [\n  //  {\n  //    \"configuration\": {\n  //      \"additionalProp1\": {},\n  //      \"additionalProp2\": {},\n  //      \"additionalProp3\": {}\n  //    },\n  //    \"type\": \"string\"\n  //  }\n  //],\n  \"validity\": 0\n}",
+                  "raw": "{\n  \"attestations\": [],\n  \"credentialType\": \"string\",\n  \"format\": \"VC1_0_JWT\",\n  \"id\": \"string\",\n  \"jsonSchema\": \"string\",\n  \"jsonSchemaUrl\": \"string\",\n  \"mappings\": [\n    {\n      \"input\": \"string\",\n      \"output\": \"string\",\n      \"required\": true\n    }\n  ],\n  \"validity\": 0\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1945,7 +2150,13 @@
               "event": [],
               "request": {
                 "method": "DELETE",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -1985,7 +2196,13 @@
               "event": [],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2025,7 +2242,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2060,7 +2283,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  //\"filterExpression\": [\n  //  {\n  //    \"operandLeft\": {},\n  //    \"operandRight\": {},\n  //    \"operator\": \"string\"\n  //  }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "raw": "{\n  \"limit\": 10,\n  \"offset\": 0,\n  \"sortOrder\": \"ASC\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2074,7 +2297,13 @@
               "event": [],
               "request": {
                 "method": "PUT",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2108,7 +2337,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"attestations\": [],\n  \"credentialType\": \"string\",\n  \"format\": \"VC1_0_JWT\",\n  \"id\": \"string\",\n  \"jsonSchema\": \"string\",\n  \"jsonSchemaUrl\": \"string\",\n  \"mappings\": [\n    {\n      \"input\": \"string\",\n      \"output\": \"string\",\n      \"required\": true\n    }\n  ],\n  //\"rules\": [\n  //  {\n  //    \"configuration\": {\n  //      \"additionalProp1\": {},\n  //      \"additionalProp2\": {},\n  //      \"additionalProp3\": {}\n  //    },\n  //    \"type\": \"string\"\n  //  }\n  //],\n  \"validity\": 10\n}",
+                  "raw": "{\n  \"attestations\": [],\n  \"credentialType\": \"string\",\n  \"format\": \"VC1_0_JWT\",\n  \"id\": \"string\",\n  \"jsonSchema\": \"string\",\n  \"jsonSchemaUrl\": \"string\",\n  \"mappings\": [\n    {\n      \"input\": \"string\",\n      \"output\": \"string\",\n      \"required\": true\n    }\n  ],\n  \"validity\": 10\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2127,7 +2356,13 @@
               "event": [],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2168,7 +2403,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2203,7 +2444,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  //\"filterExpression\": [\n  //  {\n  //    \"operandLeft\": {},\n  //    \"operandRight\": {},\n  //    \"operator\": \"string\"\n  //  }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "raw": "{\n  \"limit\": 10,\n  \"offset\": 0,\n  \"sortOrder\": \"ASC\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2217,7 +2458,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2258,7 +2505,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2299,7 +2552,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2340,7 +2599,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2394,7 +2659,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2442,7 +2713,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2477,7 +2754,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  //\"filterExpression\": [\n  //  {\n  //    \"operandLeft\": {},\n  //    \"operandRight\": {},\n  //    \"operator\": \"string\"\n  //  }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "raw": "{\n  \"limit\": 10,\n  \"offset\": 0,\n  \"sortOrder\": \"ASC\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2491,7 +2768,13 @@
               "event": [],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2531,7 +2814,13 @@
               "event": [],
               "request": {
                 "method": "PUT",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2584,7 +2873,13 @@
               "event": [],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2619,7 +2914,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  //\"filterExpression\": [\n  //  {\n  //    \"operandLeft\": {},\n  //    \"operandRight\": {},\n  //    \"operator\": \"string\"\n  //  }\n  //],\n  \"limit\": 10,\n  \"offset\": 0,\n  //\"sortField\": \"string\",\n  \"sortOrder\": \"ASC\"\n}",
+                  "raw": "{\n  \"limit\": 10,\n  \"offset\": 0,\n  \"sortOrder\": \"ASC\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2633,7 +2928,13 @@
               "event": [],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "x-api-key",
+                    "value": "{{API_KEY}}",
+                    "description": "Super-user or participant API key"
+                  }
+                ],
                 "auth": {
                   "type": "apikey",
                   "apikey": [
@@ -2762,94 +3063,124 @@
   ],
   "variable": [
     {
-      "key": "CREDENTIAL_PATH",
-      "value": "",
-      "type": "default"
+      "key": "IDENTITY_PATH",
+      "value": "http://localhost:15151/api/identity",
+      "type": "string",
+      "description": "Identity API base. Compose defaults: IdentityHub 15151, IssuerService 15251 — switch when managing issuer-side participants."
     },
     {
-      "key": "PARTICIPANT_CONTEXT_ID",
-      "value": "",
-      "type": "default"
+      "key": "CREDENTIAL_PATH",
+      "value": "http://localhost:13131/api/credentials",
+      "type": "string",
+      "description": "IdentityHub Credentials API (DCP presentation/storage/offers). Auth: Bearer {{SI_TOKEN}}."
+    },
+    {
+      "key": "ISSUANCE_PATH",
+      "value": "http://localhost:13132/api/issuance",
+      "type": "string",
+      "description": "IssuerService DCP Issuance API."
+    },
+    {
+      "key": "ISSUER_ADMIN_PATH",
+      "value": "http://localhost:15152/api/issuer",
+      "type": "string",
+      "description": "IssuerService IssuerAdmin API. NOTE: path is /api/issuer in the compose stack (Helm charts may expose /api/admin)."
+    },
+    {
+      "key": "STS_PATH",
+      "value": "http://localhost:9292/api/sts",
+      "type": "string",
+      "description": "IdentityHub Secure Token Service."
     },
     {
       "key": "DID_PATH",
-      "value": "",
-      "type": "default"
+      "value": "http://localhost:10100",
+      "type": "string",
+      "description": "IdentityHub DID (did:web) endpoint. Documents only resolve when the requested host matches the DID."
     },
     {
-      "key": "IDENTITY_PATH",
-      "value": "",
-      "type": "default"
-    },
-    {
-      "key": "DID",
-      "value": "",
-      "type": "default"
+      "key": "STATUS_LIST_PATH",
+      "value": "http://localhost:9999/statuslist",
+      "type": "string",
+      "description": "IssuerService StatusList API (public, serves signed BitstringStatusList credentials)."
     },
     {
       "key": "API_KEY",
       "value": "",
-      "type": "default"
+      "type": "secret",
+      "description": "x-api-key for Identity/IssuerAdmin APIs: a super-user key from the runtime startup logs, or the apiKey returned when creating a participant."
+    },
+    {
+      "key": "SI_TOKEN",
+      "value": "",
+      "type": "secret",
+      "description": "Self-issued token for the DCP APIs (Credentials/Issuance). Obtain via the STS-API token request (grant_type=client_credentials)."
+    },
+    {
+      "key": "PARTICIPANT_CONTEXT_ID",
+      "value": "",
+      "type": "string",
+      "description": "PLAIN participant context id. Since EDC 0.17.0 (IH #937) URL paths take the plain id — base64url-encoded ids return 404. Only the API-key prefix is still base64url-encoded."
+    },
+    {
+      "key": "DID",
+      "value": "",
+      "type": "string",
+      "description": "DID for /dids/{did}/... path segments — must be base64url-encoded (e.g. ZGlkOndlYjpzdXBlci11c2Vy for did:web:super-user). Unlike participantContextId, the DID path segment is still base64url-decoded by the API in EDC 0.17.0."
+    },
+    {
+      "key": "DID_PLAIN",
+      "value": "did:web:ih-super-user",
+      "type": "string",
+      "description": "Plain (non-encoded) DID for request BODIES, e.g. the dids/state, publish and unpublish payloads."
     },
     {
       "key": "KEY_PAIR_ID",
       "value": "",
-      "type": "default"
+      "type": "string",
+      "description": "KeyPair resource id"
     },
     {
       "key": "CREDENTIAL_ID",
       "value": "",
-      "type": "default"
+      "type": "string",
+      "description": "Credential resource id"
     },
     {
       "key": "HOLDER_PID",
       "value": "",
-      "type": "default"
-    },
-    {
-      "key": "ISSUANCE_PATH",
-      "value": "",
-      "type": "default"
+      "type": "string",
+      "description": "Holder-chosen correlation id of a credential request"
     },
     {
       "key": "CREDENTIAL_REQUEST_ID",
       "value": "",
-      "type": "default"
-    },
-    {
-      "key": "ISSUER_ADMIN_PATH",
-      "value": "",
-      "type": "default"
+      "type": "string",
+      "description": "Issuer-side id of a credential request"
     },
     {
       "key": "ATTESTATION_DEFINITION_ID",
       "value": "",
-      "type": "default"
+      "type": "string",
+      "description": "Attestation definition id"
     },
     {
       "key": "CREDENTIAL_DEFINITION_ID",
       "value": "",
-      "type": "default"
+      "type": "string",
+      "description": "Credential definition id"
     },
     {
       "key": "HOLDER_ID",
       "value": "",
-      "type": "default"
+      "type": "string",
+      "description": "Holder id (e.g. BPN) in the issuer holder registry"
     },
     {
       "key": "ISSUANCE_PROCESS_ID",
       "value": "",
-      "type": "default"
-    },
-    {
-      "key": "STS_PATH",
-      "value": "",
-      "type": "default"
-    },
-    {
-      "key": "STATUS_LIST_PATH",
-      "value": "",
-      "type": "default"
+      "type": "string",
+      "description": "Issuance process id"
     }
   ]
 }

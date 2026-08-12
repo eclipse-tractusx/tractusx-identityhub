@@ -1,6 +1,7 @@
 #################################################################################
 #  Copyright (c) 2025 Cofinity-X
 #  Copyright (c) 2025,2026 LKS Next
+#  Copyright (c) 2026 Technovative Solutions
 #  Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
 #  See the NOTICE file(s) distributed with this work for additional
@@ -46,6 +47,31 @@ issuerservice:
     # -- Overrides the image tag whose default is the chart appVersion
     tag: ""
   initContainers: []
+  # Waits for the bundled PostgreSQL/Vault subcharts to accept TCP connections before
+  # starting the runtime. Without it, the runtime races the subcharts on first install
+  # and crash-loops with "Connection to <release>-postgresql:5432 refused" until the
+  # database is up. Only applies while install.postgresql / install.vault are enabled.
+  # NOTE: the wait targets the DEFAULT subchart service names and ports
+  # (<release>-postgresql:5432, <release>-vault:8200); if you override a subchart's
+  # fullnameOverride or ports, disable this and add your own check via `initContainers`.
+  # For external services use `initContainers` as well.
+  waitForDependencies:
+    # -- Enables the built-in wait-for-dependencies initContainer
+    enabled: true
+    # -- Image used for the TCP wait loop; must provide `nc` (netcat with `-w`/`-z`) and `sh`
+    image: busybox:1.37@sha256:9532d8c39891ca2ecde4d30d7710e01fb739c87a8b9299685c63704296b16028
+    # -- Max probe attempts per dependency (2s apart, each probe capped at a 3s connect
+    # timeout). After this the initContainer exits non-zero and the pod fails loudly
+    # instead of hanging in Init forever. 60 ≈ up to ~5 min.
+    retries: 60
+    # -- [Resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) for the wait initContainer
+    resources:
+      requests:
+        cpu: 10m
+        memory: 16Mi
+      limits:
+        cpu: 50m
+        memory: 32Mi
   useSVE: false
   debug:
     enabled: false
@@ -93,10 +119,6 @@ issuerservice:
     did:
       port: 8083
       path: /
-    # -- Version API, used to obtain exact version information about all APIs at runtime. Should not be internet-facing
-    version:
-      port: 8084
-      path: /.well-known/api
     # -- STS Token API, for the IssuerService to create Self-Issued ID tokens
     sts:
       port: 8085
@@ -405,9 +427,13 @@ vault:
 statuslist:
   signing_key:
     alias: default
-  # -- Callback address for statuslist
   callback:
-    address: "issuerservice.issuance.local"
+    # -- Base URL that issued credentials embed as their `credentialStatus.statusListCredential`
+    # endpoint. Must be a FULL URL (scheme://host[:port]/statuslist) reachable by verifiers and
+    # holders — e.g. the public ingress URL, or the in-cluster service address
+    # `http://<release>-tractusx-issuerservice:<statuslist-port>/statuslist` for cluster-internal
+    # verification. A bare hostname produces broken status URLs in every issued credential.
+    address: "https://issuerservice.issuance.local/statuslist"
 # -- pgAdmin4 configuration
 
 pgadmin4:

@@ -1,6 +1,7 @@
 ###############################################################
 # Eclipse Tractus-X - identity-hub
 #
+# Copyright (c) 2026 Technovative Solutions
 # Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
@@ -54,14 +55,6 @@ identityhub:
     did:
       port: 8084
       path: /
-    accounts:
-      port: 8085
-      path: /api/accounts
-      authKeyAlias: accounts-api-key
-    version:
-      port: 8086
-      path: /.well-known/api
-      pathType: ImplementationSpecific
     sts:
       port: 8087
       path: /api/sts
@@ -83,8 +76,6 @@ identityhub:
         - did
         - sts
         - identity
-        - accounts
-        - version
       # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
       tls:
         # -- Enables TLS on the ingress resource

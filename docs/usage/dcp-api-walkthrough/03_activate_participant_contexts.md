@@ -11,7 +11,7 @@ After creating participant contexts, they may be in `CREATED` state and not yet 
 ## Activate the Issuer Participant Context
 
 ```bash
-curl -X PUT "${ISSUER_URL}/api/identity/v1alpha/participants/${ISSUER_CONTEXT}/state?isActive=true" \
+curl -X POST "${ISSUER_IDENTITY}/v1alpha/participants/${ISSUER_CONTEXT}/state?isActive=true" \
   -H "x-api-key: ${ISSUER_ADMIN_KEY}"
 ```
 
@@ -22,7 +22,7 @@ curl -X PUT "${ISSUER_URL}/api/identity/v1alpha/participants/${ISSUER_CONTEXT}/s
 ## Activate the Holder Participant Context
 
 ```bash
-curl -X PUT "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}/state?isActive=true" \
+curl -X POST "${IDH_IDENTITY}/v1alpha/participants/${IDH_CONTEXT}/state?isActive=true" \
   -H "x-api-key: ${IDH_ADMIN_KEY}"
 ```
 
@@ -34,30 +34,30 @@ You can confirm the state by retrieving the participant context details:
 
 ```bash
 # Check Issuer participant state
-curl -s "${ISSUER_URL}/api/identity/v1alpha/participants/${ISSUER_CONTEXT}" \
+curl -s "${ISSUER_IDENTITY}/v1alpha/participants/${ISSUER_CONTEXT}" \
   -H "x-api-key: ${ISSUER_ADMIN_KEY}" | jq .state
 
 # Check Holder participant state
-curl -s "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}" \
+curl -s "${IDH_IDENTITY}/v1alpha/participants/${IDH_CONTEXT}" \
   -H "x-api-key: ${IDH_ADMIN_KEY}" | jq .state
 ```
 
-The state should be `ACTIVATED`.
+The state should be `200`.
 
 ## Participant Context States
 
-| State | Description |
-|-------|-------------|
-| `CREATED` | Participant context exists but is not yet active; DID document is not published |
-| `ACTIVATED` | Participant context is active; DID document is published and resolvable |
-| `DEACTIVATED` | Participant context was previously active but has been deactivated |
+| State | State Meaning | Description |
+|------------|---------------|-------------|
+| 100 | `CREATED` | Participant context exists but is not yet active; DID document is not published |
+| 200 | `ACTIVATED` | Participant context is active; DID document is published and resolvable |
+| 300 | `DEACTIVATED` | Participant context was previously active but has been deactivated |
 
 ## Deactivate a Participant Context
 
 To deactivate a participant context (e.g., for maintenance):
 
 ```bash
-curl -X PUT "${ISSUER_URL}/api/identity/v1alpha/participants/${ISSUER_CONTEXT}/state?isActive=false" \
+curl -X POST "${ISSUER_IDENTITY}/v1alpha/participants/${ISSUER_CONTEXT}/state?isActive=false" \
   -H "x-api-key: ${ISSUER_ADMIN_KEY}"
 ```
 
@@ -73,4 +73,5 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 - SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
 - SPDX-FileCopyrightText: 2026 Catena-X Automotive Network e.V.
 - SPDX-FileCopyrightText: 2026 LKS Next
+- SPDX-FileCopyrightText: 2026 Technovative Solutions
 - Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/docs/usage/dcp-api-walkthrough/03_activate_participant_contexts.md>

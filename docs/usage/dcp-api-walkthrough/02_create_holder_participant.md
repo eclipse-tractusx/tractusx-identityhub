@@ -9,7 +9,7 @@ Create a participant context on the **IdentityHub** that will act as the credent
 ## Request
 
 ```bash
-curl -X POST "${IDH_URL}/api/identity/v1alpha/participants" \
+curl -X POST "${IDH_IDENTITY}/v1alpha/participants" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${IDH_ADMIN_KEY}" \
   -d '{
@@ -24,7 +24,7 @@ curl -X POST "${IDH_URL}/api/identity/v1alpha/participants" \
       "type": "JsonWebKey2020",
       "privateKeyAlias": "did:web:identity-hub.example.com-privatekey-alias"
     },
-    "participantId": "idh-participant",
+    "participantContextId": "idh-participant",
     "roles": ["ROLE_ADMIN", "admin"],
     "serviceEndpoints": [
       {
@@ -46,7 +46,8 @@ curl -X POST "${IDH_URL}/api/identity/v1alpha/participants" \
 ```json
 {
   "apiKey": "aWRoLXBhcnRpY2lwYW50.<generated-token>",
-  "clientId": "idh-participant"
+  "clientId": "idh-participant",
+  "clientSecret": "<generated-client-secret>"
 }
 ```
 
@@ -78,4 +79,5 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 - SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
 - SPDX-FileCopyrightText: 2026 Catena-X Automotive Network e.V.
 - SPDX-FileCopyrightText: 2026 LKS Next
+- SPDX-FileCopyrightText: 2026 Technovative Solutions
 - Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/docs/usage/dcp-api-walkthrough/02_create_holder_participant.md>

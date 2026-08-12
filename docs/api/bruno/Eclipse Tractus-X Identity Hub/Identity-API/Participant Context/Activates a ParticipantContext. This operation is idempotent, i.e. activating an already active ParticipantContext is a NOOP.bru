@@ -5,17 +5,20 @@ meta {
 }
 
 post {
-  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/state
-  body: json
+  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/state?isActive=true
+  body: none
   auth: apikey
-}
-
-params:query {
-  ~isActive: true
 }
 
 auth:apikey {
   key: X-Api-Key
   value: {{API_KEY}}
   placement: header
+}
+
+docs {
+  The isActive query parameter MUST be in the URL: without it the API defaults to
+  isActive=false and this request silently DEACTIVATES the participant (and its
+  key pairs stay deactivated even after re-activation - reactivate them via the
+  keypairs/{id}/activate endpoint).
 }

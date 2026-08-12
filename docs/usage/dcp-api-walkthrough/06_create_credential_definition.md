@@ -9,7 +9,7 @@ A credential definition configures what type of credential can be issued and how
 ## Request
 
 ```bash
-curl -X POST "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/credentialdefinitions" \
+curl -X POST "${ISSUER_ADMIN}/v1alpha/participants/${ISSUER_CONTEXT}/credentialdefinitions" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${ISSUER_API_KEY}" \
   -d '{
@@ -119,7 +119,7 @@ Populating `additionalContext` (e.g. with a Catena-X context URL) is not yet pos
 If you need to recreate a credential definition (e.g., to fix a misconfiguration), delete it first:
 
 ```bash
-curl -X DELETE "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/credentialdefinitions/tx-membershipCredential" \
+curl -X DELETE "${ISSUER_ADMIN}/v1alpha/participants/${ISSUER_CONTEXT}/credentialdefinitions/tx-membershipCredential" \
   -H "x-api-key: ${ISSUER_API_KEY}"
 ```
 
@@ -138,7 +138,7 @@ After deleting, you can re-run the `POST /credentialdefinitions` request to recr
 Verify a credential definition was created correctly:
 
 ```bash
-curl -s "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/credentialdefinitions/tx-membershipCredential" \
+curl -s "${ISSUER_ADMIN}/v1alpha/participants/${ISSUER_CONTEXT}/credentialdefinitions/tx-membershipCredential" \
   -H "x-api-key: ${ISSUER_API_KEY}" | jq .
 ```
 

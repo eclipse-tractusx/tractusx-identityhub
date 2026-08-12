@@ -9,12 +9,12 @@ Trigger the actual DCP Issuance Flow. The IdentityHub (Holder) sends a credentia
 ## Request
 
 ```bash
-curl -X POST "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}/credentials/request" \
+curl -X POST "${IDH_IDENTITY}/v1alpha/participants/${IDH_CONTEXT}/credentials/request" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${IDH_API_KEY}" \
   -d '{
     "issuerDid": "did:web:issuer-service.example.com",
-    "holderPid": "did:web:issuer-service.example.com",
+    "holderPid": "49b1cb75-30d2-4098-8f58-03c75304adc3",
     "credentials": [
       {
         "id": "tx-membershipCredential",
@@ -34,12 +34,18 @@ curl -X POST "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}/creden
 | Field | Description |
 |-------|-------------|
 | `issuerDid` | The DID of the issuer to request credentials from |
-| `holderPid` | The participant ID at the issuer (match what was registered in [Step 7](07_register_holder.md) or use the issuer's DID) |
+| `holderPid` | The participant ID of the holder at the issuer side. A client-assigned request ID. |
 | `credentials[].id` | Must match the `id` of the credential definition created in [Step 6](06_create_credential_definition.md) |
 | `credentials[].type` | Must match the `credentialType` of the credential definition |
 | `credentials[].format` | Must match the `format` of the credential definition |
 
 > **Note**: The issuance is **asynchronous**. After the request returns 201, the credential generation and delivery happen in the background. Wait a few seconds before querying for the credential.
+
+## Set Holder's Request ID
+Set holder's request ID in an environment variable so that we can reuse this in the next step to check the issuance status.
+```bash
+export IDH_REQUEST_ID="49b1cb75-30d2-4098-8f58-03c75304adc3"
+```
 
 ## What Happens Behind the Scenes
 
@@ -97,4 +103,5 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 - SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
 - SPDX-FileCopyrightText: 2026 Catena-X Automotive Network e.V.
 - SPDX-FileCopyrightText: 2026 LKS Next
+- SPDX-FileCopyrightText: 2026 Technovative Solutions
 - Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/docs/usage/dcp-api-walkthrough/08_request_credentials.md>

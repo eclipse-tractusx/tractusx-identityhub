@@ -1,0 +1,99 @@
+#################################################################################
+#  Copyright (c) 2026 Technovative Solutions
+#  Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+#  See the NOTICE file(s) distributed with this work for additional
+#  information regarding copyright ownership.
+#
+#  This program and the accompanying materials are made available under the
+#  terms of the Apache License, Version 2.0 which is available at
+#  https://www.apache.org/licenses/LICENSE-2.0.
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#  License for the specific language governing permissions and limitations
+#  under the License.
+#
+#  SPDX-License-Identifier: Apache-2.0
+#################################################################################
+
+---
+name: "DCP E2E Flow Test (Postman/newman)"
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+# Least privilege: this job only builds and drives an ephemeral local stack.
+permissions:
+  contents: read
+
+jobs:
+  dcp-e2e-compose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: ./.github/actions/setup-java
+
+      - name: Build runtime jars
+        run: ./gradlew shadowJar
+
+      - name: Start the compose stack (sql profile)
+        working-directory: deployment/docker
+        run: docker compose --profile sql up -d --build
+
+      - name: Wait for both runtimes to be healthy
+        run: |
+          for i in $(seq 1 60); do
+            IH=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8181/api/check/health || true)
+            IS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8182/api/check/health || true)
+            if [ "$IH" = "200" ] && [ "$IS" = "200" ]; then
+              echo "both runtimes healthy"; exit 0
+            fi
+            sleep 3
+          done
+          echo "runtimes did not become healthy (identityhub=$IH issuerservice=$IS)"; exit 1
+
+      - name: Extract super-user API keys from startup logs
+        id: keys
+        working-directory: deployment/docker
+        run: |
+          extract() {
+            docker compose --profile sql logs "$1" \
+              | grep -a "API Key" \
+              | perl -pe 's/\e\[[0-9;]*m//g' \
+              | sed 's/.*API Key: //' \
+              | tr -d '[:space:]'
+          }
+          IH_KEY=$(extract identityhub)
+          IS_KEY=$(extract issuerservice)
+          if [ -z "$IH_KEY" ] || [ -z "$IS_KEY" ]; then
+            echo "failed to extract super-user API keys"; exit 1
+          fi
+          echo "::add-mask::$IH_KEY"
+          echo "::add-mask::$IS_KEY"
+          echo "ih_key=$IH_KEY" >> "$GITHUB_OUTPUT"
+          echo "is_key=$IS_KEY" >> "$GITHUB_OUTPUT"
+
+      - name: Run the E2E collection (issuance -> presentation -> revocation)
+        run: |
+          # pinned exact version (avoid pulling a floating major at runtime)
+          npx --yes newman@6.2.2 run "docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json" \
+            --env-var "IH_SUPERUSER_KEY=${{ steps.keys.outputs.ih_key }}" \
+            --env-var "IS_SUPERUSER_KEY=${{ steps.keys.outputs.is_key }}"
+
+      - name: Dump runtime logs on failure
+        if: failure()
+        working-directory: deployment/docker
+        run: |
+          echo "===== identityhub ====="
+          docker compose --profile sql logs identityhub | tail -100
+          echo "===== issuerservice ====="
+          docker compose --profile sql logs issuerservice | tail -100
+
+      - name: Tear down
+        if: always()
+        working-directory: deployment/docker
+        run: docker compose --profile sql down -v

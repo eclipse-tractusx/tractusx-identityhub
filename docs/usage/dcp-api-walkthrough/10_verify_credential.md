@@ -77,7 +77,7 @@ The `vc.credentialStatus` field contains the BitstringStatusList reference:
 
 ```bash
 # Fetch the status list credential
-curl -s "https://issuer-service.example.com/statuslist/<id>" | jq .
+curl -s "${STATUSLIST}/<id>" | jq .
 ```
 
 The status list is a compressed bitstring. If the bit at `statusListIndex` is `1`, the credential has been revoked.
@@ -87,7 +87,7 @@ The status list is a compressed bitstring. If the bit at `statusListIndex` is `1
 ### Revoke a Credential
 
 ```bash
-curl -X POST "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/credentials/${CREDENTIAL_ID}/revoke" \
+curl -X POST "${ISSUER_ADMIN}/v1alpha/participants/${ISSUER_CONTEXT}/credentials/${CREDENTIAL_ID}/revoke" \
   -H "x-api-key: ${ISSUER_API_KEY}"
 ```
 
@@ -98,7 +98,7 @@ After revocation, the credential's bit in the status list will be set to `1`.
 **Rotate a key** (keep for verification but stop signing new credentials):
 
 ```bash
-curl -X POST "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}/keypairs/${KEY_PAIR_ID}/rotate" \
+curl -X POST "${IDH_IDENTITY}/v1alpha/participants/${IDH_CONTEXT}/keypairs/${KEY_PAIR_ID}/rotate" \
   -H "x-api-key: ${IDH_API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{ "newKeyId": "did:web:identity-hub.example.com#key-2" }'
@@ -107,7 +107,7 @@ curl -X POST "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}/keypai
 **Revoke a key** (remove from DID document entirely):
 
 ```bash
-curl -X POST "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}/keypairs/${KEY_PAIR_ID}/revoke" \
+curl -X POST "${IDH_IDENTITY}/v1alpha/participants/${IDH_CONTEXT}/keypairs/${KEY_PAIR_ID}/revoke" \
   -H "x-api-key: ${IDH_API_KEY}"
 ```
 
@@ -115,13 +115,13 @@ curl -X POST "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}/keypai
 
 ```bash
 # Publish
-curl -X POST "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}/dids/publish" \
+curl -X POST "${IDH_IDENTITY}/v1alpha/participants/${IDH_CONTEXT}/dids/publish" \
   -H "x-api-key: ${IDH_API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{ "did": "did:web:identity-hub.example.com" }'
 
 # Unpublish
-curl -X POST "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}/dids/unpublish" \
+curl -X POST "${IDH_IDENTITY}/v1alpha/participants/${IDH_CONTEXT}/dids/unpublish" \
   -H "x-api-key: ${IDH_API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{ "did": "did:web:identity-hub.example.com" }'
@@ -131,11 +131,11 @@ curl -X POST "${IDH_URL}/api/identity/v1alpha/participants/${IDH_CONTEXT}/dids/u
 
 ```bash
 # IdentityHub readiness
-curl -s "${IDH_URL}/.well-known/api/check/readiness"
+curl -s "${IDH_DEFAULT}/check/readiness"
 # Returns 204 No Content when ready
 
 # IssuerService readiness
-curl -s "${ISSUER_URL}/.well-known/api/check/readiness"
+curl -s "${ISSUER_DEFAULT}/check/readiness"
 # Returns 204 No Content when ready
 ```
 

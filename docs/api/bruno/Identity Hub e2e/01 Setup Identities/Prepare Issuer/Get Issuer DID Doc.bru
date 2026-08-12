@@ -5,13 +5,20 @@ meta {
 }
 
 get {
-  url: {{ISSUER_DID_API}}/issuer
+  url: {{ISSUER_DID_API}}
   body: none
-  auth: inherit
+  auth: none
 }
 
-headers {
-  Host: <ISSUER_HOSTNAME>
+script:pre-request {
+  // Resolve the did:web document location from the DID and set the Host header the
+  // did:web server expects: did:web:host:seg1:seg2 -> {DID_API}/seg1/seg2/did.json (Host: host).
+  const did = bru.getEnvVar("ISS_ID");
+  const parts = did.replace("did:web:", "").split(":");
+  const host = parts[0];
+  const path = parts.slice(1).join("/");
+  req.setUrl(bru.getEnvVar("ISSUER_DID_API") + "/" + path + "/did.json");
+  req.setHeader("Host", host);
 }
 
 settings {
