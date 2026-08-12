@@ -1,0 +1,228 @@
+#################################################################################
+#  Eclipse Tractus-X - Identity Hub Frontend
+#
+#  Copyright (c) 2026 ARENA2036 e.V.
+#  Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+#  See the NOTICE file(s) distributed with this work for additional
+#  information regarding copyright ownership.
+#
+#  This program and the accompanying materials are made available under the
+#  terms of the Apache License, Version 2.0 which is available at
+#  https://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#  License for the specific language governing permissions and limitations
+#  under the License.
+#
+#  SPDX-License-Identifier: Apache-2.0
+#################################################################################
+---
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+frontend:
+  enabled: true
+  nameOverride: "identityhub-frontend"
+  fullnameOverride: ""
+  image:
+    repository: "tractusx/identityhub-frontend"
+    # -- [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use
+    pullPolicy: IfNotPresent
+    # -- Overrides the image tag whose default is the chart appVersion
+    tag: ""
+
+  imagePullSecrets: []
+
+  podSecurityContext: {}
+  # fsGroup: 2000
+
+  securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+  # This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+  service:
+    # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+    type: ClusterIP
+    # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
+    port: 8080
+
+  # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations: {}
+      # nginx.ingress.kubernetes.io/use-regex: "true"
+      # nginx.ingress.kubernetes.io/enable-cors: "true"
+      # nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS"
+      # nginx.ingress.kubernetes.io/cors-allow-origin: "https://localhost:8080"
+    hosts:
+      - host: &frontendHostname identityhub-frontend.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: idhub-frontend-tls
+        hosts:
+          - *frontendHostname
+
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    limits:
+      cpu: 500m
+      memory: 128Mi
+    requests:
+      cpu: 250m
+      memory: 128Mi
+
+  # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
+
+  # Additional volumes on the output Deployment definition.
+  volumes: []
+  # - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
+
+  # Additional volumeMounts on the output Deployment definition.
+  volumeMounts: []
+  # - name: foo
+  #   mountPath: "/etc/foo"
+  #   readOnly: true
+
+backend:
+  enabled: false
+  nameOverride: "identityhub-backend"
+  fullnameOverride: ""
+  identityhub:
+    image:
+      repository: "tractusx/identityhub"
+      # -- [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use
+      pullPolicy: IfNotPresent
+      # -- Overrides the image tag whose default is the chart appVersion
+      tag: ""
+    ## Ingress declaration to expose the network service.
+    ingresses:
+      ## Public / Internet facing Ingress for the Presentation API
+      - enabled: false
+        # -- The hostname to be used to precisely map incoming traffic onto the underlying network service
+        hostname: &presentationHostname "identityhub.presentation.local"
+        # -- Additional ingress annotations to add
+        annotations: {}
+        # -- EDC endpoints exposed by this ingress resource
+        endpoints:
+          - credentials
+          - did
+          - sts
+        # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
+        className: ""
+        # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
+        tls:
+          # -- Enables TLS on the ingress resource
+          enabled: false
+          # -- If present overwrites the default secret name
+          secretName: ""
+        ## Adds [cert-manager](https://cert-manager.io/docs/) annotations to the ingress resource
+        certManager:
+          # -- If preset enables certificate generation via cert-manager namespace scoped issuer
+          issuer: ""
+          # -- If preset enables certificate generation via cert-manager cluster-wide issuer
+          clusterIssuer: ""
+      ## Ingress for the Identity API, should not be internet facing
+      - enabled: false
+        # -- The hostname to be used to precisely map incoming traffic onto the underlying network service
+        hostname: &identityHostname "identityhub.identity.local"
+        # -- Additional ingress annotations to add
+        annotations: {}
+        # -- EDC endpoints exposed by this ingress resource
+        endpoints:
+          - identity
+          - accounts
+          - version
+        # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
+        className: ""
+        # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
+        tls:
+          # -- Enables TLS on the ingress resource
+          enabled: false
+          # -- If present overwrites the default secret name
+          secretName: ""
+        ## Adds [cert-manager](https://cert-manager.io/docs/) annotations to the ingress resource
+        certManager:
+          # -- If preset enables certificate generation via cert-manager namespace scoped issuer
+          issuer: ""
+          # -- If preset enables certificate generation via cert-manager cluster-wide issuer
+          clusterIssuer: ""
+    # -- declare where to mount [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) into the container
+    volumeMounts: []
+    # -- [volume](https://kubernetes.io/docs/concepts/storage/volumes/) directories
+    volumes: []
+    # -- Initial participant context configuration
+    iatp:
+      sts:
+        oauth:
+          client:
+            # -- Enable participant context client configuration
+            enabled: true
+            # -- Client ID // Did of the initial participant
+            id: "did:web:identityhub.presentation.local"
+            # -- The client secret that is stored in the vault for requesting OAuth2 access token for Presentation API access
+            secret: "testme"
+            # -- Alias under which the client secret is stored in the vault
+            secret_alias: "sts-secret"
+            # -- The x-api-key that is stored in the vault for the initial participant
+            x_api_key: "ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"
+    # -- Whether web DIDs should be interpreted as HTTPS or HTTP
+    didweb:
+      https: false
+
+# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# This is for setting Kubernetes Labels to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
+
+# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
