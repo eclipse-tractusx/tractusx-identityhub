@@ -254,8 +254,6 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
                     <Tooltip title={typeName} arrow placement="top">
                         <Typography
                             sx={{
-                                fontFamily:
-                                    '"SF Mono", "Roboto Mono", monospace',
                                 fontSize: '1.9rem',
                                 fontWeight: 700,
                                 lineHeight: 1.1,
@@ -297,8 +295,6 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
                             >
                                 <Typography
                                     sx={{
-                                        fontFamily:
-                                            '"SF Mono", "Roboto Mono", monospace',
                                         fontSize: '0.78rem',
                                         lineHeight: 1.5,
                                         color:
@@ -334,8 +330,6 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
 
                         <Typography
                             sx={{
-                                fontFamily:
-                                    '"SF Mono", "Roboto Mono", monospace',
                                 fontSize: '0.82rem',
                                 color: expired
                                     ? '#FF5A5A'

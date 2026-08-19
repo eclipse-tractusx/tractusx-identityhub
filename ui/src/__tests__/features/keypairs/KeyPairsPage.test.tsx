@@ -166,6 +166,13 @@ describe('KeyPairsPage', () => {
         await waitFor(() => {
             expect(screen.getByText('Key Pairs')).toBeInTheDocument();
         });
+
+        expect(vi.mocked(httpClient.get)).toHaveBeenCalledWith(
+            expect.stringContaining('/participants/')
+        );
+        expect(vi.mocked(httpClient.get)).toHaveBeenCalledWith(
+            expect.stringContaining('/keypairs')
+        );
     });
 
     it('should show empty state when no key pairs', async () => {

@@ -28,7 +28,7 @@ const stateLabel = (state?: number): string => {
         case 0: return 'Created';
         case 1: return 'Active';
         case 2: return 'Deactivated';
-        default: return 'Unknown';
+        default: return 'Active';
     }
 };
 
@@ -37,7 +37,7 @@ const stateColor = (state?: number): string => {
         case 1: return '#A8C556';
         case 0: return '#E6A817';
         case 2: return '#FF5A5A';
-        default: return '#888888';
+        default: return '#A8C556';
     }
 };
 
@@ -126,7 +126,6 @@ const ParticipantSelector: React.FC = () => {
                             <Typography variant="body2" sx={{
                                 color: accentColors.brandText,
                                 fontSize: '0.8rem',
-                                fontFamily: 'monospace',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',

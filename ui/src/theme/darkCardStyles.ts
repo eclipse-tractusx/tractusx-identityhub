@@ -68,7 +68,6 @@ export const jsonPreSx = {
     borderRadius: 0,
     overflow: 'auto',
     fontSize: '0.8rem',
-    fontFamily: 'monospace',
 };
 
 export const selectSx = {
@@ -116,6 +115,9 @@ export const chipTransparentBg = (color: string) => ({
 export const whiteDialogPaperProps = {
     sx: {
         backgroundColor: '#030B1F',
+        color: accentColors.brandText,
+        border: `1px solid ${accentColors.brandBorder}`,
+        boxShadow: `0 0 16px ${accentColors.brandBlue}`,
         '& .MuiDialogContent-root': {
             backgroundColor: '#030B1F',
         },
@@ -144,25 +146,29 @@ export const dialogCloseButtonSx = {
 
 export const whiteDialogContentSx = {
     p: 3,
-    backgroundColor: '#fff',
+    backgroundColor: '#030B1F',
+    color: accentColors.brandText,
     display: 'flex',
     flexDirection: 'column' as const,
     gap: 2,
     pt: '24px !important',
     '& .MuiTextField-root': {
-        backgroundColor: '#fff',
+        '& .MuiFormHelperText-root': {
+            color: accentColors.brandTextMuted,
+        },
         '& .MuiOutlinedInput-root': {
-            backgroundColor: '#fff',
-            '& fieldset': { borderColor: 'divider' },
-            '&:hover fieldset': { borderColor: 'primary.main' },
-            '&.Mui-focused fieldset': { borderColor: 'primary.main' },
+            backgroundColor: '#06122F',
+            color: accentColors.brandText,
+            '& fieldset': { borderColor: accentColors.brandBorder },
+            '&:hover fieldset': { borderColor: accentColors.brandLightBlue },
+            '&.Mui-focused fieldset': { borderColor: accentColors.brandLightBlue },
         },
         '& .MuiInputLabel-root': {
-            backgroundColor: '#fff',
+            color: accentColors.brandTextMuted,
             padding: '0 8px',
-            '&.Mui-focused': { color: 'primary.main' },
+            '&.Mui-focused': { color: accentColors.brandLightBlue },
             '&.MuiInputLabel-shrink': {
-                backgroundColor: '#fff',
+                backgroundColor: '#030B1F',
                 padding: '0 8px',
                 transform: 'translate(14px, -9px) scale(0.75)',
             },
@@ -171,43 +177,16 @@ export const whiteDialogContentSx = {
 };
 
 export const blueDialogContentSx = {
-    p: 3,
-    backgroundColor: '#ADD8E6',
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: 2,
-    pt: '24px !important',
-    '& .MuiTextField-root': {
-        backgroundColor: '#ADD8E6',
-        '& .MuiOutlinedInput-root': {
-            backgroundColor: '#ADD8E6',
-            '& fieldset': { borderColor: 'divider' },
-            '&:hover fieldset': { borderColor: 'primary.main' },
-            '&.Mui-focused fieldset': { borderColor: 'primary.main' },
-        },
-        '& .MuiInputLabel-root': {
-            backgroundColor: '#ADD8E6',
-            padding: '0 8px',
-            '&.Mui-focused': { color: 'primary.main' },
-            '&.MuiInputLabel-shrink': {
-                backgroundColor: '#ADD8E6',
-                padding: '0 8px',
-                transform: 'translate(14px, -9px) scale(0.75)',
-            },
-        },
-    },
+    ...whiteDialogContentSx,
 };
 export const whiteDialogActionsSx = {
     p: 3,
-    backgroundColor: '#fff',
+    backgroundColor: '#030B1F',
     borderTop: '1px solid',
-    borderColor: 'divider',
+    borderColor: accentColors.brandBorder,
 };
 export const blueDialogActionsSx = {
-    p: 3,
-    backgroundColor: '#ADD8E6',
-    borderTop: '1px solid',
-    borderColor: 'divider',
+    ...whiteDialogActionsSx,
 };
 
 export const dialogCancelBtnSx = {
