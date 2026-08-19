@@ -1,0 +1,7 @@
+openapi: 3.0.1
+info:
+  title: Tractus-X IdentityHub
+  version: 1.0.0
+  description: >-
+    Combined OpenAPI specification for the Tractus-X IdentityHub, generated at
+    build time from the EDC IdentityHub API controllers.
