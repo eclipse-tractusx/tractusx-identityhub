@@ -36,6 +36,8 @@ dependencies {
     runtimeOnly(libs.edc.vault.hashicorp)
     runtimeOnly(project(":extensions:store:sql:migrations"))
     runtimeOnly(project(":extensions:seed:super-user"))
+    runtimeOnly(project(":extensions:identityhub:participant-api-ownership"))
+    runtimeOnly(project(":extensions:identityhub:credential-api-ownership"))
     runtimeOnly(project(":extensions:identityhub:initial-participant"))
     runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
 

@@ -8,11 +8,21 @@ opentelemetry = "2.27.0"
 postgres = "42.7.8"
 flyway = "12.5.0"
 testcontainers = "2.0.5"
+jakarta-rs = "4.0.0"
+rest-assured = "6.0.0"
 
 
 [libraries]
 # upstream EDC dependencies
 edc-spi-core = { module = "org.eclipse.edc:core-spi", version.ref = "edc" }
+edc-spi-auth = { module = "org.eclipse.edc:auth-spi", version.ref = "edc" }
+edc-spi-web = { module = "org.eclipse.edc:web-spi", version.ref = "edc" }
+edc-core-jersey = { module = "org.eclipse.edc:jersey-core", version.ref = "edc" }
+edc-lib-authorization = { module = "org.eclipse.edc:auth-authorization-oauth2-lib", version.ref = "edc" }
+edc-ih-api-participant = { module = "org.eclipse.edc:participant-context-api", version.ref = "edc" }
+edc-ih-api-credentials = { module = "org.eclipse.edc:verifiable-credentials-api", version.ref = "edc" }
+edc-ih-validators-participant = { module = "org.eclipse.edc:participant-context-validators", version.ref = "edc" }
+edc-ih-validators-credential = { module = "org.eclipse.edc:verifiable-credential-validators", version.ref = "edc" }
 
 # EDC modules
 edc-core-connector = { module = "org.eclipse.edc:connector-core", version.ref = "edc" }
@@ -47,6 +57,8 @@ bom-ih = { module = "org.eclipse.edc:identityhub-bom", version.ref = "edc" }
 bom-ih-sql = { module = "org.eclipse.edc:identityhub-feature-sql-bom", version.ref = "edc" }
 
 # Third party libs
+jakarta-rs = { module = "jakarta.ws.rs:jakarta.ws.rs-api", version.ref = "jakarta-rs" }
+rest-assured = { module = "io.rest-assured:rest-assured", version.ref = "rest-assured" }
 opentelemetry-javaagent = { module = "io.opentelemetry.javaagent:opentelemetry-javaagent", version.ref = "opentelemetry" }
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
 flyway-database-postgres = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
