@@ -34,7 +34,6 @@ dependencies {
 
     // used for custom extensions
     implementation(libs.edc.ih.spi)
-    implementation(libs.edc.api.authentication)
 }
 
 tasks.shadowJar {

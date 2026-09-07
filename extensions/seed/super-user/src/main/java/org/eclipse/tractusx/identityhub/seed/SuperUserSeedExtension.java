@@ -22,8 +22,9 @@
 
 package org.eclipse.tractusx.identityhub.seed;
 
-import org.eclipse.edc.identityhub.spi.authentication.ServicePrincipal;
+import org.eclipse.edc.identityhub.spi.participantcontext.IdentityApiScopes;
 import org.eclipse.edc.identityhub.spi.participantcontext.IdentityHubParticipantContextService;
+import org.eclipse.edc.identityhub.spi.participantcontext.IssuerAdminApiScopes;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.KeyDescriptor;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantManifest;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
@@ -84,7 +85,7 @@ public class SuperUserSeedExtension implements ServiceExtension {
                                 .keyId("%s-key".formatted(superUserParticipantId))
                                 .privateKeyAlias("%s-alias".formatted(superUserParticipantId))
                                 .build())
-                        .roles(List.of(ServicePrincipal.ROLE_ADMIN))
+                        .scopes(List.of(IdentityApiScopes.ADMIN, IssuerAdminApiScopes.ADMIN))
                         .build())
                 .onSuccess(generatedKey -> {
                     var apiKey = ofNullable(superUserApiKey)
@@ -102,7 +103,11 @@ public class SuperUserSeedExtension implements ServiceExtension {
                                 return overrideKey;
                             })
                             .orElse(generatedKey.apiKey());
-                    monitor.info("Created user '%s'. Please take note of the API Key: %s".formatted(superUserParticipantId, apiKey));
+                    if (superUserApiKey == null) {
+                        monitor.info("Created user '%s'. Please take note of the API Key: %s".formatted(superUserParticipantId, apiKey));
+                    } else {
+                        monitor.info("Created user '%s' with the configured API key".formatted(superUserParticipantId));
+                    }
                 })
                 .orElseThrow(f -> new EdcException("Error creating Super-User: " + f.getFailureDetail()));
     }
