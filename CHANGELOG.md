@@ -22,6 +22,7 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 - Docker Compose SQL profile uses distinct super-user IDs per runtime (`ih-super-user`/`is-super-user`) to avoid overwriting each other's secrets in the shared dev Vault ([#321](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/321))
 
 ### Fixed
+- Enforce participant state/deletion and credential manifest/request ownership through built-in Tractus-X management API extensions for the EDC 0.18.0 upgrade ([#339](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/339)).
 - Chart ingress deployment failed nginx admission for `/.well-known/api` with `pathType: Prefix` ([#232](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/232))
 - Runtime pods crash-looped racing the bundled PostgreSQL on first chart install ([#237](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/237))
 - Docker Compose DCP flow: did:web resolution over HTTP, reachable status-list callback, short DID-resolver cache, `PKCS12` keystore-type typo, super-user API key no longer buried in JDBC debug logs ([#321](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/321))

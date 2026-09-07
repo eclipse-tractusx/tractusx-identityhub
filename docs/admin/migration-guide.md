@@ -64,6 +64,13 @@ issuance resources also needs `issuer-admin-api:write`. Namespace `write` includ
 Resource-specific scopes such as `identity-api:keypairs:read` can narrow access further.
 An ordinary principal must still own the requested resource.
 
+The Tractus-X runtimes now include built-in management ownership extensions:
+participant state/deletion checks in Holder and Issuer, and credential
+manifest/request ownership checks in Holder. These are part of the normal build.
+Credential POST/PUT bodies must use the same participant ID as the request path,
+including for administrators. No additional configuration or database migration
+is required for these checks. See the [extension contract](../../extensions/identityhub/README.md).
+
 An omitted or empty `scopes` array in a creation manifest receives upstream defaults
 for both management namespaces. To create a deliberately unprivileged API-key
 principal, explicitly replace its scopes with `[]` through the administrator-only
