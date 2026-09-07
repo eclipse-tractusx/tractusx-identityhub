@@ -22,8 +22,9 @@
 
 package org.eclipse.tractusx.identityhub.seed;
 
-import org.eclipse.edc.identityhub.spi.authentication.ServicePrincipal;
+import org.eclipse.edc.identityhub.spi.participantcontext.IdentityApiScopes;
 import org.eclipse.edc.identityhub.spi.participantcontext.IdentityHubParticipantContextService;
+import org.eclipse.edc.identityhub.spi.participantcontext.IssuerAdminApiScopes;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.KeyDescriptor;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantManifest;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
@@ -84,7 +85,7 @@ public class SuperUserSeedExtension implements ServiceExtension {
                                 .keyId("%s-key".formatted(superUserParticipantId))
                                 .privateKeyAlias("%s-alias".formatted(superUserParticipantId))
                                 .build())
-                        .roles(List.of(ServicePrincipal.ROLE_ADMIN))
+                        .scopes(List.of(IdentityApiScopes.ADMIN, IssuerAdminApiScopes.ADMIN))
                         .build())
                 .onSuccess(generatedKey -> {
                     var apiKey = ofNullable(superUserApiKey)
@@ -93,14 +94,18 @@ public class SuperUserSeedExtension implements ServiceExtension {
                                     monitor.warning("Super-user key override: this key appears to have an invalid format, you may be unable to access some APIs. It must follow the structure: 'base64(<participantId>).<random-string>'");
                                 }
                                 participantContextService.getParticipantContext(superUserParticipantId)
-                                        .onSuccess(pc -> vault.storeSecret(pc.getApiTokenAlias(), overrideKey)
+                                        .onSuccess(pc -> vault.storeSecret(pc.getParticipantContextId(), pc.getApiTokenAlias(), overrideKey)
                                                 .onSuccess(u -> monitor.debug("Super-user key override successful"))
                                                 .onFailure(f -> monitor.warning("Error storing API key in vault: %s".formatted(f.getFailureDetail()))))
                                         .onFailure(f -> monitor.warning("Error overriding API key for '%s': %s".formatted(superUserParticipantId, f.getFailureDetail())));
                                 return overrideKey;
                             })
                             .orElse(generatedKey.apiKey());
-                    monitor.info("Created user '%s'. Please take note of the API Key: %s".formatted(superUserParticipantId, apiKey));
+                    if (superUserApiKey == null) {
+                        monitor.info("Created user '%s'. Please take note of the API Key: %s".formatted(superUserParticipantId, apiKey));
+                    } else {
+                        monitor.info("Created user '%s' with the configured API key".formatted(superUserParticipantId));
+                    }
                 })
                 .orElseThrow(f -> new EdcException("Error creating Super-User: " + f.getFailureDetail()));
     }

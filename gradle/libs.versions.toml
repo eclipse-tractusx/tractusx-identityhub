@@ -2,11 +2,12 @@
 format.version = "1.1"
 
 [versions]
-edc = "0.17.0"
+edc = "0.18.0"
 edc-build = "1.4.0"
 opentelemetry = "2.27.0"
 postgres = "42.7.8"
 flyway = "12.5.0"
+testcontainers = "2.0.5"
 
 
 [libraries]
@@ -23,7 +24,6 @@ edc-lib-sql = { module = "org.eclipse.edc:sql-lib", version.ref = "edc" }
 edc-vault-hashicorp = { module = "org.eclipse.edc:vault-hashicorp", version.ref = "edc" }
 edc-sql-stsstore-sql = { module = "org.eclipse.edc:sts-client-store-sql", version.ref = "edc" }
 edc-build-plugin = { module = "org.eclipse.edc.edc-build:org.eclipse.edc.edc-build.gradle.plugin", version.ref = "edc-build" }
-edc-api-authentication = { module = "org.eclipse.edc:identityhub-api-authentication", version.ref = "edc"}
 
 # EDC SPIs
 edc-spi-transaction = { module = "org.eclipse.edc:transaction-spi", version.ref = "edc" }
@@ -51,6 +51,8 @@ opentelemetry-javaagent = { module = "io.opentelemetry.javaagent:opentelemetry-j
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
 flyway-database-postgres = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
+
+testcontainers-postgres = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
 
 [plugins]
 shadow = { id = "com.gradleup.shadow", version = "9.3.1" }
