@@ -93,17 +93,18 @@ interface DidWithState {
 
 type EndpointDialogMode = 'add' | 'replace' | null;
 
-const API_BASE = '/api/identity/v1alpha';
+const API_BASE = '/api/identity/v1beta';
 
 const DidPage: React.FC = () => {
     const { activeParticipantId } = useParticipant();
     const [snackbar, setSnackbar] = useState<{ message: string; severity: 'success' | 'error' } | null>(null);
 
-    const getPid = useCallback(() => encodeURIComponent(encodeParticipantId(activeParticipantId)), [activeParticipantId]);
+    const getPid = useCallback(() => encodeParticipantId(activeParticipantId), [activeParticipantId]);
     const encodeDid = useCallback((did: string) => encodeURIComponent(btoa(did)), []);
 
     const fetchDidsList = useCallback(async (): Promise<DidWithState[]> => {
         const pidVal = getPid();
+        if (!pidVal) return [];
         const response = await httpClient.post(`${API_BASE}/participants/${pidVal}/dids/query`, {});
         const documents: DidDocument[] = Array.isArray(response.data) ? response.data : [];
         const didsWithStates = await Promise.all(

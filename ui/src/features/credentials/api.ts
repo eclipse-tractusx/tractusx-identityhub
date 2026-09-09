@@ -21,13 +21,14 @@ import httpClient from '../../services/HttpClient';
 import { CredentialResource } from './types';
 import { encodeParticipantId } from '../../services/participantUtils';
 
-const API_BASE = '/api/identity/v1alpha';
+const API_BASE = '/api/identity/v1beta';
 
 function pid(participantId: string): string {
-    return encodeURIComponent(encodeParticipantId(participantId));
+    return encodeParticipantId(participantId);
 }
 
 export async function getCredentials(participantId: string): Promise<CredentialResource[]> {
+    if (!participantId) return [];
     const response = await httpClient.get<CredentialResource[]>(
         `${API_BASE}/participants/${pid(participantId)}/credentials`
     );

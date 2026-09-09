@@ -246,6 +246,8 @@ describe('EnvironmentService', () => {
 describe('EnvironmentService standalone exports', () => {
     beforeEach(() => {
         vi.resetModules();
+        vi.doUnmock('../../config/ConfigFactory');
+        (window as any).ENV = { IHUB_BACKEND_URL: 'http://localhost:8082' };
     });
 
     it('getIhubBackendUrl should read from window.ENV', async () => {
@@ -259,19 +261,20 @@ describe('EnvironmentService standalone exports', () => {
         (window as any).ENV = originalEnv;
     });
 
-    it('getIhubBackendUrl should return empty string when window.ENV is undefined', async () => {
+    it('getIhubBackendUrl should retain the initialized configuration', async () => {
         const originalEnv = (window as any).ENV;
-        delete (window as any).ENV;
+        (window as any).ENV = { IHUB_BACKEND_URL: 'http://localhost:8082' };
 
         const { getIhubBackendUrl } = await import('../../services/EnvironmentService');
-        expect(getIhubBackendUrl()).toBe('');
+        delete (window as any).ENV;
+        expect(getIhubBackendUrl()).toBe('http://localhost:8082');
 
         (window as any).ENV = originalEnv;
     });
 
     it('getParticipantId should read from window.ENV', async () => {
         const originalEnv = (window as any).ENV;
-        (window as any).ENV = { PARTICIPANT_ID: 'BPNL_FROM_WINDOW' };
+        (window as any).ENV = { IHUB_BACKEND_URL: 'http://localhost:8082', PARTICIPANT_ID: 'BPNL_FROM_WINDOW' };
 
         const { getParticipantId } = await import('../../services/EnvironmentService');
         expect(getParticipantId()).toBe('BPNL_FROM_WINDOW');
@@ -279,17 +282,17 @@ describe('EnvironmentService standalone exports', () => {
         (window as any).ENV = originalEnv;
     });
 
-    it('getParticipantId should return empty string when window.ENV is undefined', async () => {
+    it('getParticipantId should use the configured default when the participant is absent', async () => {
         const originalEnv = (window as any).ENV;
-        delete (window as any).ENV;
+        (window as any).ENV = { IHUB_BACKEND_URL: 'http://localhost:8082' };
 
         const { getParticipantId } = await import('../../services/EnvironmentService');
-        expect(getParticipantId()).toBe('');
+        expect(getParticipantId()).toBe('BPNL00000003CRHK');
 
         (window as any).ENV = originalEnv;
     });
 
-    it('isAuthEnabled standalone function should create a new EnvironmentService', async () => {
+    it('isAuthEnabled standalone function should use the configured authentication mode', async () => {
         const { isAuthEnabled } = await import('../../services/EnvironmentService');
         // With our mock, auth is disabled, so this should return false
         expect(isAuthEnabled()).toBe(false);

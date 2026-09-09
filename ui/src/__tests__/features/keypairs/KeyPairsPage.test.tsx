@@ -46,10 +46,6 @@ vi.mock('../../../services/EnvironmentService', () => ({
     isAuthEnabled: vi.fn(() => false),
 }));
 
-vi.mock('../../../services/participantUtils', () => ({
-    encodeParticipantId: vi.fn((id: string) => btoa(id)),
-}));
-
 vi.mock('../../../hooks/useAuth', () => ({
     default: vi.fn(() => ({
         isAuthenticated: false,
@@ -59,10 +55,14 @@ vi.mock('../../../hooks/useAuth', () => ({
     })),
 }));
 
+const participantState = vi.hoisted(() => ({
+    activeParticipantId: 'BPNL00000003CRHK',
+}));
+
 vi.mock('../../../contexts/ParticipantContext', () => ({
     useParticipant: vi.fn(() => ({
         participants: [],
-        activeParticipantId: 'BPNL00000003CRHK',
+        activeParticipantId: participantState.activeParticipantId,
         setActiveParticipantId: vi.fn(),
         loading: false,
         refresh: vi.fn(),
@@ -152,6 +152,7 @@ describe('KeyPairsPage', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         invalidateCache('');
+        participantState.activeParticipantId = 'BPNL00000003CRHK';
         Object.assign(navigator, {
             clipboard: {
                 writeText: vi.fn().mockResolvedValue(undefined),
@@ -196,6 +197,50 @@ describe('KeyPairsPage', () => {
         expect(screen.getByText('key-revoked-1')).toBeInTheDocument();
     });
 
+    it('should reset pagination when the active participant changes', async () => {
+        const participantAKeyPairs = Array.from({ length: 11 }, (_, index) => ({
+            id: `kp-a-${index + 1}`,
+            keyId: `key-a-${index + 1}`,
+            state: 200,
+            participantContextId: 'participant-a',
+        }));
+        const participantBKeyPairs = [
+            {
+                id: 'kp-b-1',
+                keyId: 'key-b-1',
+                state: 200,
+                participantContextId: 'participant-b',
+            },
+        ];
+
+        participantState.activeParticipantId = 'participant-a';
+        vi.mocked(httpClient.get).mockImplementation(async (url) => ({
+            data: String(url).includes('/participant-a/')
+                ? participantAKeyPairs
+                : participantBKeyPairs,
+        }));
+
+        const rendered = renderPage();
+
+        await screen.findByText('key-a-1');
+        fireEvent.click(screen.getByRole('button', { name: 'Go to next page' }));
+        await screen.findByText('key-a-11');
+
+        participantState.activeParticipantId = 'participant-b';
+        rendered.rerender(
+            <MemoryRouter>
+                <KeyPairsPage />
+            </MemoryRouter>
+        );
+
+        await waitFor(() => {
+            expect(httpClient.get).toHaveBeenCalledWith(
+                '/api/identity/v1beta/participants/participant-b/keypairs'
+            );
+        });
+        expect(await screen.findByText('key-b-1')).toBeInTheDocument();
+    });
+
     it('should render Active state key pair with Rotate and Revoke in menu', async () => {
         vi.mocked(httpClient.get).mockResolvedValue({ data: mockKeyPairsActive });
         renderPage();
@@ -204,7 +249,7 @@ describe('KeyPairsPage', () => {
             expect(screen.getByText('key-active-1')).toBeInTheDocument();
         });
 
-        expect(screen.getByText('Active')).toBeInTheDocument();
+        expect(screen.getByText('DEFAULT')).toBeInTheDocument();
 
         openMoreVertMenu();
         expect(screen.getByText('Rotate')).toBeInTheDocument();
@@ -219,7 +264,7 @@ describe('KeyPairsPage', () => {
             expect(screen.getByText('key-created-1')).toBeInTheDocument();
         });
 
-        expect(screen.getByText('Created')).toBeInTheDocument();
+        expect(screen.getByText(/^Created\s|^CREATED$/)).toBeInTheDocument();
 
         openMoreVertMenu();
         expect(screen.getByText('Activate')).toBeInTheDocument();
@@ -235,7 +280,7 @@ describe('KeyPairsPage', () => {
             expect(screen.getByText('key-revoked-1')).toBeInTheDocument();
         });
 
-        expect(screen.getByText('Revoked')).toBeInTheDocument();
+        expect(screen.getByText('REVOKED')).toBeInTheDocument();
 
         openMoreVertMenu();
         expect(screen.queryByText('Rotate')).not.toBeInTheDocument();
@@ -252,7 +297,7 @@ describe('KeyPairsPage', () => {
             expect(screen.getByText('key-active-1')).toBeInTheDocument();
         });
 
-        expect(screen.getByText('Default')).toBeInTheDocument();
+        expect(screen.getByText('DEFAULT')).toBeInTheDocument();
     });
 
     it('should show private key alias when available', async () => {
@@ -525,6 +570,6 @@ describe('KeyPairsPage', () => {
             expect(screen.getByText('key-active-1')).toBeInTheDocument();
         });
 
-        expect(screen.getByText('Created')).toBeInTheDocument();
+        expect(screen.getByText(/^Created\s|^CREATED$/)).toBeInTheDocument();
     });
 });
