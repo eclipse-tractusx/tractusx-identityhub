@@ -95,10 +95,13 @@ Two collections live in `/docs/api/postman` (import via *File → Import* in Pos
    every REST endpoint of both runtimes, grouped by API. Defaults target the compose stack;
    set the `API_KEY` (management APIs) and `SI_TOKEN` (DCP protocol APIs) variables.
 
-> **EDC 0.17.0 note**: `participantContextId` URL path segments take the **plain** participant
+> **EDC 0.18.0 note**: `participantContextId` URL path segments take the **plain** participant
 > id (base64url-encoded ids return 404, [IH #937](https://github.com/eclipse-edc/IdentityHub/pull/937)),
 > and the create-participant body field is `participantContextId` (formerly `participantId`).
-> Both collections already reflect this.
+> Both collections use `v1beta` management and issuance endpoints. Presentation remains
+> at `/v1`. Ordinary holders use `identity-api:write`; issuers also need
+> `issuer-admin-api:write`. New credential requests use `vc11-sl2021/jwt`.
+> See the [migration guide](../admin/migration-guide.md) before upgrading stored data.
 
 ## Additional Information
 
