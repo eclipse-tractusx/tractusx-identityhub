@@ -35,6 +35,7 @@ import {
     TextField,
     Grid2,
     Menu,
+    MenuItem,
     FormControlLabel,
     Checkbox,
     TablePagination,
@@ -87,19 +88,20 @@ const KEY_STATE_MAP: Record<number, { label: string; color: string; bg: string }
     ])
 );
 
-const API_BASE = '/api/identity/v1alpha';
+const API_BASE = '/api/identity/v1beta';
 
 const KeyPairsPage: React.FC = () => {
     const { activeParticipantId } = useParticipant();
     const [snackbar, setSnackbar] = useState<{ message: string; severity: 'success' | 'error' } | null>(null);
 
     const getPid = useCallback(
-        () => encodeURIComponent(encodeParticipantId(activeParticipantId)),
+        () => encodeParticipantId(activeParticipantId),
         [activeParticipantId]
     );
 
     const fetchKeyPairsList = useCallback(async (): Promise<KeyPairResource[]> => {
-        const response = await httpClient.get(`${API_BASE}/keypairs`);
+        if (!getPid()) return [];
+        const response = await httpClient.get(`${API_BASE}/participants/${getPid()}/keypairs`);
         return Array.isArray(response.data) ? response.data : [];
     }, [getPid]);
 
@@ -115,6 +117,10 @@ const KeyPairsPage: React.FC = () => {
     // Pagination state
     const [page, setPage] = useState(0);
     const rowsPerPage = 10;
+
+    useEffect(() => {
+        setPage(0);
+    }, [activeParticipantId]);
 
     const handleChangePage = (
         _event: React.MouseEvent<HTMLButtonElement> | null,
@@ -485,6 +491,12 @@ const KeyPairsPage: React.FC = () => {
                                 )}
                             </Box>
 
+                            {kp.privateKeyAlias && (
+                                <Typography variant="body2" color="text.secondary">
+                                    Private key alias: {kp.privateKeyAlias}
+                                </Typography>
+                            )}
+
                             {/* Created Timestamp */}
                             {kp.timestamp && (
                                 <Typography
@@ -646,6 +658,15 @@ const KeyPairsPage: React.FC = () => {
         },
     }}
 >
+    {selectedKp && (
+        <MenuItem onClick={() => {
+            copyToClipboard(selectedKp.id);
+            setAnchorEl(null);
+            setSelectedKp(null);
+        }}>
+            Copy Key ID
+        </MenuItem>
+    )}
     {selectedKp && (
         <>
            
