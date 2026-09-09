@@ -1,0 +1,23 @@
+meta {
+  name: Updates a ParticipantContext's scopes. Note that this is an absolute update, that means all scopes that the Participant should have must be submitted in the body. Requires elevated privileges.
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/scopes
+  body: json
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-Api-Key
+  value: {{API_KEY}}
+  placement: header
+}
+
+body:json {
+  [
+    "identity-api:write"
+  ]
+}
