@@ -67,8 +67,16 @@ jobs:
               | sed 's/.*API Key: //' \
               | tr -d '[:space:]'
           }
-          IH_KEY=$(extract identityhub)
-          IS_KEY=$(extract issuerservice)
+          # the health endpoint goes green before SuperUserSeedExtension has
+          # logged the key, so poll instead of reading the logs once
+          for i in $(seq 1 40); do
+            IH_KEY=$(extract identityhub)
+            IS_KEY=$(extract issuerservice)
+            if [ -n "$IH_KEY" ] && [ -n "$IS_KEY" ]; then
+              break
+            fi
+            sleep 3
+          done
           if [ -z "$IH_KEY" ] || [ -z "$IS_KEY" ]; then
             echo "failed to extract super-user API keys"; exit 1
           fi
