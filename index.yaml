@@ -176,6 +176,23 @@ entries:
     urls:
     - https://github.com/eclipse-tractusx/tractusx-identityhub/releases/download/tractusx-identityhub-0.1.1/tractusx-identityhub-0.1.1.tgz
     version: 0.1.1
+  tractusx-identityhub-bundle:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-09-10T15:37:50.759626479Z"
+    dependencies:
+    - alias: backend
+      condition: backend.enabled
+      name: tractusx-identityhub
+      repository: file://../tractusx-identityhub
+      version: v0.3.2
+    description: A Helm chart for Kubernetes
+    digest: d0aaa68decf0dd2899a20948c1baa9eec92bb6aa609aec91af9c6b470ba46a6d
+    name: tractusx-identityhub-bundle
+    type: application
+    urls:
+    - https://github.com/eclipse-tractusx/tractusx-identityhub/releases/download/tractusx-identityhub-bundle-0.1.0/tractusx-identityhub-bundle-0.1.0.tgz
+    version: 0.1.0
   tractusx-identityhub-memory:
   - apiVersion: v2
     appVersion: 0.3.2
@@ -570,4 +587,4 @@ entries:
     urls:
     - https://github.com/eclipse-tractusx/tractusx-identityhub/releases/download/tractusx-issuerservice-memory-0.1.1/tractusx-issuerservice-memory-0.1.1.tgz
     version: 0.1.1
-generated: "2026-06-16T08:18:03.731967318Z"
+generated: "2026-09-10T15:37:51.558404969Z"
