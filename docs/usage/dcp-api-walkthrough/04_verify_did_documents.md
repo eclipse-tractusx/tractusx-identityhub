@@ -13,7 +13,7 @@ After creating and activating participant contexts, verify that the DID document
 > the published state via the Identity API:
 >
 > ```bash
-> curl -X POST "${ISSUER_IDENTITY}/v1alpha/participants/${ISSUER_CONTEXT}/dids/state" \
+> curl -X POST "${ISSUER_IDENTITY}/v1beta/participants/${ISSUER_CONTEXT}/dids/state" \
 >   -H "Content-Type: application/json" -H "x-api-key: ${ISSUER_API_KEY}" \
 >   -d '{"did": "did:web:issuerservice%3A10100:issuer"}'    # expect: PUBLISHED
 > ```
@@ -50,7 +50,7 @@ curl -s "https://issuer-service.example.com/.well-known/did.json" | jq .
     {
       "id": "https://issuer-service.example.com#credential-service",
       "type": "IssuerService",
-      "serviceEndpoint": "https://issuer-service.example.com/api/issuance/v1alpha/participants/issuer-participant"
+      "serviceEndpoint": "https://issuer-service.example.com/api/issuance/v1beta/participants/issuer-participant"
     }
   ]
 }

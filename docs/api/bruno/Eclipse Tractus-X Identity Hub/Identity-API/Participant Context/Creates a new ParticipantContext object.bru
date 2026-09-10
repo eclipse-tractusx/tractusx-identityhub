@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{IDENTITY_PATH}}/v1alpha/participants
+  url: {{IDENTITY_PATH}}/v1beta/participants
   body: json
   auth: apikey
 }
@@ -30,8 +30,6 @@ body:json {
       "privateKeyAlias": "eclipse-tractus-x-alias"
     },
     "participantContextId": "eclipse-tractus-x",
-    "roles": [
-      "ROLE_ADMIN"
-    ]
+    "scopes": ["identity-api:write"]
   }
 }

@@ -26,7 +26,7 @@ export interface ParticipantData {
     did?: string;
     state?: number;
     apiTokenAlias?: string;
-    roles?: string[];
+    scopes?: string[];
     properties?: Record<string, unknown>;
     createdAt?: number;
     lastModified?: number;
@@ -54,7 +54,7 @@ export function useParticipant() {
 }
 
 const fetchParticipantsList = async (): Promise<ParticipantData[]> => {
-    const response = await httpClient.get('/api/identity/v1alpha/participants');
+    const response = await httpClient.get('/api/identity/v1beta/participants');
     return Array.isArray(response.data) ? response.data : [];
 };
 

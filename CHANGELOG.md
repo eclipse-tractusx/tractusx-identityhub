@@ -16,11 +16,13 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 - CI workflow running the E2E Postman collection (newman) against the compose stack on every PR
 
 ### Changed
+- **BREAKING:** Upgrade Eclipse EDC / IdentityHub to 0.18.0, adopt management API scopes and `v1beta` endpoints, and migrate stored participant roles without rewriting credentials. Update the UI, API collections and credential profile examples. See the [migration guide](docs/admin/migration-guide.md) ([#339](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/339)).
 - **BREAKING (charts):** removed the `version` and `accounts` endpoints from all chart values, templates and default ingress lists — EDC 0.17.0 never serves them; version info is at `GET <default>/api/v1/version`. See the [migration guide](docs/admin/migration-guide.md) ([#322](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/322))
 - `statuslist.callback.address` chart default is now a full URL; it must be reachable by verifiers/holders
 - Docker Compose SQL profile uses distinct super-user IDs per runtime (`ih-super-user`/`is-super-user`) to avoid overwriting each other's secrets in the shared dev Vault ([#321](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/321))
 
 ### Fixed
+- Enforce participant state/deletion and credential manifest/request ownership through built-in Tractus-X management API extensions for the EDC 0.18.0 upgrade ([#339](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/339)).
 - Chart ingress deployment failed nginx admission for `/.well-known/api` with `pathType: Prefix` ([#232](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/232))
 - Runtime pods crash-looped racing the bundled PostgreSQL on first chart install ([#237](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/237))
 - Docker Compose DCP flow: did:web resolution over HTTP, reachable status-list callback, short DID-resolver cache, `PKCS12` keystore-type typo, super-user API key no longer buried in JDBC debug logs ([#321](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/321))

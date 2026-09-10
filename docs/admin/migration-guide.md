@@ -48,6 +48,121 @@ this value as their `credentialStatus.statusListCredential` endpoint — set it 
 for cluster-internal verification). A bare hostname produces broken status URLs in every
 issued credential.
 
+## EDC 0.17.0 → 0.18.0
+
+This upgrade uses the official Eclipse IdentityHub and Connector `v0.18.0` releases.
+The Tractus-X release and chart versions are independent of the EDC dependency version.
+Gradle 9.4.1, edc-build 1.4.0 and Shadow 9.3.1 remain unchanged.
+
+### Management API permissions
+
+Participant manifests and responses use `scopes`, and the absolute permission update
+endpoint is `PUT /v1beta/participants/{participantContextId}/scopes`. Only an
+`identity-api:admin` principal can create participants, list all participants or assign
+scopes. Assign `identity-api:write` to an ordinary holder; an issuer that manages its own
+issuance resources also needs `issuer-admin-api:write`. Namespace `write` includes `read`.
+Resource-specific scopes such as `identity-api:keypairs:read` can narrow access further.
+An ordinary principal must still own the requested resource.
+
+The Tractus-X runtimes now include built-in management ownership extensions:
+participant state/deletion checks in Holder and Issuer, and credential
+manifest/request ownership checks in Holder. These are part of the normal build.
+Credential POST/PUT bodies must use the same participant ID as the request path,
+including for administrators. No additional configuration or database migration
+is required for these checks. See the [extension contract](../../extensions/identityhub/README.md).
+
+An omitted or empty `scopes` array in a creation manifest receives upstream defaults
+for both management namespaces. To create a deliberately unprivileged API-key
+principal, explicitly replace its scopes with `[]` through the administrator-only
+scope update endpoint after creation, and verify access is denied.
+
+New super-users receive both `identity-api:admin` and `issuer-admin-api:admin` because
+the seed extension is shared by the two runtime families. The configured initial holder
+participant receives only `identity-api:admin`. Existing participants are never reseeded.
+
+API-key authentication continues to resolve the participant and its stored scopes through
+Vault. Keep the returned API key unchanged, including its encoded prefix. OAuth2 deployments
+must issue a signed JWT with the raw participant ID in `sub` and a space-separated `scope`
+claim containing the management API scopes. Configure the expected issuer and
+trusted verification keys. The old `role` and `participant_context_id` claims do not replace
+these claims. Do not rename Keycloak realm/client login roles or DCP credential scopes.
+The supplied runtime BOMs use API-key authentication; an OAuth2 assembly must use the
+corresponding upstream OAuth2 BOM rather than installing both authentication mechanisms.
+
+The initial participant's service endpoint URL encodes its raw ID as one path segment.
+For example, a DID containing `%3A` in its authority contains `%253A` in that path
+segment; the HTTP authority itself uses a literal colon for the port.
+
+See the pinned [scope authorization decision](https://github.com/eclipse-edc/Connector/blob/911a22ba6b90688ffeb35bb92bf5cc040ffdf37f/docs/developer/decision-records/2026-06-06-scope-based-api-authorization/README.md).
+
+### Participant data migration
+
+With migrations enabled, `V0_0_3__Migrate_Roles_To_Scopes.sql` runs after the two existing
+participant-context migrations. Published migrations and their checksums are unchanged.
+It moves permissions within `participant_context.properties`:
+
+| Legacy role | Added scopes |
+|---|---|
+| `admin` | `identity-api:admin`, `issuer-admin-api:admin` |
+| `participant` | `identity-api:write`, `issuer-admin-api:write` |
+| `provisioner`, unknown roles, empty or missing roles | None |
+
+The removed `provisioner` role has no equivalent that preserves its exact privileges.
+Review these accounts before the upgrade and explicitly provision an approved scope set;
+the migration must not silently promote them to administrators. Existing string scopes
+are preserved and deduplicated, including custom scopes. Other properties, IDs, identities,
+state, timestamps, API-key aliases and client references remain unchanged. `roles` is removed.
+Malformed properties or non-string permission entries abort the migration transaction
+before any participant changes. Correct the malformed source data under the old runtime
+or restore the backup, then retry. Do not edit applied scripts or mark a failed migration
+successful without fixing the data. Subsequent starts validate history and do not rerun it.
+
+Before starting 0.18.0, stop all writers and capture a consistent PostgreSQL backup together
+with the corresponding persistent Vault state and the deployment configuration. Keep
+backup access restricted. Inventory participant permissions and record counts and canonical
+hashes of DID documents, key references, credentials, clients and issuance/request records.
+After migration, verify those values and both positive and negative authorization cases.
+If schema migration is managed externally, apply this same reviewed script before starting
+the new runtime; do not enable SQL auto-creation against an existing database.
+
+Rollback requires stopping the new runtime and restoring **both PostgreSQL and Vault from
+the same recovery point**, then starting the prior immutable runtime/configuration. An image
+rollback alone leaves scopes where 0.17.0 expects roles. A database-only rollback can leave
+API keys or signing aliases inconsistent with Vault. Exercise the restore in isolation
+before upgrading an existing deployment, including a read and signature/presentation check.
+
+### API versions, identifiers and credential profiles
+
+Identity API, Issuer Admin API and DCP Issuer API paths change from `v1alpha` to `v1beta`.
+Update clients, reverse-proxy routes and the `IssuerService` URL in existing DID documents.
+Read the public DID document back after publishing the endpoint update. The Presentation
+API and `CredentialService` URL remain at `/v1`; do not replace every version segment.
+
+Participant path segments contain the raw ID, URL-encoded once. Do not infer that an ID
+is encoded merely because it resembles Base64. For example `did:web:example.test%3A443:a`
+becomes `did%3Aweb%3Aexample.test%253A443%3Aa`. DID-specific path encoding and the API-key
+prefix follow their separate upstream contracts.
+
+The stock 0.18.0 Jetty configuration rejects a path containing an encoded literal percent
+sign with HTTP 400 (`Ambiguous URI path encoding`). A participant ID that itself contains
+`%3A` can therefore be created but its correctly encoded management path may be rejected
+before it reaches the controller. Include these existing IDs in upgrade acceptance and
+resolve the server compatibility requirement before rollout. Do not decode or substitute
+the participant ID, or broadly relax URI validation, to bypass this failure.
+
+Credential definition `format` fields accept `vc11-sl2021/jwt` (VC 1.1 with
+StatusList2021) and `vc20-bssl/jwt` (VC 2.0 with BitstringStatusList). Upstream also retains
+legacy `CredentialFormat` enum parsing, including `VC1_0_JWT` and `VC2_0_JOSE`.
+Use modern profiles in new examples; reject unsupported profiles instead of falling back.
+The issuer definition determines the signed format. The holder request DTO retains a
+`format` string for compatibility, but the 0.18 DCP request manager transmits only the
+credential definition ID. An invalid request-side format therefore does not test profile
+validation; validate invalid profiles when creating a credential definition instead.
+The SQL `vc_format` column and existing signed credential payloads are unchanged. Do not
+rewrite stored credentials or migrate signing keys as part of this upgrade. Existing Vault
+token authentication and KV storage remain supported; Transit and token exchange are optional.
+See the pinned [profile mapping](https://github.com/eclipse-edc/IdentityHub/blob/60091fb68eb7de0eb2f290281ec4af44cc3e467f/spi/verifiable-credential-spi/src/main/java/org/eclipse/edc/identityhub/spi/verifiablecredentials/model/CredentialProfile.java).
+
 ## EDC 0.16.0 → 0.17.0
 
 This section documents the steps required to upgrade tractusx-identityhub from EDC 0.16.0 to 0.17.0. See [#308](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/308) for full details.

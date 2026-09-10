@@ -26,9 +26,9 @@ import org.eclipse.edc.iam.decentralizedclaims.sts.spi.model.StsAccount;
 import org.eclipse.edc.iam.decentralizedclaims.sts.spi.store.StsAccountStore;
 import org.eclipse.edc.iam.did.spi.document.DidDocument;
 import org.eclipse.edc.iam.did.spi.document.Service;
-import org.eclipse.edc.identityhub.spi.authentication.ServicePrincipal;
 import org.eclipse.edc.identityhub.spi.did.DidDocumentService;
 import org.eclipse.edc.identityhub.spi.keypair.KeyPairService;
+import org.eclipse.edc.identityhub.spi.participantcontext.IdentityApiScopes;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.IdentityHubParticipantContext;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.KeyDescriptor;
 import org.eclipse.edc.participantcontext.spi.config.model.ParticipantContextConfiguration;
@@ -44,6 +44,8 @@ import org.eclipse.edc.spi.security.Vault;
 import org.eclipse.edc.spi.system.ServiceExtension;
 import org.eclipse.edc.spi.system.ServiceExtensionContext;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -166,13 +168,13 @@ public class InitialParticipantExtension implements ServiceExtension {
             return;
         }
 
-        vault.storeSecret(participantSecretAlias, participantSecret)
+        vault.storeSecret(participantId, participantSecretAlias, participantSecret)
                 .onFailure(e -> monitor
                         .severe("Error storing client-secret into vault, error details: %s"
                                 .formatted(e.getFailureDetail())));
 
         monitor.debug("Generated X-Api-Key for initial participant context");
-        vault.storeSecret(context.getApiTokenAlias(), participantApiKey)
+        vault.storeSecret(participantId, context.getApiTokenAlias(), participantApiKey)
                 .onFailure(e -> monitor.severe("Error storing X-Api-Key into vault, error details: %s"
                         .formatted(e.getFailureDetail())));
 
@@ -223,12 +225,10 @@ public class InitialParticipantExtension implements ServiceExtension {
         }
 
         endpointBuilder.append("://");
-        endpointBuilder.append(participantId.split(":")[2]);
+        endpointBuilder.append(URLDecoder.decode(participantId.split(":")[2], StandardCharsets.UTF_8));
         endpointBuilder.append(credentialsApi);
-        // EDC 0.17.0 (IH #937): the credentials/presentation API no longer base64-decodes the
-        // participantContextId path segment, so the CredentialService endpoint must carry the
-        // plain participantContextId (here the did:web value, a single colon-delimited segment).
-        endpointBuilder.append("/v1/participants/%s".formatted(participantId));
+        // Encode the raw participant ID once, including percent signs in did:web authorities.
+        endpointBuilder.append("/v1/participants/%s".formatted(URLEncoder.encode(participantId, StandardCharsets.UTF_8).replace("+", "%20")));
         return endpointBuilder.toString();
     }
 
@@ -249,7 +249,7 @@ public class InitialParticipantExtension implements ServiceExtension {
                 .lastModified(timestamp)
                 .apiTokenAlias("%s-apikey".formatted(participantId))
                 .state(ParticipantContextState.ACTIVATED)
-                .roles(List.of(ServicePrincipal.ROLE_ADMIN))
+                .scopes(List.of(IdentityApiScopes.ADMIN))
                 .properties(new HashMap<>())
                 .build();
     }
