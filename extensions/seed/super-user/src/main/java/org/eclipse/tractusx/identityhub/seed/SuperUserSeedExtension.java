@@ -93,7 +93,9 @@ public class SuperUserSeedExtension implements ServiceExtension {
                                     monitor.warning("Super-user key override: this key appears to have an invalid format, you may be unable to access some APIs. It must follow the structure: 'base64(<participantId>).<random-string>'");
                                 }
                                 participantContextService.getParticipantContext(superUserParticipantId)
-                                        .onSuccess(pc -> vault.storeSecret(pc.getApiTokenAlias(), overrideKey)
+                                        // Stored in the super-user's own vault partition: the API key is read back
+                                        // scoped to the participant context, and at boot no context is in scope.
+                                        .onSuccess(pc -> vault.storeSecret(pc.getParticipantContextId(), pc.getApiTokenAlias(), overrideKey)
                                                 .onSuccess(u -> monitor.debug("Super-user key override successful"))
                                                 .onFailure(f -> monitor.warning("Error storing API key in vault: %s".formatted(f.getFailureDetail()))))
                                         .onFailure(f -> monitor.warning("Error overriding API key for '%s': %s".formatted(superUserParticipantId, f.getFailureDetail())));

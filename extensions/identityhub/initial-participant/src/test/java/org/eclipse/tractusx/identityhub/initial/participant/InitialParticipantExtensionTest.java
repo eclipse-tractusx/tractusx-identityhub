@@ -91,7 +91,7 @@ public class InitialParticipantExtensionTest {
         // Arrange
         when(participantContextStore.create(any(IdentityHubParticipantContext.class)))
                 .thenReturn(StoreResult.success());
-        when(vault.storeSecret(anyString(), anyString()))
+        when(vault.storeSecret(anyString(), anyString(), anyString()))
                 .thenReturn(Result.success());
         when(didDocumentService.store(any(), anyString()))
                 .thenReturn(ServiceResult.success());
@@ -108,8 +108,8 @@ public class InitialParticipantExtensionTest {
 
         // Assert
         verify(participantContextStore).create(any(IdentityHubParticipantContext.class));
-        verify(vault).storeSecret(eq(participantSecretAlias), eq(participantSecret));
-        verify(vault).storeSecret(eq(participantDid + "-apikey"), eq(participantApiKey));
+        verify(vault).storeSecret(eq(participantDid), eq(participantSecretAlias), eq(participantSecret));
+        verify(vault).storeSecret(eq(participantDid), eq(participantDid + "-apikey"), eq(participantApiKey));
         verify(didDocumentService).store(any(), eq(participantDid));
         verify(keyPairService).addKeyPair(eq(participantDid), any(), eq(true));
         verify(stsAccountStore).create(any());

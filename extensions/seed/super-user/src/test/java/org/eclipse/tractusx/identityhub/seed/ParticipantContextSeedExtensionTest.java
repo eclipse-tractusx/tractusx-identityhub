@@ -96,7 +96,7 @@ class ParticipantContextSeedExtensionTest {
                                   ServiceExtensionContext context) {
 
 
-        when(vault.storeSecret(any(), any())).thenReturn(Result.success());
+        when(vault.storeSecret(any(), any(), any())).thenReturn(Result.success());
 
         var apiKeyOverride = "c3VwZXItdXNlcgo=.asdfl;jkasdfl;kasdf";
         when(context.getSetting(eq(SuperUserSeedExtension.SUPERUSER_APIKEY_PROPERTY), eq(null)))
@@ -112,14 +112,14 @@ class ParticipantContextSeedExtensionTest {
         ext.start();
         verify(participantContextService, times(2)).getParticipantContext(eq(SUPER_USER));
         verify(participantContextService).createParticipantContext(any());
-        verify(vault).storeSecret(eq("super-user-apikey"), eq(apiKeyOverride));
+        verify(vault).storeSecret(eq(SUPER_USER), eq("super-user-apikey"), eq(apiKeyOverride));
         verifyNoMoreInteractions(participantContextService, vault);
     }
 
     @Test
     void start_withInvalidKeyOverride(SuperUserSeedExtension ext,
                                       ServiceExtensionContext context) {
-        when(vault.storeSecret(any(), any())).thenReturn(Result.success());
+        when(vault.storeSecret(any(), any(), any())).thenReturn(Result.success());
 
         var apiKeyOverride = "some-invalid-key";
         when(context.getSetting(eq(SuperUserSeedExtension.SUPERUSER_APIKEY_PROPERTY), eq(null)))
@@ -135,7 +135,7 @@ class ParticipantContextSeedExtensionTest {
         ext.start();
         verify(participantContextService).createParticipantContext(any());
         verify(participantContextService, times(2)).getParticipantContext(eq(SUPER_USER));
-        verify(vault).storeSecret(eq("super-user-apikey"), eq(apiKeyOverride));
+        verify(vault).storeSecret(eq(SUPER_USER), eq("super-user-apikey"), eq(apiKeyOverride));
         verify(monitor).warning(contains("this key appears to have an invalid format"));
         verifyNoMoreInteractions(participantContextService, vault);
     }
@@ -143,7 +143,7 @@ class ParticipantContextSeedExtensionTest {
     @Test
     void start_whenVaultReturnsFailure(SuperUserSeedExtension ext,
                                        ServiceExtensionContext context) {
-        when(vault.storeSecret(any(), any())).thenReturn(Result.failure("test-failure"));
+        when(vault.storeSecret(any(), any(), any())).thenReturn(Result.failure("test-failure"));
 
         var apiKeyOverride = "c3VwZXItdXNlcgo=.asdfl;jkasdfl;kasdf";
         when(context.getSetting(eq(SuperUserSeedExtension.SUPERUSER_APIKEY_PROPERTY), eq(null)))
@@ -159,7 +159,7 @@ class ParticipantContextSeedExtensionTest {
         ext.start();
         verify(participantContextService, times(2)).getParticipantContext(eq(SUPER_USER));
         verify(participantContextService).createParticipantContext(any());
-        verify(vault).storeSecret(eq("super-user-apikey"), eq(apiKeyOverride));
+        verify(vault).storeSecret(eq(SUPER_USER), eq("super-user-apikey"), eq(apiKeyOverride));
         verify(monitor).warning(eq("Error storing API key in vault: test-failure"));
         verifyNoMoreInteractions(participantContextService, vault);
     }
