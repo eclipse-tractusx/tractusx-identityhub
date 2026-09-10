@@ -50,5 +50,5 @@ dependencies:
   - name: tractusx-identityhub
     repository: file://../tractusx-identityhub
     alias: backend
-    version: "v0.3.2"
+    version: "v0.4.0"
     condition: backend.enabled
