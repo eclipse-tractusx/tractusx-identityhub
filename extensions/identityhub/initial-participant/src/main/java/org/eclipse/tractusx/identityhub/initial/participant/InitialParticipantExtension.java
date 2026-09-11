@@ -166,13 +166,18 @@ public class InitialParticipantExtension implements ServiceExtension {
             return;
         }
 
-        vault.storeSecret(participantSecretAlias, participantSecret)
+        // Both secrets are read back scoped to the participant context (the identity API's
+        // principal resolver and the STS account service), so they must be stored in that
+        // context's vault partition. The unscoped overload files them under the partition of
+        // the *current* context, which during boot is none: on a partitioned vault such as
+        // EDC's InMemoryVault every later lookup misses and the identity API answers 500.
+        vault.storeSecret(participantId, participantSecretAlias, participantSecret)
                 .onFailure(e -> monitor
                         .severe("Error storing client-secret into vault, error details: %s"
                                 .formatted(e.getFailureDetail())));
 
         monitor.debug("Generated X-Api-Key for initial participant context");
-        vault.storeSecret(context.getApiTokenAlias(), participantApiKey)
+        vault.storeSecret(participantId, context.getApiTokenAlias(), participantApiKey)
                 .onFailure(e -> monitor.severe("Error storing X-Api-Key into vault, error details: %s"
                         .formatted(e.getFailureDetail())));
 
