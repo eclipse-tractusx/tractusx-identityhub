@@ -24,6 +24,7 @@ edc-vault-hashicorp = { module = "org.eclipse.edc:vault-hashicorp", version.ref 
 edc-sql-stsstore-sql = { module = "org.eclipse.edc:sts-client-store-sql", version.ref = "edc" }
 edc-build-plugin = { module = "org.eclipse.edc.edc-build:org.eclipse.edc.edc-build.gradle.plugin", version.ref = "edc-build" }
 edc-api-authentication = { module = "org.eclipse.edc:identityhub-api-authentication", version.ref = "edc"}
+edc-web-spi = { module = "org.eclipse.edc:web-spi", version.ref = "edc" }
 
 # EDC SPIs
 edc-spi-transaction = { module = "org.eclipse.edc:transaction-spi", version.ref = "edc" }

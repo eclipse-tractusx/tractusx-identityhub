@@ -31,10 +31,18 @@ dependencies {
     runtimeOnly(libs.bom.issuer)
     runtimeOnly(project(":extensions:seed:super-user"))
     runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
+    runtimeOnly(project(":extensions:api:swagger-ui"))
 
     // used for custom extensions
     implementation(libs.edc.ih.spi)
     implementation(libs.edc.api.authentication)
+}
+
+// Bundle the build-time-generated OpenAPI spec so the Swagger UI can serve it.
+tasks.named<ProcessResources>("processResources") {
+    from(project(":openapi:issuerservice-spec").tasks.named("resolve")) {
+        include("openapi.yaml")
+    }
 }
 
 tasks.shadowJar {
