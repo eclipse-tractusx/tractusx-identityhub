@@ -80,7 +80,9 @@ Two collections live in `/docs/api/postman` (import via *File → Import* in Pos
    A successful run reports **37/37 assertions** with zero failures. When re-running,
    wait ~10 seconds between runs and see the collection description's *Re-running*
    section for the holder-registry caveat. The same run also executes in CI on every
-   PR (`.github/workflows/postman-e2e-test.yaml`).
+   PR (`.github/workflows/postman-e2e-test.yaml`), once per compose profile: the full
+   collection against the `sql` profile, and the health, participant-setup and cleanup
+   folders against the `memory` profile (see the note below).
 
    To target a Helm/ingress deployment instead, adjust the `*_URL` collection variables
    (and the `*_DID` / `*_INTERNAL_*` variables to hostnames the two runtimes can reach
@@ -89,7 +91,9 @@ Two collections live in `/docs/api/postman` (import via *File → Import* in Pos
    > **Note**: the E2E collection requires the **`sql`** compose profile (or the
    > persistence Helm charts). The issuance flow uses the `database` attestation type,
    > which only exists in the SQL runtimes — the `*-memory` runtimes reject it with
-   > `Unknown attestation type: database`, so the flow cannot complete there.
+   > `Unknown attestation type: database`, so the flow cannot complete there. Against the
+   > `memory` profile only folders `00`, `01`, `02` and `99` pass (`newman run ... --folder "00 · Health"
+   > --folder "01 · Issuer Setup" --folder "02 · Holder Setup" --folder "99 · Cleanup"`).
 
 2. **`Eclipse Tractus-X Identity Hub.json`** — a per-endpoint reference collection covering
    every REST endpoint of both runtimes, grouped by API. Defaults target the compose stack;

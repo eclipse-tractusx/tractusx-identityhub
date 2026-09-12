@@ -25,24 +25,46 @@ on:
   workflow_call:
   workflow_dispatch:
 
+# Runs once per persistence configuration of the compose stack (in-memory and
+# PostgreSQL/Vault) for both IdentityHub and IssuerService.
+#
 # Least privilege: this job only builds and drives an ephemeral local stack.
 permissions:
   contents: read
 
 jobs:
   dcp-e2e-compose:
+    name: "DCP E2E (${{ matrix.profile }} profile)"
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      # run every persistence configuration of the compose stack, and let each
+      # one report independently so a failure in one does not hide the other
+      fail-fast: false
+      matrix:
+        include:
+          # in-memory stores + in-memory vault (no Postgres, no HashiCorp Vault)
+          - profile: memory
+            identityhub: identityhub-memory
+            issuerservice: issuerservice-memory
+          # PostgreSQL stores + HashiCorp Vault for both runtimes
+          - profile: sql
+            identityhub: identityhub
+            issuerservice: issuerservice
+    env:
+      PROFILE: ${{ matrix.profile }}
+      IH_SERVICE: ${{ matrix.identityhub }}
+      IS_SERVICE: ${{ matrix.issuerservice }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup-java
 
-      - name: Build runtime jars
-        run: ./gradlew shadowJar
+      - name: Build runtime jars (${{ matrix.profile }} profile)
+        run: ./gradlew ":runtimes:${IH_SERVICE}:shadowJar" ":runtimes:${IS_SERVICE}:shadowJar"
 
-      - name: Start the compose stack (sql profile)
+      - name: Start the compose stack (${{ matrix.profile }} profile)
         working-directory: deployment/docker
-        run: docker compose --profile sql up -d --build
+        run: docker compose --profile "$PROFILE" up -d --build
 
       - name: Wait for both runtimes to be healthy
         run: |
@@ -61,7 +83,7 @@ jobs:
         working-directory: deployment/docker
         run: |
           extract() {
-            docker compose --profile sql logs "$1" \
+            docker compose --profile "$PROFILE" logs "$1" \
               | grep -a "API Key" \
               | perl -pe 's/\e\[[0-9;]*m//g' \
               | sed 's/.*API Key: //' \
@@ -70,8 +92,8 @@ jobs:
           # the health endpoint goes green before SuperUserSeedExtension has
           # logged the key, so poll instead of reading the logs once
           for i in $(seq 1 40); do
-            IH_KEY=$(extract identityhub)
-            IS_KEY=$(extract issuerservice)
+            IH_KEY=$(extract "$IH_SERVICE")
+            IS_KEY=$(extract "$IS_SERVICE")
             if [ -n "$IH_KEY" ] && [ -n "$IS_KEY" ]; then
               break
             fi
@@ -87,21 +109,36 @@ jobs:
 
       - name: Run the E2E collection (issuance -> presentation -> revocation)
         run: |
+          folders=()
+          if [ "$PROFILE" = "memory" ]; then
+            # The issuance flow (folders 03-07) needs the `database` attestation
+            # type, which only the SQL runtimes provide; the *-memory runtimes
+            # reject it with "Unknown attestation type: database". Restrict the
+            # in-memory run to the parts that can pass: health checks, participant
+            # setup (issuer + holder, DID publication, key pairs) and cleanup.
+            folders=(
+              --folder "00 · Health"
+              --folder "01 · Issuer Setup"
+              --folder "02 · Holder Setup"
+              --folder "99 · Cleanup"
+            )
+          fi
           # pinned exact version (avoid pulling a floating major at runtime)
           npx --yes newman@6.2.2 run "docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json" \
             --env-var "IH_SUPERUSER_KEY=${{ steps.keys.outputs.ih_key }}" \
-            --env-var "IS_SUPERUSER_KEY=${{ steps.keys.outputs.is_key }}"
+            --env-var "IS_SUPERUSER_KEY=${{ steps.keys.outputs.is_key }}" \
+            "${folders[@]}"
 
       - name: Dump runtime logs on failure
         if: failure()
         working-directory: deployment/docker
         run: |
-          echo "===== identityhub ====="
-          docker compose --profile sql logs identityhub | tail -100
-          echo "===== issuerservice ====="
-          docker compose --profile sql logs issuerservice | tail -100
+          echo "===== $IH_SERVICE ====="
+          docker compose --profile "$PROFILE" logs "$IH_SERVICE" | tail -100
+          echo "===== $IS_SERVICE ====="
+          docker compose --profile "$PROFILE" logs "$IS_SERVICE" | tail -100
 
       - name: Tear down
         if: always()
         working-directory: deployment/docker
-        run: docker compose --profile sql down -v
+        run: docker compose --profile "$PROFILE" down -v
