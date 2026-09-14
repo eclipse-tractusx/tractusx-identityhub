@@ -22,9 +22,12 @@
 
 package org.eclipse.tractusx.identityhub.seed;
 
+import org.eclipse.edc.identityhub.spi.participantcontext.IdentityApiScopes;
 import org.eclipse.edc.identityhub.spi.participantcontext.IdentityHubParticipantContextService;
+import org.eclipse.edc.identityhub.spi.participantcontext.IssuerAdminApiScopes;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.CreateParticipantContextResponse;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.IdentityHubParticipantContext;
+import org.eclipse.edc.identityhub.spi.participantcontext.model.ParticipantManifest;
 import org.eclipse.edc.junit.extensions.DependencyInjectionExtension;
 import org.eclipse.edc.spi.EdcException;
 import org.eclipse.edc.spi.monitor.Monitor;
@@ -35,12 +38,15 @@ import org.eclipse.edc.spi.system.ServiceExtensionContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -74,8 +80,22 @@ class ParticipantContextSeedExtensionTest {
 
         ext.start();
         verify(participantContextService).getParticipantContext(eq(SUPER_USER));
-        verify(participantContextService).createParticipantContext(any());
+        var manifest = ArgumentCaptor.forClass(ParticipantManifest.class);
+        verify(participantContextService).createParticipantContext(manifest.capture());
+        assertThat(manifest.getValue().getScopes()).containsExactly(IdentityApiScopes.ADMIN, IssuerAdminApiScopes.ADMIN);
         verifyNoMoreInteractions(participantContextService);
+    }
+
+    @Test
+    void start_existingParticipantKeepsPermissions(SuperUserSeedExtension ext, ServiceExtensionContext context) {
+        when(participantContextService.getParticipantContext(SUPER_USER))
+                .thenReturn(ServiceResult.success(superUserContext().build()));
+
+        ext.initialize(context);
+        ext.start();
+
+        verify(participantContextService).getParticipantContext(SUPER_USER);
+        verifyNoMoreInteractions(participantContextService, vault);
     }
 
     @Test
@@ -113,6 +133,7 @@ class ParticipantContextSeedExtensionTest {
         verify(participantContextService, times(2)).getParticipantContext(eq(SUPER_USER));
         verify(participantContextService).createParticipantContext(any());
         verify(vault).storeSecret(eq(SUPER_USER), eq("super-user-apikey"), eq(apiKeyOverride));
+        verify(monitor, never()).info(contains(apiKeyOverride));
         verifyNoMoreInteractions(participantContextService, vault);
     }
 
@@ -136,6 +157,7 @@ class ParticipantContextSeedExtensionTest {
         verify(participantContextService).createParticipantContext(any());
         verify(participantContextService, times(2)).getParticipantContext(eq(SUPER_USER));
         verify(vault).storeSecret(eq(SUPER_USER), eq("super-user-apikey"), eq(apiKeyOverride));
+        verify(monitor, never()).info(contains(apiKeyOverride));
         verify(monitor).warning(contains("this key appears to have an invalid format"));
         verifyNoMoreInteractions(participantContextService, vault);
     }
@@ -160,6 +182,7 @@ class ParticipantContextSeedExtensionTest {
         verify(participantContextService, times(2)).getParticipantContext(eq(SUPER_USER));
         verify(participantContextService).createParticipantContext(any());
         verify(vault).storeSecret(eq(SUPER_USER), eq("super-user-apikey"), eq(apiKeyOverride));
+        verify(monitor, never()).info(contains(apiKeyOverride));
         verify(monitor).warning(eq("Error storing API key in vault: test-failure"));
         verifyNoMoreInteractions(participantContextService, vault);
     }

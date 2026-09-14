@@ -69,23 +69,10 @@ import { useCachedList } from '../../hooks/useCachedFetch';
 
 const stateLabel = (state?: number): string => {
     switch (state) {
-        case 0: return 'Created';
-        case 1: return 'Active';
-        case 2: return 'Deactivated';
-        default: return 'Active';
-    }
-};
-
-const stateChipSx = (state?: number) => {
-    switch (state) {
-        case 1:
-            return { color: '#000', backgroundColor: '#fff', borderRadius: '4px', border: 'none', height: '32px' };
-        case 0:
-            return { color: 'rgba(255,255,255,0.7)', backgroundColor: 'transparent', borderRadius: '4px', border: '1px dashed rgba(255,255,255,0.4)', height: '32px' };
-        case 2:
-            return { color: '#fff', backgroundColor: 'rgba(255,90,90,0.3)', borderRadius: '4px', border: '1px solid #FF5A5A', height: '32px' };
-        default:
-            return { color: 'rgba(255,255,255,0.7)', backgroundColor: 'transparent', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.3)', height: '32px' };
+        case 100: return 'Created';
+        case 200: return 'Active';
+        case 300: return 'Deactivated';
+        default: return 'Unknown';
     }
 };
 
@@ -95,7 +82,7 @@ const formatDate = (timestamp?: number): string => {
 };
 
 const fetchParticipantsList = async (): Promise<ParticipantData[]> => {
-    const response = await httpClient.get('/api/identity/v1alpha/participants');
+    const response = await httpClient.get('/api/identity/v1beta/participants');
     return Array.isArray(response.data) ? response.data : [];
 };
 
@@ -120,7 +107,6 @@ const ParticipantsPage: React.FC = () => {
     const [selectedParticipant, setSelectedParticipant] = useState<ParticipantData | null>(null);
     const [selectedParticipantContextId, setSelectedParticipantContextId] = useState('');
     const [filteredParticipant, setFilteredParticipant] = useState<ParticipantData | null>(null);
-    const [filterLoading, setFilterLoading] = useState(false);
     const openMenu = Boolean(anchorEl);
 
     // Pagination state
@@ -142,12 +128,12 @@ const ParticipantsPage: React.FC = () => {
         ? [filteredParticipant]
         : visibleParticipants;
 
-    // Roles dialog state
-    const [rolesOpen, setRolesOpen] = useState(false);
-    const [rolesParticipantId, setRolesParticipantId] = useState('');
-    const [editRoles, setEditRoles] = useState<string[]>([]);
-    const [newRole, setNewRole] = useState('');
-    const [savingRoles, setSavingRoles] = useState(false);
+    // Scopes dialog state
+    const [scopesOpen, setScopesOpen] = useState(false);
+    const [scopesParticipantId, setScopesParticipantId] = useState('');
+    const [editScopes, setEditScopes] = useState<string[]>([]);
+    const [newScope, setNewScope] = useState('');
+    const [savingScopes, setSavingScopes] = useState(false);
 
     useEffect(() => {
         if (error) setSnackbar({ message: error, severity: 'error' });
@@ -171,13 +157,13 @@ const ParticipantsPage: React.FC = () => {
             };
             const body: Record<string, unknown> = {
                 participantContextId: pid,
-                participantId: pid,
                 active: true,
                 did: newDid.trim() || `did:web:${pid}`,
                 key,
+                scopes: ['identity-api:write'],
             };
 
-            const response = await httpClient.post('/api/identity/v1alpha/participants', body);
+            const response = await httpClient.post('/api/identity/v1beta/participants', body);
             setCreateOpen(false);
             setNewParticipantId('');
             setNewKeyId('');
@@ -202,7 +188,7 @@ const ParticipantsPage: React.FC = () => {
 
     const handleDelete = async (participantId: string) => {
         try {
-            await httpClient.delete(`/api/identity/v1alpha/participants/${encodeURIComponent(encodeParticipantId(participantId))}`);
+            await httpClient.delete(`/api/identity/v1beta/participants/${encodeParticipantId(participantId)}`);
             setSnackbar({ message: 'Participant deleted', severity: 'success' });
             refreshAll();
         } catch (err) {
@@ -214,7 +200,7 @@ const ParticipantsPage: React.FC = () => {
     const handleActivate = async (participantId: string) => {
         try {
             await httpClient.post(
-                `/api/identity/v1alpha/participants/${encodeURIComponent(encodeParticipantId(participantId))}/state?isActive=true`
+                `/api/identity/v1beta/participants/${encodeParticipantId(participantId)}/state?isActive=true`
             );
             setSnackbar({ message: 'Participant activated', severity: 'success' });
             refreshAll();
@@ -227,7 +213,7 @@ const ParticipantsPage: React.FC = () => {
     const handleDeactivate = async (participantId: string) => {
         try {
             await httpClient.post(
-                `/api/identity/v1alpha/participants/${encodeURIComponent(encodeParticipantId(participantId))}/state?isActive=false`
+                `/api/identity/v1beta/participants/${encodeParticipantId(participantId)}/state?isActive=false`
             );
             setSnackbar({ message: 'Participant deactivated', severity: 'success' });
             refreshAll();
@@ -240,7 +226,7 @@ const ParticipantsPage: React.FC = () => {
     const handleRegenerateToken = async (participantId: string) => {
         try {
             const response = await httpClient.post(
-                `/api/identity/v1alpha/participants/${encodeURIComponent(encodeParticipantId(participantId))}/token`
+                `/api/identity/v1beta/participants/${encodeParticipantId(participantId)}/token`
             );
             const token = response.data?.token || response.data;
             if (typeof token === 'string') {
@@ -255,40 +241,40 @@ const ParticipantsPage: React.FC = () => {
         }
     };
 
-    const openRolesDialog = (participant: ParticipantData) => {
-        setRolesParticipantId(participant.participantContextId);
-        setEditRoles(participant.roles ? [...participant.roles] : []);
-        setNewRole('');
-        setRolesOpen(true);
+    const openScopesDialog = (participant: ParticipantData) => {
+        setScopesParticipantId(participant.participantContextId);
+        setEditScopes(participant.scopes ? [...participant.scopes] : []);
+        setNewScope('');
+        setScopesOpen(true);
     };
 
-    const handleAddRole = () => {
-        const role = newRole.trim();
-        if (role && !editRoles.includes(role)) {
-            setEditRoles([...editRoles, role]);
-            setNewRole('');
+    const handleAddScope = () => {
+        const scope = newScope.trim();
+        if (scope && !editScopes.includes(scope)) {
+            setEditScopes([...editScopes, scope]);
+            setNewScope('');
         }
     };
 
-    const handleRemoveRole = (role: string) => {
-        setEditRoles(editRoles.filter(r => r !== role));
+    const handleRemoveScope = (scope: string) => {
+        setEditScopes(editScopes.filter(r => r !== scope));
     };
 
-    const handleSaveRoles = async () => {
-        setSavingRoles(true);
+    const handleSaveScopes = async () => {
+        setSavingScopes(true);
         try {
             await httpClient.put(
-                `/api/identity/v1alpha/participants/${encodeURIComponent(encodeParticipantId(rolesParticipantId))}/roles`,
-                editRoles
+                `/api/identity/v1beta/participants/${encodeParticipantId(scopesParticipantId)}/scopes`,
+                editScopes
             );
-            setRolesOpen(false);
-            setSnackbar({ message: 'Roles updated', severity: 'success' });
+            setScopesOpen(false);
+            setSnackbar({ message: 'Scopes updated', severity: 'success' });
             refreshAll();
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Failed to update roles';
+            const message = err instanceof Error ? err.message : 'Failed to update scopes';
             setSnackbar({ message, severity: 'error' });
         } finally {
-            setSavingRoles(false);
+            setSavingScopes(false);
         }
     };
 
@@ -302,9 +288,7 @@ const ParticipantsPage: React.FC = () => {
     ): Promise<ParticipantData> => {
 
         const response = await httpClient.get(
-            `/api/identity/v1alpha/participants/${encodeURIComponent(
-                encodeParticipantId(participantContextId)
-            )}`
+            `/api/identity/v1beta/participants/${encodeParticipantId(participantContextId)}`
         );
 
         return response.data;
@@ -324,8 +308,6 @@ const ParticipantsPage: React.FC = () => {
         }
 
         try {
-            setFilterLoading(true);
-
             const data = await fetchParticipantByContextId(value);
 
             setFilteredParticipant(data);
@@ -342,8 +324,6 @@ const ParticipantsPage: React.FC = () => {
                 severity: 'error',
             });
 
-        } finally {
-            setFilterLoading(false);
         }
     };
 
@@ -575,12 +555,12 @@ const ParticipantsPage: React.FC = () => {
                                                     fontWeight: 700,
                                                     letterSpacing: '0.08em',
                                                     borderRadius: '8px',
-                                                    ...(p.state === 1
+                                                    ...(p.state === 200
                                                         ? {
                                                             color: '#0B0F1A',
                                                             backgroundColor: '#FFFFFF',
                                                         }
-                                                        : p.state === 2
+                                                        : p.state === 300
                                                             ? {
                                                                 color: '#FF5A5A',
                                                                 backgroundColor: 'rgba(255,90,90,0.12)',
@@ -598,7 +578,7 @@ const ParticipantsPage: React.FC = () => {
                                             <Box sx={{ display: 'flex', gap: 0.5 }}>
                                                 <Tooltip
                                                     title={
-                                                        p.state === 1 ? 'Deactivate' : 'Activate'
+                                                        p.state === 200 ? 'Deactivate' : 'Activate'
                                                     }
                                                     arrow
                                                 >
@@ -606,7 +586,7 @@ const ParticipantsPage: React.FC = () => {
                                                         size="small"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            if (p.state === 1) {
+                                                            if (p.state === 200) {
                                                                 handleDeactivate(
                                                                     p.participantContextId,
                                                                 );
@@ -620,7 +600,7 @@ const ParticipantsPage: React.FC = () => {
                                                             width: 36,
                                                             height: 36,
                                                             color:
-                                                                p.state === 1
+                                                                p.state === 200
                                                                     ? '#22C55E'
                                                                     : 'rgba(255,255,255,0.45)',
                                                             backgroundColor:
@@ -732,8 +712,8 @@ const ParticipantsPage: React.FC = () => {
                                                 </Box>
                                             )}
 
-                                            {/* Roles */}
-                                            {p.roles && p.roles.length > 0 && (
+                                            {/* Scopes */}
+                                            {p.scopes && p.scopes.length > 0 && (
                                                 <Box sx={{ mb: 2.5 }}>
                                                     <Typography
                                                         sx={{
@@ -746,7 +726,7 @@ const ParticipantsPage: React.FC = () => {
                                                             mb: 1,
                                                         }}
                                                     >
-                                                        Roles
+                                                        Scopes
                                                     </Typography>
 
                                                     <Box
@@ -756,10 +736,10 @@ const ParticipantsPage: React.FC = () => {
                                                             gap: 0.75,
                                                         }}
                                                     >
-                                                        {p.roles.map((role, idx) => (
+                                                        {p.scopes.map((scope, idx) => (
                                                             <Chip
                                                                 key={idx}
-                                                                label={role}
+                                                                label={scope}
                                                                 size="small"
                                                                 sx={{
                                                                     height: 24,
@@ -824,11 +804,11 @@ const ParticipantsPage: React.FC = () => {
                                                     variant="text"
                                                     size="small"
                                                     onClick={() => {
-                                                        setRolesParticipantId(
+                                                        setScopesParticipantId(
                                                             p.participantContextId,
                                                         );
-                                                        setEditRoles(p.roles || []);
-                                                        setRolesOpen(true);
+                                                        setEditScopes(p.scopes || []);
+                                                        setScopesOpen(true);
                                                     }}
                                                     sx={{
                                                         p: 0,
@@ -883,7 +863,7 @@ const ParticipantsPage: React.FC = () => {
                         >
                             {selectedParticipant && (
                                 <>
-                                    {selectedParticipant.state !== 1 && (
+                                    {selectedParticipant.state !== 200 && (
                                         <Box
                                             onClick={() => {
                                                 handleActivate(selectedParticipant.participantContextId);
@@ -896,7 +876,7 @@ const ParticipantsPage: React.FC = () => {
                                             <Box component="span" sx={{ fontSize: '0.875rem', color: accentColors.brandText }}>Activate</Box>
                                         </Box>
                                     )}
-                                    {selectedParticipant.state === 1 && (
+                                    {selectedParticipant.state === 200 && (
                                         <Box
                                             onClick={() => {
                                                 handleDeactivate(selectedParticipant.participantContextId);
@@ -911,14 +891,14 @@ const ParticipantsPage: React.FC = () => {
                                     )}
                                     <Box
                                         onClick={() => {
-                                            openRolesDialog(selectedParticipant);
+                                            openScopesDialog(selectedParticipant);
                                             setAnchorEl(null);
                                             setSelectedParticipant(null);
                                         }}
                                         sx={{ display: 'flex', alignItems: 'center', padding: '4px 16px', cursor: 'pointer', '&:hover': { backgroundColor: 'rgba(1,32,96,0.35)' } }}
                                     >
                                         <AdminPanelSettingsIcon fontSize="small" sx={{ marginRight: 1, color: accentColors.brandLightBlue }} />
-                                        <Box component="span" sx={{ fontSize: '0.875rem', color: accentColors.brandText }}>Manage Roles</Box>
+                                        <Box component="span" sx={{ fontSize: '0.875rem', color: accentColors.brandText }}>Manage Scopes</Box>
                                     </Box>
                                     <Box
                                         onClick={() => {
@@ -1060,13 +1040,13 @@ const ParticipantsPage: React.FC = () => {
                 </DialogActions>
             </Dialog>
 
-            {/* Manage Roles Dialog */}
-            <Dialog open={rolesOpen} onClose={() => setRolesOpen(false)} maxWidth="sm" fullWidth PaperProps={whiteDialogPaperProps}>
+            {/* Manage Scopes Dialog */}
+            <Dialog open={scopesOpen} onClose={() => setScopesOpen(false)} maxWidth="sm" fullWidth PaperProps={whiteDialogPaperProps}>
                 <DialogTitle sx={coloredDialogTitleSx}>
-                    Manage Roles
+                    Manage Scopes
                     <IconButton
                         aria-label="close"
-                        onClick={() => setRolesOpen(false)}
+                        onClick={() => setScopesOpen(false)}
                         sx={(theme) => ({
                             ...dialogCloseButtonSx,
                             color: theme.palette.primary.contrastText,
@@ -1077,14 +1057,14 @@ const ParticipantsPage: React.FC = () => {
                 </DialogTitle>
                 <DialogContent sx={blueDialogContentSx}>
                     <Typography variant="body2" sx={{ color: '#FFFFFF' }}>
-                        Manage roles for participant <strong>{rolesParticipantId}</strong>.
+                        Manage scopes for participant <strong>{scopesParticipantId}</strong>.
                     </Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                        {editRoles.map((role) => (
+                        {editScopes.map((scope) => (
                             <Chip
-                                key={role}
-                                label={role}
-                                onDelete={() => handleRemoveRole(role)}
+                                key={scope}
+                                label={scope}
+                                onDelete={() => handleRemoveScope(scope)}
                                 sx={{
                                     bgcolor: 'primary.main',
                                     color: '#fff',
@@ -1096,26 +1076,26 @@ const ParticipantsPage: React.FC = () => {
                                 }}
                             />
                         ))}
-                        {editRoles.length === 0 && (
+                        {editScopes.length === 0 && (
                             <Typography variant="body2" sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
-                                No roles assigned
+                                No scopes assigned
                             </Typography>
                         )}
                     </Box>
                     <Box sx={{ display: 'flex', gap: 1 }}>
                         <TextField
-                            label="Add role"
-                            value={newRole}
-                            onChange={(e) => setNewRole(e.target.value)}
-                            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddRole(); } }}
-                            placeholder="e.g., admin"
+                            label="Add scope"
+                            value={newScope}
+                            onChange={(e) => setNewScope(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddScope(); } }}
+                            placeholder="e.g., identity-api:write"
                             fullWidth
                             size="small"
                         />
                         <Button
                             variant="outlined"
-                            onClick={handleAddRole}
-                            disabled={!newRole.trim()}
+                            onClick={handleAddScope}
+                            disabled={!newScope.trim()}
                             sx={{
                                 textTransform: 'none',
                                 minWidth: 'auto',
@@ -1144,15 +1124,15 @@ const ParticipantsPage: React.FC = () => {
                     </Box>
                 </DialogContent>
                 <DialogActions sx={blueDialogActionsSx}>
-                    <Button onClick={() => setRolesOpen(false)} variant="outlined" color="primary" size="large"
+                    <Button onClick={() => setScopesOpen(false)} variant="outlined" color="primary" size="large"
                         sx={dialogCancelBtnSx}>
                         Cancel
                     </Button>
-                    <Button onClick={handleSaveRoles} variant="contained" color="primary" size="large"
-                        disabled={savingRoles}
-                        startIcon={savingRoles ? <CircularProgress size={20} color="inherit" /> : undefined}
+                    <Button onClick={handleSaveScopes} variant="contained" color="primary" size="large"
+                        disabled={savingScopes}
+                        startIcon={savingScopes ? <CircularProgress size={20} color="inherit" /> : undefined}
                         sx={dialogSubmitBtnSx}>
-                        {savingRoles ? 'Saving...' : 'Save Roles'}
+                        {savingScopes ? 'Saving...' : 'Save Scopes'}
                     </Button>
                 </DialogActions>
             </Dialog>

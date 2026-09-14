@@ -90,22 +90,22 @@ All management APIs use **API Key** authentication via the `x-api-key` header:
 x-api-key: <participant-context-id>.<token>
 ```
 
-The API key encodes both the participant context and the authorization token. The part before the first `.` is the base64url-encoded participant ID — this encoding is part of the API-key auth scheme and is unchanged in 0.17.0. It is **separate from URL path parameters**: as of 0.17.0 ([IH #937](https://github.com/eclipse-edc/IdentityHub/pull/937)), `participantContextId` path segments (e.g. `/v1alpha/participants/{id}`) use the plain participant ID, not a base64url-encoded value.
+The API key encodes both the participant context and the authorization token. The part before the first `.` is the base64url-encoded participant ID — this encoding is part of the API-key auth scheme and is unchanged in 0.17.0. It is **separate from URL path parameters**: as of 0.17.0 ([IH #937](https://github.com/eclipse-edc/IdentityHub/pull/937)), `participantContextId` path segments (e.g. `/v1beta/participants/{id}`) use the plain participant ID, not a base64url-encoded value.
 
 ## Steps
 
 | Step | Resource | Endpoint | Description |
 |------|----------|----------|-------------|
 | [Prerequisites](00_prerequisites.md) | — | — | Super-user API keys and environment setup |
-| [Create Issuer Participant](01_create_issuer_participant.md) | Identity API | `POST /v1alpha/participants` | Create the Issuer's ParticipantContext on IssuerService |
-| [Create Holder Participant](02_create_holder_participant.md) | Identity API | `POST /v1alpha/participants` | Create the Holder's ParticipantContext on IdentityHub |
-| [Activate Participant Contexts](03_activate_participant_contexts.md) | Identity API | `POST /v1alpha/participants/{id}/state` | Activate participant contexts so DID documents are published |
+| [Create Issuer Participant](01_create_issuer_participant.md) | Identity API | `POST /v1beta/participants` | Create the Issuer's ParticipantContext on IssuerService |
+| [Create Holder Participant](02_create_holder_participant.md) | Identity API | `POST /v1beta/participants` | Create the Holder's ParticipantContext on IdentityHub |
+| [Activate Participant Contexts](03_activate_participant_contexts.md) | Identity API | `POST /v1beta/participants/{id}/state` | Activate participant contexts so DID documents are published |
 | [Verify DID Documents](04_verify_did_documents.md) | DID | `GET /.well-known/did.json` | Verify that DID documents are published and resolvable |
-| [Create Attestation](05_create_attestation.md) | Admin API | `POST /v1alpha/participants/{id}/attestations` | Define how the IssuerService verifies holder claims |
-| [Create Credential Definition](06_create_credential_definition.md) | Admin API | `POST /v1alpha/participants/{id}/credentialdefinitions` | Configure what credentials can be issued |
-| [Register Holder](07_register_holder.md) | Admin API | `POST /v1alpha/participants/{id}/holders` | Register the IdentityHub as a known holder |
-| [Request Credentials](08_request_credentials.md) | Identity API | `POST /v1alpha/participants/{id}/credentials/request` | Trigger the DCP credential issuance flow |
-| [Retrieve Credentials](09_retrieve_credentials.md) | Identity API | `GET /v1alpha/participants/{id}/credentials` | Retrieve the issued credential from the IdentityHub |
+| [Create Attestation](05_create_attestation.md) | Admin API | `POST /v1beta/participants/{id}/attestations` | Define how the IssuerService verifies holder claims |
+| [Create Credential Definition](06_create_credential_definition.md) | Admin API | `POST /v1beta/participants/{id}/credentialdefinitions` | Configure what credentials can be issued |
+| [Register Holder](07_register_holder.md) | Admin API | `POST /v1beta/participants/{id}/holders` | Register the IdentityHub as a known holder |
+| [Request Credentials](08_request_credentials.md) | Identity API | `POST /v1beta/participants/{id}/credentials/request` | Trigger the DCP credential issuance flow |
+| [Retrieve Credentials](09_retrieve_credentials.md) | Identity API | `GET /v1beta/participants/{id}/credentials` | Retrieve the issued credential from the IdentityHub |
 | [Verify Credential](10_verify_credential.md) | — | — | Verify signature, temporal claims, and revocation status |
 
 ## API Reference
@@ -114,21 +114,21 @@ The API key encodes both the participant context and the authorization token. Th
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `POST` | `/v1alpha/participants` | Create a new participant context |
-| `GET` | `/v1alpha/participants/{id}` | Get participant context details |
-| `POST` | `/v1alpha/participants/{id}/state?isActive=true` | Activate/deactivate participant |
-| `POST` | `/v1alpha/participants/{id}/credentials/request` | Request credentials from an issuer |
-| `GET` | `/v1alpha/participants/{id}/credentials` | List credentials for a participant |
+| `POST` | `/v1beta/participants` | Create a new participant context |
+| `GET` | `/v1beta/participants/{id}` | Get participant context details |
+| `POST` | `/v1beta/participants/{id}/state?isActive=true` | Activate/deactivate participant |
+| `POST` | `/v1beta/participants/{id}/credentials/request` | Request credentials from an issuer |
+| `GET` | `/v1beta/participants/{id}/credentials` | List credentials for a participant |
 
 ### Issuer Admin API (IssuerService only)
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `POST` | `/v1alpha/participants/{id}/attestations` | Create an attestation definition |
-| `POST` | `/v1alpha/participants/{id}/credentialdefinitions` | Create a credential definition |
-| `POST` | `/v1alpha/participants/{id}/holders` | Register a holder |
-| `GET` | `/v1alpha/participants/{id}/issuanceprocesses/query` | Query issuance process status |
-| `POST` | `/v1alpha/participants/{id}/credentials/{credId}/revoke` | Revoke a credential |
+| `POST` | `/v1beta/participants/{id}/attestations` | Create an attestation definition |
+| `POST` | `/v1beta/participants/{id}/credentialdefinitions` | Create a credential definition |
+| `POST` | `/v1beta/participants/{id}/holders` | Register a holder |
+| `GET` | `/v1beta/participants/{id}/issuanceprocesses/query` | Query issuance process status |
+| `POST` | `/v1beta/participants/{id}/credentials/{credId}/revoke` | Revoke a credential |
 
 ## Further Reading
 

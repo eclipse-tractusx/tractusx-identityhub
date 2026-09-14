@@ -30,11 +30,11 @@ dependencies {
     // used for the runtime
     runtimeOnly(libs.bom.issuer)
     runtimeOnly(project(":extensions:seed:super-user"))
+    runtimeOnly(project(":extensions:identityhub:participant-api-ownership"))
     runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
 
     // used for custom extensions
     implementation(libs.edc.ih.spi)
-    implementation(libs.edc.api.authentication)
 }
 
 tasks.shadowJar {

@@ -15,7 +15,7 @@ This step:
 ## Request
 
 ```bash
-curl -X POST "${ISSUER_IDENTITY}/v1alpha/participants" \
+curl -X POST "${ISSUER_IDENTITY}/v1beta/participants" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${ISSUER_ADMIN_KEY}" \
   -d '{
@@ -31,12 +31,12 @@ curl -X POST "${ISSUER_IDENTITY}/v1alpha/participants" \
       "privateKeyAlias": "did:web:issuer-service.example.com-privatekey-alias"
     },
     "participantContextId": "issuer-participant",
-    "roles": ["ROLE_ADMIN", "admin"],
+    "scopes": ["identity-api:write", "issuer-admin-api:write"],
     "serviceEndpoints": [
       {
         "id": "https://issuer-service.example.com#credential-service",
         "type": "IssuerService",
-        "serviceEndpoint": "https://issuer-service.example.com/api/issuance/v1alpha/participants/issuer-participant"
+        "serviceEndpoint": "https://issuer-service.example.com/api/issuance/v1beta/participants/issuer-participant"
       }
     ],
     "apiKeyAlias": "issuer-api-key-alias"
@@ -57,7 +57,7 @@ curl -X POST "${ISSUER_IDENTITY}/v1alpha/participants" \
 }
 ```
 
-> **Note**: The prefix of the `apiKey` (before the first `.`) is still the base64url-encoded participant ID — that encoding is part of the API-key auth scheme and is unchanged in 0.17.0. It is unrelated to URL path parameters, which now use the plain participant ID.
+> **Note**: The prefix of the `apiKey` (before the first `.`) is still the Base64-encoded participant ID — that encoding is part of the API-key auth scheme and is unchanged in 0.17.0. It is unrelated to URL path parameters, which now use the plain participant ID.
 
 ## Save the API Key
 
@@ -77,7 +77,7 @@ export ISSUER_CONTEXT="issuer-participant"
 | `key.type` | Verification method type (`JsonWebKey2020`) |
 | `key.privateKeyAlias` | Alias under which the private key is stored in Vault |
 | `participantContextId` | Unique ID for this participant context (renamed from `participantId` in EDC 0.17.0) |
-| `roles` | Roles assigned to this participant |
+| `scopes` | Management API scopes assigned to this participant |
 | `serviceEndpoints` | Service endpoints published in the DID document |
 | `apiKeyAlias` | Vault alias for storing the generated API key |
 
