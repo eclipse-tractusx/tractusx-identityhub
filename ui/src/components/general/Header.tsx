@@ -35,23 +35,27 @@ import { useParticipant } from '../../contexts/ParticipantContext';
 
 const participantStateLabel = (state?: number): string => {
     switch (state) {
-        case 1:
+        case 100:
+            return 'Created';
+        case 200:
             return 'Active';
-        case 2:
+        case 300:
             return 'Deactivated';
         default:
-            return 'Active';
+            return 'Unknown';
     }
 };
 
 const participantStateColor = (state?: number): string => {
     switch (state) {
-        case 1:
+        case 100:
+            return '#E6A817';
+        case 200:
             return '#00aa55';
-        case 2:
+        case 300:
             return '#D91E18';
         default:
-            return '#00aa55';
+            return '#9E9E9E';
     }
 };
 

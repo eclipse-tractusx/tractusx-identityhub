@@ -289,6 +289,18 @@ describe('KeyPairsPage', () => {
         expect(screen.getByText('Copy Key ID')).toBeInTheDocument();
     });
 
+    it('should copy the displayed key ID instead of the resource ID', async () => {
+        vi.mocked(httpClient.get).mockResolvedValue({ data: mockKeyPairsActive });
+        renderPage();
+        await screen.findByText('key-active-1');
+
+        await openMoreVertMenu();
+        fireEvent.click(screen.getByText('Copy Key ID'));
+
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith('key-active-1');
+        expect(navigator.clipboard.writeText).not.toHaveBeenCalledWith('kp-1');
+    });
+
     it('should show Default chip for default key pair', async () => {
         vi.mocked(httpClient.get).mockResolvedValue({ data: mockKeyPairsActive });
         renderPage();

@@ -18,7 +18,7 @@
  ********************************************************************************/
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, act, within } from '@testing-library/react';
 import ParticipantSelector from '../../../components/general/ParticipantSelector';
 
 const mockSetActiveParticipantId = vi.fn();
@@ -29,9 +29,9 @@ vi.mock('../../../contexts/ParticipantContext', () => ({
 }));
 
 const mockParticipants = [
-    { participantContextId: 'participant-1', did: 'did:web:example1', state: 1 },
-    { participantContextId: 'participant-2', did: 'did:web:example2', state: 0 },
-    { participantContextId: 'participant-3', did: 'did:web:example3', state: 2 },
+    { participantContextId: 'participant-1', did: 'did:web:example1', state: 200 },
+    { participantContextId: 'participant-2', did: 'did:web:example2', state: 100 },
+    { participantContextId: 'participant-3', did: 'did:web:example3', state: 300 },
 ];
 
 describe('ParticipantSelector', () => {
@@ -66,9 +66,29 @@ describe('ParticipantSelector', () => {
 
         act(() => { screen.getByTestId('AccountCircleIcon').parentElement!.parentElement!.click(); });
 
-        expect(screen.getByText('Active')).toBeInTheDocument();
-        expect(screen.getByText('Created')).toBeInTheDocument();
-        expect(screen.getByText('Deactivated')).toBeInTheDocument();
+        for (const [id, label, color] of [
+            ['participant-1', 'Active', '#A8C556'],
+            ['participant-2', 'Created', '#E6A817'],
+            ['participant-3', 'Deactivated', '#FF5A5A'],
+        ]) {
+            const row = screen.getByText(id).parentElement!;
+            const chip = within(row).getByText(label).closest('.MuiChip-root');
+            expect(chip).toHaveStyle({ color });
+        }
+    });
+
+    it.each([undefined, 999])('should show an unknown state for %s', (state) => {
+        mockUseParticipant.mockReturnValue({
+            participants: [{ participantContextId: 'participant-unknown', state }],
+            activeParticipantId: 'participant-unknown',
+            setActiveParticipantId: mockSetActiveParticipantId,
+            loading: false,
+        });
+        render(<ParticipantSelector />);
+        act(() => { screen.getByTestId('AccountCircleIcon').parentElement!.parentElement!.click(); });
+
+        expect(screen.getByText('Unknown').closest('.MuiChip-root')).toHaveStyle({ color: '#9E9E9E' });
+        expect(screen.queryByText('Active')).not.toBeInTheDocument();
     });
 
     it('should call setActiveParticipantId when selecting a participant', () => {

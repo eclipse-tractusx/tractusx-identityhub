@@ -660,7 +660,7 @@ const KeyPairsPage: React.FC = () => {
 >
     {selectedKp && (
         <MenuItem onClick={() => {
-            copyToClipboard(selectedKp.id);
+            copyToClipboard(selectedKp.keyId);
             setAnchorEl(null);
             setSelectedKp(null);
         }}>
