@@ -35,11 +35,19 @@ dependencies {
     runtimeOnly(project(":extensions:store:sql:migrations"))
     runtimeOnly(project(":extensions:seed:super-user"))
     runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
+    runtimeOnly(project(":extensions:api:swagger-ui"))
     runtimeOnly(libs.postgres)
 
     // used for custom extensions
     implementation(libs.edc.api.authentication)
     implementation(libs.edc.ih.spi)
+}
+
+// Bundle the build-time-generated OpenAPI spec so the Swagger UI can serve it.
+tasks.named<ProcessResources>("processResources") {
+    from(project(":openapi:issuerservice-spec").tasks.named("resolve")) {
+        include("openapi.yaml")
+    }
 }
 
 tasks.shadowJar {
