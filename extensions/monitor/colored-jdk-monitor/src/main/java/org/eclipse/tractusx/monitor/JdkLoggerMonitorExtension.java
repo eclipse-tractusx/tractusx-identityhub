@@ -19,11 +19,22 @@
  *
  */
 
-plugins {
-    `java-library`
-}
+package org.eclipse.tractusx.monitor;
 
-dependencies {
-    implementation(libs.edc.spi.boot)
-    implementation(libs.edc.runtime.metamodel)
+import org.eclipse.edc.runtime.metamodel.annotation.Extension;
+import org.eclipse.edc.spi.monitor.Monitor;
+import org.eclipse.edc.spi.system.MonitorExtension;
+
+/**
+ * Registering any MonitorExtension replaces EDC's default ConsoleMonitor (ExtensionLoader.loadMonitor
+ * only falls back to ConsoleMonitor when none is found), so --log-level/--no-color are intentionally
+ * ignored here in favor of logging.properties.
+ */
+@Extension("JDK Logger Monitor")
+public class JdkLoggerMonitorExtension implements MonitorExtension {
+
+    @Override
+    public Monitor getMonitor(Monitor.Level level, String... args) {
+        return new JdkLoggerMonitor();
+    }
 }

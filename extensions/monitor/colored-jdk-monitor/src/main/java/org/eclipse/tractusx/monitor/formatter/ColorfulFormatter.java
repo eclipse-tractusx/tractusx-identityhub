@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) 2025 LKS Next
+ *   Copyright (c) 2026 LKS Next
  *   Copyright (c) 2025 Contributors to the Eclipse Foundation
  *
  *   See the NOTICE file(s) distributed with this work for additional
@@ -19,7 +19,7 @@
  *
  */
 
-package org.eclipse.tractusx.identityhub.monitor;
+package org.eclipse.tractusx.monitor.formatter;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
