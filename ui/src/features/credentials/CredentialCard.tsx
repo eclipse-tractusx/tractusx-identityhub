@@ -33,7 +33,6 @@ import BlockIcon from '@mui/icons-material/Block';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SecurityIcon from '@mui/icons-material/Security';
 import { CredentialResource, getStateName } from './types';
 
 interface CredentialCardProps {

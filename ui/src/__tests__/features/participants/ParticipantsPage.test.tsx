@@ -46,10 +46,6 @@ vi.mock('../../../services/EnvironmentService', () => ({
     isAuthEnabled: vi.fn(() => false),
 }));
 
-vi.mock('../../../services/participantUtils', () => ({
-    encodeParticipantId: vi.fn((id: string) => btoa(id)),
-}));
-
 vi.mock('../../../hooks/useAuth', () => ({
     default: vi.fn(() => ({
         isAuthenticated: false,
@@ -73,13 +69,13 @@ const mockParticipants = [
     {
         participantContextId: 'BPNL00000003CRHK',
         did: 'did:web:example.com:BPNL00000003CRHK',
-        state: 2,
-        roles: ['admin'],
+        state: 300,
+        scopes: ['identity-api:admin'],
     },
     {
         participantContextId: 'BPNL00000003AYRE',
         did: 'did:web:example.com:BPNL00000003AYRE',
-        state: 2,
+        state: 300,
     },
 ];
 
@@ -202,10 +198,10 @@ describe('ParticipantsPage', () => {
 
         await waitFor(() => {
             expect(httpClient.post).toHaveBeenCalledWith(
-                '/api/identity/v1alpha/participants',
+                '/api/identity/v1beta/participants',
                 expect.objectContaining({
                     participantContextId: 'BPNL00000003NEW1',
-                    participantId: 'BPNL00000003NEW1',
+                    scopes: ['identity-api:write'],
                 })
             );
         });
@@ -292,7 +288,7 @@ describe('ParticipantsPage', () => {
 
         await waitFor(() => {
             expect(httpClient.delete).toHaveBeenCalledWith(
-                expect.stringContaining('/api/identity/v1alpha/participants/')
+                expect.stringContaining('/api/identity/v1beta/participants/')
             );
         });
     });
@@ -386,7 +382,7 @@ describe('ParticipantsPage', () => {
         });
     });
 
-    it('should show Deactivated chip for participants with state 2', async () => {
+    it('should show Deactivated chip for participants with state 300', async () => {
         vi.mocked(httpClient.get).mockResolvedValue({ data: mockParticipants });
         renderPage();
 
@@ -394,7 +390,7 @@ describe('ParticipantsPage', () => {
             expect(screen.getByText('BPNL00000003CRHK')).toBeInTheDocument();
         });
 
-        const deactivatedChips = screen.getAllByText('Deactivated');
+        const deactivatedChips = screen.getAllByText('DEACTIVATED');
         expect(deactivatedChips.length).toBeGreaterThanOrEqual(1);
     });
 
@@ -409,7 +405,30 @@ describe('ParticipantsPage', () => {
         expect(screen.getByText(/did:web:example.com:BPNL00000003CRHK/)).toBeInTheDocument();
     });
 
-    it('should show role chips for participants with roles', async () => {
+    it('should update scopes using the raw participant ID encoded once', async () => {
+        const participantContextId = 'did:web:example.test%3A443:tenant';
+        vi.mocked(httpClient.get).mockResolvedValue({
+            data: [{ ...mockParticipants[0], participantContextId, scopes: ['identity-api:read'] }],
+        });
+        vi.mocked(httpClient.put).mockResolvedValue({ data: {} });
+        renderPage();
+
+        await screen.findByText(participantContextId);
+        fireEvent.click(screen.getByTestId('MoreVertIcon').closest('button')!);
+        fireEvent.click(await screen.findByText('Manage Scopes'));
+        fireEvent.change(screen.getByLabelText('Add scope'), { target: { value: 'issuer-admin-api:read' } });
+        fireEvent.click(screen.getByText('Add'));
+        fireEvent.click(screen.getByText('Save Scopes'));
+
+        await waitFor(() => {
+            expect(httpClient.put).toHaveBeenCalledWith(
+                '/api/identity/v1beta/participants/did%3Aweb%3Aexample.test%253A443%3Atenant/scopes',
+                ['identity-api:read', 'issuer-admin-api:read']
+            );
+        });
+    });
+
+    it('should show scope chips for participants with scopes', async () => {
         vi.mocked(httpClient.get).mockResolvedValue({ data: mockParticipants });
         renderPage();
 
@@ -417,7 +436,7 @@ describe('ParticipantsPage', () => {
             expect(screen.getByText('BPNL00000003CRHK')).toBeInTheDocument();
         });
 
-        expect(screen.getByText('admin')).toBeInTheDocument();
+        expect(screen.getByText('identity-api:admin')).toBeInTheDocument();
     });
 
     it('should show snackbar error when create fails', async () => {

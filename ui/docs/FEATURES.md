@@ -1,6 +1,6 @@
 # Features
 
-The frontend provides four sections for managing the Identity Hub. Each section maps to a route and interacts with the backend API at `/api/identity/v1alpha`.
+The frontend provides four sections for managing the Identity Hub. Each section maps to a route and interacts with the backend API at `/api/identity/v1beta`.
 
 A **participant selector** in the sidebar allows switching between participant contexts. All resource views (key pairs, DIDs, credentials) are scoped to the active participant.
 
@@ -24,7 +24,7 @@ Manage participant contexts in the Identity Hub. Each participant represents an 
 | POST | `/participants` | Create a new participant |
 | DELETE | `/participants/{participantId}` | Delete a participant |
 | POST | `/participants/{participantId}/state?isActive={true|false}` | Activate/deactivate participant |
-| PUT | `/participants/{participantId}/roles` | Replace participant roles |
+| PUT | `/participants/{participantId}/scopes` | Replace participant scopes |
 | POST | `/participants/{participantId}/token` | Regenerate API token |
 
 ### Actions

@@ -54,10 +54,6 @@ vi.mock('../../../services/EnvironmentService', () => ({
     isAuthEnabled: vi.fn(() => false),
 }));
 
-vi.mock('../../../services/participantUtils', () => ({
-    encodeParticipantId: vi.fn((id: string) => btoa(id)),
-}));
-
 vi.mock('../../../hooks/useAuth', () => ({
     default: vi.fn(() => ({
         isAuthenticated: false,
@@ -248,8 +244,7 @@ describe('CredentialsPage', () => {
             expect(screen.getByText('MembershipCredential')).toBeInTheDocument();
         });
 
-        const cards = document.querySelectorAll('.custom-card');
-        fireEvent.click(cards[0]);
+        fireEvent.click(screen.getByText('MembershipCredential'));
 
         await waitFor(() => {
             // The detail modal shows credential ID in a DetailField
@@ -266,8 +261,7 @@ describe('CredentialsPage', () => {
             expect(screen.getByText('MembershipCredential')).toBeInTheDocument();
         });
 
-        const cards = document.querySelectorAll('.custom-card');
-        fireEvent.click(cards[0]);
+        fireEvent.click(screen.getByText('MembershipCredential'));
 
         await waitFor(() => {
             expect(screen.getByText('cred-1')).toBeInTheDocument();
@@ -291,8 +285,7 @@ describe('CredentialsPage', () => {
             expect(screen.getByText('MembershipCredential')).toBeInTheDocument();
         });
 
-        const cards = document.querySelectorAll('.custom-card');
-        fireEvent.click(cards[0]);
+        fireEvent.click(screen.getByText('MembershipCredential'));
 
         await waitFor(() => {
             expect(screen.getByText('cred-1')).toBeInTheDocument();
@@ -335,7 +328,7 @@ describe('CredentialsPage', () => {
                     issuerDid: 'did:web:example.com',
                     holderPid: 'did:web:holder.example.com',
                     credentials: [expect.objectContaining({
-                        format: 'ldp_vc',
+                        format: 'vc11-sl2021/jwt',
                         type: 'MembershipCredential',
                     })],
                 })
