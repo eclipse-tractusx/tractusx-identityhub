@@ -24,7 +24,12 @@
 
 {{- range .Values.issuerservice.httpRoutes }}
 {{- if and .enabled .endpoints }}
-{{- $routeName := printf "%s-%s" $fullName .hostname }}
+{{- $hostname := .hostname | lower }}
+{{- $safeHostname := regexReplaceAll "[^a-z0-9.-]" ($hostname | replace "*" "wildcard") "-" | trimAll "-." }}
+{{- $routeName := printf "%s-%s" $fullName $safeHostname }}
+{{- if or (gt (len $routeName) 253) (gt (len (printf "%s-%s" $fullName (first (splitList "." $safeHostname)))) 63) }}
+{{- $routeName = printf "%s-%s" $fullName (sha256sum $hostname | trunc 10) }}
+{{- end }}
 {{- $annotations := .annotations | default dict }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
@@ -44,7 +49,7 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   hostnames:
-    - {{ .hostname }}
+    - {{ .hostname | quote }}
   rules:
     {{- $routeEndpoints := .endpoints }}
     {{- range $name, $mapping := $controlEdcEndpoints }}
