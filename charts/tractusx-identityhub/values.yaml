@@ -281,8 +281,6 @@ identityhub:
       # -- IdentityHub endpoints exposed by this HTTPRoute resource
       endpoints:
         - identity
-        - accounts
-        - version
       # -- Gateway parentRefs that this HTTPRoute attaches to
       parentRefs: []
       #   - name: gateway
