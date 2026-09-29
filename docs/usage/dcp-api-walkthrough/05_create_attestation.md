@@ -4,7 +4,7 @@
 
 ---
 
-Attestations define how the IssuerService verifies claims before issuing credentials. For this walkthrough, we use a **database attestation** that looks up holder information in the internal `holders` table.
+Attestations define how the IssuerService verifies claims before issuing credentials. For this walkthrough, we use a **database attestation** that looks up holder information in the internal `custom_attestation_claims` table.
 
 ## Request
 
@@ -13,11 +13,13 @@ curl -X POST "${ISSUER_ADMIN}/v1beta/participants/${ISSUER_CONTEXT}/attestations
   -H "Content-Type: application/json" \
   -H "x-api-key: ${ISSUER_API_KEY}" \
   -d '{
-    "id": "attestation-id",
+    "id": "attestation-custom",
     "attestationType": "database",
     "configuration": {
-      "dataSourceName": "holder",
-      "tableName": "holders"
+      "dataSourceName": "customattestations",
+      "tableName": "custom_attestation_claims",
+      "idColumn": "holder_id",
+      "required": true
     }
   }'
 ```
@@ -28,16 +30,16 @@ curl -X POST "${ISSUER_ADMIN}/v1beta/participants/${ISSUER_CONTEXT}/attestations
 
 ## How It Works
 
-The `database` attestation type queries the `holders` table (populated when you register holders in [Step 7](07_register_holder.md)). During credential issuance, the IssuerService evaluates this attestation to verify that the requesting holder is registered and retrieves their data for mapping into the credential.
+The `database` attestation type queries the `custom_attestation_claims` table (populated when you register holders in [Step 7](07_register_holder.md)). During credential issuance, the IssuerService evaluates this attestation to verify that the requesting holder is registered and retrieves their data for mapping into the credential.
 
 ```
-┌──────────────────────┐         ┌──────────────────────┐
-│   Attestation Config │         │   holders table      │
-│                      │         │                      │
-│  type: "database"    │────────►│  holder_name         │
-│  tableName: "holders"│  reads  │  did                 │
-│                      │         │  holderId            │
-└──────────────────────┘         └──────────────────────┘
+┌───────────────────────────────────────┐         ┌────────────────────────────────────────┐
+│   Attestation Config                  │         │   custom_attestation_claims table      │
+│                                       │         │                                        │
+│  type: "database"                     │────────►│  holder_name                           │
+│ tableName: "custom_attestation_claims"│  reads  │  did                                   │
+│                                       │         │  holderId                              │
+└───────────────────────────────────────┘         └────────────────────────────────────────┘
 ```
 
 ## Available Attestation Types

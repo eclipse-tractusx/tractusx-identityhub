@@ -1,6 +1,6 @@
 # tractusx-issuerservice
 
-![Version: v0.3.2](https://img.shields.io/badge/Version-v0.3.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.3.2](https://img.shields.io/badge/AppVersion-0.3.2-informational?style=flat-square)
+![Version: v0.4.1](https://img.shields.io/badge/Version-v0.4.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.1](https://img.shields.io/badge/AppVersion-0.4.1-informational?style=flat-square)
 
 A Helm chart for Tractus-X IssuerService, that deploys the IssuerService with postgresql and vault charts for persistance
 
@@ -96,14 +96,14 @@ helm install issuerservice tractusx-dev/tractusx-issuerservice
 | issuerservice.livenessProbe.periodSeconds | int | `5` | this fields specifies that kubernetes should perform a liveness check every 5 seconds |
 | issuerservice.livenessProbe.successThreshold | int | `1` | number of consecutive successes for the probe to be considered successful after having failed |
 | issuerservice.livenessProbe.timeoutSeconds | int | `5` | number of seconds after which the probe times out |
-| issuerservice.logging.default | string | `".level=INFO\norg.eclipse.edc.level=INFO\nhandlers=java.util.logging.ConsoleHandler\njava.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter\njava.util.logging.ConsoleHandler.level=ALL\norg.eclipse.tractusx.identityhub.monitor.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"` | default logging properties if logging is not enabled |
+| issuerservice.logging.default | string | `".level=INFO\norg.eclipse.edc.level=INFO\nhandlers=java.util.logging.ConsoleHandler\njava.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.monitor.formatter.ColorfulFormatter\njava.util.logging.ConsoleHandler.level=ALL\norg.eclipse.tractusx.monitor.formatter.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"` | default logging properties if logging is not enabled |
 | issuerservice.logging.enabled | bool | `true` | Enable logging to create .log files |
-| issuerservice.logging.formatters."org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter" | object | `{"format":"%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"}` | configuration of custom colorful formatter |
+| issuerservice.logging.formatters."org.eclipse.tractusx.monitor.formatter.ColorfulFormatter" | object | `{"format":"%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"}` | configuration of custom colorful formatter |
 | issuerservice.logging.handlers | list | `["java.util.logging.ConsoleHandler","java.util.logging.FileHandler"]` | List of handlers to use in the logger |
-| issuerservice.logging.handlersConfig."java.util.logging.ConsoleHandler" | object | `{"formatter":"org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter","level":"FINE"}` | Console handler configuration |
+| issuerservice.logging.handlersConfig."java.util.logging.ConsoleHandler" | object | `{"formatter":"org.eclipse.tractusx.monitor.formatter.ColorfulFormatter","level":"FINE"}` | Console handler configuration |
 | issuerservice.logging.handlersConfig."java.util.logging.FileHandler".append | bool | `true` | Append logs to the file or create new file every deployment |
 | issuerservice.logging.handlersConfig."java.util.logging.FileHandler".count | int | `1` | Number of files to use in log file rotation |
-| issuerservice.logging.handlersConfig."java.util.logging.FileHandler".formatter | string | `"org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter"` | Formatter to use in handler, formatter must be set in identityhub.logging.formatters |
+| issuerservice.logging.handlersConfig."java.util.logging.FileHandler".formatter | string | `"org.eclipse.tractusx.monitor.formatter.ColorfulFormatter"` | Formatter to use in handler, formatter must be set in identityhub.logging.formatters |
 | issuerservice.logging.handlersConfig."java.util.logging.FileHandler".level | string | `"FINE"` | Log level of handler |
 | issuerservice.logging.handlersConfig."java.util.logging.FileHandler".limit | int | `0` | Limit of bytes to write before log file rotation |
 | issuerservice.logging.handlersConfig."java.util.logging.FileHandler".pattern | string | `"/app/logs/identityhub.log"` | Path where the log is created, must be the same path as the logging.path values |

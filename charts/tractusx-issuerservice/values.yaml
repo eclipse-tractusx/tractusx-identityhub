@@ -302,12 +302,12 @@ issuerservice:
       # -- Console handler configuration
       java.util.logging.ConsoleHandler:
         level: FINE
-        formatter: org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter
+        formatter: org.eclipse.tractusx.monitor.formatter.ColorfulFormatter
       java.util.logging.FileHandler:
         # -- Log level of handler
         level: FINE
         # -- Formatter to use in handler, formatter must be set in identityhub.logging.formatters
-        formatter: org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter
+        formatter: org.eclipse.tractusx.monitor.formatter.ColorfulFormatter
         # -- Path where the log is created, must be the same path as the logging.path values
         pattern: /app/logs/identityhub.log
         # -- Limit of bytes to write before log file rotation
@@ -318,7 +318,7 @@ issuerservice:
         append: true
     formatters:
       # -- configuration of custom colorful formatter
-      org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter:
+      org.eclipse.tractusx.monitor.formatter.ColorfulFormatter:
         format: "%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"
     # -- root log level
     level: INFO
@@ -341,9 +341,9 @@ issuerservice:
       .level=INFO
       org.eclipse.edc.level=INFO
       handlers=java.util.logging.ConsoleHandler
-      java.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter
+      java.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.monitor.formatter.ColorfulFormatter
       java.util.logging.ConsoleHandler.level=ALL
-      org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s
+      org.eclipse.tractusx.monitor.formatter.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s
   # [node selector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector) to constrain pods to nodes
   nodeSelector: {}
   # [tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) to configure preferred nodes
