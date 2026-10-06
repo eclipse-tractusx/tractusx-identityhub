@@ -158,8 +158,6 @@ backend:
         # -- EDC endpoints exposed by this ingress resource
         endpoints:
           - identity
-          - accounts
-          - version
         # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
         className: ""
         # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
