@@ -8,7 +8,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../tractusx-identityhub | backend(tractusx-identityhub) | v0.4.1 |
+| file://../tractusx-identityhub | backend(tractusx-identityhub) | v0.4.2 |
 
 ## Values
 
@@ -22,6 +22,16 @@ A Helm chart for Kubernetes
 | backend.enabled | bool | `false` |  |
 | backend.fullnameOverride | string | `""` |  |
 | backend.identityhub.didweb | object | `{"https":false}` | Whether web DIDs should be interpreted as HTTPS or HTTP |
+| backend.identityhub.httpRoutes[0].annotations | object | `{}` | Additional HTTPRoute annotations to add |
+| backend.identityhub.httpRoutes[0].enabled | bool | `false` |  |
+| backend.identityhub.httpRoutes[0].endpoints | list | `["credentials","did","sts"]` | IdentityHub endpoints exposed by this HTTPRoute resource |
+| backend.identityhub.httpRoutes[0].hostname | string | `"identityhub.presentation.local"` | The hostname to be used to match incoming traffic |
+| backend.identityhub.httpRoutes[0].parentRefs | list | `[]` | Gateway parentRefs that this HTTPRoute attaches to |
+| backend.identityhub.httpRoutes[1].annotations | object | `{}` | Additional HTTPRoute annotations to add |
+| backend.identityhub.httpRoutes[1].enabled | bool | `false` |  |
+| backend.identityhub.httpRoutes[1].endpoints | list | `["identity"]` | IdentityHub endpoints exposed by this HTTPRoute resource |
+| backend.identityhub.httpRoutes[1].hostname | string | `"identityhub.identity.local"` | The hostname to be used to match incoming traffic |
+| backend.identityhub.httpRoutes[1].parentRefs | list | `[]` | Gateway parentRefs that this HTTPRoute attaches to |
 | backend.identityhub.iatp | object | `{"sts":{"oauth":{"client":{"enabled":true,"id":"did:web:identityhub.presentation.local","secret":"testme","secret_alias":"sts-secret","x_api_key":"ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"}}}}` | Initial participant context configuration |
 | backend.identityhub.iatp.sts.oauth.client.enabled | bool | `true` | Enable participant context client configuration |
 | backend.identityhub.iatp.sts.oauth.client.id | string | `"did:web:identityhub.presentation.local"` | Client ID // Did of the initial participant |
@@ -46,7 +56,7 @@ A Helm chart for Kubernetes
 | backend.identityhub.ingresses[1].certManager.issuer | string | `""` | If preset enables certificate generation via cert-manager namespace scoped issuer |
 | backend.identityhub.ingresses[1].className | string | `""` | Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use |
 | backend.identityhub.ingresses[1].enabled | bool | `false` |  |
-| backend.identityhub.ingresses[1].endpoints | list | `["identity","accounts","version"]` | EDC endpoints exposed by this ingress resource |
+| backend.identityhub.ingresses[1].endpoints | list | `["identity"]` | EDC endpoints exposed by this ingress resource |
 | backend.identityhub.ingresses[1].hostname | string | `"identityhub.identity.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
 | backend.identityhub.ingresses[1].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
 | backend.identityhub.ingresses[1].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
@@ -56,6 +66,11 @@ A Helm chart for Kubernetes
 | backend.nameOverride | string | `"identityhub-backend"` |  |
 | frontend.enabled | bool | `true` |  |
 | frontend.fullnameOverride | string | `""` |  |
+| frontend.httpRoutes[0].annotations | object | `{}` | Additional HTTPRoute annotations to add |
+| frontend.httpRoutes[0].enabled | bool | `false` |  |
+| frontend.httpRoutes[0].hostname | string | `"identityhub-frontend.local"` | The hostname to be used to match incoming traffic |
+| frontend.httpRoutes[0].parentRefs | list | `[]` | Gateway parentRefs that this HTTPRoute attaches to |
+| frontend.httpRoutes[0].paths | list | `["/"]` | Frontend paths exposed by this HTTPRoute resource |
 | frontend.image.pullPolicy | string | `"IfNotPresent"` | [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use |
 | frontend.image.repository | string | `"tractusx/identityhub-frontend"` |  |
 | frontend.image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion |

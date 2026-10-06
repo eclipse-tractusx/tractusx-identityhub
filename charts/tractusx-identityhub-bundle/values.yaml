@@ -76,6 +76,23 @@ frontend:
         hosts:
           - *frontendHostname
 
+  ## Gateway API HTTPRoute declarations to expose the network service.
+  ## TLS is handled at the Gateway level, not per-route.
+  httpRoutes:
+    - enabled: false
+      # -- The hostname to be used to match incoming traffic
+      hostname: "identityhub-frontend.local"
+      # -- Additional HTTPRoute annotations to add
+      annotations: {}
+      # -- Frontend paths exposed by this HTTPRoute resource
+      paths:
+        - /
+      # -- Gateway parentRefs that this HTTPRoute attaches to
+      parentRefs: []
+      #   - name: gateway
+      #     namespace: gateway-system
+      #     sectionName: https
+
   resources:
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
@@ -172,6 +189,45 @@ backend:
           issuer: ""
           # -- If preset enables certificate generation via cert-manager cluster-wide issuer
           clusterIssuer: ""
+    ## Gateway API HTTPRoute declarations to expose the network service.
+    ## TLS is handled at the Gateway level, not per-route.
+    httpRoutes:
+      ## Public / Internet facing HTTPRoute for the Presentation API
+      - enabled: false
+        # -- The hostname to be used to match incoming traffic
+        hostname: "identityhub.presentation.local"
+        # -- Additional HTTPRoute annotations to add
+        annotations: {}
+        # -- IdentityHub endpoints exposed by this HTTPRoute resource
+        endpoints:
+          - credentials
+          - did
+          - sts
+        # -- Gateway parentRefs that this HTTPRoute attaches to
+        parentRefs: []
+        #   - name: gateway
+        #     namespace: gateway-system
+        #     sectionName: http
+        #   - name: gateway
+        #     namespace: gateway-system
+        #     sectionName: https
+      ## HTTPRoute for the Identity API, should not be internet facing
+      - enabled: false
+        # -- The hostname to be used to match incoming traffic
+        hostname: "identityhub.identity.local"
+        # -- Additional HTTPRoute annotations to add
+        annotations: {}
+        # -- IdentityHub endpoints exposed by this HTTPRoute resource
+        endpoints:
+          - identity
+        # -- Gateway parentRefs that this HTTPRoute attaches to
+        parentRefs: []
+        #   - name: gateway
+        #     namespace: gateway-system
+        #     sectionName: http
+        #   - name: gateway
+        #     namespace: gateway-system
+        #     sectionName: https
     # -- declare where to mount [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) into the container
     volumeMounts: []
     # -- [volume](https://kubernetes.io/docs/concepts/storage/volumes/) directories
