@@ -1,6 +1,6 @@
 # tractusx-identityhub
 
-![Version: v0.4.1](https://img.shields.io/badge/Version-v0.4.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.1](https://img.shields.io/badge/AppVersion-0.4.1-informational?style=flat-square)
+![Version: v0.4.2](https://img.shields.io/badge/Version-v0.4.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.1](https://img.shields.io/badge/AppVersion-0.4.1-informational?style=flat-square)
 
 A Helm chart for Tractus-X IdentityHub, that deploys the IdentityHub with postgresql and vault charts for persistance
 
@@ -66,6 +66,16 @@ helm install identityhub tractusx-dev/tractusx-identityhub
 | identityhub.envConfigMapNames | list | `[]` |  |
 | identityhub.envSecretNames | list | `[]` |  |
 | identityhub.envValueFrom | object | `{}` |  |
+| identityhub.httpRoutes[0].annotations | object | `{}` | Additional HTTPRoute annotations to add |
+| identityhub.httpRoutes[0].enabled | bool | `false` |  |
+| identityhub.httpRoutes[0].endpoints | list | `["credentials","did","sts"]` | IdentityHub endpoints exposed by this HTTPRoute resource |
+| identityhub.httpRoutes[0].hostname | string | `"identityhub.presentation.local"` | The hostname to be used to match incoming traffic |
+| identityhub.httpRoutes[0].parentRefs | list | `[]` | Gateway parentRefs that this HTTPRoute attaches to |
+| identityhub.httpRoutes[1].annotations | object | `{}` | Additional HTTPRoute annotations to add |
+| identityhub.httpRoutes[1].enabled | bool | `false` |  |
+| identityhub.httpRoutes[1].endpoints | list | `["identity"]` | IdentityHub endpoints exposed by this HTTPRoute resource |
+| identityhub.httpRoutes[1].hostname | string | `"identityhub.identity.local"` | The hostname to be used to match incoming traffic |
+| identityhub.httpRoutes[1].parentRefs | list | `[]` | Gateway parentRefs that this HTTPRoute attaches to |
 | identityhub.iatp | object | `{"sts":{"oauth":{"client":{"enabled":false,"id":"did:web:identityhub.presentation.local","secret":"testme","secret_alias":"sts-secret","x_api_key":"ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"}}}}` | Initial participant context configuration |
 | identityhub.iatp.sts.oauth.client.enabled | bool | `false` | Enable participant context client configuration |
 | identityhub.iatp.sts.oauth.client.id | string | `"did:web:identityhub.presentation.local"` | Client ID // Did of the initial participant |

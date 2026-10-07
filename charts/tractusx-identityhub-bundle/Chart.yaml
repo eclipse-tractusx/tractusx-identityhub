@@ -3,6 +3,7 @@
 #
 #  Copyright (c) 2026 ARENA2036 e.V.
 #  Copyright (c) 2025 Contributors to the Eclipse Foundation
+#  Copyright (c) 2026 Hochschule für Technik und Wirtschaft Dresden
 #
 #  See the NOTICE file(s) distributed with this work for additional
 #  information regarding copyright ownership.
@@ -50,5 +51,5 @@ dependencies:
   - name: tractusx-identityhub
     repository: file://../tractusx-identityhub
     alias: backend
-    version: "v0.4.1"
+    version: "v0.4.2"
     condition: backend.enabled

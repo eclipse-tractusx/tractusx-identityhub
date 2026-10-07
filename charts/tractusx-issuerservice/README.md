@@ -1,6 +1,6 @@
 # tractusx-issuerservice
 
-![Version: v0.4.1](https://img.shields.io/badge/Version-v0.4.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.1](https://img.shields.io/badge/AppVersion-0.4.1-informational?style=flat-square)
+![Version: v0.4.2](https://img.shields.io/badge/Version-v0.4.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.1](https://img.shields.io/badge/AppVersion-0.4.1-informational?style=flat-square)
 
 A Helm chart for Tractus-X IssuerService, that deploys the IssuerService with postgresql and vault charts for persistance
 
@@ -65,6 +65,16 @@ helm install issuerservice tractusx-dev/tractusx-issuerservice
 | issuerservice.envConfigMapNames | list | `[]` |  |
 | issuerservice.envSecretNames | list | `[]` |  |
 | issuerservice.envValueFrom | object | `{}` |  |
+| issuerservice.httpRoutes[0].annotations | object | `{}` | Additional HTTPRoute annotations to add |
+| issuerservice.httpRoutes[0].enabled | bool | `false` |  |
+| issuerservice.httpRoutes[0].endpoints | list | `["issuance","sts","did","statuslist"]` | IssuerService endpoints exposed by this HTTPRoute resource |
+| issuerservice.httpRoutes[0].hostname | string | `"issuerservice.issuance.local"` | The hostname to be used to match incoming traffic |
+| issuerservice.httpRoutes[0].parentRefs | list | `[]` | Gateway parentRefs that this HTTPRoute attaches to |
+| issuerservice.httpRoutes[1].annotations | object | `{}` | Additional HTTPRoute annotations to add |
+| issuerservice.httpRoutes[1].enabled | bool | `false` |  |
+| issuerservice.httpRoutes[1].endpoints | list | `["issueradmin","identity"]` | IssuerService endpoints exposed by this HTTPRoute resource |
+| issuerservice.httpRoutes[1].hostname | string | `"issuerservice.did.local"` | The hostname to be used to match incoming traffic |
+| issuerservice.httpRoutes[1].parentRefs | list | `[]` | Gateway parentRefs that this HTTPRoute attaches to |
 | issuerservice.image.pullPolicy | string | `"IfNotPresent"` | [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use |
 | issuerservice.image.repository | string | `"tractusx/issuerservice"` |  |
 | issuerservice.image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion |
