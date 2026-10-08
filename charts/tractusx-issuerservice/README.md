@@ -172,16 +172,11 @@ helm install issuerservice tractusx-dev/tractusx-issuerservice
 | postgresql.image.repository | string | `"postgres"` | PostgreSQL image repository |
 | postgresql.image.tag | string | `"18.0@sha256:1ffc019dae94eca6b09a49ca67d37398951346de3c3d0cfe23d8d4ca33da83fb"` | PostgreSQL image tag |
 | postgresql.jdbcUrl | string | `"jdbc:postgresql://{{ .Release.Name }}-postgresql:5432/issuer"` |  |
-| postgresql.primary.persistence.enabled | bool | `false` |  |
-| postgresql.primary.resources.limits.cpu | int | `1` |  |
-| postgresql.primary.resources.limits.memory | string | `"1Gi"` |  |
-| postgresql.primary.resources.requests.cpu | string | `"250m"` |  |
-| postgresql.primary.resources.requests.memory | string | `"256Mi"` |  |
-| postgresql.readReplicas.persistence.enabled | bool | `false` |  |
-| postgresql.readReplicas.resources.limits.cpu | string | `"500Mi"` |  |
-| postgresql.readReplicas.resources.limits.memory | string | `"1Gi"` |  |
-| postgresql.readReplicas.resources.requests.cpu | string | `"250m"` |  |
-| postgresql.readReplicas.resources.requests.memory | string | `"256Mi"` |  |
+| postgresql.persistence.enabled | bool | `false` |  |
+| postgresql.resources.limits.cpu | int | `1` |  |
+| postgresql.resources.limits.memory | string | `"1Gi"` |  |
+| postgresql.resources.requests.cpu | string | `"250m"` |  |
+| postgresql.resources.requests.memory | string | `"256Mi"` |  |
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.imagePullSecrets | list | `[]` | Existing image pull secret bound to the service account to use to [obtain the container image from private registries](https://kubernetes.io/docs/concepts/containers/images/#using-a-private-registry) |
