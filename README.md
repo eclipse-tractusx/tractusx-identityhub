@@ -8,7 +8,7 @@
 [![Contributors][contributors-shield]][contributors-url]
 [![Stars][stars-shield]][stars-url]
 
-## Current EDC Version: 0.17.0
+## Current EDC Version: 0.18.0
 
 Welcome Contributor! Feel free to join our Identity Hub Weeklys if you want to contribute, or our office hours.
 You will find the links here: https://eclipse-tractusx.github.io/community/open-meetings/#Identity%20Hub%20Weekly
