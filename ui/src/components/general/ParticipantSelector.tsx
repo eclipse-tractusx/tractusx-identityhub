@@ -25,19 +25,19 @@ import { accentColors } from '../../theme/darkCardStyles';
 
 const stateLabel = (state?: number): string => {
     switch (state) {
-        case 0: return 'Created';
-        case 1: return 'Active';
-        case 2: return 'Deactivated';
-        default: return 'Active';
+        case 100: return 'Created';
+        case 200: return 'Active';
+        case 300: return 'Deactivated';
+        default: return 'Unknown';
     }
 };
 
 const stateColor = (state?: number): string => {
     switch (state) {
-        case 1: return '#A8C556';
-        case 0: return '#E6A817';
-        case 2: return '#FF5A5A';
-        default: return '#A8C556';
+        case 200: return '#A8C556';
+        case 100: return '#E6A817';
+        case 300: return '#FF5A5A';
+        default: return '#9E9E9E';
     }
 };
 

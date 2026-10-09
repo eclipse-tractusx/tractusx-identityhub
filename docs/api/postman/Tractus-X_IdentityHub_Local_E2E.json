@@ -1,8 +1,8 @@
 {
   "info": {
-    "name": "Tractus-X IdentityHub \u00b7 Local E2E Flow (DCP)",
+    "name": "Tractus-X IdentityHub · Local E2E Flow (DCP)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "End-to-end DCP credential **issuance**, **presentation** and **revocation** against a locally running Tractus-X IdentityHub + IssuerService (EDC 0.17.0).\n\n## Prerequisites\n1. Build the jars and start the stack (note the two different working directories):\n   - from the **repo root**: `./gradlew shadowJar`\n   - from **`deployment/docker/`**: `docker compose --profile sql up -d --build`\n2. Copy the two super-user API keys from the startup logs into the collection variables `IH_SUPERUSER_KEY` and `IS_SUPERUSER_KEY`:\n   - `docker compose --profile sql logs identityhub | grep \"API Key\"`\n   - `docker compose --profile sql logs issuerservice | grep \"API Key\"`\n\n**That's all.** Every other variable is either a working default for the compose stack or is captured automatically by test scripts as you execute the folders in order (00 \u2192 07). The whole collection also runs unattended in the Collection Runner or newman.\n\n## Re-running\n- A full Collection Runner / newman run **includes 99 \u00b7 Cleanup**, so the stack ends without the flow's participants. To inspect state afterwards, run folders individually and skip 99.\n- Wait **~10 seconds** between full runs: participants are re-created with fresh keys, and the runtimes cache resolved DID documents for 10 s \u2014 an immediate re-run fails signature checks against the stale cached keys (issuance ERROR / presentation 401).\n- Holder-registry rows survive cleanup (no delete API). Re-running with the **same** variables is fine (the 409 is tolerated), but changing `HOLDER_DID` while keeping the same `HOLDER_BPN` on a used stack fails issuance \u2014 the surviving row still maps the BPN to the old DID. Reset the stack (`docker compose --profile sql down -v`) or change `HOLDER_BPN` too.\n\n## EDC 0.17.0 gotchas encoded in this collection\n- URL path segments take the **plain** `participantContextId` \u2014 base64url-encoded ids return 404 (IH #937). Only the API-key **prefix** is still base64url-encoded.\n- Presentation scopes must use the Tractus-X aliases (`org.eclipse.tractusx.vc.type` / `org.eclipse.dspace.dcp.vc.type`); the upstream `org.eclipse.edc.vc.type` alias is rejected.\n\n## Adapting to another deployment (Helm/ingress)\nChange the `*_URL` collection variables to your ingress hosts, and the `*_INTERNAL_*` / `*_DID` variables to hostnames the two runtimes can reach **from inside the cluster**.\n\n## Why the `sql` profile (or the persistence charts) is required\nThe issuance flow uses the `database` attestation type, which only exists in the SQL runtimes \u2014 the `*-memory` runtimes reject it with `Unknown attestation type: database`, so the flow cannot complete there.\n"
+    "description": "End-to-end DCP credential **issuance**, **presentation** and **revocation** against a locally running Tractus-X IdentityHub + IssuerService (EDC 0.18.0).\n\n## Prerequisites\n1. Build the jars and start the stack (note the two different working directories):\n   - from the **repo root**: `./gradlew shadowJar`\n   - from **`deployment/docker/`**: `docker compose --profile sql up -d --build`\n2. Copy the two super-user API keys from the startup logs into the collection variables `IH_SUPERUSER_KEY` and `IS_SUPERUSER_KEY`:\n   - `docker compose --profile sql logs identityhub | grep \"API Key\"`\n   - `docker compose --profile sql logs issuerservice | grep \"API Key\"`\n\n**That's all.** Every other variable is either a working default for the compose stack or is captured automatically by test scripts as you execute the folders in order (00 → 07). The whole collection also runs unattended in the Collection Runner or newman.\n\n## Re-running\n- A full Collection Runner / newman run **includes 99 · Cleanup**, so the stack ends without the flow's participants. To inspect state afterwards, run folders individually and skip 99.\n- Wait **~10 seconds** between full runs: participants are re-created with fresh keys, and the runtimes cache resolved DID documents for 10 s — an immediate re-run fails signature checks against the stale cached keys (issuance ERROR / presentation 401).\n- Holder-registry rows survive cleanup (no delete API). Re-running with the **same** variables is fine (the 409 is tolerated), but changing `HOLDER_DID` while keeping the same `HOLDER_BPN` on a used stack fails issuance — the surviving row still maps the BPN to the old DID. Use a fresh isolated test stack or change `HOLDER_BPN` too.\n\n## Management API and credential conventions\n- URL path segments take the **plain** `participantContextId` — base64url-encoded ids return 404 (IH #937). The API-key **prefix** remains separately Base64-encoded; use the returned key unchanged.\n- Presentation scopes must use the Tractus-X aliases (`org.eclipse.tractusx.vc.type` / `org.eclipse.dspace.dcp.vc.type`); the upstream `org.eclipse.edc.vc.type` alias is rejected.\n\n## Adapting to another deployment (Helm/ingress)\nChange the `*_URL` collection variables to your ingress hosts, and the `*_INTERNAL_*` / `*_DID` variables to hostnames the two runtimes can reach **from inside the cluster**.\n\n## Why the `sql` profile (or the persistence charts) is required\nThe issuance flow uses the `database` attestation type, which only exists in the SQL runtimes — the `*-memory` runtimes reject it with `Unknown attestation type: database`, so the flow cannot complete there.\n"
   },
   "variable": [
     {
@@ -200,8 +200,8 @@
   ],
   "item": [
     {
-      "name": "00 \u00b7 Health",
-      "description": "Smoke checks. Both runtimes expose an anonymous health endpoint on their default API port. Run these first \u2014 everything else assumes both containers are up.",
+      "name": "00 · Health",
+      "description": "Smoke checks. Both runtimes expose an anonymous health endpoint on their default API port. Run these first — everything else assumes both containers are up.",
       "item": [
         {
           "name": "IdentityHub Health",
@@ -255,7 +255,7 @@
             "method": "GET",
             "header": [],
             "url": "{{IH_DEFAULT_URL}}/v1/version",
-            "description": "Version metadata of every API context. NOTE: in EDC 0.17.0 this lives on the DEFAULT context \u2014 there is no dedicated version port and `web.http.version.*` settings are ignored by the runtime."
+            "description": "Version metadata of every API context. NOTE: in EDC 0.17.0 this lives on the DEFAULT context — there is no dedicated version port and `web.http.version.*` settings are ignored by the runtime."
           },
           "event": [
             {
@@ -302,8 +302,8 @@
       ]
     },
     {
-      "name": "01 \u00b7 Issuer Setup",
-      "description": "Creates the ParticipantContext that acts as the credential ISSUER on the IssuerService. This generates an EC P-256 keypair, publishes a did:web document with an `IssuerService` service endpoint (the address the holder's IdentityHub will call over DCP), and returns a fresh API key + STS client secret, which the scripts capture for all later requests.\n\nNOTE (EDC 0.17.0): the URL path segments use the PLAIN participant id \u2014 base64url-encoded ids in paths return 404 since IH #937.",
+      "name": "01 · Issuer Setup",
+      "description": "Creates the ParticipantContext that acts as the credential ISSUER on the IssuerService. This generates an EC P-256 keypair, publishes a did:web document with an `IssuerService` service endpoint (the address the holder's IdentityHub will call over DCP), and returns a fresh API key + STS client secret, which the scripts capture for all later requests.\n\nNOTE (EDC 0.17.0): the URL path segments use the PLAIN participant id — base64url-encoded ids in paths return 404 since IH #937.",
       "item": [
         {
           "name": "Create Issuer ParticipantContext",
@@ -320,11 +320,11 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{IS_IDENTITY_URL}}/v1alpha/participants",
-            "description": "Creates + activates the issuer participant. Response contains `apiKey` (auth for the IssuerAdmin API) and `clientSecret` (STS client credentials) \u2014 both captured automatically.\n\nRe-running against a non-fresh stack returns 409: run '99 \u00b7 Cleanup' first or reset with `docker compose --profile sql down -v`.",
+            "url": "{{IS_IDENTITY_URL}}/v1beta/participants",
+            "description": "Creates + activates the issuer participant. Response contains `apiKey` (auth for the IssuerAdmin API) and `clientSecret` (STS client credentials) — both captured automatically.\n\nRe-running against a non-fresh stack returns 409: run '99 · Cleanup' first or reset with `docker compose --profile sql down -v`.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"active\": true,\n  \"did\": \"{{ISSUER_DID}}\",\n  \"key\": {\n    \"keyGeneratorParams\": {\n      \"algorithm\": \"Ec\",\n      \"curve\": \"secp256r1\"\n    },\n    \"keyId\": \"{{ISSUER_DID}}#key-1\",\n    \"type\": \"JsonWebKey2020\",\n    \"privateKeyAlias\": \"issuer-privatekey-alias\"\n  },\n  \"participantContextId\": \"{{ISSUER_CONTEXT_ID}}\",\n  \"roles\": [\n    \"admin\"\n  ],\n  \"serviceEndpoints\": [\n    {\n      \"id\": \"issuer-service-1\",\n      \"type\": \"IssuerService\",\n      \"serviceEndpoint\": \"{{ISSUER_INTERNAL_ISSUANCE_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}\"\n    }\n  ],\n  \"apiKeyAlias\": \"issuer-api-key-alias\"\n}",
+              "raw": "{\n  \"active\": true,\n  \"did\": \"{{ISSUER_DID}}\",\n  \"key\": {\n    \"keyGeneratorParams\": {\n      \"algorithm\": \"Ec\",\n      \"curve\": \"secp256r1\"\n    },\n    \"keyId\": \"{{ISSUER_DID}}#key-1\",\n    \"type\": \"JsonWebKey2020\",\n    \"privateKeyAlias\": \"issuer-privatekey-alias\"\n  },\n  \"participantContextId\": \"{{ISSUER_CONTEXT_ID}}\",\n  \"serviceEndpoints\": [\n    {\n      \"id\": \"issuer-service-1\",\n      \"type\": \"IssuerService\",\n      \"serviceEndpoint\": \"{{ISSUER_INTERNAL_ISSUANCE_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}\"\n    }\n  ],\n  \"apiKeyAlias\": \"issuer-api-key-alias\",\n  \"scopes\": [\n    \"identity-api:write\",\n    \"issuer-admin-api:write\"\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -350,7 +350,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "if (pm.response.code === 409) {",
-                  "    console.warn('Participant already exists \u2014 run the 99 \u00b7 Cleanup folder, or reset the stack: docker compose --profile sql down -v');",
+                  "    console.warn('Participant already exists — run the 99 · Cleanup folder, or reset the stack: docker compose --profile sql down -v');",
                   "}",
                   "pm.test('Issuer ParticipantContext created (200)', function () { pm.response.to.have.status(200); });",
                   "var json = pm.response.json();",
@@ -374,8 +374,8 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IS_IDENTITY_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}",
-            "description": "Verifies the freshly captured issuer API key works and the context is active. Note: unlike the IdentityHub, the IssuerService runtime does NOT ship the DID management API (`/dids/*` returns 404 here \u2014 it is not part of the upstream issuer BOM), so the issuer's DID publication is proven implicitly when the holder resolves it during the DCP flow in folder 04."
+            "url": "{{IS_IDENTITY_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}",
+            "description": "Verifies the freshly captured issuer API key works and the context is active. Note: unlike the IdentityHub, the IssuerService runtime does NOT ship the DID management API (`/dids/*` returns 404 here — it is not part of the upstream issuer BOM), so the issuer's DID publication is proven implicitly when the holder resolves it during the DCP flow in folder 04."
           },
           "event": [
             {
@@ -407,8 +407,8 @@
       ]
     },
     {
-      "name": "02 \u00b7 Holder Setup",
-      "description": "Creates the ParticipantContext that acts as the credential HOLDER (wallet) on the IdentityHub. Its did:web document advertises a `CredentialService` endpoint \u2014 that is where the IssuerService delivers issued credentials during the async DCP flow.",
+      "name": "02 · Holder Setup",
+      "description": "Creates the ParticipantContext that acts as the credential HOLDER (wallet) on the IdentityHub. Its did:web document advertises a `CredentialService` endpoint — that is where the IssuerService delivers issued credentials during the async DCP flow.",
       "item": [
         {
           "name": "Create Holder ParticipantContext",
@@ -425,11 +425,11 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants",
+            "url": "{{IH_IDENTITY_URL}}/v1beta/participants",
             "description": "Creates + activates the holder participant on the IdentityHub. The captured `clientSecret` is what the STS uses in folder 05 to mint self-issued tokens on the holder's behalf.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"active\": true,\n  \"did\": \"{{HOLDER_DID}}\",\n  \"key\": {\n    \"keyGeneratorParams\": {\n      \"algorithm\": \"Ec\",\n      \"curve\": \"secp256r1\"\n    },\n    \"keyId\": \"{{HOLDER_DID}}#key-1\",\n    \"type\": \"JsonWebKey2020\",\n    \"privateKeyAlias\": \"holder-privatekey-alias\"\n  },\n  \"participantContextId\": \"{{HOLDER_CONTEXT_ID}}\",\n  \"roles\": [],\n  \"serviceEndpoints\": [\n    {\n      \"id\": \"holder-credential-service-1\",\n      \"type\": \"CredentialService\",\n      \"serviceEndpoint\": \"{{HOLDER_INTERNAL_CREDENTIALS_URL}}/v1/participants/{{HOLDER_CONTEXT_ID}}\"\n    }\n  ],\n  \"apiKeyAlias\": \"holder-api-key-alias\"\n}",
+              "raw": "{\n  \"active\": true,\n  \"did\": \"{{HOLDER_DID}}\",\n  \"key\": {\n    \"keyGeneratorParams\": {\n      \"algorithm\": \"Ec\",\n      \"curve\": \"secp256r1\"\n    },\n    \"keyId\": \"{{HOLDER_DID}}#key-1\",\n    \"type\": \"JsonWebKey2020\",\n    \"privateKeyAlias\": \"holder-privatekey-alias\"\n  },\n  \"participantContextId\": \"{{HOLDER_CONTEXT_ID}}\",\n  \"serviceEndpoints\": [\n    {\n      \"id\": \"holder-credential-service-1\",\n      \"type\": \"CredentialService\",\n      \"serviceEndpoint\": \"{{HOLDER_INTERNAL_CREDENTIALS_URL}}/v1/participants/{{HOLDER_CONTEXT_ID}}\"\n    }\n  ],\n  \"apiKeyAlias\": \"holder-api-key-alias\",\n  \"scopes\": [\n    \"identity-api:write\"\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -455,7 +455,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "if (pm.response.code === 409) {",
-                  "    console.warn('Participant already exists \u2014 run the 99 \u00b7 Cleanup folder, or reset the stack: docker compose --profile sql down -v');",
+                  "    console.warn('Participant already exists — run the 99 · Cleanup folder, or reset the stack: docker compose --profile sql down -v');",
                   "}",
                   "pm.test('Holder ParticipantContext created (200)', function () { pm.response.to.have.status(200); });",
                   "var json = pm.response.json();",
@@ -483,7 +483,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants/{{HOLDER_CONTEXT_ID}}/dids/state",
+            "url": "{{IH_IDENTITY_URL}}/v1beta/participants/{{HOLDER_CONTEXT_ID}}/dids/state",
             "description": "Expected: PUBLISHED (see 01 for why we don't fetch did.json from the host). Retries itself a few times since publication is asynchronous.",
             "body": {
               "mode": "raw",
@@ -504,7 +504,7 @@
                   "if (!pm.variables.get('HOLDER_API_KEY')) {",
                   "    throw new Error('Collection variable HOLDER_API_KEY is not set. Run \"Create Holder ParticipantContext\" first.');",
                   "}",
-                  "// publication is async \u2014 give it a moment",
+                  "// publication is async — give it a moment",
                   "setTimeout(function () {}, 1000);"
                 ]
               }
@@ -516,7 +516,7 @@
                 "exec": [
                   "var attempts = parseInt(pm.collectionVariables.get('POLL_ATTEMPTS') || '0', 10);",
                   "if (pm.response.code === 404 && attempts < 5) {",
-                  "    console.log('DID not published yet \u2014 retrying (' + (attempts + 1) + '/5)');",
+                  "    console.log('DID not published yet — retrying (' + (attempts + 1) + '/5)');",
                   "    pm.collectionVariables.set('POLL_ATTEMPTS', String(attempts + 1));",
                   "    postman.setNextRequest('Verify Holder DID is Published');",
                   "} else {",
@@ -542,7 +542,7 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants/{{HOLDER_CONTEXT_ID}}/keypairs",
+            "url": "{{IH_IDENTITY_URL}}/v1beta/participants/{{HOLDER_CONTEXT_ID}}/keypairs",
             "description": "The keypair generated at participant creation signs the holder's self-issued tokens and presentations."
           },
           "event": [
@@ -565,8 +565,8 @@
       ]
     },
     {
-      "name": "03 \u00b7 Issuance Configuration (Issuer)",
-      "description": "Configures WHAT the issuer can issue and TO WHOM:\n1. an attestation (how holder claims are verified \u2014 here: a lookup in the internal `holders` DB table),\n2. a credential definition (credential type, format, validity and how attestation data maps into the credentialSubject),\n3. the holder registration (populates the `holders` table the attestation reads from).",
+      "name": "03 · Issuance Configuration (Issuer)",
+      "description": "Configures WHAT the issuer can issue and TO WHOM:\n1. an attestation (how holder claims are verified — here: a lookup in the internal `holders` DB table),\n2. a credential definition (credential type, format, validity and how attestation data maps into the credentialSubject),\n3. the holder registration (populates the `holders` table the attestation reads from).",
       "item": [
         {
           "name": "Create Attestation Definition",
@@ -583,7 +583,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/attestations",
+            "url": "{{IS_ADMIN_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/attestations",
             "description": "A `database` attestation reads holder rows from the issuer's own `holders` table at issuance time.",
             "body": {
               "mode": "raw",
@@ -633,11 +633,11 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentialdefinitions",
+            "url": "{{IS_ADMIN_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/credentialdefinitions",
             "description": "Defines the MembershipCredential: JWT format, 1 year validity, and mappings from `holders` table columns (`did`, `holder_id`) into the credentialSubject.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id\": \"{{CREDENTIAL_DEFINITION_ID}}\",\n  \"credentialType\": \"{{CREDENTIAL_TYPE}}\",\n  \"format\": \"VC1_0_JWT\",\n  \"jsonSchema\": \"{}\",\n  \"jsonSchemaUrl\": \"https://raw.githubusercontent.com/eclipse-tractusx/tractusx-profiles/main/cx/credentials/membership.credential.schema.json\",\n  \"attestations\": [\n    \"{{ATTESTATION_ID}}\"\n  ],\n  \"mappings\": [\n    {\n      \"input\": \"did\",\n      \"output\": \"credentialSubject.id\",\n      \"required\": true\n    },\n    {\n      \"input\": \"holder_id\",\n      \"output\": \"credentialSubject.holderIdentifier\",\n      \"required\": true\n    }\n  ],\n  \"validity\": 31536000\n}",
+              "raw": "{\n  \"id\": \"{{CREDENTIAL_DEFINITION_ID}}\",\n  \"credentialType\": \"{{CREDENTIAL_TYPE}}\",\n  \"format\": \"vc11-sl2021/jwt\",\n  \"jsonSchema\": \"{}\",\n  \"jsonSchemaUrl\": \"https://raw.githubusercontent.com/eclipse-tractusx/tractusx-profiles/main/cx/credentials/membership.credential.schema.json\",\n  \"attestations\": [\n    \"{{ATTESTATION_ID}}\"\n  ],\n  \"mappings\": [\n    {\n      \"input\": \"did\",\n      \"output\": \"credentialSubject.id\",\n      \"required\": true\n    },\n    {\n      \"input\": \"holder_id\",\n      \"output\": \"credentialSubject.holderIdentifier\",\n      \"required\": true\n    }\n  ],\n  \"validity\": 31536000\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -672,8 +672,8 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/holders",
-            "description": "Registers the IdentityHub participant as a known holder. The row this creates is exactly what the database attestation looks up when the credential request arrives. Holder registrations survive the 99 \u00b7 Cleanup folder (there is no delete API for them), so on a re-run 409 'already registered' is fine \u2014 BUT only with unchanged variables: the surviving row maps `holderId` (the BPN) to the DID it was first registered with. If you change `HOLDER_DID` and keep the same `HOLDER_BPN` on a used stack, issuance will fail against the stale mapping \u2014 reset the stack or change `HOLDER_BPN` as well.",
+            "url": "{{IS_ADMIN_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/holders",
+            "description": "Registers the IdentityHub participant as a known holder. The row this creates is exactly what the database attestation looks up when the credential request arrives. Holder registrations survive the 99 · Cleanup folder (there is no delete API for them), so on a re-run 409 'already registered' is fine — BUT only with unchanged variables: the surviving row maps `holderId` (the BPN) to the DID it was first registered with. If you change `HOLDER_DID` and keep the same `HOLDER_BPN` on a used stack, issuance will fail against the stale mapping — reset the stack or change `HOLDER_BPN` as well.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"did\": \"{{HOLDER_DID}}\",\n  \"holderId\": \"{{HOLDER_BPN}}\",\n  \"name\": \"local-holder\"\n}",
@@ -690,7 +690,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (pm.response.code === 409) { console.log('Holder already registered from a previous run \u2014 OK'); }",
+                  "if (pm.response.code === 409) { console.log('Holder already registered from a previous run — OK'); }",
                   "pm.test('Holder registered (201, or 409 on re-run)', function () {",
                   "    pm.expect([201, 409]).to.include(pm.response.code);",
                   "});"
@@ -704,7 +704,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{IS_ISSUANCE_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/metadata",
+            "url": "{{IS_ISSUANCE_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/metadata",
             "description": "Public (unauthenticated) DCP endpoint advertising which credentials this issuer offers. Verifies the credential definition is live."
           },
           "event": [
@@ -727,8 +727,8 @@
       ]
     },
     {
-      "name": "04 \u00b7 Request Credential (DCP Issuance)",
-      "description": "The holder asks the issuer for a credential. One API call triggers the whole asynchronous DCP protocol:\nIdentityHub resolves the issuer DID \u2192 finds the IssuerService endpoint \u2192 sends a signed CredentialRequestMessage \u2192 IssuerService verifies the token, evaluates the attestation, signs the credential and DELIVERS it back to the holder's CredentialService endpoint. Poll the status until it becomes ISSUED, then fetch the stored credential.",
+      "name": "04 · Request Credential (DCP Issuance)",
+      "description": "The holder asks the issuer for a credential. One API call triggers the whole asynchronous DCP protocol:\nIdentityHub resolves the issuer DID → finds the IssuerService endpoint → sends a signed CredentialRequestMessage → IssuerService verifies the token, evaluates the attestation, signs the credential and DELIVERS it back to the holder's CredentialService endpoint. Poll the status until it becomes ISSUED, then fetch the stored credential.",
       "item": [
         {
           "name": "Request Credential from Issuer",
@@ -745,11 +745,11 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants/{{HOLDER_CONTEXT_ID}}/credentials/request",
+            "url": "{{IH_IDENTITY_URL}}/v1beta/participants/{{HOLDER_CONTEXT_ID}}/credentials/request",
             "description": "`holderPid` is a client-chosen correlation id for THIS request (generated fresh each run by the pre-request script); poll the status endpoint with it. The `credentials` entries must match the credential definition: same id, type and format.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"issuerDid\": \"{{ISSUER_DID}}\",\n  \"holderPid\": \"{{HOLDER_REQUEST_ID}}\",\n  \"credentials\": [\n    {\n      \"id\": \"{{CREDENTIAL_DEFINITION_ID}}\",\n      \"type\": \"{{CREDENTIAL_TYPE}}\",\n      \"format\": \"VC1_0_JWT\"\n    }\n  ]\n}",
+              "raw": "{\n  \"issuerDid\": \"{{ISSUER_DID}}\",\n  \"holderPid\": \"{{HOLDER_REQUEST_ID}}\",\n  \"credentials\": [\n    {\n      \"id\": \"{{CREDENTIAL_DEFINITION_ID}}\",\n      \"type\": \"{{CREDENTIAL_TYPE}}\",\n      \"format\": \"vc11-sl2021/jwt\"\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -776,7 +776,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Credential request accepted (201) \u2014 issuance now runs asynchronously', function () { pm.response.to.have.status(201); });"
+                  "pm.test('Credential request accepted (201) — issuance now runs asynchronously', function () { pm.response.to.have.status(201); });"
                 ]
               }
             }
@@ -793,8 +793,8 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants/{{HOLDER_CONTEXT_ID}}/credentials/request/{{HOLDER_REQUEST_ID}}",
-            "description": "Issuance is asynchronous \u2014 expect REQUESTED for a few seconds, then ISSUED. In the Collection Runner / newman this request re-runs itself automatically (max 10 tries, 3 s apart). Running manually? Just re-send until the status is ISSUED. ERROR usually means DID resolution or attestation failed \u2014 check `docker compose --profile sql logs identityhub issuerservice`."
+            "url": "{{IH_IDENTITY_URL}}/v1beta/participants/{{HOLDER_CONTEXT_ID}}/credentials/request/{{HOLDER_REQUEST_ID}}",
+            "description": "Issuance is asynchronous — expect REQUESTED for a few seconds, then ISSUED. In the Collection Runner / newman this request re-runs itself automatically (max 10 tries, 3 s apart). Running manually? Just re-send until the status is ISSUED. ERROR usually means DID resolution or attestation failed — check `docker compose --profile sql logs identityhub issuerservice`."
           },
           "event": [
             {
@@ -840,7 +840,7 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants/{{HOLDER_CONTEXT_ID}}/credentials",
+            "url": "{{IH_IDENTITY_URL}}/v1beta/participants/{{HOLDER_CONTEXT_ID}}/credentials",
             "description": "Lists the holder's wallet. The test script decodes the credential JWT, prints the credentialSubject to the console and captures the ids needed by folder 06."
           },
           "event": [
@@ -866,7 +866,7 @@
                   "var st = vc.credentialStatus;",
                   "if (st) {",
                   "    st = Array.isArray(st) ? st[0] : st;",
-                  "    console.log('credentialStatus: ' + JSON.stringify(st));",
+                  "    // Do not print status-list payloads.",
                   "    // statusListCredential points at the container-internal hostname; keep only the id",
                   "    pm.collectionVariables.set('STATUSLIST_CREDENTIAL_ID', st.statusListCredential.split('/').pop());",
                   "}"
@@ -878,8 +878,8 @@
       ]
     },
     {
-      "name": "05 \u00b7 Present Credential (DCP Presentation)",
-      "description": "What a verifier (e.g. an EDC connector) does during the DCP presentation flow: obtain a self-issued token from the holder's STS, then query the holder's Credentials API for a Verifiable Presentation.\n\nIMPORTANT (Tractus-X flavor): scope strings must use the `org.eclipse.tractusx.vc.type` (or `org.eclipse.dspace.dcp.vc.type`) alias \u2014 the upstream `org.eclipse.edc.vc.type` alias is REJECTED by this distribution.",
+      "name": "05 · Present Credential (DCP Presentation)",
+      "description": "What a verifier (e.g. an EDC connector) does during the DCP presentation flow: obtain a self-issued token from the holder's STS, then query the holder's Credentials API for a Verifiable Presentation.\n\nIMPORTANT (Tractus-X flavor): scope strings must use the `org.eclipse.tractusx.vc.type` (or `org.eclipse.dspace.dcp.vc.type`) alias — the upstream `org.eclipse.edc.vc.type` alias is REJECTED by this distribution.",
       "item": [
         {
           "name": "Get STS Token (Self-Issued)",
@@ -957,7 +957,7 @@
               }
             ],
             "url": "{{IH_CREDENTIALS_URL}}/v1/participants/{{HOLDER_CONTEXT_ID}}/presentations/query",
-            "description": "DCP PresentationQueryMessage authenticated with the self-issued Bearer token. Returns a PresentationResponseMessage containing a signed Verifiable Presentation (JWT). Note this API is versioned `/v1/` (stable), unlike the management APIs (`/v1alpha/`).",
+            "description": "DCP PresentationQueryMessage authenticated with the self-issued Bearer token. Returns a PresentationResponseMessage containing a signed Verifiable Presentation (JWT). Note this API is versioned `/v1/` (stable), unlike the management APIs (`/v1beta/`).",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"@context\": [\n    \"https://w3id.org/dspace-dcp/v1.0/dcp.jsonld\"\n  ],\n  \"type\": \"PresentationQueryMessage\",\n  \"scope\": [\n    \"org.eclipse.tractusx.vc.type:{{CREDENTIAL_TYPE}}:read\"\n  ]\n}",
@@ -1007,8 +1007,8 @@
       ]
     },
     {
-      "name": "06 \u00b7 Credential Lifecycle (Issuer)",
-      "description": "Revocation management on the issuer side, backed by a BitstringStatusList credential with purpose `revocation`.\n\n\u26a0\ufe0f Revocation is PERMANENT: per the W3C Bitstring Status List model only `suspension` is reversible, and this stack provisions a revocation-purpose list. `suspend` and `resume` therefore both return 501 Not Implemented here \u2014 the final request demonstrates that on purpose. Re-run folder 04 to issue a fresh credential afterwards.",
+      "name": "06 · Credential Lifecycle (Issuer)",
+      "description": "Revocation management on the issuer side, backed by a BitstringStatusList credential with purpose `revocation`.\n\n⚠️ Revocation is PERMANENT: per the W3C Bitstring Status List model only `suspension` is reversible, and this stack provisions a revocation-purpose list. `suspend` and `resume` therefore both return 501 Not Implemented here — the final request demonstrates that on purpose. Re-run folder 04 to issue a fresh credential afterwards.",
       "item": [
         {
           "name": "Query Issued Credentials",
@@ -1025,8 +1025,8 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentials/query",
-            "description": "The issuer stores both the issued credential(s) AND its own BitstringStatusList credential \u2014 the test script picks the issued (non-status-list) one.",
+            "url": "{{IS_ADMIN_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/credentials/query",
+            "description": "The issuer stores both the issued credential(s) AND its own BitstringStatusList credential — the test script picks the issued (non-status-list) one.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"offset\": 0,\n  \"limit\": 50\n}",
@@ -1061,7 +1061,7 @@
                   "        return types.indexOf('BitstringStatusListCredential') === -1;",
                   "    });",
                   "    pm.expect(issued.length).to.be.above(0);",
-                  "    // several runs may have issued several credentials \u2014 take the newest",
+                  "    // several runs may have issued several credentials — take the newest",
                   "    issued.sort(function (a, b) {",
                   "        return new Date(b.credential.issuanceDate) - new Date(a.credential.issuanceDate);",
                   "    });",
@@ -1083,7 +1083,7 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentials/{{ISSUED_CREDENTIAL_ID}}/status",
+            "url": "{{IS_ADMIN_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/credentials/{{ISSUED_CREDENTIAL_ID}}/status",
             "description": "`status: null` means the credential is active (not on the revocation list)."
           },
           "event": [
@@ -1107,7 +1107,7 @@
             "method": "GET",
             "header": [],
             "url": "{{IS_STATUSLIST_URL}}/{{STATUSLIST_CREDENTIAL_ID}}",
-            "description": "The public, signed BitstringStatusList credential (JWT) that verifiers download to check revocation. Inside the compose network its URL is http://issuerservice:9999/statuslist/... \u2014 from the host we use the mapped port. The id was captured in folder 04."
+            "description": "The public, signed BitstringStatusList credential (JWT) that verifiers download to check revocation. Inside the compose network its URL is http://issuerservice:9999/statuslist/... — from the host we use the mapped port. The id was captured in folder 04."
           },
           "event": [
             {
@@ -1135,7 +1135,7 @@
                   "var claims = jwtPayload(pm.response.text());",
                   "var subj = (claims.vc || claims).credentialSubject;",
                   "subj = Array.isArray(subj) ? subj[0] : subj;",
-                  "console.log('statusPurpose: ' + subj.statusPurpose + ', encodedList: ' + subj.encodedList);"
+                  "console.log('Status list validated');"
                 ]
               }
             }
@@ -1152,8 +1152,8 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentials/{{ISSUED_CREDENTIAL_ID}}/revoke",
-            "description": "Flips the credential's bit in the BitstringStatusList. Verifiers checking the statusListCredential URL embedded in the credential will now see it as revoked. \u26a0\ufe0f This is permanent \u2014 see the folder description. Re-run folder 04 to issue a fresh credential."
+            "url": "{{IS_ADMIN_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/credentials/{{ISSUED_CREDENTIAL_ID}}/revoke",
+            "description": "Flips the credential's bit in the BitstringStatusList. Verifiers checking the statusListCredential URL embedded in the credential will now see it as revoked. ⚠️ This is permanent — see the folder description. Re-run folder 04 to issue a fresh credential."
           },
           "event": [
             {
@@ -1178,7 +1178,7 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentials/{{ISSUED_CREDENTIAL_ID}}/status",
+            "url": "{{IS_ADMIN_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/credentials/{{ISSUED_CREDENTIAL_ID}}/status",
             "description": "Expected: `status: \"revocation\"`."
           },
           "event": [
@@ -1207,8 +1207,8 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentials/{{ISSUED_CREDENTIAL_ID}}/resume",
-            "description": "Demonstrates that revocation is irreversible on this stack: `resume` (like `suspend`) only applies to a suspension-purpose status list, which the default setup does not provision \u2014 upstream answers 501 Not Implemented."
+            "url": "{{IS_ADMIN_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/credentials/{{ISSUED_CREDENTIAL_ID}}/resume",
+            "description": "Demonstrates that revocation is irreversible on this stack: `resume` (like `suspend`) only applies to a suspension-purpose status list, which the default setup does not provision — upstream answers 501 Not Implemented."
           },
           "event": [
             {
@@ -1227,8 +1227,8 @@
       ]
     },
     {
-      "name": "07 \u00b7 Introspection (Super-User)",
-      "description": "Cross-participant admin views. These endpoints require elevated access, i.e. the super-user API keys. The pre-request scripts show how the participant id is recovered from an API key: the key prefix (before the first '.') is the base64url-encoded participant id \u2014 note that URL paths themselves take the PLAIN id.",
+      "name": "07 · Introspection (Super-User)",
+      "description": "Cross-participant admin views. These endpoints require elevated access, i.e. the super-user API keys. The pre-request scripts show how the participant id is recovered from an API key: the key prefix (before the first '.') is the base64url-encoded participant id — note that URL paths themselves take the PLAIN id.",
       "item": [
         {
           "name": "Get All Participants (IdentityHub)",
@@ -1241,8 +1241,8 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants",
-            "description": "All ParticipantContexts on the IdentityHub \u2014 expect the super-user and the holder."
+            "url": "{{IH_IDENTITY_URL}}/v1beta/participants",
+            "description": "All ParticipantContexts on the IdentityHub — expect the super-user and the holder."
           },
           "event": [
             {
@@ -1281,7 +1281,7 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IH_IDENTITY_URL}}/v1alpha/keypairs",
+            "url": "{{IH_IDENTITY_URL}}/v1beta/keypairs",
             "description": "All keypair resources across participants."
           },
           "event": [
@@ -1307,7 +1307,7 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IH_IDENTITY_URL}}/v1alpha/dids",
+            "url": "{{IH_IDENTITY_URL}}/v1beta/dids",
             "description": "All DID documents across participants."
           },
           "event": [
@@ -1333,7 +1333,7 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IH_IDENTITY_URL}}/v1alpha/credentials",
+            "url": "{{IH_IDENTITY_URL}}/v1beta/credentials",
             "description": "All credential resources across participants."
           },
           "event": [
@@ -1359,7 +1359,7 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants/{{IH_SUPERUSER_CONTEXT_ID}}",
+            "url": "{{IH_IDENTITY_URL}}/v1beta/participants/{{IH_SUPERUSER_CONTEXT_ID}}",
             "description": "Demonstrates deriving the participant id from the API key (see pre-request script) and using it PLAIN in the URL path."
           },
           "event": [
@@ -1368,7 +1368,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "// the part of the API key before the first '.' is the base64url-encoded participant id \u2014",
+                  "// the part of the API key before the first '.' is the base64url-encoded participant id —",
                   "// that encoding is part of the API-KEY format only; URL paths use the PLAIN id (EDC 0.17.0, IH #937)",
                   "function ctxFromKey(key) {",
                   "    var p = key.split('.')[0].replace(/-/g, '+').replace(/_/g, '/');",
@@ -1405,7 +1405,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/holders/query",
+            "url": "{{IS_ADMIN_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/holders/query",
             "description": "The issuer's holder registry (the `holders` table used by the database attestation).",
             "body": {
               "mode": "raw",
@@ -1444,7 +1444,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/attestations/query",
+            "url": "{{IS_ADMIN_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/attestations/query",
             "description": "All attestation definitions of the issuer participant.",
             "body": {
               "mode": "raw",
@@ -1483,7 +1483,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentialdefinitions/query",
+            "url": "{{IS_ADMIN_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/credentialdefinitions/query",
             "description": "All credential definitions of the issuer participant.",
             "body": {
               "mode": "raw",
@@ -1522,7 +1522,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/issuanceprocesses/query",
+            "url": "{{IS_ADMIN_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/issuanceprocesses/query",
             "description": "Every DCP issuance the issuer processed, with state machine details.",
             "body": {
               "mode": "raw",
@@ -1549,8 +1549,8 @@
       ]
     },
     {
-      "name": "99 \u00b7 Cleanup",
-      "description": "Deletes the flow's participants and issuer configuration so folders 01\u201306 can be re-run against the same stack. Holder-registry rows, issued credentials and issuance processes have no delete API \u2014 for a fully pristine state reset the stack: `docker compose --profile sql down -v && docker compose --profile sql up -d`.",
+      "name": "99 · Cleanup",
+      "description": "Deletes the flow's participants and issuer configuration so folders 01–06 can be re-run against the same stack. Holder-registry rows, issued credentials and issuance processes have no delete API — for a fully pristine state reset the stack: `docker compose --profile sql down -v && docker compose --profile sql up -d`.",
       "item": [
         {
           "name": "Delete Credential Definition",
@@ -1563,7 +1563,7 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/credentialdefinitions/{{CREDENTIAL_DEFINITION_ID}}",
+            "url": "{{IS_ADMIN_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/credentialdefinitions/{{CREDENTIAL_DEFINITION_ID}}",
             "description": "204 on success, 404 if already gone."
           },
           "event": [
@@ -1589,7 +1589,7 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IS_ADMIN_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}/attestations/{{ATTESTATION_ID}}",
+            "url": "{{IS_ADMIN_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}/attestations/{{ATTESTATION_ID}}",
             "description": "204 on success, 404 if already gone."
           },
           "event": [
@@ -1615,7 +1615,7 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IH_IDENTITY_URL}}/v1alpha/participants/{{HOLDER_CONTEXT_ID}}",
+            "url": "{{IH_IDENTITY_URL}}/v1beta/participants/{{HOLDER_CONTEXT_ID}}",
             "description": "Removes the holder participant (and its DID/keypairs) from the IdentityHub."
           },
           "event": [
@@ -1641,7 +1641,7 @@
                 "description": "Admin/participant API key (captured automatically by an earlier request)"
               }
             ],
-            "url": "{{IS_IDENTITY_URL}}/v1alpha/participants/{{ISSUER_CONTEXT_ID}}",
+            "url": "{{IS_IDENTITY_URL}}/v1beta/participants/{{ISSUER_CONTEXT_ID}}",
             "description": "Removes the issuer participant from the IssuerService."
           },
           "event": [

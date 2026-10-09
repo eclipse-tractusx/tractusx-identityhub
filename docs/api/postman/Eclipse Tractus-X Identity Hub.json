@@ -228,13 +228,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/{{DID}}/endpoints",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/{{DID}}/endpoints",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "dids",
@@ -289,13 +289,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/dids",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/dids",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "dids"
                   ],
                   "query": [],
@@ -332,13 +332,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/state",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/state",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "dids",
@@ -387,13 +387,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/publish",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/publish",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "dids",
@@ -442,13 +442,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/query",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/query",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "dids",
@@ -497,13 +497,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/{{DID}}/endpoints?serviceId=string",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/{{DID}}/endpoints?serviceId=string",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "dids",
@@ -553,13 +553,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/{{DID}}/endpoints",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/{{DID}}/endpoints",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "dids",
@@ -614,13 +614,13 @@
                 },
                 "description": "Un-publishes a DID document. Requires the ParticipantContext to be DEACTIVATED first (POST /participants/{id}/state?isActive=false) — returns 400 on an ACTIVATED participant.",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/unpublish",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/dids/unpublish",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "dids",
@@ -674,13 +674,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "keypairs"
@@ -733,13 +733,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "keypairs",
@@ -779,13 +779,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "keypairs"
@@ -824,13 +824,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/keypairs",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/keypairs",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "keypairs"
                   ],
                   "query": [
@@ -876,13 +876,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/revoke",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/revoke",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "keypairs",
@@ -932,13 +932,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/rotate?duration=999",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/rotate?duration=999",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "keypairs",
@@ -993,13 +993,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/activate",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/activate",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "keypairs",
@@ -1054,13 +1054,13 @@
                 },
                 "description": "Activates (or with isActive=false deactivates) a ParticipantContext. ⚠️ Keep isActive=true in the URL — omitting it deactivates the participant, and its key pairs stay deactivated even after re-activation (reactivate via keypairs/{id}/activate is only possible from ACTIVE/CREATED states, so a fresh key pair may be required).",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/state?isActive=true",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/state?isActive=true",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "state"
@@ -1114,13 +1114,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants"
                   ],
                   "query": [],
@@ -1128,7 +1128,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"active\": true,\n  \"did\": \"did:web:eclipse-tractus-x\",\n\n  \"key\": {\n    \"keyGeneratorParams\": {\n      \"algorithm\": \"EdDSA\",\n      \"curve\": \"Ed25519\"\n    },\n    \"keyId\": \"eclipse-tractus-x-key\",\n    \"privateKeyAlias\": \"eclipse-tractus-x-alias\"\n  },\n  \"participantContextId\": \"eclipse-tractus-x\",\n  \"roles\": [\n    \"ROLE_ADMIN\"\n  ]\n}",
+                  "raw": "{\n  \"active\": true,\n  \"did\": \"did:web:eclipse-tractus-x\",\n  \"key\": {\n    \"keyGeneratorParams\": {\n      \"algorithm\": \"EdDSA\",\n      \"curve\": \"Ed25519\"\n    },\n    \"keyId\": \"eclipse-tractus-x-key\",\n    \"privateKeyAlias\": \"eclipse-tractus-x-alias\"\n  },\n  \"participantContextId\": \"eclipse-tractus-x\",\n  \"scopes\": [\n    \"identity-api:write\"\n  ]\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1166,13 +1166,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}"
                   ],
@@ -1210,13 +1210,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants"
                   ],
                   "query": [
@@ -1262,13 +1262,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}"
                   ],
@@ -1306,13 +1306,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/token",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/token",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "token"
@@ -1332,7 +1332,7 @@
               }
             },
             {
-              "name": "Updates a ParticipantContext's roles. Note that this is an absolute update, that means all roles that the Participant should have must be submitted in the body. Requires elevated privileges.",
+              "name": "Updates a ParticipantContext's scopes. Note that this is an absolute update, that means all scopes that the Participant should have must be submitted in the body. Requires elevated privileges.",
               "event": [],
               "request": {
                 "method": "PUT",
@@ -1360,23 +1360,23 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/roles",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/scopes",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
-                    "roles"
+                    "scopes"
                   ],
                   "query": [],
                   "variable": []
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "[\n  \"admin\"\n]",
+                  "raw": "[\n  \"identity-api:write\"\n]",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1419,13 +1419,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentials"
@@ -1473,13 +1473,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentials",
@@ -1519,13 +1519,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentials",
@@ -1565,13 +1565,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/request/{{HOLDER_PID}}",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/request/{{HOLDER_PID}}",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentials",
@@ -1612,13 +1612,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/credentials",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/credentials",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "credentials"
                   ],
                   "query": [],
@@ -1655,13 +1655,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentials"
@@ -1700,13 +1700,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/request",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/request",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentials",
@@ -1717,7 +1717,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"credentials\": [\n    {\n      \"format\": \"VC1_0_JWT\",\n      \"id\": \"1f36af58-0fc0-4b24-9b1c-e37d59668089\",\n      \"type\": \"MembershipCredential\"\n    }\n  ],\n  \"holderPid\": \"did:web:super-user\",\n  \"issuerDid\": \"did:web:super-user\"\n}",
+                  "raw": "{\n  \"credentials\": [\n    {\n      \"format\": \"vc11-sl2021/jwt\",\n      \"id\": \"1f36af58-0fc0-4b24-9b1c-e37d59668089\",\n      \"type\": \"MembershipCredential\"\n    }\n  ],\n  \"holderPid\": \"did:web:super-user\",\n  \"issuerDid\": \"did:web:super-user\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1755,13 +1755,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials",
+                  "raw": "{{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials",
                   "protocol": "",
                   "host": [
                     "{{IDENTITY_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentials"
@@ -1808,13 +1808,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUANCE_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials",
+                  "raw": "{{ISSUANCE_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials",
                   "protocol": "",
                   "host": [
                     "{{ISSUANCE_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentials"
@@ -1856,13 +1856,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUANCE_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/requests/{{CREDENTIAL_REQUEST_ID}}",
+                  "raw": "{{ISSUANCE_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/requests/{{CREDENTIAL_REQUEST_ID}}",
                   "protocol": "",
                   "host": [
                     "{{ISSUANCE_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "requests",
@@ -1896,13 +1896,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUANCE_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/metadata",
+                  "raw": "{{ISSUANCE_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/metadata",
                   "protocol": "",
                   "host": [
                     "{{ISSUANCE_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "metadata"
@@ -1951,13 +1951,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/attestations",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/attestations",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "attestations"
@@ -2005,13 +2005,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/attestations/{{ATTESTATION_DEFINITION_ID}}",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/attestations/{{ATTESTATION_DEFINITION_ID}}",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "attestations",
@@ -2060,13 +2060,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/attestations/query",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/attestations/query",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "attestations",
@@ -2120,13 +2120,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentialdefinitions"
@@ -2136,7 +2136,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"attestations\": [],\n  \"credentialType\": \"string\",\n  \"format\": \"VC1_0_JWT\",\n  \"id\": \"string\",\n  \"jsonSchema\": \"string\",\n  \"jsonSchemaUrl\": \"string\",\n  \"mappings\": [\n    {\n      \"input\": \"string\",\n      \"output\": \"string\",\n      \"required\": true\n    }\n  ],\n  \"validity\": 0\n}",
+                  "raw": "{\n  \"attestations\": [],\n  \"credentialType\": \"string\",\n  \"format\": \"vc11-sl2021/jwt\",\n  \"id\": \"string\",\n  \"jsonSchema\": \"string\",\n  \"jsonSchemaUrl\": \"string\",\n  \"mappings\": [\n    {\n      \"input\": \"string\",\n      \"output\": \"string\",\n      \"required\": true\n    }\n  ],\n  \"validity\": 0\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2174,13 +2174,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions/{{CREDENTIAL_DEFINITION_ID}}",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions/{{CREDENTIAL_DEFINITION_ID}}",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentialdefinitions",
@@ -2220,13 +2220,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions/{{CREDENTIAL_DEFINITION_ID}}",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions/{{CREDENTIAL_DEFINITION_ID}}",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentialdefinitions",
@@ -2266,13 +2266,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions/query",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions/query",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentialdefinitions",
@@ -2321,13 +2321,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentialdefinitions",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentialdefinitions"
@@ -2337,7 +2337,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"attestations\": [],\n  \"credentialType\": \"string\",\n  \"format\": \"VC1_0_JWT\",\n  \"id\": \"string\",\n  \"jsonSchema\": \"string\",\n  \"jsonSchemaUrl\": \"string\",\n  \"mappings\": [\n    {\n      \"input\": \"string\",\n      \"output\": \"string\",\n      \"required\": true\n    }\n  ],\n  \"validity\": 10\n}",
+                  "raw": "{\n  \"attestations\": [],\n  \"credentialType\": \"string\",\n  \"format\": \"vc11-sl2021/jwt\",\n  \"id\": \"string\",\n  \"jsonSchema\": \"string\",\n  \"jsonSchemaUrl\": \"string\",\n  \"mappings\": [\n    {\n      \"input\": \"string\",\n      \"output\": \"string\",\n      \"required\": true\n    }\n  ],\n  \"validity\": 10\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2380,13 +2380,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}/status",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}/status",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentials",
@@ -2427,13 +2427,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/query",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/query",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentials",
@@ -2482,13 +2482,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}/resume",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}/resume",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentials",
@@ -2529,13 +2529,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}/revoke",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}/revoke",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentials",
@@ -2576,13 +2576,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}/suspend",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/{{CREDENTIAL_ID}}/suspend",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentials",
@@ -2623,13 +2623,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/offer",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/credentials/offer",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "credentials",
@@ -2683,13 +2683,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/holders",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/holders",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "holders"
@@ -2737,13 +2737,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/holders/query",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/holders/query",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "holders",
@@ -2792,13 +2792,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/holders/{{HOLDER_ID}}",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/holders/{{HOLDER_ID}}",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "holders",
@@ -2838,13 +2838,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/holders",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/holders",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "holders"
@@ -2897,13 +2897,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/issuanceprocesses/query",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/issuanceprocesses/query",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "issuanceprocesses",
@@ -2952,13 +2952,13 @@
                 },
                 "description": "",
                 "url": {
-                  "raw": "{{ISSUER_ADMIN_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/issuanceprocesses/{{ISSUANCE_PROCESS_ID}}",
+                  "raw": "{{ISSUER_ADMIN_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/issuanceprocesses/{{ISSUANCE_PROCESS_ID}}",
                   "protocol": "",
                   "host": [
                     "{{ISSUER_ADMIN_PATH}}"
                   ],
                   "path": [
-                    "v1alpha",
+                    "v1beta",
                     "participants",
                     "{{PARTICIPANT_CONTEXT_ID}}",
                     "issuanceprocesses",

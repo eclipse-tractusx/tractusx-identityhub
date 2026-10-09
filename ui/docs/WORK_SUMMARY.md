@@ -67,9 +67,9 @@ Four management sections covering the Identity Hub API, plus cross-cutting infra
 ## Backend Integration
 
 - **Backend host:** `ih.tx.corp.hanka.ai` (K8s deployment with ingress routing by path/port)
-- **API base path:** `/api/identity/v1alpha`
+- **API base path:** `/api/identity/v1beta`
 - **Authentication:** Super-user API key (vault secret `super-user-apikey`), sent via `x-api-key` header
-- **Participant IDs:** Base64-encoded in URL paths (e.g., `BPNL00000003CRHK` → encoded for API calls)
+- **Participant IDs:** URL-encoded in API path segments (for example, `BPNL00000003CRHK` remains unchanged)
 
 ## Technical Decisions
 

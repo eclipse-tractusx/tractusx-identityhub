@@ -46,10 +46,6 @@ vi.mock('../../../services/EnvironmentService', () => ({
     isAuthEnabled: vi.fn(() => false),
 }));
 
-vi.mock('../../../services/participantUtils', () => ({
-    encodeParticipantId: vi.fn((id: string) => btoa(id)),
-}));
-
 vi.mock('../../../hooks/useAuth', () => ({
     default: vi.fn(() => ({
         isAuthenticated: false,

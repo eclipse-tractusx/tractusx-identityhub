@@ -18,33 +18,9 @@
  ********************************************************************************/
 
 /**
- * The Identity Hub backend expects participant context IDs to be base64-encoded
- * in URL path segments. These utilities handle the encoding/decoding.
+ * Encode a raw participant context ID as one URL path segment.
+ * API-key and DID-specific encoding are separate protocols.
  */
-
-function isAlreadyBase64Encoded(str: string): boolean {
-    if (!/^[A-Za-z0-9+/]+=*$/.test(str) || str.length % 4 !== 0 || str.length < 4) {
-        return false;
-    }
-    try {
-        const decoded = atob(str);
-        // If re-encoding the decoded value gives us back the original, it's valid base64.
-        // Also check the decoded string is printable text (not binary garbage).
-        return btoa(decoded) === str && /^[\x20-\x7E]*$/.test(decoded);
-    } catch {
-        return false;
-    }
-}
-
 export function encodeParticipantId(participantId: string): string {
-    if (isAlreadyBase64Encoded(participantId)) return participantId;
-    return btoa(participantId);
-}
-
-export function decodeParticipantId(encoded: string): string {
-    try {
-        return atob(encoded);
-    } catch {
-        return encoded;
-    }
+    return encodeURIComponent(participantId);
 }

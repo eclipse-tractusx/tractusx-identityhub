@@ -26,7 +26,6 @@ import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import Policy from '@mui/icons-material/Policy';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Chip, Divider, ListItemIcon, Typography, Tooltip } from '@mui/material';
@@ -36,23 +35,27 @@ import { useParticipant } from '../../contexts/ParticipantContext';
 
 const participantStateLabel = (state?: number): string => {
     switch (state) {
-        case 1:
+        case 100:
+            return 'Created';
+        case 200:
             return 'Active';
-        case 2:
+        case 300:
             return 'Deactivated';
         default:
-            return 'Active';
+            return 'Unknown';
     }
 };
 
 const participantStateColor = (state?: number): string => {
     switch (state) {
-        case 1:
+        case 100:
+            return '#E6A817';
+        case 200:
             return '#00aa55';
-        case 2:
+        case 300:
             return '#D91E18';
         default:
-            return '#00aa55';
+            return '#9E9E9E';
     }
 };
 

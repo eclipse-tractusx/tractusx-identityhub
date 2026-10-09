@@ -9,13 +9,13 @@ A credential definition configures what type of credential can be issued and how
 ## Request
 
 ```bash
-curl -X POST "${ISSUER_ADMIN}/v1alpha/participants/${ISSUER_CONTEXT}/credentialdefinitions" \
+curl -X POST "${ISSUER_ADMIN}/v1beta/participants/${ISSUER_CONTEXT}/credentialdefinitions" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${ISSUER_API_KEY}" \
   -d '{
         "attestations": ["attestation-id"],
         "credentialType": "MembershipCredential",
-        "format": "VC1_0_JWT",
+        "format": "vc11-sl2021/jwt",
         "id": "tx-membershipCredential",
         "jsonSchema": "{}",
         "jsonSchemaUrl": "https://raw.githubusercontent.com/eclipse-tractusx/tractusx-profiles/main/cx/credentials/membership.credential.schema.json",
@@ -53,8 +53,6 @@ Mappings transform data from the attestation source (database columns) into cred
 │  holder_id ──────────┼────────►│  credentialSubject            │
 │  "BPNL00000003AYRE"  │  maps   │    .holderIdentifier          │
 │                      │  to     │    = "BPNL00000003AYRE"       │
-│  member_of ──────────┼────────►│  credentialSubject.memberOf   │
-│  "Catena-X"         │         │    = "BPNL00000003CSGV"      │
 └──────────────────────┘         └───────────────────────────────┘
 ```
 
@@ -78,8 +76,10 @@ The `validity` field sets the credential expiration in **seconds** from the issu
 
 | Format | Description |
 |--------|-------------|
-| `VC1_0_JWT` | W3C Verifiable Credentials v1.0, JWT compact serialization |
-| `VC1_0_JSON_LD` | W3C Verifiable Credentials v1.0, JSON-LD format |
+| `vc11-sl2021/jwt` | W3C Verifiable Credentials 1.1, JWT serialization with StatusList2021 |
+| `vc20-bssl/jwt` | W3C Verifiable Credentials 2.0, JWT serialization with BitstringStatusList |
+
+Use these DCP profile strings for new credential definitions. Upstream also accepts legacy `CredentialFormat` enum values for compatibility; see the [migration guide](../../admin/migration-guide.md#api-versions-identifiers-and-credential-profiles).
 
 ## Request Fields
 
@@ -119,7 +119,7 @@ Populating `additionalContext` (e.g. with a Catena-X context URL) is not yet pos
 If you need to recreate a credential definition (e.g., to fix a misconfiguration), delete it first:
 
 ```bash
-curl -X DELETE "${ISSUER_ADMIN}/v1alpha/participants/${ISSUER_CONTEXT}/credentialdefinitions/tx-membershipCredential" \
+curl -X DELETE "${ISSUER_ADMIN}/v1beta/participants/${ISSUER_CONTEXT}/credentialdefinitions/tx-membershipCredential" \
   -H "x-api-key: ${ISSUER_API_KEY}"
 ```
 
@@ -138,7 +138,7 @@ After deleting, you can re-run the `POST /credentialdefinitions` request to recr
 Verify a credential definition was created correctly:
 
 ```bash
-curl -s "${ISSUER_ADMIN}/v1alpha/participants/${ISSUER_CONTEXT}/credentialdefinitions/tx-membershipCredential" \
+curl -s "${ISSUER_ADMIN}/v1beta/participants/${ISSUER_CONTEXT}/credentialdefinitions/tx-membershipCredential" \
   -H "x-api-key: ${ISSUER_API_KEY}" | jq .
 ```
 

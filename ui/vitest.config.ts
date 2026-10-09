@@ -22,6 +22,7 @@ import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 
 export default defineConfig({
+    envDir: false,
     plugins: [react()],
     resolve: {
         alias: {
