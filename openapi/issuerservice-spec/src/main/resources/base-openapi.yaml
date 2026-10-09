@@ -1,0 +1,7 @@
+openapi: 3.0.1
+info:
+  title: Tractus-X IssuerService
+  version: 1.0.0
+  description: >-
+    Combined OpenAPI specification for the Tractus-X IssuerService, generated at
+    build time from the EDC IssuerService API controllers.
