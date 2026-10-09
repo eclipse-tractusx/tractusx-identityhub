@@ -8,11 +8,19 @@
  * terms of the Apache License, Version 2.0 which is available at
  * https://www.apache.org/licenses/LICENSE-2.0.
  *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ *
  * SPDX-License-Identifier: Apache-2.0
  */
 
 -- Reject malformed permission data before changing any participant.
 DO $$
+DECLARE
+    provisioner_count BIGINT;
 BEGIN
     IF EXISTS (
         SELECT 1 FROM participant_context
@@ -40,6 +48,14 @@ BEGIN
     ) THEN
         RAISE EXCEPTION 'Participant roles and scopes must contain only strings before migrating scopes.';
     END IF;
+
+    SELECT COUNT(*) INTO provisioner_count
+    FROM participant_context
+    WHERE (properties::jsonb -> 'roles') ? 'provisioner';
+
+    IF provisioner_count > 0 THEN
+        RAISE NOTICE '% participant context(s) contain the legacy provisioner role. This role grants no scopes; review their permissions before using automation.', provisioner_count;
+    END IF;
 END $$;
 
 -- Only built-in legacy roles grant permissions. Existing scopes remain intact.
@@ -61,4 +77,5 @@ SET properties = (COALESCE(participant.properties::jsonb, '{}'::jsonb) - 'roles'
             ) AS mapping(role, scope) ON role.value = mapping.role
         ) AS granted
     )
-);
+)
+WHERE participant.properties::jsonb ? 'roles' OR participant.properties::jsonb ? 'scopes';

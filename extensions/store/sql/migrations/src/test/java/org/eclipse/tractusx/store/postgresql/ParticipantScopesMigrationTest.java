@@ -31,6 +31,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.testcontainers.postgresql.PostgreSQLContainer;
@@ -118,6 +119,33 @@ class ParticipantScopesMigrationTest {
         }
     }
 
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"{}", "{\"z\": 1, \"apiTokenAlias\": \"api-alias\", \"a\": {\"nested\": true}}"})
+    void preservesParticipantsWithoutPermissions(String properties) throws Exception {
+        migrate(MigrationVersion.fromVersion("0.0.2"));
+        insert("untouched", properties);
+        insert("migrated", "{\"roles\":[\"participant\"]}");
+
+        try (var connection = DATA_SOURCE.getConnection();
+                var statement = connection.createStatement()) {
+            var query = "SELECT properties::text, xmin::text FROM " + schema + ".participant_context WHERE participant_context_id = 'untouched'";
+            String rowVersion;
+            try (var rows = statement.executeQuery(query)) {
+                assertThat(rows.next()).isTrue();
+                rowVersion = rows.getString("xmin");
+            }
+
+            assertThat(migrate(LATEST)).isOne();
+
+            try (var rows = statement.executeQuery(query)) {
+                assertThat(rows.next()).isTrue();
+                assertThat(rows.getString("properties")).isEqualTo(properties);
+                assertThat(rows.getString("xmin")).isEqualTo(rowVersion);
+            }
+        }
+    }
+
     @Test
     void preservesScopesAndDoesNotElevateUnknownRoles() throws Exception {
         migrate(MigrationVersion.fromVersion("0.0.2"));
@@ -126,6 +154,8 @@ class ParticipantScopesMigrationTest {
         insert("participant-c", "{\"roles\":[]}");
         insert("participant-d", "{\"roles\":[\"ADMIN\",\"administrator\"]}");
         insert("participant-e", "{\"roles\":null,\"scopes\":null,\"custom\":true}");
+        insert("participant-f", "{\"roles\":[\"provisioner\"]}");
+        insert("participant-g", "{\"scopes\":[\"custom:read\",\"custom:read\"]}");
 
         migrate(LATEST);
 
@@ -135,6 +165,9 @@ class ParticipantScopesMigrationTest {
         assertThat(properties("participant-d").get("scopes").isEmpty()).isTrue();
         assertThat(properties("participant-e").get("scopes").isEmpty()).isTrue();
         assertThat(properties("participant-e").get("custom").asBoolean()).isTrue();
+        assertThat(properties("participant-f").get("scopes").isEmpty()).isTrue();
+        assertThat(properties("participant-f").has("roles")).isFalse();
+        assertThat(properties("participant-g").get("scopes")).isEqualTo(mapper.readTree("[\"custom:read\"]"));
     }
 
     @ParameterizedTest

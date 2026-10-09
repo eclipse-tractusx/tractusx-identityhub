@@ -115,7 +115,9 @@ It moves permissions within `participant_context.properties`:
 The removed `provisioner` role has no equivalent that preserves its exact privileges.
 Review these accounts before the upgrade and explicitly provision an approved scope set;
 the migration must not silently promote them to administrators. Existing string scopes
-are preserved and deduplicated, including custom scopes. Other properties, IDs, identities,
+are preserved and deduplicated, including custom scopes. The migration logs the number of
+accounts with the legacy `provisioner` role to prompt a permission review. Participants
+with neither `roles` nor `scopes` are left untouched. Other properties, IDs, identities,
 state, timestamps, API-key aliases and client references remain unchanged. `roles` is removed.
 Malformed properties or non-string permission entries abort the migration transaction
 before any participant changes. Correct the malformed source data under the old runtime
