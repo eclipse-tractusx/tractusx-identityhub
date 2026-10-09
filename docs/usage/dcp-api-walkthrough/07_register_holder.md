@@ -33,7 +33,7 @@ curl -X POST "${ISSUER_ADMIN}/v1beta/participants/${ISSUER_CONTEXT}/holders" \
 
 ## Important: Attestation Mappings and the `holders` Table
 
-The credential definition mappings defined in [Step 6](06_create_credential_definition.md) read directly from **columns in the `holders` database table**. The holder registration (`holderId`, `name`) populates that table, but the mapped fields (`holder_id`, `member_of`) are columns you must also populate in the database for each holder row.
+The database attestation configured in [Step 5](05_create_attestation.md) reads **columns in the `holders` database table** for the mappings in [Step 6](06_create_credential_definition.md). Holder registration populates `did`, `holder_id` and `holder_name` from the request's `did`, `holderId` and `name`. It does not populate the separate `custom_attestation_claims` table or create a `member_of` column.
 
 | Mapping (`input` → `output`) | Source | Credential field | Status |
 |---|---|---|---|
@@ -61,8 +61,7 @@ The resulting issued credential will contain:
 {
   "credentialSubject": {
     "id": "did:web:identity-hub.example.com",
-    "holderIdentifier": "BPNL00000003AYRE",
-    "memberOf": "Catena-X"
+    "holderIdentifier": "BPNL00000003AYRE"
   }
 }
 ```

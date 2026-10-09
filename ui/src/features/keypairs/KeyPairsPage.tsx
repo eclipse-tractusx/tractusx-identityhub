@@ -491,12 +491,6 @@ const KeyPairsPage: React.FC = () => {
                                 )}
                             </Box>
 
-                            {kp.privateKeyAlias && (
-                                <Typography variant="body2" color="text.secondary">
-                                    Private key alias: {kp.privateKeyAlias}
-                                </Typography>
-                            )}
-
                             {/* Created Timestamp */}
                             {kp.timestamp && (
                                 <Typography

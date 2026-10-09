@@ -109,6 +109,7 @@ public class CredentialOwnershipFeature implements DynamicFeature {
                 throw new ObjectNotFoundException(HolderCredentialRequest.class, holderPid);
             }
             // Return the authorized snapshot; a second store lookup could return different data.
+            // Keep the String field order aligned with the upstream HolderCredentialRequestDto record.
             var response = new HolderCredentialRequestDto(credentialRequest.getIssuerDid(), credentialRequest.getHolderPid(),
                     credentialRequest.getIssuerPid(), credentialRequest.stateAsString(), credentialRequest.getIdsAndFormats());
             request.abortWith(Response.ok(response, APPLICATION_JSON).build());

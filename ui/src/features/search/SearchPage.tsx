@@ -206,6 +206,9 @@ const SearchPage: React.FC = () => {
                         },
                     }}
                 />
+                <Typography variant="body2" sx={{ color: accentColors.brandTextMuted, mt: 1 }}>
+                    Global search requires identity-api:admin. Use the participant pages to browse your own resources.
+                </Typography>
             </Box>
 
             {searched && results.length > 0 && (

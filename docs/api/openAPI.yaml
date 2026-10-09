@@ -888,12 +888,14 @@ paths:
           schema:
             type: boolean
       responses:
-        '200':
+        '204':
           description: Participant context state updated successfully
         '400':
           description: Bad request
         '401':
           description: Unauthorized
+        '403':
+          description: Forbidden - requires write scope and participant ownership or administrator access
         '404':
           description: Participant context not found
         '500':
@@ -1013,6 +1015,8 @@ paths:
           description: Participant context deleted successfully
         '401':
           description: Unauthorized
+        '403':
+          description: Forbidden - requires write scope and participant ownership or administrator access
         '404':
           description: Participant context not found
         '500':

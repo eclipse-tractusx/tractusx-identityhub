@@ -312,7 +312,7 @@ describe('KeyPairsPage', () => {
         expect(screen.getByText('DEFAULT')).toBeInTheDocument();
     });
 
-    it('should show private key alias when available', async () => {
+    it('should not expose the private key alias on key pair cards', async () => {
         vi.mocked(httpClient.get).mockResolvedValue({ data: mockKeyPairsActive });
         renderPage();
 
@@ -320,7 +320,7 @@ describe('KeyPairsPage', () => {
             expect(screen.getByText('key-active-1')).toBeInTheDocument();
         });
 
-        expect(screen.getByText(/alias-1/)).toBeInTheDocument();
+        expect(screen.queryByText(/alias-1/)).not.toBeInTheDocument();
     });
 
     it('should open rotate dialog when Rotate menu item is clicked', async () => {

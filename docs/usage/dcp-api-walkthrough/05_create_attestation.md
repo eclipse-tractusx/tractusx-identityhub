@@ -4,7 +4,7 @@
 
 ---
 
-Attestations define how the IssuerService verifies claims before issuing credentials. For this walkthrough, we use a **database attestation** that looks up holder information in the internal `custom_attestation_claims` table.
+Attestations define how the IssuerService verifies claims before issuing credentials. For this walkthrough, we use a **database attestation** that looks up holder information in the internal `holders` table. This requires a SQL IssuerService with the `holder` data source configured, as in the Docker Compose SQL profile.
 
 ## Request
 
@@ -13,11 +13,11 @@ curl -X POST "${ISSUER_ADMIN}/v1beta/participants/${ISSUER_CONTEXT}/attestations
   -H "Content-Type: application/json" \
   -H "x-api-key: ${ISSUER_API_KEY}" \
   -d '{
-    "id": "attestation-custom",
+    "id": "attestation-id",
     "attestationType": "database",
     "configuration": {
-      "dataSourceName": "customattestations",
-      "tableName": "custom_attestation_claims",
+      "dataSourceName": "holder",
+      "tableName": "holders",
       "idColumn": "holder_id",
       "required": true
     }
@@ -30,15 +30,17 @@ curl -X POST "${ISSUER_ADMIN}/v1beta/participants/${ISSUER_CONTEXT}/attestations
 
 ## How It Works
 
-The `database` attestation type queries the `custom_attestation_claims` table (populated when you register holders in [Step 7](07_register_holder.md)). During credential issuance, the IssuerService evaluates this attestation to verify that the requesting holder is registered and retrieves their data for mapping into the credential.
+The `database` attestation type queries the `holders` table (populated when you register holders in [Step 7](07_register_holder.md)). During credential issuance, the IssuerService evaluates this attestation to verify that the requesting holder is registered and retrieves their data for mapping into the credential.
+
+The separate `custom_attestation_claims` table is not populated by holder registration. Using it requires independently provisioning claim rows and configuring matching mappings; this walkthrough does not use that table.
 
 ```
 ┌───────────────────────────────────────┐         ┌────────────────────────────────────────┐
-│   Attestation Config                  │         │   custom_attestation_claims table      │
+│   Attestation Config                  │         │   holders table                        │
 │                                       │         │                                        │
 │  type: "database"                     │────────►│  holder_name                           │
-│ tableName: "custom_attestation_claims"│  reads  │  did                                   │
-│                                       │         │  holderId                              │
+│ tableName: "holders"                  │  reads  │  did                                   │
+│ idColumn: "holder_id"                 │         │  holder_id                             │
 └───────────────────────────────────────┘         └────────────────────────────────────────┘
 ```
 

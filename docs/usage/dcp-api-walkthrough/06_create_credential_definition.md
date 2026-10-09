@@ -53,8 +53,6 @@ Mappings transform data from the attestation source (database columns) into cred
 │  holder_id ──────────┼────────►│  credentialSubject            │
 │  "BPNL00000003AYRE"  │  maps   │    .holderIdentifier          │
 │                      │  to     │    = "BPNL00000003AYRE"       │
-│  member_of ──────────┼────────►│  credentialSubject.memberOf   │
-│  "Catena-X"         │         │    = "BPNL00000003CSGV"      │
 └──────────────────────┘         └───────────────────────────────┘
 ```
 
@@ -78,8 +76,10 @@ The `validity` field sets the credential expiration in **seconds** from the issu
 
 | Format | Description |
 |--------|-------------|
-| `VC1_0_JWT` | W3C Verifiable Credentials v1.0, JWT compact serialization |
-| `VC1_0_JSON_LD` | W3C Verifiable Credentials v1.0, JSON-LD format |
+| `vc11-sl2021/jwt` | W3C Verifiable Credentials 1.1, JWT serialization with StatusList2021 |
+| `vc20-bssl/jwt` | W3C Verifiable Credentials 2.0, JWT serialization with BitstringStatusList |
+
+Use these DCP profile strings for new credential definitions. Upstream also accepts legacy `CredentialFormat` enum values for compatibility; see the [migration guide](../../admin/migration-guide.md#api-versions-identifiers-and-credential-profiles).
 
 ## Request Fields
 

@@ -975,6 +975,9 @@ const ParticipantsPage: React.FC = () => {
                         onChange={(e) => setNewDid(e.target.value)}
                         placeholder="did:web:example.com - auto-generated if empty"
                     />
+                    <Typography variant="body2" color="text.secondary">
+                        New participants receive identity-api:write. For an issuer, add issuer-admin-api:write using Manage Scopes after creation.
+                    </Typography>
                 </DialogContent>
                 <DialogActions sx={whiteDialogActionsSx}>
                     <Button onClick={() => setCreateOpen(false)} variant="outlined" color="primary" size="large"
