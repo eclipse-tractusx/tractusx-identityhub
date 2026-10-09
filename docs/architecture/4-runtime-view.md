@@ -116,6 +116,8 @@ sequenceDiagram
 * **Step 12: Return SI Token**
     The Identity Hub embeds the signed VP into a **JWT** (JSON Web Token) and returns it to the **Connector**. The Connector can now use this token to authenticate against other participants in the dataspace via the data plane or control plane.
 
+What happens from there is described in [DCP Presentation Flow](../usage/dcp-presentation-flow/README.md): how the counterparty verifies that token, calls back to this Identity Hub for a presentation, and checks the issuer and revocation status.
+
 ## NOTICE
 
 This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
