@@ -71,6 +71,11 @@ Credential POST/PUT bodies must use the same participant ID as the request path,
 including for administrators. No additional configuration or database migration
 is required for these checks. See the [extension contract](../../extensions/identityhub/README.md).
 
+`V0_0_3` grants former `participant` accounts namespace-wide `identity-api:write`,
+so tenant isolation for these operations depends on the ownership extensions;
+before removing or replacing them, review the migrated permissions and ensure
+equivalent ownership checks.
+
 An omitted or empty `scopes` array in a creation manifest receives upstream defaults
 for both management namespaces. To create a deliberately unprivileged API-key
 principal, explicitly replace its scopes with `[]` through the administrator-only
