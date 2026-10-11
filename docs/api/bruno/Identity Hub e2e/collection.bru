@@ -1,0 +1,20 @@
+docs {
+  Three-party end-to-end walkthrough: an IssuerService, a consumer IdentityHub, a
+  provider IdentityHub and two Tractus-X EDC connectors exchanging data with DCP
+  credentials (01 Setup Identities -> 02 Data Exchange).
+
+  This collection does NOT target this repo's Docker Compose stack — the
+  environments/local environment assumes a Kubernetes deployment with the chart
+  container ports port-forwarded (8082-8087) and cluster-internal EDC hostnames
+  (dataprovider-controlplane, ...). Adjust the environment to your deployment.
+
+  For the single-issuer/single-holder flow against the local compose stack use
+  the Postman collection docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json;
+  for a per-endpoint catalog use the sibling Bruno collection
+  "Eclipse Tractus-X Identity Hub" (see docs/api/README.md).
+
+  EDC 0.17.0 notes already applied here: participants are created with
+  participantContextId = their DID and URL paths use that PLAIN value (no
+  base64url); credential-request bodies use participantContextId (formerly
+  participantId).
+}

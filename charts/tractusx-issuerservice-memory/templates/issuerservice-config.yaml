@@ -1,6 +1,7 @@
 #################################################################################
   #  Copyright (c) 2025 Cofinity-X
   #  Copyright (c) 2025 LKS Next
+  #  Copyright (c) 2026 Technovative Solutions
   #  Copyright (c) 2025 Contributors to the Eclipse Foundation
   #
   #  See the NOTICE file(s) distributed with this work for additional
@@ -39,8 +40,6 @@ data:
 
   web.http.port: {{ .Values.issuerservice.endpoints.default.port | quote }}
   web.http.path: {{ .Values.issuerservice.endpoints.default.path | quote }}
-  web.http.version.port: {{ .Values.issuerservice.endpoints.version.port | quote}}
-  web.http.version.path: {{ .Values.issuerservice.endpoints.version.path | quote}}
   web.http.sts.port: {{ .Values.issuerservice.endpoints.sts.port | quote }}
   web.http.sts.path: {{ .Values.issuerservice.endpoints.sts.path | quote }}
   web.http.issuance.port: {{ .Values.issuerservice.endpoints.issuance.port | quote }}

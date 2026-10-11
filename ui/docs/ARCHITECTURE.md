@@ -17,7 +17,7 @@ src/
 │   ├── EnvironmentService.ts   # Wrapper over ConfigFactory — getApiConfig(), isAuthEnabled(), etc.
 │   ├── HttpClient.ts           # Axios instance with auth interceptors
 │   ├── AuthService.ts          # Keycloak lifecycle management
-│   └── participantUtils.ts     # Base64 encode/decode for participant IDs in URLs
+│   └── participantUtils.ts     # URL encoding for participant IDs in paths
 │
 ├── features/
 │   ├── credentials/            # /credentials — CRUD for verifiable credentials
@@ -101,7 +101,7 @@ Browser
   │         Vite Proxy (development) or Direct (production)
   │           │
   │           ▼
-  │         Backend API (/api/identity/v1alpha/...)
+  │         Backend API (/api/identity/v1beta/...)
   │           │
   │           ▼
   │         Response Interceptor: handles 401 → auto logout

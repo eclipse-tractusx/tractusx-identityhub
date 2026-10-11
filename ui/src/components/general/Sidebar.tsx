@@ -23,7 +23,6 @@ import PeopleIcon from '@mui/icons-material/People';
 import KeyIcon from '@mui/icons-material/Key';
 import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import ParticipantSelector from './ParticipantSelector';
 
 const identityItems = [
     { icon: <PeopleIcon />, path: '/participants', label: 'Participants' },
@@ -55,9 +54,6 @@ const Sidebar = () => {
         <Box className="sidebarContainer">
             <Box className="regularItems">
                 {identityItems.map(renderNavItem)}
-            </Box>
-            <Box sx={{ mt: 'auto', pb: 2 }}>
-                <ParticipantSelector />
             </Box>
         </Box>
     );

@@ -1,6 +1,6 @@
 /*
- *   Copyright (c) 2025 LKS Next
- *   Copyright (c) 2025 Contributors to the Eclipse Foundation
+ *   Copyright (c) 2026 LKS Next
+ *   Copyright (c) 2026 Contributors to the Eclipse Foundation
  *
  *   See the NOTICE file(s) distributed with this work for additional
  *   information regarding copyright ownership.
@@ -21,4 +21,9 @@
 
 plugins {
     `java-library`
+}
+
+dependencies {
+    implementation(libs.edc.spi.boot)
+    implementation(libs.edc.runtime.metamodel)
 }

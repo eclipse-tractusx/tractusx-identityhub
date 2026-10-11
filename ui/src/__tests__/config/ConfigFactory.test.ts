@@ -17,12 +17,13 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ConfigFactory } from '../../config/ConfigFactory';
 import { ConfigurationError } from '../../config/schema';
 
 describe('ConfigFactory', () => {
     beforeEach(() => {
+        vi.stubEnv('VITE_IHUB_BACKEND_URL', '');
         ConfigFactory.clearCache();
         (window as any).ENV = { IHUB_BACKEND_URL: 'http://localhost:8082' };
     });

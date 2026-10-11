@@ -29,10 +29,6 @@ vi.mock('../../../services/HttpClient', () => ({
     },
 }));
 
-vi.mock('../../../services/participantUtils', () => ({
-    encodeParticipantId: vi.fn((id: string) => btoa(id)),
-}));
-
 import httpClient from '../../../services/HttpClient';
 
 const mockCredentials = [
@@ -60,12 +56,17 @@ describe('credentials api', () => {
         vi.mocked(httpClient.get).mockResolvedValue({ data: mockCredentials });
         const result = await getCredentials('BPNL00000003CRHK');
         expect(httpClient.get).toHaveBeenCalledWith(
-            expect.stringContaining('/api/identity/v1alpha/participants/')
+            expect.stringContaining('/api/identity/v1beta/participants/')
         );
         expect(httpClient.get).toHaveBeenCalledWith(
             expect.stringContaining('/credentials')
         );
         expect(result).toEqual(mockCredentials);
+    });
+
+    it('does not request credentials before a participant is selected', async () => {
+        expect(await getCredentials('')).toEqual([]);
+        expect(httpClient.get).not.toHaveBeenCalled();
     });
 
     it('getCredentialById should call correct endpoint', async () => {
@@ -80,7 +81,7 @@ describe('credentials api', () => {
     it('getAllCredentials should call credentials endpoint', async () => {
         vi.mocked(httpClient.get).mockResolvedValue({ data: mockCredentials });
         const result = await getAllCredentials();
-        expect(httpClient.get).toHaveBeenCalledWith('/api/identity/v1alpha/credentials');
+        expect(httpClient.get).toHaveBeenCalledWith('/api/identity/v1beta/credentials');
         expect(result).toEqual(mockCredentials);
     });
 

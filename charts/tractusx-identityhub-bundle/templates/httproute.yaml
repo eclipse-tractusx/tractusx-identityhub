@@ -1,0 +1,66 @@
+#################################################################################
+#  Eclipse Tractus-X - Identity Hub Frontend
+#
+#  Copyright (c) 2026 Hochschule für Technik und Wirtschaft Dresden
+#
+#  See the NOTICE file(s) distributed with this work for additional
+#  information regarding copyright ownership.
+#
+#  This program and the accompanying materials are made available under the
+#  terms of the Apache License, Version 2.0 which is available at
+#  https://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#  License for the specific language governing permissions and limitations
+#  under the License.
+#
+#  SPDX-License-Identifier: Apache-2.0
+#################################################################################
+
+{{- $fullName := include "identityhub.fullname.frontend" . }}
+{{- $controlLabels := include "identityhub.frontend.labels" . }}
+{{- $namespace := .Release.Namespace }}
+
+{{- range .Values.frontend.httpRoutes }}
+{{- if and .enabled .paths }}
+{{- $hostname := .hostname | lower }}
+{{- $safeHostname := regexReplaceAll "[^a-z0-9.-]" ($hostname | replace "*" "wildcard") "-" | trimAll "-." }}
+{{- $routeName := printf "%s-%s" $fullName $safeHostname }}
+{{- if or (gt (len $routeName) 253) (gt (len (printf "%s-%s" $fullName (first (splitList "." $safeHostname)))) 63) }}
+{{- $routeName = printf "%s-%s" $fullName (sha256sum $hostname | trunc 10) }}
+{{- end }}
+{{- $annotations := .annotations | default dict }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ $routeName }}
+  namespace: {{ $namespace }}
+  labels:
+    {{- $controlLabels | nindent 4 }}
+  {{- with $annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .parentRefs }}
+  parentRefs:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  hostnames:
+    - {{ .hostname | quote }}
+  rules:
+    {{- range .paths }}
+    - matches:
+        - path:
+            type: PathPrefix
+            value: {{ . }}
+      backendRefs:
+        - name: {{ $fullName }}
+          port: {{ $.Values.frontend.service.port }}
+          weight: 1
+    {{- end }}
+{{- end }}
+{{- end }}

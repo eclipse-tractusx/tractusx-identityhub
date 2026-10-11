@@ -34,7 +34,6 @@ import {
     Grid2,
     IconButton,
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import SendIcon from '@mui/icons-material/Send';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import CloseIcon from '@mui/icons-material/Close';
@@ -77,7 +76,7 @@ const CredentialsPage: React.FC = () => {
     const [reqHolderPid, setReqHolderPid] = useState('');
     const [reqCredType, setReqCredType] = useState('');
     const [reqCredentialId, setReqCredentialId] = useState('');
-    const [reqCredFormat, setReqCredFormat] = useState('ldp_vc');
+    const [reqCredFormat, setReqCredFormat] = useState('vc11-sl2021/jwt');
     const [requesting, setRequesting] = useState(false);
     const [snackbar, setSnackbar] = useState<{ message: string; severity: 'success' | 'error' } | null>(null);
     const [page, setPage] = useState(0);
@@ -195,7 +194,8 @@ const CredentialsPage: React.FC = () => {
         setReqIssuerDid('');
         setReqHolderPid('');
         setReqCredType('');
-        setReqCredFormat('ldp_vc');
+        setReqCredentialId('');
+        setReqCredFormat('vc11-sl2021/jwt');
     };
 
     const handleRequest = async () => {
@@ -206,7 +206,7 @@ const CredentialsPage: React.FC = () => {
                 holderPid: reqHolderPid.trim(),
                 credentials: [
                     {
-                        format: reqCredFormat.trim() || 'ldp_vc',
+                        format: reqCredFormat.trim() || 'vc11-sl2021/jwt',
                         id: reqCredentialId.trim(),
                         type: reqCredType.trim(),
                     },
@@ -370,14 +370,15 @@ const CredentialsPage: React.FC = () => {
                         placeholder="MembershipCredential"
                     />
                     <TextField
-                        fullWidth label="Type" value={reqCredentialId}
+                        fullWidth label="Credential ID" value={reqCredentialId}
                         onChange={(e) => setReqCredentialId(e.target.value)}
                         placeholder="tx-membershipCredential"
                     />
                     <TextField
-                        fullWidth label="Format" value={reqCredFormat}
+                        fullWidth label="Credential Profile" value={reqCredFormat}
                         onChange={(e) => setReqCredFormat(e.target.value)}
-                        placeholder="ldp_vc"
+                        placeholder="vc11-sl2021/jwt"
+                        helperText="The issuer's credential definition determines the issued profile."
                     />
                 </DialogContent>
                 <DialogActions sx={whiteDialogActionsSx}>

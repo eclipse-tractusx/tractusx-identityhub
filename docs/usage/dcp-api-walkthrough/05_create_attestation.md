@@ -4,12 +4,12 @@
 
 ---
 
-Attestations define how the IssuerService verifies claims before issuing credentials. For this walkthrough, we use a **database attestation** that looks up holder information in the internal `holders` table.
+Attestations define how the IssuerService verifies claims before issuing credentials. For this walkthrough, we use a **database attestation** that looks up holder information in the internal `holders` table. This requires a SQL IssuerService with the `holder` data source configured, as in the Docker Compose SQL profile.
 
 ## Request
 
 ```bash
-curl -X POST "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/attestations" \
+curl -X POST "${ISSUER_ADMIN}/v1beta/participants/${ISSUER_CONTEXT}/attestations" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${ISSUER_API_KEY}" \
   -d '{
@@ -17,7 +17,9 @@ curl -X POST "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/att
     "attestationType": "database",
     "configuration": {
       "dataSourceName": "holder",
-      "tableName": "holders"
+      "tableName": "holders",
+      "idColumn": "holder_id",
+      "required": true
     }
   }'
 ```
@@ -30,14 +32,16 @@ curl -X POST "${ISSUER_URL}/api/admin/v1alpha/participants/${ISSUER_CONTEXT}/att
 
 The `database` attestation type queries the `holders` table (populated when you register holders in [Step 7](07_register_holder.md)). During credential issuance, the IssuerService evaluates this attestation to verify that the requesting holder is registered and retrieves their data for mapping into the credential.
 
+The separate `custom_attestation_claims` table is not populated by holder registration. Using it requires independently provisioning claim rows and configuring matching mappings; this walkthrough does not use that table.
+
 ```
-┌──────────────────────┐         ┌──────────────────────┐
-│   Attestation Config │         │   holders table      │
-│                      │         │                      │
-│  type: "database"    │────────►│  holder_name         │
-│  tableName: "holders"│  reads  │  did                 │
-│                      │         │  holderId            │
-└──────────────────────┘         └──────────────────────┘
+┌───────────────────────────────────────┐         ┌────────────────────────────────────────┐
+│   Attestation Config                  │         │   holders table                        │
+│                                       │         │                                        │
+│  type: "database"                     │────────►│  holder_name                           │
+│ tableName: "holders"                  │  reads  │  did                                   │
+│ idColumn: "holder_id"                 │         │  holder_id                             │
+└───────────────────────────────────────┘         └────────────────────────────────────────┘
 ```
 
 ## Available Attestation Types

@@ -93,17 +93,18 @@ interface DidWithState {
 
 type EndpointDialogMode = 'add' | 'replace' | null;
 
-const API_BASE = '/api/identity/v1alpha';
+const API_BASE = '/api/identity/v1beta';
 
 const DidPage: React.FC = () => {
     const { activeParticipantId } = useParticipant();
     const [snackbar, setSnackbar] = useState<{ message: string; severity: 'success' | 'error' } | null>(null);
 
-    const getPid = useCallback(() => encodeURIComponent(encodeParticipantId(activeParticipantId)), [activeParticipantId]);
+    const getPid = useCallback(() => encodeParticipantId(activeParticipantId), [activeParticipantId]);
     const encodeDid = useCallback((did: string) => encodeURIComponent(btoa(did)), []);
 
     const fetchDidsList = useCallback(async (): Promise<DidWithState[]> => {
         const pidVal = getPid();
+        if (!pidVal) return [];
         const response = await httpClient.post(`${API_BASE}/participants/${pidVal}/dids/query`, {});
         const documents: DidDocument[] = Array.isArray(response.data) ? response.data : [];
         const didsWithStates = await Promise.all(
@@ -487,8 +488,6 @@ const DidPage: React.FC = () => {
                                         <Tooltip title={d.document.id} arrow>
                                             <Typography
                                                 sx={{
-                                                    fontFamily:
-                                                        '"SF Mono", "Roboto Mono", monospace',
                                                     fontSize: '1.35rem',
                                                     fontWeight: 700,
                                                     lineHeight: 1.2,
@@ -613,11 +612,11 @@ const DidPage: React.FC = () => {
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                         PaperProps={{
                             sx: {
-                                backgroundColor: '#ffffff',
+                                backgroundColor: '#030B1F',
                                 borderRadius: '12px',
                                 minWidth: 240,
-                                boxShadow: '0 12px 32px rgba(0,0,0,0.18)',
-                                border: '1px solid rgba(1,86,255,0.12)',
+                                boxShadow: '0 12px 32px rgba(0,0,0,0.45)',
+                                border: `1px solid ${accentColors.brandBorder}`,
                                 py: 0.5,
                             },
                         }}
@@ -640,18 +639,18 @@ const DidPage: React.FC = () => {
                                         py: 1,
                                         cursor: 'pointer',
                                         '&:hover': {
-                                            backgroundColor: '#f5f9ff',
+                                            backgroundColor: 'rgba(1,32,96,0.35)',
                                         },
                                     }}
                                 >
                                     <AddIcon
                                         fontSize="small"
-                                        sx={{ color: '#0F71CB' }}
+                                        sx={{ color: accentColors.brandLightBlue }}
                                     />
                                     <Typography
                                         sx={{
                                             fontSize: '0.875rem',
-                                            color: '#111827',
+                                            color: accentColors.brandText,
                                             fontWeight: 500,
                                         }}
                                     >
@@ -675,18 +674,18 @@ const DidPage: React.FC = () => {
                                         py: 1,
                                         cursor: 'pointer',
                                         '&:hover': {
-                                            backgroundColor: '#f5f9ff',
+                                            backgroundColor: 'rgba(1,32,96,0.35)',
                                         },
                                     }}
                                 >
                                     <DeviceHubIcon
                                         fontSize="small"
-                                        sx={{ color: '#0F71CB' }}
+                                        sx={{ color: accentColors.brandLightBlue }}
                                     />
                                     <Typography
                                         sx={{
                                             fontSize: '0.875rem',
-                                            color: '#111827',
+                                            color: accentColors.brandText,
                                             fontWeight: 500,
                                         }}
                                     >
@@ -710,18 +709,18 @@ const DidPage: React.FC = () => {
                                         py: 1,
                                         cursor: 'pointer',
                                         '&:hover': {
-                                            backgroundColor: '#f5f5f5',
+                                            backgroundColor: 'rgba(1,32,96,0.35)',
                                         },
                                     }}
                                 >
                                     <ContentCopyIcon
                                         fontSize="small"
-                                        sx={{ color: '#0F71CB' }}
+                                        sx={{ color: accentColors.brandLightBlue }}
                                     />
                                     <Typography
                                         sx={{
                                             fontSize: '0.875rem',
-                                            color: '#111827',
+                                            color: accentColors.brandText,
                                             fontWeight: 500,
                                         }}
                                     >
@@ -776,7 +775,7 @@ const DidPage: React.FC = () => {
                                 <Typography variant="caption" sx={{ color: '#FFFFFF', display: 'block' }}>
                                     {svc.type}
                                 </Typography>
-                                <Typography variant="caption" sx={{ color: '#FFFFFF', display: 'block', fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                <Typography variant="caption" sx={{ color: '#FFFFFF', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                     {svc.serviceEndpoint}
                                 </Typography>
                             </Box>

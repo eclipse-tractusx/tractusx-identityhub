@@ -19,7 +19,7 @@ body:form-urlencoded {
 }
 
 script:post-response {
-  const accessToken = res.getBody().access_token.trim();
+  const accessToken = ((res.getBody()||{}).access_token||"").trim();
   
   bru.setEnvVar("prov_access_token", accessToken);
 }

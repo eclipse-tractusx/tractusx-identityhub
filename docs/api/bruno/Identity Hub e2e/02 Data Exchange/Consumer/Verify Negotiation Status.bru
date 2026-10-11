@@ -16,12 +16,18 @@ headers {
 
 auth:apikey {
   key: X-Api-Key
-  value: password
+  value: {{CONSUMER_API_KEY}}
   placement: header
 }
 
+script:pre-request {
+  // Contract negotiation is asynchronous (REQUESTED -> AGREED -> VERIFYING -> FINALIZED).
+  // Wait for it to reach FINALIZED so contractAgreementId is populated before we read it.
+  await new Promise(resolve => setTimeout(resolve, 12000));
+}
+
 script:post-response {
-  const contractId = res.getBody()['contractAgreementId']; 
+  const contractId = res.getBody()['contractAgreementId'];
   bru.setEnvVar("contractId", contractId);
 }
 

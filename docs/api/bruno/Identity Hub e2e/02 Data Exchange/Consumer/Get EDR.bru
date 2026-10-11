@@ -16,12 +16,18 @@ headers {
 
 auth:apikey {
   key: X-Api-Key
-  value: password
+  value: {{CONSUMER_API_KEY}}
   placement: header
 }
 
+script:pre-request {
+  // The transfer process is asynchronous; wait for it to reach STARTED so the EDR
+  // (endpoint + authorization token) is available in the consumer EDR cache.
+  await new Promise(resolve => setTimeout(resolve, 8000));
+}
+
 script:post-response {
-  const authToken = res.getBody().authorization; 
+  const authToken = res.getBody().authorization;
   bru.setEnvVar("pullSecret", authToken);
 }
 

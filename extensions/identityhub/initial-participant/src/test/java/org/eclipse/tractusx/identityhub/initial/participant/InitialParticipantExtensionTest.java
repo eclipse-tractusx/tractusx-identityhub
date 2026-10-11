@@ -23,8 +23,10 @@
 package org.eclipse.tractusx.identityhub.initial.participant;
 
 import org.eclipse.edc.iam.decentralizedclaims.sts.spi.store.StsAccountStore;
+import org.eclipse.edc.iam.did.spi.document.DidDocument;
 import org.eclipse.edc.identityhub.spi.did.DidDocumentService;
 import org.eclipse.edc.identityhub.spi.keypair.KeyPairService;
+import org.eclipse.edc.identityhub.spi.participantcontext.IdentityApiScopes;
 import org.eclipse.edc.identityhub.spi.participantcontext.model.IdentityHubParticipantContext;
 import org.eclipse.edc.junit.extensions.DependencyInjectionExtension;
 import org.eclipse.edc.participantcontext.spi.config.service.ParticipantContextConfigService;
@@ -39,11 +41,15 @@ import org.eclipse.edc.spi.system.ServiceExtensionContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.ArgumentCaptor;
 
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -73,10 +79,13 @@ public class InitialParticipantExtensionTest {
         when(monitor.withPrefix(anyString())).thenReturn(monitor);
     }
 
-    @Test
-    void initialParticipantContext_valid_test(ServiceExtensionContext context) {
+    @ParameterizedTest
+    @CsvSource({
+            "did:web:example.com, http://example.com/api/credentials/v1/participants/did%3Aweb%3Aexample.com",
+            "did:web:example.com%3A10100:holder, http://example.com:10100/api/credentials/v1/participants/did%3Aweb%3Aexample.com%253A10100%3Aholder"
+    })
+    void initialParticipantContext_valid_test(String participantDid, String expectedEndpoint, ServiceExtensionContext context) {
         // Test data
-        String participantDid = "did:web:example.com";
         String participantSecret = "test-secret-123";
         String participantSecretAlias = "participant-secret-alias";
         String participantApiKey = Base64.getEncoder().encodeToString(participantDid.getBytes(StandardCharsets.UTF_8)) + ".random-chars";
@@ -91,7 +100,7 @@ public class InitialParticipantExtensionTest {
         // Arrange
         when(participantContextStore.create(any(IdentityHubParticipantContext.class)))
                 .thenReturn(StoreResult.success());
-        when(vault.storeSecret(anyString(), anyString()))
+        when(vault.storeSecret(anyString(), anyString(), anyString()))
                 .thenReturn(Result.success());
         when(didDocumentService.store(any(), anyString()))
                 .thenReturn(ServiceResult.success());
@@ -107,10 +116,15 @@ public class InitialParticipantExtensionTest {
         extension.start();
 
         // Assert
-        verify(participantContextStore).create(any(IdentityHubParticipantContext.class));
-        verify(vault).storeSecret(eq(participantSecretAlias), eq(participantSecret));
-        verify(vault).storeSecret(eq(participantDid + "-apikey"), eq(participantApiKey));
-        verify(didDocumentService).store(any(), eq(participantDid));
+        var participant = ArgumentCaptor.forClass(IdentityHubParticipantContext.class);
+        verify(participantContextStore).create(participant.capture());
+        assertThat(participant.getValue().getScopes()).containsExactly(IdentityApiScopes.ADMIN);
+        verify(vault).storeSecret(eq(participantDid), eq(participantSecretAlias), eq(participantSecret));
+        verify(vault).storeSecret(eq(participantDid), eq(participantDid + "-apikey"), eq(participantApiKey));
+        var document = ArgumentCaptor.forClass(DidDocument.class);
+        verify(didDocumentService).store(document.capture(), eq(participantDid));
+        assertThat(document.getValue().getService()).singleElement()
+                .satisfies(service -> assertThat(service.getServiceEndpoint()).isEqualTo(expectedEndpoint));
         verify(keyPairService).addKeyPair(eq(participantDid), any(), eq(true));
         verify(stsAccountStore).create(any());
         verify(participantContextConfigService).save(any());

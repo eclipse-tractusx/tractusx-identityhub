@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{CONSUMER_IDHUB_ID_API}}/v1alpha/participants
+  url: {{CONSUMER_IDHUB_ID_API}}/v1beta/participants
   body: json
   auth: inherit
 }
@@ -16,7 +16,7 @@ headers {
 
 body:json {
   {
-    "roles": ["ROLE_ADMIN", "admin"],
+    "scopes": ["identity-api:write"],
     "serviceEndpoints": [
       {
         "id": "ConsumerCredentialService-ID",
@@ -26,7 +26,6 @@ body:json {
     ],
     "active": true,
     "participantContextId": "{{CONS_ID}}",
-    "participantId": "{{CONS_ID}}",
     "did": "{{CONS_ID}}",
     "key": {
       "keyId": "{{CONS_ID}}#key-1",
@@ -39,15 +38,13 @@ body:json {
   }
 }
 
-script:pre-request {
-}
 
 script:post-response {
-  const apiKey = res.getBody().apiKey.trim();
+  const apiKey = ((res.getBody()||{}).apiKey||"").trim();
   if (apiKey) {
     bru.setEnvVar("CONSUMER_IH_APIKEY", apiKey);
   }
-  const stsSecret = res.getBody().clientSecret.trim();
+  const stsSecret = ((res.getBody()||{}).clientSecret||"").trim();
   if (stsSecret) {
     bru.setEnvVar("CONSUMER_STS_SECRET", stsSecret)
   }

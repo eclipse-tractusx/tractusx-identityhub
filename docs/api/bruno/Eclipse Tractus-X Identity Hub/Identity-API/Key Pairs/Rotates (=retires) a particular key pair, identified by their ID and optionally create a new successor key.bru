@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{IDENTITY_PATH}}/v1alpha/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/rotate?duration=999
+  url: {{IDENTITY_PATH}}/v1beta/participants/{{PARTICIPANT_CONTEXT_ID}}/keypairs/{{KEY_PAIR_ID}}/rotate?duration=999
   body: json
   auth: apikey
 }
@@ -23,9 +23,9 @@ auth:apikey {
 body:json {
   {
     "active": true,
-    "keyId": "my-new-key3",
-    "privateKeyAlias": "my-new-private-key3-alias",
-    "type": "Ed25519VerificationKey2020",
+    "keyId": "{{DID_PLAIN}}#rotated-successor",
+    "privateKeyAlias": "rotated-successor-alias",
+    "type": "JsonWebKey2020",
     "keyGeneratorParams": {
       "algorithm": "EdDSA",
       "curve": "Ed25519"

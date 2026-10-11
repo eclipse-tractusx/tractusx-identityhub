@@ -55,10 +55,6 @@ vi.mock('../../../services/EnvironmentService', () => ({
     isAuthEnabled: vi.fn(() => false),
 }));
 
-vi.mock('../../../services/participantUtils', () => ({
-    encodeParticipantId: vi.fn((id: string) => btoa(id)),
-}));
-
 vi.mock('../../../hooks/useAuth', () => ({
     default: vi.fn(() => ({
         isAuthenticated: false,
@@ -161,7 +157,7 @@ describe('SearchPage', () => {
         fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
 
         await waitFor(() => {
-            expect(httpClient.get).toHaveBeenCalledWith('/api/identity/v1alpha/credentials', {
+            expect(httpClient.get).toHaveBeenCalledWith('/api/identity/v1beta/credentials', {
                 params: { query: 'membership' },
             });
         });
@@ -307,7 +303,7 @@ describe('SearchPage', () => {
         fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
 
         await waitFor(() => {
-            expect(httpClient.get).toHaveBeenCalledWith('/api/identity/v1alpha/credentials', {
+            expect(httpClient.get).toHaveBeenCalledWith('/api/identity/v1beta/credentials', {
                 params: { query: 'membership' },
             });
         });

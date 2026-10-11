@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{CONSUMER_IDHUB_CREDS_API}}/v1/participants/{{CONS_ID}}/presentations/query
+  url: {{CONSUMER_IDHUB_CREDS_LOCAL}}/v1/participants/{{CONS_ID}}/presentations/query
   body: json
   auth: bearer
 }
@@ -17,8 +17,7 @@ auth:bearer {
 body:json {
   {
       "@context": [
-        "https://w3id.org/tractusx-trust/v0.8",
-        "https://identity.foundation/presentation-exchange/submission/v1"
+        "https://w3id.org/dspace-dcp/v1.0/dcp.jsonld"
       ],
       "type": "PresentationQueryMessage",
       "presentationDefinition": null,

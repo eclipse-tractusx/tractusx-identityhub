@@ -1,7 +1,9 @@
 #################################################################################
 #  Copyright (c) 2025 Cofinity-X
 #  Copyright (c) 2025,2026 LKS Next
+#  Copyright (c) 2026 Technovative Solutions
 #  Copyright (c) 2025 Contributors to the Eclipse Foundation
+#  Copyright (c) 2026 Hochschule für Technik und Wirtschaft Dresden
 #
 #  See the NOTICE file(s) distributed with this work for additional
 #  information regarding copyright ownership.
@@ -89,10 +91,6 @@ issuerservice:
     did:
       port: 8083
       path: /
-    # -- Version API, used to obtain exact version information about all APIs at runtime. Should not be internet-facing
-    version:
-      port: 8084
-      path: /.well-known/api
     # -- STS Token API, for the IssuerService to create Self-Issued ID tokens
     sts:
       port: 8085
@@ -228,6 +226,47 @@ issuerservice:
         issuer: ""
         # -- If preset enables certificate generation via cert-manager cluster-wide issuer
         clusterIssuer: ""
+  ## Gateway API HTTPRoute declarations to expose the network service.
+  ## TLS is handled at the Gateway level, not per-route.
+  httpRoutes:
+    ## Public / Internet facing HTTPRoute for the Issuance APIs
+    - enabled: false
+      # -- The hostname to be used to match incoming traffic
+      hostname: "issuerservice.issuance.local"
+      # -- Additional HTTPRoute annotations to add
+      annotations: {}
+      # -- IssuerService endpoints exposed by this HTTPRoute resource
+      endpoints:
+        - issuance
+        - sts
+        - did
+        - statuslist
+      # -- Gateway parentRefs that this HTTPRoute attaches to
+      parentRefs: []
+      #   - name: gateway
+      #     namespace: gateway-system
+      #     sectionName: http
+      #   - name: gateway
+      #     namespace: gateway-system
+      #     sectionName: https
+    ## HTTPRoute for the DID and Admin APIs, should not be internet facing
+    - enabled: false
+      # -- The hostname to be used to match incoming traffic
+      hostname: "issuerservice.did.local"
+      # -- Additional HTTPRoute annotations to add
+      annotations: {}
+      # -- IssuerService endpoints exposed by this HTTPRoute resource
+      endpoints:
+        - issueradmin
+        - identity
+      # -- Gateway parentRefs that this HTTPRoute attaches to
+      parentRefs: []
+      #   - name: gateway
+      #     namespace: gateway-system
+      #     sectionName: http
+      #   - name: gateway
+      #     namespace: gateway-system
+      #     sectionName: https
   # -- declare where to mount [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) into the container
   volumeMounts: []
   # -- [volume](https://kubernetes.io/docs/concepts/storage/volumes/) directories
@@ -273,12 +312,12 @@ issuerservice:
       # -- Console handler configuration
       java.util.logging.ConsoleHandler:
         level: FINE
-        formatter: org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter
+        formatter: org.eclipse.tractusx.monitor.formatter.ColorfulFormatter
       java.util.logging.FileHandler:
         # -- Log level of handler
         level: FINE
         # -- Formatter to use in handler, formatter must be set in identityhub.logging.formatters
-        formatter: org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter
+        formatter: org.eclipse.tractusx.monitor.formatter.ColorfulFormatter
         # -- Path where the log is created, must be the same path as the logging.path values
         pattern: /app/logs/identityhub.log
         # -- Limit of bytes to write before log file rotation
@@ -289,7 +328,7 @@ issuerservice:
         append: true
     formatters:
       # -- configuration of custom colorful formatter
-      org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter:
+      org.eclipse.tractusx.monitor.formatter.ColorfulFormatter:
         format: "%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"
     # -- root log level
     level: INFO
@@ -312,9 +351,9 @@ issuerservice:
       .level=INFO
       org.eclipse.edc.level=INFO
       handlers=java.util.logging.ConsoleHandler
-      java.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter
+      java.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.monitor.formatter.ColorfulFormatter
       java.util.logging.ConsoleHandler.level=ALL
-      org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s
+      org.eclipse.tractusx.monitor.formatter.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s
   # [node selector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector) to constrain pods to nodes
   nodeSelector: {}
   # [tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) to configure preferred nodes
@@ -345,6 +384,10 @@ tests:
 statuslist:
   signing_key:
     alias: default
-  # -- Callback address for statuslist
   callback:
-    address: "issuerservice.issuance.local"
+    # -- Base URL that issued credentials embed as their `credentialStatus.statusListCredential`
+    # endpoint. Must be a FULL URL (scheme://host[:port]/statuslist) reachable by verifiers and
+    # holders — e.g. the public ingress URL, or the in-cluster service address
+    # `http://<release>-tractusx-issuerservice:<statuslist-port>/statuslist` for cluster-internal
+    # verification. A bare hostname produces broken status URLs in every issued credential.
+    address: "https://issuerservice.issuance.local/statuslist"

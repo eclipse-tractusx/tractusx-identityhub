@@ -372,7 +372,6 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                                     backgroundColor: '#FFFFFF',
                                     '& .MuiOutlinedInput-root': {
                                         backgroundColor: '#FFFFFF',
-                                        fontFamily: 'monospace',
                                         fontSize: '0.8rem',
                                         '& fieldset': { borderColor: 'divider' },
                                         '&:hover fieldset': { borderColor: '#ffffff' },
@@ -390,7 +389,6 @@ const CredentialDetailModal: React.FC<CredentialDetailModalProps> = ({
                                     borderRadius: 1,
                                     overflow: 'auto',
                                     fontSize: '0.8rem',
-                                    fontFamily: 'monospace',
                                     maxHeight: 400,
                                     border: '1px solid',
                                     borderColor: 'divider',

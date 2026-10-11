@@ -1,7 +1,9 @@
 #################################################################################
 #  Copyright (c) 2025 Cofinity-X
 #  Copyright (c) 2025,2026 LKS Next
+#  Copyright (c) 2026 Technovative Solutions
 #  Copyright (c) 2025 Contributors to the Eclipse Foundation
+#  Copyright (c) 2026 Hochschule für Technik und Wirtschaft Dresden
 #
 #  See the NOTICE file(s) distributed with this work for additional
 #  information regarding copyright ownership.
@@ -46,6 +48,31 @@ identityhub:
     # -- Overrides the image tag whose default is the chart appVersion
     tag: ""
   initContainers: []
+  # Waits for the bundled PostgreSQL/Vault subcharts to accept TCP connections before
+  # starting the runtime. Without it, the runtime races the subcharts on first install
+  # and crash-loops with "Connection to <release>-postgresql:5432 refused" until the
+  # database is up. Only applies while install.postgresql / install.vault are enabled.
+  # NOTE: the wait targets the DEFAULT subchart service names and ports
+  # (<release>-postgresql:5432, <release>-vault:8200); if you override a subchart's
+  # fullnameOverride or ports, disable this and add your own check via `initContainers`.
+  # For external services use `initContainers` as well.
+  waitForDependencies:
+    # -- Enables the built-in wait-for-dependencies initContainer
+    enabled: true
+    # -- Image used for the TCP wait loop; must provide `nc` (netcat with `-w`/`-z`) and `sh`
+    image: busybox:1.37@sha256:9532d8c39891ca2ecde4d30d7710e01fb739c87a8b9299685c63704296b16028
+    # -- Max probe attempts per dependency (2s apart, each probe capped at a 3s connect
+    # timeout). After this the initContainer exits non-zero and the pod fails loudly
+    # instead of hanging in Init forever. 60 ≈ up to ~5 min.
+    retries: 60
+    # -- [Resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) for the wait initContainer
+    resources:
+      requests:
+        cpu: 10m
+        memory: 16Mi
+      limits:
+        cpu: 50m
+        memory: 32Mi
   useSVE: false
   debug:
     enabled: false
@@ -105,15 +132,6 @@ identityhub:
       port: 8084
       # -- path for incoming api calls
       path: /
-    # -- STS Accounts API, used to manipulate STS accounts
-    accounts:
-      port: 8085
-      path: /api/accounts
-      authKeyAlias: "sup3r$3cr3t"
-    # -- Version API, used to obtain exact version information about all APIs at runtime
-    version:
-      port: 8086
-      path: /.well-known/api
     # -- STS Endpoint, used to obtain tokens
     sts:
       port: 8087
@@ -218,8 +236,6 @@ identityhub:
       # -- EDC endpoints exposed by this ingress resource
       endpoints:
         - identity
-        - accounts
-        - version
       # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
       className: ""
       # -- TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource
@@ -234,6 +250,45 @@ identityhub:
         issuer: ""
         # -- If preset enables certificate generation via cert-manager cluster-wide issuer
         clusterIssuer: ""
+  ## Gateway API HTTPRoute declarations to expose the network service.
+  ## TLS is handled at the Gateway level, not per-route.
+  httpRoutes:
+    ## Public / Internet facing HTTPRoute for the Presentation API
+    - enabled: false
+      # -- The hostname to be used to match incoming traffic
+      hostname: "identityhub.presentation.local"
+      # -- Additional HTTPRoute annotations to add
+      annotations: {}
+      # -- IdentityHub endpoints exposed by this HTTPRoute resource
+      endpoints:
+        - credentials
+        - did
+        - sts
+      # -- Gateway parentRefs that this HTTPRoute attaches to
+      parentRefs: []
+      #   - name: gateway
+      #     namespace: gateway-system
+      #     sectionName: http
+      #   - name: gateway
+      #     namespace: gateway-system
+      #     sectionName: https
+    ## HTTPRoute for the Identity API, should not be internet facing
+    - enabled: false
+      # -- The hostname to be used to match incoming traffic
+      hostname: "identityhub.identity.local"
+      # -- Additional HTTPRoute annotations to add
+      annotations: {}
+      # -- IdentityHub endpoints exposed by this HTTPRoute resource
+      endpoints:
+        - identity
+      # -- Gateway parentRefs that this HTTPRoute attaches to
+      parentRefs: []
+      #   - name: gateway
+      #     namespace: gateway-system
+      #     sectionName: http
+      #   - name: gateway
+      #     namespace: gateway-system
+      #     sectionName: https
   # -- declare where to mount [volumes](https://kubernetes.io/docs/concepts/storage/volumes/) into the container
   volumeMounts: []
   # -- [volume](https://kubernetes.io/docs/concepts/storage/volumes/) directories
@@ -279,12 +334,12 @@ identityhub:
       # -- Console handler configuration
       java.util.logging.ConsoleHandler:
         level: FINE
-        formatter: org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter
+        formatter: org.eclipse.tractusx.monitor.formatter.ColorfulFormatter
       java.util.logging.FileHandler:
         # -- Log level of handler
         level: FINE
         # -- Formatter to use in handler, formatter must be set in identityhub.logging.formatters
-        formatter: org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter
+        formatter: org.eclipse.tractusx.monitor.formatter.ColorfulFormatter
         # -- Path where the log is created, must be the same path as the logging.path values
         pattern: /app/logs/identityhub.log
         # -- Limit of bytes to write before log file rotation
@@ -295,7 +350,7 @@ identityhub:
         append: true
     formatters:
       # -- configuration of custom colorful formatter
-      org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter:
+      org.eclipse.tractusx.monitor.formatter.ColorfulFormatter:
         format: "%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"
     # -- root log level
     level: INFO
@@ -318,9 +373,9 @@ identityhub:
       .level=INFO
       org.eclipse.edc.level=INFO
       handlers=java.util.logging.ConsoleHandler
-      java.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter
+      java.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.monitor.formatter.ColorfulFormatter
       java.util.logging.ConsoleHandler.level=ALL
-      org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s
+      org.eclipse.tractusx.monitor.formatter.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s
   # [node selector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector) to constrain pods to nodes
   nodeSelector: {}
   # [tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) to configure preferred nodes
@@ -375,26 +430,15 @@ postgresql:
     # -- PostgreSQL image tag
     tag: "18.0@sha256:1ffc019dae94eca6b09a49ca67d37398951346de3c3d0cfe23d8d4ca33da83fb"
   jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-postgresql:5432/ih"
-  primary:
-    persistence:
-      enabled: false
-    resources:
-      limits:
-        cpu: 1
-        memory: 1Gi
-      requests:
-        cpu: 250m
-        memory: 256Mi
-  readReplicas:
-    persistence:
-      enabled: false
-    resources:
-      limits:
-        cpu: 500Mi
-        memory: 1Gi
-      requests:
-        cpu: 250m
-        memory: 256Mi
+  persistence:
+    enabled: false
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 256Mi
   auth:
     database: "ih"
     username: "user"

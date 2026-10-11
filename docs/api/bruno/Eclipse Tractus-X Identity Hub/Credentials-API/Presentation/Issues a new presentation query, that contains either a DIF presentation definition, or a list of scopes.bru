@@ -11,21 +11,18 @@ post {
 }
 
 headers {
-  Authorization: Bearer ads
+  Authorization: Bearer {{SI_TOKEN}}
 }
 
 body:json {
   {
     "@context": [
-      "https://w3id.org/tractusx-trust/v0.8",
-      "https://identity.foundation/presentation-exchange/submission/v1"
+      "https://w3id.org/dspace-dcp/v1.0/dcp.jsonld"
     ],
     "type": "PresentationQueryMessage",
     "presentationDefinition": null,
     "scope": [
-      "org.eclipse.edc.vc.type:SomeCredential_0.3.5:write",
-      "org.eclipse.edc.vc.type:SomeOtherCredential:read",
-      "org.eclipse.edc.vc.type:ThirdCredential:*"
+      "org.eclipse.tractusx.vc.type:MembershipCredential:read"
     ]
   }
 }

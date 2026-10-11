@@ -22,7 +22,6 @@
     "@mui/icons-material": "^6.4.5",
     "@mui/material": "^6.4.5",
     "axios": "^1.9.0",
-    "jsdom": "^29.1.1",
     "keycloak-js": "^25.0.6",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -37,7 +36,7 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^22.15.19",
-    "@types/react": "^19.0.8",
+    "@types/react": "19.2.14",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "eslint": "^9.19.0",
@@ -45,9 +44,23 @@
     "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
     "happy-dom": "^20.9.0",
+    "ignore": "7.0.5",
+    "jsdom": "28.1.0",
     "typescript": "~5.7.2",
-    "typescript-eslint": "^8.22.0",
+    "typescript-eslint": "8.56.1",
     "vite": "^6.4.1",
     "vitest": "^3.2.4"
+  },
+  "overrides": {
+    "@exodus/bytes": "1.14.1",
+    "tldts": "7.0.23",
+    "tldts-core": "7.0.23",
+    "tough-cookie": "6.0.0",
+    "@bramus/specificity": "2.4.2",
+    "@asamuzakjp/css-color": "4.1.2",
+    "@csstools/css-color-parser": "4.0.2",
+    "@csstools/css-calc": "3.1.1",
+    "@csstools/color-helpers": "6.0.2",
+    "@csstools/css-syntax-patches-for-csstree": "1.0.10"
   }
 }

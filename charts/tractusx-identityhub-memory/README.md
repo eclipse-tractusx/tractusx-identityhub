@@ -1,6 +1,6 @@
 # tractusx-identityhub-memory
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: v0.4.2](https://img.shields.io/badge/Version-v0.4.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.1](https://img.shields.io/badge/AppVersion-0.4.1-informational?style=flat-square)
 
 A Helm chart for Tractus-X IdentityHub, that deploys the IdentityHub with in-memory persistance
 
@@ -39,8 +39,8 @@ helm install identityhub-memory tractusx-dev/tractusx-identityhub-memory
 | identityhub.debug.enabled | bool | `false` |  |
 | identityhub.debug.port | int | `1044` |  |
 | identityhub.debug.suspendOnStart | bool | `false` |  |
-| identityhub.endpoints | object | `{"accounts":{"authKeyAlias":"sup3r$3cr3t","path":"/api/accounts","port":8085},"credentials":{"path":"/api/credentials","port":8082},"default":{"path":"/api","port":8080},"did":{"path":"/","port":8083},"identity":{"authKeyAlias":"sup3r$3cr3t","path":"/api/identity","port":8081},"sts":{"path":"/api/sts","port":8087},"version":{"path":"/.well-known/api","port":8086}}` | endpoints of the control plane |
-| identityhub.endpoints.accounts | object | `{"authKeyAlias":"sup3r$3cr3t","path":"/api/accounts","port":8085}` | STS Accounts API, used to manipulate STS accounts |
+| identityhub.didweb | object | `{"https":false}` | Whether web DIDs should be interpreted as HTTPS or HTTP |
+| identityhub.endpoints | object | `{"credentials":{"path":"/api/credentials","port":8082},"default":{"path":"/api","port":8080},"did":{"path":"/","port":8083},"identity":{"authKeyAlias":"sup3r$3cr3t","path":"/api/identity","port":8081},"sts":{"path":"/api/sts","port":8087}}` | endpoints of the control plane |
 | identityhub.endpoints.credentials | object | `{"path":"/api/credentials","port":8082}` | DCP Presentation API endpoint |
 | identityhub.endpoints.credentials.path | string | `"/api/credentials"` | path for incoming api calls |
 | identityhub.endpoints.credentials.port | int | `8082` | port for incoming api calls |
@@ -55,13 +55,28 @@ helm install identityhub-memory tractusx-dev/tractusx-identityhub-memory
 | identityhub.endpoints.identity.path | string | `"/api/identity"` | path for incoming api calls |
 | identityhub.endpoints.identity.port | int | `8081` | port for incoming api calls |
 | identityhub.endpoints.sts | object | `{"path":"/api/sts","port":8087}` | STS Endpoint, used to obtain tokens |
-| identityhub.endpoints.version | object | `{"path":"/.well-known/api","port":8086}` | Version API, used to obtain exact version information about all APIs at runtime |
 | identityhub.env | object | `{}` |  |
-| identityhub.envConfigMapNames[0] | string | `"identityhub-config"` |  |
+| identityhub.envConfigMapNames | list | `[]` |  |
 | identityhub.envSecretNames | list | `[]` |  |
 | identityhub.envValueFrom | object | `{}` |  |
+| identityhub.httpRoutes[0].annotations | object | `{}` | Additional HTTPRoute annotations to add |
+| identityhub.httpRoutes[0].enabled | bool | `false` |  |
+| identityhub.httpRoutes[0].endpoints | list | `["credentials","did","sts"]` | IdentityHub endpoints exposed by this HTTPRoute resource |
+| identityhub.httpRoutes[0].hostname | string | `"identityhub.presentation.local"` | The hostname to be used to match incoming traffic |
+| identityhub.httpRoutes[0].parentRefs | list | `[]` | Gateway parentRefs that this HTTPRoute attaches to |
+| identityhub.httpRoutes[1].annotations | object | `{}` | Additional HTTPRoute annotations to add |
+| identityhub.httpRoutes[1].enabled | bool | `false` |  |
+| identityhub.httpRoutes[1].endpoints | list | `["identity"]` | IdentityHub endpoints exposed by this HTTPRoute resource |
+| identityhub.httpRoutes[1].hostname | string | `"identityhub.identity.local"` | The hostname to be used to match incoming traffic |
+| identityhub.httpRoutes[1].parentRefs | list | `[]` | Gateway parentRefs that this HTTPRoute attaches to |
+| identityhub.iatp | object | `{"sts":{"oauth":{"client":{"enabled":false,"id":"did:web:identityhub.presentation.local","secret":"testme","secret_alias":"sts-secret","x_api_key":"ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"}}}}` | Initial participant context configuration |
+| identityhub.iatp.sts.oauth.client.enabled | bool | `false` | Enable participant context client configuration |
+| identityhub.iatp.sts.oauth.client.id | string | `"did:web:identityhub.presentation.local"` | Client ID // Did of the initial participant |
+| identityhub.iatp.sts.oauth.client.secret | string | `"testme"` | The client secret that is stored in the vault for requesting OAuth2 access token for Presentation API access |
+| identityhub.iatp.sts.oauth.client.secret_alias | string | `"sts-secret"` | Alias under which the client secret is stored in the vault |
+| identityhub.iatp.sts.oauth.client.x_api_key | string | `"ZGlkOndlYjppZGVudGl0eWh1Yi5wcmVzZW50YXRpb24ubG9jYWw=.randomChars"` | The x-api-key that is stored in the vault for the initial participant |
 | identityhub.image.pullPolicy | string | `"IfNotPresent"` | [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use |
-| identityhub.image.repository | string | `""` |  |
+| identityhub.image.repository | string | `"tractusx/identityhub-memory"` |  |
 | identityhub.image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion |
 | identityhub.ingresses[0].annotations | object | `{}` | Additional ingress annotations to add |
 | identityhub.ingresses[0].certManager.clusterIssuer | string | `""` | If preset enables certificate generation via cert-manager cluster-wide issuer |
@@ -78,7 +93,7 @@ helm install identityhub-memory tractusx-dev/tractusx-identityhub-memory
 | identityhub.ingresses[1].certManager.issuer | string | `""` | If preset enables certificate generation via cert-manager namespace scoped issuer |
 | identityhub.ingresses[1].className | string | `""` | Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use |
 | identityhub.ingresses[1].enabled | bool | `false` |  |
-| identityhub.ingresses[1].endpoints | list | `["identity","version","accounts"]` | EDC endpoints exposed by this ingress resource |
+| identityhub.ingresses[1].endpoints | list | `["identity"]` | EDC endpoints exposed by this ingress resource |
 | identityhub.ingresses[1].hostname | string | `"identityhub.identity.local"` | The hostname to be used to precisely map incoming traffic onto the underlying network service |
 | identityhub.ingresses[1].tls | object | `{"enabled":false,"secretName":""}` | TLS [tls class](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) applied to the ingress resource |
 | identityhub.ingresses[1].tls.enabled | bool | `false` | Enables TLS on the ingress resource |
@@ -90,14 +105,14 @@ helm install identityhub-memory tractusx-dev/tractusx-identityhub-memory
 | identityhub.livenessProbe.periodSeconds | int | `5` | this fields specifies that kubernetes should perform a liveness check every 5 seconds |
 | identityhub.livenessProbe.successThreshold | int | `1` | number of consecutive successes for the probe to be considered successful after having failed |
 | identityhub.livenessProbe.timeoutSeconds | int | `5` | number of seconds after which the probe times out |
-| identityhub.logging.default | string | `".level=INFO\norg.eclipse.edc.level=INFO\nhandlers=java.util.logging.ConsoleHandler\njava.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter\njava.util.logging.ConsoleHandler.level=ALL\norg.eclipse.tractusx.identityhub.monitor.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"` | default logging properties if logging is not enabled |
+| identityhub.logging.default | string | `".level=INFO\norg.eclipse.edc.level=INFO\nhandlers=java.util.logging.ConsoleHandler\njava.util.logging.ConsoleHandler.formatter=org.eclipse.tractusx.monitor.formatter.ColorfulFormatter\njava.util.logging.ConsoleHandler.level=ALL\norg.eclipse.tractusx.monitor.formatter.ColorfulFormatter.format=%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"` | default logging properties if logging is not enabled |
 | identityhub.logging.enabled | bool | `true` | Enable logging to create .log files |
-| identityhub.logging.formatters."org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter" | object | `{"format":"%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"}` | configuration of custom colorful formatter |
+| identityhub.logging.formatters."org.eclipse.tractusx.monitor.formatter.ColorfulFormatter" | object | `{"format":"%7$s[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$s] %5$s%6$s%n%8$s"}` | configuration of custom colorful formatter |
 | identityhub.logging.handlers | list | `["java.util.logging.ConsoleHandler","java.util.logging.FileHandler"]` | List of handlers to use in the logger |
-| identityhub.logging.handlersConfig."java.util.logging.ConsoleHandler" | object | `{"formatter":"org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter","level":"FINE"}` | Console handler configuration |
+| identityhub.logging.handlersConfig."java.util.logging.ConsoleHandler" | object | `{"formatter":"org.eclipse.tractusx.monitor.formatter.ColorfulFormatter","level":"FINE"}` | Console handler configuration |
 | identityhub.logging.handlersConfig."java.util.logging.FileHandler".append | bool | `true` | Append logs to the file or create new file every deployment |
 | identityhub.logging.handlersConfig."java.util.logging.FileHandler".count | int | `1` | Number of files to use in log file rotation |
-| identityhub.logging.handlersConfig."java.util.logging.FileHandler".formatter | string | `"org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter"` | Formatter to use in handler, formatter must be set in identityhub.logging.formatters |
+| identityhub.logging.handlersConfig."java.util.logging.FileHandler".formatter | string | `"org.eclipse.tractusx.monitor.formatter.ColorfulFormatter"` | Formatter to use in handler, formatter must be set in identityhub.logging.formatters |
 | identityhub.logging.handlersConfig."java.util.logging.FileHandler".level | string | `"FINE"` | Log level of handler |
 | identityhub.logging.handlersConfig."java.util.logging.FileHandler".limit | int | `0` | Limit of bytes to write before log file rotation |
 | identityhub.logging.handlersConfig."java.util.logging.FileHandler".pattern | string | `"/app/logs/identityhub.log"` | Path where the log is created, must be the same path as the logging.path values |

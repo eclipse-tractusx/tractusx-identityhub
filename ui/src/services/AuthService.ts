@@ -285,11 +285,12 @@ class AuthService {
 
         this.loggingOut = true;
         try {
-
             if (this.tokenRefreshInterval) {
                 clearInterval(this.tokenRefreshInterval);
                 this.tokenRefreshInterval = null;
             }
+
+            sessionStorage.removeItem('keycloak_authenticated');
 
             this.setAuthState({
                 isAuthenticated: false,
@@ -298,6 +299,11 @@ class AuthService {
                 tokens: null,
                 error: null,
             });
+
+            if (environmentService.isAuthEnabled() && environmentService.isKeycloakEnabled() && this.keycloak) {
+                const logoutRedirectUri = environmentService.getLogoutRedirectUri() || window.location.origin;
+                await this.keycloak.logout({ redirectUri: logoutRedirectUri });
+            }
         } finally {
             this.loggingOut = false;
         }

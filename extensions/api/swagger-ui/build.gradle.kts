@@ -25,7 +25,7 @@ plugins {
 
 dependencies {
     implementation(libs.edc.spi.core)
-    implementation(libs.edc.web.spi)
+    implementation(libs.edc.spi.web)
 
     testImplementation(libs.edc.junit)
 }

@@ -30,12 +30,12 @@ dependencies {
     // used for the runtime
     runtimeOnly(libs.bom.issuer)
     runtimeOnly(project(":extensions:seed:super-user"))
+    runtimeOnly(project(":extensions:identityhub:participant-api-ownership"))
     runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
     runtimeOnly(project(":extensions:api:swagger-ui"))
 
     // used for custom extensions
     implementation(libs.edc.ih.spi)
-    implementation(libs.edc.api.authentication)
 }
 
 // Bundle the build-time-generated OpenAPI spec so the Swagger UI can serve it.

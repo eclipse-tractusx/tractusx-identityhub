@@ -20,9 +20,6 @@
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
-// Mock import.meta.env
-vi.stubGlobal('import', { meta: { env: {} } });
-
 // Mock window.ENV
 Object.defineProperty(window, 'ENV', {
     value: {},

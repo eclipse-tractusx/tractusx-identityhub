@@ -33,7 +33,6 @@ import BlockIcon from '@mui/icons-material/Block';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SecurityIcon from '@mui/icons-material/Security';
 import { CredentialResource, getStateName } from './types';
 
 interface CredentialCardProps {
@@ -254,8 +253,6 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
                     <Tooltip title={typeName} arrow placement="top">
                         <Typography
                             sx={{
-                                fontFamily:
-                                    '"SF Mono", "Roboto Mono", monospace',
                                 fontSize: '1.9rem',
                                 fontWeight: 700,
                                 lineHeight: 1.1,
@@ -297,8 +294,6 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
                             >
                                 <Typography
                                     sx={{
-                                        fontFamily:
-                                            '"SF Mono", "Roboto Mono", monospace',
                                         fontSize: '0.78rem',
                                         lineHeight: 1.5,
                                         color:
@@ -334,8 +329,6 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
 
                         <Typography
                             sx={{
-                                fontFamily:
-                                    '"SF Mono", "Roboto Mono", monospace',
                                 fontSize: '0.82rem',
                                 color: expired
                                     ? '#FF5A5A'

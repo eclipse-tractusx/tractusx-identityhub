@@ -22,6 +22,7 @@ import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 
 export default defineConfig({
+    envDir: false,
     plugins: [react()],
     resolve: {
         alias: {
@@ -32,7 +33,7 @@ export default defineConfig({
     },
     test: {
         globals: true,
-        environment: 'jsdom',
+        environment: 'happy-dom',
         setupFiles: ['./src/__tests__/setup.ts'],
         include: ['src/**/*.test.{ts,tsx}'],
         coverage: {

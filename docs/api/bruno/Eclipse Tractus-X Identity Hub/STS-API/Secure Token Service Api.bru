@@ -12,7 +12,8 @@ post {
 
 body:form-urlencoded {
   grant_type: client_credentials
-  client_id: did:web:super-user
-  audience: did:web:super-user
-  client_secret: client_secret
+  client_id: {{STS_CLIENT_ID}}
+  audience: {{STS_AUDIENCE}}
+  client_secret: {{STS_CLIENT_SECRET}}
+  bearer_access_scope: org.eclipse.tractusx.vc.type:MembershipCredential:read
 }

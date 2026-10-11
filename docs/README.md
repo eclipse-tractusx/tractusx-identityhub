@@ -11,6 +11,7 @@ This directory contains the complete documentation for the Identity Hub and Issu
 	- [Architecture Documentation](#architecture-documentation)
 	- [API Documentation](#api-documentation)
 	- [DCP API Walkthrough](#dcp-api-walkthrough)
+	- [DCP Presentation Flow](#dcp-presentation-flow)
 	- [Migration Guide](#migration-guide)
 - [Related Documentation Outside docs](#related-documentation-outside-docs)
 - [NOTICE](#notice)
@@ -66,6 +67,14 @@ Step-by-step guide for the full DCP credential issuance flow, including:
 - Verifying the issued credential (signature, revocation status)
 
 See the full [Usage Guides index](./usage/README.md) for all available walkthroughs.
+
+### [DCP Presentation Flow](./usage/dcp-presentation-flow/README.md)
+
+Step-by-step reference for connector-to-connector authentication, which picks up where the issuance walkthrough ends:
+
+- The self-issued ID token, and the access token it carries for the verifier
+- DID resolution and the presentation query against the holder's `CredentialService`
+- Trusted-issuer and revocation checks, and where each kind of failure surfaces
 
 ### [Migration Guide](./admin/migration-guide.md)
 

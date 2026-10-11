@@ -27,6 +27,15 @@ End-to-end guide for the **Decentralized Claims Protocol (DCP)** credential issu
 | [09 — Retrieve Credentials](./dcp-api-walkthrough/09_retrieve_credentials.md) | Retrieve the issued credential |
 | [10 — Verify Credential](./dcp-api-walkthrough/10_verify_credential.md) | Verify signature, temporal claims, and revocation |
 
+### [DCP Presentation Flow](./dcp-presentation-flow/README.md)
+
+How two connectors authenticate each other with those credentials, before any DSP message is answered. Covers:
+
+- The self-issued **ID token** and the **access token** carried inside it
+- DID resolution, and the `CredentialService` endpoint the verifier calls back to
+- The presentation query, the trusted-issuer check and the status list check
+- Where each kind of failure surfaces, since a failed handshake returns a bare `401`
+
 ---
 
 ## NOTICE

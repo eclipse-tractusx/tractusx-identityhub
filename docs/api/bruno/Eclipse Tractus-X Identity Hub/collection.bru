@@ -1,21 +1,50 @@
 vars:pre-request {
-  CREDENTIAL_PATH: http://localhost:10001/api/credentials
-  PATH: http://localhost:8180/api
-  DID_PATH: http://localhost:8181/api/did
-  IDENTITY_PATH: http://localhost:8182/api/identity
-  STS_PATH: http://localhost:8183/api/sts
-  ISSUANCE_PATH: http://localhost:8184/api/issuance
-  ISSUER_ADMIN_PATH: http://localhost:8185/api/issueradmin
+  IDENTITY_PATH: http://localhost:15151/api/identity
+  CREDENTIAL_PATH: http://localhost:13131/api/credentials
+  STS_PATH: http://localhost:9292/api/sts
+  DID_PATH: http://localhost:10100
+  ISSUANCE_PATH: http://localhost:13132/api/issuance
+  ISSUER_ADMIN_PATH: http://localhost:15152/api/issuer
   STATUS_LIST_PATH: http://localhost:9999/statuslist
   API_KEY: ****APIKEY****
-  PARTICIPANT_CONTEXT_ID: super-user
-  HOLDER_PID: did:web:super-user
+  SI_TOKEN: ****SELF_ISSUED_TOKEN****
+  STS_CLIENT_ID: did:web:localhost%3A10100:participant
+  STS_AUDIENCE: did:web:localhost%3A10100:participant
+  STS_CLIENT_SECRET: ****CLIENT_SECRET****
+  PARTICIPANT_CONTEXT_ID: ih-super-user
+  HOLDER_PID: holder-request-1
   CREDENTIAL_ID: 1f36af58-0fc0-4b24-9b1c-e37d59668089
-  DID: ZGlkOndlYjpzdXBlci11c2Vy
+  DID: ZGlkOndlYjppaC1zdXBlci11c2Vy
+  DID_PLAIN: did:web:ih-super-user
   KEY_PAIR_ID: 23ab5006-cf40-4336-a85c-e81005edce17
   ATTESTATION_DEFINITION_ID: string
   CREDENTIAL_DEFINITION_ID: string
   HOLDER_ID: string
   ISSUANCE_PROCESS_ID: 
   CREDENTIAL_REQUEST_ID: 
+}
+
+docs {
+  Reference collection covering every REST endpoint of Tractus-X IdentityHub and
+  IssuerService (EDC 0.17.0), grouped by API.
+
+  Defaults target the local Docker Compose stack (deployment/docker, --profile sql).
+  IssuerService APIs run on their own host ports: switch IDENTITY_PATH to
+  http://localhost:15251/api/identity when managing issuer-side participants.
+
+  Setup: set API_KEY to a super-user key from the runtime startup logs (or a
+  participant apiKey returned on creation). The DCP protocol endpoints
+  (Credentials-API, Issuance-API) use a self-issued Bearer token from the STS
+  instead of x-api-key.
+
+  EDC 0.17.0 path encoding rules:
+  - PARTICIPANT_CONTEXT_ID path segments are PLAIN (base64url-encoded ids return
+    404, IH #937). Only the API-key prefix is still base64url-encoded.
+  - The DID path segment in /dids/{did}/... requests IS still base64url-encoded
+    (the default ZGlkOndlYjppaC1zdXBlci11c2Vy is did:web:ih-super-user).
+  - HOLDER_PID is a client-chosen correlation id for a credential request, not a
+    DID.
+
+  For a guided, fully automated end-to-end flow use the Postman collection
+  docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json (see docs/api/README.md).
 }

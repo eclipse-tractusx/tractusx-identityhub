@@ -1,5 +1,6 @@
 #################################################################################
 #  Copyright (c) 2025 Cofinity-X
+#  Copyright (c) 2026 Technovative Solutions
 #  Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
 #  See the NOTICE file(s) distributed with this work for additional
@@ -51,6 +52,10 @@ jobs:
     uses: ./.github/workflows/deployment-test.yaml
     secrets: inherit
 
+  dcp-e2e-test:
+    # no secrets: the job builds and drives an ephemeral local compose stack
+    uses: ./.github/workflows/postman-e2e-test.yaml
+
   upgradeability-test:
     if: false
     uses: ./.github/workflows/upgradeability-test.yaml
@@ -62,6 +67,7 @@ jobs:
     needs:
       - verify
       - deployment-test
+      - dcp-e2e-test
       - upgradeability-test
     runs-on: ubuntu-latest
     steps:

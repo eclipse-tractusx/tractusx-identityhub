@@ -18,7 +18,7 @@
  ********************************************************************************/
 
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Header from '../../../components/general/Header';
 
@@ -45,8 +45,12 @@ vi.mock('../../../services/EnvironmentService', () => ({
 vi.mock('../../../contexts/ParticipantContext', () => ({
     useParticipant: vi.fn(() => ({
         participants: [
-            { participantContextId: 'BPNL00000003CRHK', state: 1 },
-            { participantContextId: 'BPNL00000003ABCD', state: 1 },
+            { participantContextId: 'BPNL00000003CRHK', state: 200 },
+            { participantContextId: 'BPNL00000003ABCD', state: 200 },
+            { participantContextId: 'participant-created', state: 100 },
+            { participantContextId: 'participant-deactivated', state: 300 },
+            { participantContextId: 'participant-unknown', state: 999 },
+            { participantContextId: 'participant-missing-state' },
         ],
         activeParticipantId: 'BPNL00000003CRHK',
         setActiveParticipantId: mockSetActiveParticipantId,
@@ -131,6 +135,22 @@ describe('Header', () => {
         fireEvent.click(userButtons[0]);
         fireEvent.click(screen.getByTestId('SwapHorizIcon').closest('button')!);
         expect(screen.getByText('BPNL00000003ABCD')).toBeInTheDocument();
+    });
+
+    it.each([
+        ['BPNL00000003ABCD', 'Active', '#00aa55'],
+        ['participant-created', 'Created', '#E6A817'],
+        ['participant-deactivated', 'Deactivated', '#D91E18'],
+        ['participant-unknown', 'Unknown', '#9E9E9E'],
+        ['participant-missing-state', 'Unknown', '#9E9E9E'],
+    ])('should display the correct state for %s', (id, label, color) => {
+        renderHeader();
+        fireEvent.click(screen.getAllByLabelText('account of current user')[0]);
+        fireEvent.click(screen.getByTestId('SwapHorizIcon').closest('button')!);
+
+        const row = screen.getByText(id).parentElement!;
+        const chip = within(row).getByText(label).closest('.MuiChip-root');
+        expect(chip).toHaveStyle({ color });
     });
 
     it('should call setActiveParticipantId when a participant is selected', () => {
