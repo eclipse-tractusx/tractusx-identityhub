@@ -69,4 +69,4 @@ postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
 testcontainers-postgres = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
 
 [plugins]
-shadow = { id = "com.gradleup.shadow", version = "9.3.1" }
+shadow = { id = "com.gradleup.shadow", version = "9.6.1" }
