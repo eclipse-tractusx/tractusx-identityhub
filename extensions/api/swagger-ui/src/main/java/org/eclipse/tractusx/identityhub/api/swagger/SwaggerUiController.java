@@ -47,6 +47,14 @@ public class SwaggerUiController {
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <title>%1$s</title>
                 <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css"/>
+                <style>
+                    /*
+                        The topbar carries the definition selector, and each definition covers one
+                        web context only. Left to scroll away it reads as "the other endpoints are
+                        missing", so it is pinned.
+                    */
+                    .swagger-ui .topbar { position: sticky; top: 0; z-index: 10; }
+                </style>
             </head>
             <body>
                 <div id="swagger-ui"></div>

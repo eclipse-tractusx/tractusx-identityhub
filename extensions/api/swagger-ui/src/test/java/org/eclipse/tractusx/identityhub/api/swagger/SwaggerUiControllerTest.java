@@ -62,7 +62,9 @@ class SwaggerUiControllerTest {
                 // Without the standalone preset SwaggerUIBundle ignores `urls` and the page is blank.
                 .contains("swagger-ui-standalone-preset.js")
                 .contains("SwaggerUIStandalonePreset")
-                .contains("layout: 'StandaloneLayout'");
+                .contains("layout: 'StandaloneLayout'")
+                // The topbar holds the definition selector, so it must stay on screen.
+                .contains(".swagger-ui .topbar { position: sticky;");
     }
 
     @Test
