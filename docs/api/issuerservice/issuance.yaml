@@ -1,0 +1,305 @@
+openapi: 3.0.1
+info:
+  title: "IssuerService Issuance (DCP) API"
+  description: "Decentralised Claims Protocol issuance endpoints: credential requests, status and issuer metadata."
+  version: "1.0.0"
+servers:
+- description: Local development runtime
+  url: http://localhost:13132/api/issuance
+security:
+- Authentication: []
+paths:
+  /v1beta/participants/{participantContextId}/credentials:
+    post:
+      description: Requests the issuance of one or several verifiable credentials
+        from an issuer
+      operationId: requestCredentials
+      parameters:
+      - in: path
+        name: participantContextId
+        required: true
+        schema:
+          type: string
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CredentialRequestMessage"
+      responses:
+        "201":
+          description: The request was successfully received and is being processed.
+          headers:
+            Location:
+              description: contains the relative URL where the status of the request
+                can be queried (Credential Request Status API)
+              schema:
+                type: string
+              style: simple
+        "400":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+          description: "Request body was malformed, e.g. required parameter or properties\
+            \ were missing"
+        "401":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+          description: No Authorization header was provided.
+        "403":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+          description: The given authentication token could not be validated or the
+            client is not authorized to call this endpoint.
+      tags:
+      - Credential Request API
+  /v1beta/participants/{participantContextId}/metadata:
+    get:
+      description: Requests information about the capabilities of this issuer.
+      operationId: getIssuerMetadata
+      parameters:
+      - in: path
+        name: participantContextId
+        required: true
+        schema:
+          type: string
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssuerMetadata"
+          description: Gets the issuer metadata.
+      tags:
+      - Issuer Metadata API
+  /v1beta/participants/{participantContextId}/requests/{credentialRequestId}:
+    get:
+      description: Requests status information about an issuance request from an issuer
+      operationId: getCredentialRequestStatus
+      parameters:
+      - in: path
+        name: participantContextId
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: credentialRequestId
+        required: true
+        schema:
+          type: string
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CredentialStatus"
+          description: Gets the status of a credentials request.
+        "400":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+          description: "Request was malformed, e.g. required parameter or properties\
+            \ were missing"
+        "401":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+          description: No Authorization header was provided.
+        "403":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+          description: The given authentication token could not be validated or the
+            client is not authorized to call this endpoint.
+        "404":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+          description: No credential request was found for the given ID.
+      tags:
+      - Credential Request Status API
+components:
+  schemas:
+    ApiErrorDetail:
+      type: object
+      example:
+        message: error message
+        type: ErrorType
+        path: object.error.path
+        invalidValue: this value is not valid
+      properties:
+        invalidValue:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
+        type:
+          type: string
+    CredentialRequest:
+      type: object
+      example:
+        credentialType: MembershipCredential
+        format: vcdm11_jwt
+      properties:
+        credentialType:
+          type: string
+        format:
+          type: string
+      required:
+      - credentialType
+      - format
+    CredentialRequestMessage:
+      type: object
+      example:
+        '@context':
+        - https://w3id.org/dspace-dcp/v1.0/dcp.jsonld
+        type: CredentialRequestMessage
+        credentials:
+        - credentialType: MembershipCredential
+          format: vcdm11_jwt
+        - credentialType: OrganizationCredential
+          format: vcdm11_ld
+        - credentialType: Iso9001Credential
+          format: vcdm20_jose
+      properties:
+        '@context':
+          type: object
+        credentials:
+          type: array
+          items:
+            $ref: "#/components/schemas/CredentialRequest"
+      required:
+      - '@context'
+      - credentials
+    CredentialStatus:
+      type: object
+      example:
+        '@context':
+        - https://w3id.org/dspace-dcp/v1.0/dcp.jsonld
+        type: CredentialStatus
+        requestId: requestId
+        status: RECEIVED
+      properties:
+        '@context':
+          type: object
+        status:
+          type: string
+        type:
+          type: string
+      required:
+      - '@context'
+      - status
+      - type
+    IssuerMetadata:
+      type: object
+      example:
+        '@context':
+        - https://w3id.org/dspace-dcp/v1.0/dcp.jsonld
+        type: IssuerMetadata
+        credentialIssuer: did:web:issuer-url
+        credentialsSupported:
+        - type: CredentialObject
+          credentialType: MembershipCredential
+          offerReason: reissue
+          bindingMethods:
+          - did:web
+          profiles:
+          - vc20-bssl/jwt
+          - vc10-sl2021/jwt
+          - '...'
+          issuancePolicy:
+            id: Scalable trust example
+            input_descriptors:
+            - id: pd-id
+              constraints:
+                fields:
+                - path:
+                  - $.vc.type
+                  filter:
+                    type: string
+                    pattern: ^AttestationCredential$
+      properties:
+        '@context':
+          type: object
+        credentialIssuer:
+          type: string
+        status:
+          type: string
+        type:
+          type: string
+      required:
+      - '@context'
+      - credentialIssuer
+      - status
+      - type
+    JsonObject:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/JsonValue"
+      properties:
+        empty:
+          type: boolean
+        valueType:
+          type: string
+          enum:
+          - ARRAY
+          - OBJECT
+          - STRING
+          - NUMBER
+          - "TRUE"
+          - "FALSE"
+          - "NULL"
+    JsonValue:
+      type: object
+      properties:
+        valueType:
+          type: string
+          enum:
+          - ARRAY
+          - OBJECT
+          - STRING
+          - NUMBER
+          - "TRUE"
+          - "FALSE"
+          - "NULL"
+  securitySchemes:
+    Authentication:
+      bearerFormat: JWT
+      description: Self-Issued ID token containing an access_token
+      scheme: bearer
+      type: http

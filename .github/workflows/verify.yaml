@@ -35,6 +35,24 @@ jobs:
         run: |
           ./gradlew checkstyleMain checkstyleTest
 
+  OpenAPI-Specs-Up-To-Date:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: ./.github/actions/setup-java
+      - name: Regenerate the committed OpenAPI specs
+        run: |
+          ./gradlew :openapi:identityhub-spec:copyGeneratedSpecToDocs \
+                    :openapi:issuerservice-spec:copyGeneratedSpecToDocs
+      - name: Fail if the generated specs are out of date
+        run: |
+          # Scoped to the generated directories: docs/api also holds hand-written files.
+          if ! git diff --exit-code -- docs/api/identityhub docs/api/issuerservice; then
+            echo "::error::The committed OpenAPI specs do not match the generated ones."
+            echo "Run the two copyGeneratedSpecToDocs tasks and commit the result."
+            exit 1
+          fi
+
   Javadoc:
     runs-on: ubuntu-latest
     steps:

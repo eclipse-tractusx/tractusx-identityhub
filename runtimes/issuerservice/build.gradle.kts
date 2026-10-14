@@ -36,10 +36,19 @@ dependencies {
     runtimeOnly(project(":extensions:seed:super-user"))
     runtimeOnly(project(":extensions:identityhub:participant-api-ownership"))
     runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
+    runtimeOnly(project(":extensions:api:swagger-ui"))
     runtimeOnly(libs.postgres)
 
     // used for custom extensions
     implementation(libs.edc.ih.spi)
+}
+
+// Bundle the build-time-generated OpenAPI spec so the Swagger UI can serve it.
+tasks.named<ProcessResources>("processResources") {
+    // One spec per web context, plus the index the Swagger UI page reads to build its selector.
+    from(project(":openapi:issuerservice-spec").tasks.named("assembleSpecBundle")) {
+        into("openapi")
+    }
 }
 
 tasks.shadowJar {

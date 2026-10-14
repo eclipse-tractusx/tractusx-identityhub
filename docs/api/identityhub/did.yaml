@@ -1,0 +1,66 @@
+openapi: 3.0.1
+info:
+  title: "IdentityHub DID Document API"
+  description: "Resolution of DID documents published by this IdentityHub."
+  version: "1.0.0"
+servers:
+- description: Local development runtime
+  url: http://localhost:10100/
+paths:
+  /{any}:
+    get:
+      operationId: getDidDocument
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DidDocument"
+          description: default response
+components:
+  schemas:
+    DidDocument:
+      type: object
+      properties:
+        '@context':
+          type: array
+          items:
+            type: object
+        authentication:
+          type: array
+          items:
+            type: string
+        id:
+          type: string
+        service:
+          type: array
+          items:
+            $ref: "#/components/schemas/Service"
+        verificationMethod:
+          type: array
+          items:
+            $ref: "#/components/schemas/VerificationMethod"
+    Service:
+      type: object
+      properties:
+        id:
+          type: string
+        serviceEndpoint:
+          type: string
+        type:
+          type: string
+    VerificationMethod:
+      type: object
+      properties:
+        controller:
+          type: string
+        id:
+          type: string
+        publicKeyJwk:
+          type: object
+          additionalProperties:
+            type: object
+        publicKeyMultibase:
+          type: string
+        type:
+          type: string

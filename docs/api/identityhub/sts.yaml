@@ -1,0 +1,90 @@
+openapi: 3.0.1
+info:
+  title: "IdentityHub Secure Token Service API"
+  description: "Self-issued token endpoint of the embedded Secure Token Service."
+  version: "1.0.0"
+servers:
+- description: Local development runtime
+  url: http://localhost:9292/api/sts
+paths:
+  /token:
+    post:
+      operationId: token
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            encoding:
+              audience:
+                style: form
+              bearer_access_scope:
+                style: form
+              client_id:
+                style: form
+              client_secret:
+                style: form
+              grant_type:
+                style: form
+              token:
+                style: form
+            schema:
+              type: object
+              properties:
+                audience:
+                  type: string
+                  description: Audience for the SI token
+                bearer_access_scope:
+                  type: string
+                  description: Scope to be added in the VP token
+                client_id:
+                  type: string
+                  description: Id of the client requesting an SI token
+                client_secret:
+                  type: string
+                  description: Secret of the client requesting an SI token
+                grant_type:
+                  type: string
+                  description: "Type of grant: must be set to client_credentials"
+                token:
+                  type: string
+                  description: VP token to be added as a claim in the SI token
+              required:
+              - audience
+              - client_id
+              - client_secret
+              - grant_type
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StsTokenResponse"
+          description: The Self-Issued ID token
+        "400":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StsTokenErrorResponse"
+          description: Invalid Request
+      tags:
+      - Secure Token Service Api
+components:
+  schemas:
+    StsTokenErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        error_description:
+          type: string
+    StsTokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        expires_in:
+          type: integer
+          format: int64
+        token_type:
+          type: string
