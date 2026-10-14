@@ -29,13 +29,13 @@ import jakarta.ws.rs.core.MediaType;
 @Path("/swagger")
 public class SwaggerUiController {
 
-    private static final String INDEX_HTML = """
+    private static final String INDEX_HTML_TEMPLATE = """
             <!DOCTYPE html>
             <html lang="en">
             <head>
                 <meta charset="UTF-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-                <title>Tractus-X IdentityHub API</title>
+                <title>%s</title>
                 <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css"/>
             </head>
             <body>
@@ -56,15 +56,17 @@ public class SwaggerUiController {
             """;
 
     private final OpenApiSpecProvider specProvider;
+    private final String indexHtml;
 
-    public SwaggerUiController(OpenApiSpecProvider specProvider) {
+    public SwaggerUiController(OpenApiSpecProvider specProvider, String pageTitle) {
         this.specProvider = specProvider;
+        this.indexHtml = INDEX_HTML_TEMPLATE.formatted(escapeHtml(pageTitle));
     }
 
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String index() {
-        return INDEX_HTML;
+        return indexHtml;
     }
 
     @GET
@@ -72,5 +74,16 @@ public class SwaggerUiController {
     @Produces("application/yaml")
     public String openapi() {
         return specProvider.asYaml();
+    }
+
+    /**
+     * The page title comes from configuration, so it is escaped before being interpolated
+     * into the document.
+     */
+    private static String escapeHtml(String value) {
+        return value.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;");
     }
 }

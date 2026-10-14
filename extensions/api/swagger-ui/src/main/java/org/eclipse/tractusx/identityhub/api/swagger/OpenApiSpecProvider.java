@@ -24,42 +24,44 @@ package org.eclipse.tractusx.identityhub.api.swagger;
 import org.eclipse.edc.spi.EdcException;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 /**
  * Supplies the OpenAPI specification that is generated at build time (by the
  * {@code openapi:*-spec} modules) and bundled on the classpath as
- * {@code /openapi.yaml}. The content is read once and cached.
+ * {@code /openapi.yaml}.
+ * <p>
+ * The spec is read eagerly when this provider is constructed, so a runtime that
+ * was built without the bundled spec fails on startup rather than serving a 500
+ * the first time somebody opens the Swagger UI page.
  */
-public class OpenApiSpecProvider {
+public final class OpenApiSpecProvider {
 
     private static final String SPEC_RESOURCE = "/openapi.yaml";
 
-    private volatile String cachedYaml;
+    private final String yaml;
 
-    public String asYaml() {
-        var result = cachedYaml;
-        if (result == null) {
-            synchronized (this) {
-                if (cachedYaml == null) {
-                    cachedYaml = read();
-                }
-                result = cachedYaml;
-            }
-        }
-        return result;
+    public OpenApiSpecProvider() {
+        this(SPEC_RESOURCE);
     }
 
-    private String read() {
-        try (InputStream is = getClass().getResourceAsStream(SPEC_RESOURCE)) {
+    OpenApiSpecProvider(String specResource) {
+        this.yaml = read(specResource);
+    }
+
+    public String asYaml() {
+        return yaml;
+    }
+
+    private static String read(String specResource) {
+        try (var is = OpenApiSpecProvider.class.getResourceAsStream(specResource)) {
             if (is == null) {
                 throw new EdcException(("Bundled OpenAPI spec not found on classpath: %s. Ensure the runtime's " +
-                        "build bundles the generated spec from the openapi:*-spec module.").formatted(SPEC_RESOURCE));
+                        "build bundles the generated spec from the openapi:*-spec module.").formatted(specResource));
             }
             return new String(is.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new EdcException("Failed to read bundled OpenAPI spec: " + SPEC_RESOURCE, e);
+            throw new EdcException("Failed to read bundled OpenAPI spec: " + specResource, e);
         }
     }
 }

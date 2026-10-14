@@ -23,6 +23,7 @@ package org.eclipse.tractusx.identityhub.api.swagger;
 
 import org.eclipse.edc.runtime.metamodel.annotation.Extension;
 import org.eclipse.edc.runtime.metamodel.annotation.Inject;
+import org.eclipse.edc.runtime.metamodel.annotation.Setting;
 import org.eclipse.edc.spi.system.ServiceExtension;
 import org.eclipse.edc.spi.system.ServiceExtensionContext;
 import org.eclipse.edc.web.spi.WebService;
@@ -31,6 +32,16 @@ import org.eclipse.edc.web.spi.WebService;
 public class SwaggerUiExtension implements ServiceExtension {
 
     public static final String NAME = "Swagger UI Extension";
+
+    public static final String DEFAULT_PAGE_TITLE = "Tractus-X API Documentation";
+
+    @Setting(description = "Enables the Swagger UI page on the default web context.", defaultValue = "true")
+    public static final String ENABLED_PROPERTY = "edc.tractusx.swagger.ui.enabled";
+
+    @Setting(description = "Browser title of the Swagger UI page. The same page is served by the " +
+            "IdentityHub and IssuerService runtimes, so each one can name itself.",
+            defaultValue = DEFAULT_PAGE_TITLE)
+    public static final String PAGE_TITLE_PROPERTY = "edc.tractusx.swagger.ui.title";
 
     @Inject
     private WebService webService;
@@ -42,8 +53,18 @@ public class SwaggerUiExtension implements ServiceExtension {
 
     @Override
     public void initialize(ServiceExtensionContext context) {
-        webService.registerResource(new SwaggerUiController(new OpenApiSpecProvider()));
-        context.getMonitor().withPrefix(NAME)
-                .info("Swagger UI available on the default web context at '/swagger'");
+        var monitor = context.getMonitor().withPrefix(NAME);
+
+        if (!context.getSetting(ENABLED_PROPERTY, true)) {
+            monitor.info("Swagger UI is disabled via '%s'".formatted(ENABLED_PROPERTY));
+            return;
+        }
+
+        var pageTitle = context.getSetting(PAGE_TITLE_PROPERTY, DEFAULT_PAGE_TITLE);
+
+        // Constructing the provider reads the bundled spec, so a runtime built without it
+        // fails here rather than when somebody first opens the page.
+        webService.registerResource(new SwaggerUiController(new OpenApiSpecProvider(), pageTitle));
+        monitor.info("Swagger UI available on the default web context at '/swagger'");
     }
 }
