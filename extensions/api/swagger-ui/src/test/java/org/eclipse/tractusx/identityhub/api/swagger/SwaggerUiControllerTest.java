@@ -58,7 +58,11 @@ class SwaggerUiControllerTest {
                 .contains("\"id\":\"credentials\"")
                 // the server is shown in the selector, so the reader can tell the contexts apart
                 .contains("http://localhost:15151/api/identity")
-                .contains("base + '/specs/' + s.id");
+                .contains("base + '/specs/' + s.id")
+                // Without the standalone preset SwaggerUIBundle ignores `urls` and the page is blank.
+                .contains("swagger-ui-standalone-preset.js")
+                .contains("SwaggerUIStandalonePreset")
+                .contains("layout: 'StandaloneLayout'");
     }
 
     @Test

@@ -51,6 +51,12 @@ public class SwaggerUiController {
             <body>
                 <div id="swagger-ui"></div>
                 <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js" crossorigin></script>
+                <!--
+                    The definition selector is rendered by the standalone preset's topbar. Without
+                    it, SwaggerUIBundle ignores `urls` entirely and the page renders
+                    "No API definition provided."
+                -->
+                <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js" crossorigin></script>
                 <script>
                     window.onload = function () {
                         var base = window.location.pathname.replace(/\\/+$/, '');
@@ -60,7 +66,9 @@ public class SwaggerUiController {
                                 return { url: base + '/specs/' + s.id, name: s.name };
                             }),
                             dom_id: '#swagger-ui',
-                            deepLinking: true
+                            deepLinking: true,
+                            presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+                            layout: 'StandaloneLayout'
                         });
                     };
                 </script>
