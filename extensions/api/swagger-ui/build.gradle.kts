@@ -28,4 +28,6 @@ dependencies {
     implementation(libs.edc.spi.web)
 
     testImplementation(libs.edc.junit)
+    // Supplies the JAX-RS RuntimeDelegate that NotFoundException needs to build its response.
+    testImplementation(libs.edc.core.jersey)
 }

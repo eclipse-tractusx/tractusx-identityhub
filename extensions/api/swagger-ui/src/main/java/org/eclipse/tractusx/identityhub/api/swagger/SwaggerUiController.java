@@ -22,20 +22,30 @@
 package org.eclipse.tractusx.identityhub.api.swagger;
 
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+
+import java.util.stream.Collectors;
 
 @Path("/swagger")
 public class SwaggerUiController {
 
+    /**
+     * {@code %1$s} is the page title, {@code %2$s} the specification list.
+     * <p>
+     * The specs are listed by id and resolved against the page's own path in the browser, so the
+     * page keeps working whatever base path the web context is configured with.
+     */
     private static final String INDEX_HTML_TEMPLATE = """
             <!DOCTYPE html>
             <html lang="en">
             <head>
                 <meta charset="UTF-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-                <title>%s</title>
+                <title>%1$s</title>
                 <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css"/>
             </head>
             <body>
@@ -44,8 +54,11 @@ public class SwaggerUiController {
                 <script>
                     window.onload = function () {
                         var base = window.location.pathname.replace(/\\/+$/, '');
+                        var specs = %2$s;
                         window.ui = SwaggerUIBundle({
-                            url: base + '/openapi.yaml',
+                            urls: specs.map(function (s) {
+                                return { url: base + '/specs/' + s.id, name: s.name };
+                            }),
                             dom_id: '#swagger-ui',
                             deepLinking: true
                         });
@@ -60,7 +73,7 @@ public class SwaggerUiController {
 
     public SwaggerUiController(OpenApiSpecProvider specProvider, String pageTitle) {
         this.specProvider = specProvider;
-        this.indexHtml = INDEX_HTML_TEMPLATE.formatted(escapeHtml(pageTitle));
+        this.indexHtml = INDEX_HTML_TEMPLATE.formatted(escapeHtml(pageTitle), specListJson(specProvider));
     }
 
     @GET
@@ -69,21 +82,47 @@ public class SwaggerUiController {
         return indexHtml;
     }
 
+    /**
+     * Serves one generated specification. Only ids present in the bundled index resolve, so the
+     * path parameter cannot be used to reach other classpath resources.
+     */
     @GET
-    @Path("/openapi.yaml")
+    @Path("/specs/{id}")
     @Produces("application/yaml")
-    public String openapi() {
-        return specProvider.asYaml();
+    public String spec(@PathParam("id") String id) {
+        var yaml = specProvider.yaml(id);
+        if (yaml == null) {
+            throw new NotFoundException("No OpenAPI specification with id '%s'".formatted(id));
+        }
+        return yaml;
+    }
+
+    private static String specListJson(OpenApiSpecProvider provider) {
+        return provider.specs().stream()
+                .map(spec -> "{\"id\":\"%s\",\"name\":\"%s\"}"
+                        .formatted(escapeJson(spec.id()), escapeJson(spec.title() + " (" + spec.server() + ")")))
+                .collect(Collectors.joining(",", "[", "]"));
     }
 
     /**
-     * The page title comes from configuration, so it is escaped before being interpolated
-     * into the document.
+     * The page title comes from configuration, so it is escaped before being interpolated into the
+     * document.
      */
     private static String escapeHtml(String value) {
         return value.replace("&", "&amp;")
                 .replace("<", "&lt;")
                 .replace(">", "&gt;")
                 .replace("\"", "&quot;");
+    }
+
+    /**
+     * Spec titles come from the build, but they are interpolated into a script block, so they are
+     * escaped for both JSON and for an early {@code </script>}.
+     */
+    private static String escapeJson(String value) {
+        return value.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("<", "\\u003c")
+                .replace(">", "\\u003e");
     }
 }

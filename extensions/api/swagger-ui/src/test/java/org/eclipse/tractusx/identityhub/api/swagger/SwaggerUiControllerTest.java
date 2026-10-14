@@ -21,29 +21,44 @@
 
 package org.eclipse.tractusx.identityhub.api.swagger;
 
+import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SwaggerUiControllerTest {
 
-    private final OpenApiSpecProvider specProvider = new OpenApiSpecProvider("/test-openapi.yaml");
+    private final OpenApiSpecProvider specProvider = new OpenApiSpecProvider("/openapi/specs.index");
 
     @Test
-    void openapi_servesTheBundledSpec() {
+    void spec_servesTheDocumentForEachContext() {
         var controller = new SwaggerUiController(specProvider, "Tractus-X API Documentation");
 
-        assertThat(controller.openapi()).contains("title: Test Spec");
+        assertThat(controller.spec("identity")).contains("Test Identity API");
+        assertThat(controller.spec("credentials")).contains("Test Credentials API");
     }
 
     @Test
-    void index_rendersConfiguredTitle_andLoadsSpecRelativeToThePage() {
+    void spec_is404_forAnythingNotInTheIndex() {
+        var controller = new SwaggerUiController(specProvider, "Tractus-X API Documentation");
+
+        // Also covers the traversal case: only indexed ids resolve.
+        assertThatThrownBy(() -> controller.spec("../../application")).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> controller.spec("unknown")).isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    void index_listsEveryContext_soTheSelectorOffersThemAll() {
         var controller = new SwaggerUiController(specProvider, "IssuerService API");
 
         assertThat(controller.index())
                 .contains("<title>IssuerService API</title>")
-                .doesNotContain("Tractus-X IdentityHub API")
-                .contains("base + '/openapi.yaml'");
+                .contains("\"id\":\"identity\"")
+                .contains("\"id\":\"credentials\"")
+                // the server is shown in the selector, so the reader can tell the contexts apart
+                .contains("http://localhost:15151/api/identity")
+                .contains("base + '/specs/' + s.id");
     }
 
     @Test

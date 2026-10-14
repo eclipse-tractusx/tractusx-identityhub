@@ -39,7 +39,21 @@ This directory contains API collections for both [Postman](https://www.postman.c
 
 ### OpenAPI Specification
 
-A comprehensive OpenAPI specification is available at [openAPI.yaml](openAPI.yaml), which documents all available endpoints, request/response schemas, and authentication requirements.
+There are two sets of specification in this directory, and they are not interchangeable.
+
+**[openAPI.yaml](openAPI.yaml) is authoritative.** It is maintained by hand and documents all
+available endpoints, request/response schemas and authentication requirements, including the `403`
+responses produced by this repository's participant and credential ownership extensions. Those
+responses exist only in Tractus-X, so a scan of the upstream EDC annotations cannot see them.
+
+The per-context specifications under [`identityhub/`](identityhub/) and
+[`issuerservice/`](issuerservice/) are **generated** from the upstream EDC API controllers at build
+time, one file per web context. They are the specs each runtime serves from its Swagger UI page, so
+they are always in step with the EDC version in use, but they describe only what upstream annotates.
+Prefer them for calling the API, and `openAPI.yaml` for the Tractus-X specific behaviour.
+
+Each runtime serves its own generated specs at `/api/swagger`, with a selector for the contexts.
+See [openapi/README.md](../../openapi/README.md) for how they are produced and regenerated.
 
 ### API Walkthrough
 

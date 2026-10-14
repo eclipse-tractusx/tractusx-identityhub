@@ -1,311 +1,15 @@
 openapi: 3.0.1
 info:
-  description: This is the Identity API for manipulating VerifiableCredentials
-  title: VerifiableCredentials Identity API
-  version: "1"
+  title: "IdentityHub Identity API"
+  description: "Management of participant contexts, verifiable credentials, DIDs and key pairs."
+  version: "1.0.0"
+servers:
+- description: Local development runtime
+  url: http://localhost:15151/api/identity
+security:
+- ApiKey: []
 paths:
-  /check/health:
-    get:
-      description: Performs a liveness probe to determine whether the runtime is working
-        properly.
-      operationId: checkHealth
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HealthStatus"
-          description: The runtime is working properly.
-      tags:
-      - Application Observability
-  /check/liveness:
-    get:
-      description: Performs a liveness probe to determine whether the runtime is working
-        properly.
-      operationId: getLiveness
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HealthStatus"
-          description: The runtime is working properly.
-      tags:
-      - Application Observability
-  /check/readiness:
-    get:
-      description: Performs a readiness probe to determine whether the runtime is
-        able to accept requests.
-      operationId: getReadiness
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HealthStatus"
-          description: The runtime is able to accept requests.
-      tags:
-      - Application Observability
-  /check/startup:
-    get:
-      description: Performs a startup probe to determine whether the runtime has completed
-        startup.
-      operationId: getStartup
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HealthStatus"
-          description: The runtime has completed startup.
-      tags:
-      - Application Observability
-  /token:
-    post:
-      operationId: token
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            encoding:
-              audience:
-                style: form
-              bearer_access_scope:
-                style: form
-              client_id:
-                style: form
-              client_secret:
-                style: form
-              grant_type:
-                style: form
-              token:
-                style: form
-            schema:
-              type: object
-              properties:
-                audience:
-                  type: string
-                  description: Audience for the SI token
-                bearer_access_scope:
-                  type: string
-                  description: Scope to be added in the VP token
-                client_id:
-                  type: string
-                  description: Id of the client requesting an SI token
-                client_secret:
-                  type: string
-                  description: Secret of the client requesting an SI token
-                grant_type:
-                  type: string
-                  description: "Type of grant: must be set to client_credentials"
-                token:
-                  type: string
-                  description: VP token to be added as a claim in the SI token
-              required:
-              - audience
-              - client_id
-              - client_secret
-              - grant_type
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/StsTokenResponse"
-          description: The Self-Issued ID token
-        "400":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/StsTokenErrorResponse"
-          description: Invalid Request
-      tags:
-      - Secure Token Service Api
-  /v1/participants/{participantContextId}/credentials:
-    post:
-      description: Writes a set of credentials into storage
-      operationId: storeCredential
-      parameters:
-      - in: path
-        name: participantContextId
-        required: true
-        schema:
-          type: string
-      - in: header
-        name: Authorization
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CredentialMessage"
-      responses:
-        "200":
-          description: The credentialMessage was successfully processed and stored
-        "400":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: Request body was malformed
-        "401":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: No Authorization header was given.
-        "403":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: "The given authentication token could not be validated. This\
-            \ can happen, when the request body calls for a broader credentialMessage\
-            \ scope than the granted scope in the auth token"
-      tags:
-      - Storage API
-  /v1/participants/{participantContextId}/offers:
-    post:
-      description: Notifies the holder about the availability of a particular credential
-        for issuance
-      operationId: offerCredential
-      parameters:
-      - in: path
-        name: participantContextId
-        required: true
-        schema:
-          type: string
-      - in: header
-        name: Authorization
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: string
-              externalDocs:
-                description: DCP Credential Offer API
-                url: https://eclipse-dataspace-dcp.github.io/decentralized-claims-protocol
-      responses:
-        "204":
-          description: The offer notification was successfully received.
-        "400":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: Request body was malformed
-        "401":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: No Authorization header was given.
-        "403":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: The given authentication token could not be validated.
-      tags:
-      - Credential Offer API
-  /v1/participants/{participantContextId}/presentations/query:
-    post:
-      description: "Issues a new presentation query, that contains either a DIF presentation\
-        \ definition, or a list of scopes"
-      operationId: queryPresentation
-      parameters:
-      - in: path
-        name: participantContextId
-        required: true
-        schema:
-          type: string
-      - in: header
-        name: Authorization
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/PresentationQueryMessage"
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PresentationResponseMessage"
-          description: "The query was successfully processed, the response contains\
-            \ the VerifiablePresentation"
-        "400":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: "Request body was malformed, for example when both scope and\
-            \ presentationDefinition are given"
-        "401":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: No Authorization header was given.
-        "403":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: "The given authentication token could not be validated. This\
-            \ can happen, when the request body calls for a broader query scope than\
-            \ the granted scope in the auth token"
-        "501":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: "When the request contained a presentationDefinition object,\
-            \ but the implementation does not support it."
-      tags:
-      - Presentation API
-  /v1/version:
-    get:
-      description: Gets the versions exposed by the runtime
-      operationId: getVersion
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/VersionRecord"
-          description: The version contexts
-      tags:
-      - Version
-  /v1alpha/credentials:
+  /v1beta/credentials:
     get:
       deprecated: true
       description: Get all VerifiableCredentials across all Participant Contexts.
@@ -352,7 +56,7 @@ paths:
             \ was missing or was not valid."
       tags:
       - Verifiable Credentials
-  /v1alpha/dids:
+  /v1beta/dids:
     get:
       deprecated: true
       description: Get all DID documents across all Participant Contexts. Requires
@@ -399,7 +103,7 @@ paths:
             \ was missing or was not valid."
       tags:
       - DID
-  /v1alpha/keypairs:
+  /v1beta/keypairs:
     get:
       deprecated: true
       description: Get all KeyPair resources across all Participant Contexts. Requires
@@ -446,7 +150,7 @@ paths:
             \ was missing or was not valid."
       tags:
       - Key Pairs
-  /v1alpha/participants:
+  /v1beta/participants:
     get:
       description: Get all DID documents across all Participant Contexts. Requires
         elevated access.
@@ -536,7 +240,7 @@ paths:
             \ the same ID already exists"
       tags:
       - Participant Context
-  /v1alpha/participants/{participantContextId}:
+  /v1beta/participants/{participantContextId}:
     delete:
       description: Delete a ParticipantContext.
       operationId: deleteParticipant
@@ -619,7 +323,7 @@ paths:
           description: A ParticipantContext with the given ID does not exist.
       tags:
       - Participant Context
-  /v1alpha/participants/{participantContextId}/credentials:
+  /v1beta/participants/{participantContextId}/credentials:
     get:
       description: Query VerifiableCredentials by type.
       operationId: queryCredentialsByType
@@ -751,7 +455,7 @@ paths:
             exist.
       tags:
       - Verifiable Credentials
-  /v1alpha/participants/{participantContextId}/credentials/discriminator:
+  /v1beta/participants/{participantContextId}/credentials/discriminator:
     post:
       description: Define a scope discriminator mapping (=short-hand) for the fully-qualified
         credential type
@@ -779,7 +483,7 @@ paths:
           description: "Request body was malformed, or the request could not be processed"
       tags:
       - Verifiable Credentials
-  /v1alpha/participants/{participantContextId}/credentials/request:
+  /v1beta/participants/{participantContextId}/credentials/request:
     post:
       description: Triggers a credential request that is send to the issuer via the
         DCP protocol.
@@ -827,7 +531,7 @@ paths:
             \ request with that ID already exists"
       tags:
       - Verifiable Credentials
-  /v1alpha/participants/{participantContextId}/credentials/request/{holderPid}:
+  /v1beta/participants/{participantContextId}/credentials/request/{holderPid}:
     get:
       description: Finds a credential request by ID.
       operationId: getCredentialRequest
@@ -876,7 +580,7 @@ paths:
           description: A VerifiableCredential with the given ID does not exist.
       tags:
       - Verifiable Credentials
-  /v1alpha/participants/{participantContextId}/credentials/{credentialId}:
+  /v1beta/participants/{participantContextId}/credentials/{credentialId}:
     delete:
       description: Delete a VerifiableCredential.
       operationId: deleteCredential
@@ -973,7 +677,7 @@ paths:
           description: A VerifiableCredential with the given ID does not exist.
       tags:
       - Verifiable Credentials
-  /v1alpha/participants/{participantContextId}/dids/publish:
+  /v1beta/participants/{participantContextId}/dids/publish:
     post:
       description: Publish an (existing) DID document. The DID is expected to exist
         in the database.
@@ -1011,7 +715,7 @@ paths:
           description: The DID could not be published because it does not exist.
       tags:
       - DID
-  /v1alpha/participants/{participantContextId}/dids/query:
+  /v1beta/participants/{participantContextId}/dids/query:
     post:
       description: Query for DID documents.
       operationId: queryDids
@@ -1054,7 +758,7 @@ paths:
             \ was missing or was not valid."
       tags:
       - DID
-  /v1alpha/participants/{participantContextId}/dids/state:
+  /v1beta/participants/{participantContextId}/dids/state:
     post:
       description: Get state of a DID document
       operationId: getDidState
@@ -1091,7 +795,7 @@ paths:
           description: The DID does not exist.
       tags:
       - DID
-  /v1alpha/participants/{participantContextId}/dids/unpublish:
+  /v1beta/participants/{participantContextId}/dids/unpublish:
     post:
       description: Un-Publish an (existing) DID document. The DID is expected to exist
         in the database.
@@ -1138,7 +842,7 @@ paths:
           description: The DID could not be un-published because it does not exist.
       tags:
       - DID
-  /v1alpha/participants/{participantContextId}/dids/{did}/endpoints:
+  /v1beta/participants/{participantContextId}/dids/{did}/endpoints:
     delete:
       description: Removes a service endpoint from a particular DID document.
       operationId: deleteDidEndpoint
@@ -1303,7 +1007,7 @@ paths:
             \ with the same ID already exists."
       tags:
       - DID
-  /v1alpha/participants/{participantContextId}/keypairs:
+  /v1beta/participants/{participantContextId}/keypairs:
     get:
       description: Finds all KeyPairResources for a particular ParticipantContext.
       operationId: queryKeyPairByParticipantContextId
@@ -1400,7 +1104,7 @@ paths:
           description: A KeyPairResource with the given ID does not exist.
       tags:
       - Key Pairs
-  /v1alpha/participants/{participantContextId}/keypairs/{keyPairId}:
+  /v1beta/participants/{participantContextId}/keypairs/{keyPairId}:
     get:
       description: Finds a KeyPairResource by ID.
       operationId: getKeyPair
@@ -1449,7 +1153,7 @@ paths:
           description: A KeyPairResource with the given ID does not exist.
       tags:
       - Key Pairs
-  /v1alpha/participants/{participantContextId}/keypairs/{keyPairId}/activate:
+  /v1beta/participants/{participantContextId}/keypairs/{keyPairId}/activate:
     post:
       description: Sets a KeyPairResource to the ACTIVE state. Will fail if the current
         state is anything other than ACTIVE or CREATED.
@@ -1495,7 +1199,7 @@ paths:
           description: A KeyPairResource with the given ID does not exist.
       tags:
       - Key Pairs
-  /v1alpha/participants/{participantContextId}/keypairs/{keyPairId}/revoke:
+  /v1beta/participants/{participantContextId}/keypairs/{keyPairId}/revoke:
     post:
       description: "Revokes (=removes) a particular key pair, identified by their\
         \ ID and create a new successor key."
@@ -1547,7 +1251,7 @@ paths:
           description: A KeyPairResource with the given ID does not exist.
       tags:
       - Key Pairs
-  /v1alpha/participants/{participantContextId}/keypairs/{keyPairId}/rotate:
+  /v1beta/participants/{participantContextId}/keypairs/{keyPairId}/rotate:
     post:
       description: "Rotates (=retires) a particular key pair, identified by their\
         \ ID and optionally create a new successor key."
@@ -1604,12 +1308,12 @@ paths:
           description: A KeyPairResource with the given ID does not exist.
       tags:
       - Key Pairs
-  /v1alpha/participants/{participantContextId}/roles:
+  /v1beta/participants/{participantContextId}/scopes:
     put:
-      description: "Updates a ParticipantContext's roles. Note that this is an absolute\
-        \ update, that means all roles that the Participant should have must be submitted\
+      description: "Updates a ParticipantContext's scopes. Note that this is an absolute\
+        \ update, that means all scopes that the Participant should have must be submitted\
         \ in the body. Requires elevated privileges."
-      operationId: updateParticipantRoles
+      operationId: updateParticipantScopes
       parameters:
       - in: path
         name: participantContextId
@@ -1653,7 +1357,7 @@ paths:
           description: A ParticipantContext with the given ID does not exist.
       tags:
       - Participant Context
-  /v1alpha/participants/{participantContextId}/state:
+  /v1beta/participants/{participantContextId}/state:
     post:
       description: "Activates a ParticipantContext. This operation is idempotent,\
         \ i.e. activating an already active ParticipantContext is a NOOP."
@@ -1703,7 +1407,7 @@ paths:
           description: A ParticipantContext with the given ID does not exist.
       tags:
       - Participant Context
-  /v1alpha/participants/{participantContextId}/token:
+  /v1beta/participants/{participantContextId}/token:
     post:
       description: Regenerates the API token for a ParticipantContext and returns
         the new token.
@@ -1753,16 +1457,6 @@ paths:
           description: A ParticipantContext with the given ID does not exist.
       tags:
       - Participant Context
-  /{any}:
-    get:
-      operationId: getDidDocument
-      responses:
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DidDocument"
-          description: default response
 components:
   schemas:
     Action:
@@ -1803,12 +1497,6 @@ components:
           type: string
         clientSecret:
           type: string
-    CredentialContainerSchema:
-      type: object
-      example:
-        credentialType: MembershipCredential
-        payload: ""
-        format: jwt
     CredentialDescriptor:
       type: object
       properties:
@@ -1818,36 +1506,6 @@ components:
           type: string
         type:
           type: string
-    CredentialMessage:
-      type: object
-      example:
-        '@context':
-        - https://w3id.org/dspace-dcp/v1.0/dcp.jsonld
-        type: CredentialMessage
-        credentials:
-        - credentialType: MembershipCredential
-          payload: ""
-          format: jwt
-        - credentialType: OrganizationCredential
-          payload: ""
-          format: json-ld
-        requestId: requestId
-      properties:
-        '@context':
-          type: object
-        '@type':
-          type: string
-        credentials:
-          type: array
-          items:
-            $ref: "#/components/schemas/CredentialContainerSchema"
-        requestId:
-          type: string
-      required:
-      - '@context'
-      - '@type'
-      - credentials
-      - requestId
     CredentialRequestDto:
       type: object
       properties:
@@ -1937,33 +1595,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Constraint"
-    Failure:
-      type: object
-      properties:
-        failureDetail:
-          type: string
-        messages:
-          type: array
-          items:
-            type: string
-    HealthCheckResult:
-      type: object
-      properties:
-        component:
-          type: string
-        failure:
-          $ref: "#/components/schemas/Failure"
-        isHealthy:
-          type: boolean
-    HealthStatus:
-      type: object
-      properties:
-        componentResults:
-          type: array
-          items:
-            $ref: "#/components/schemas/HealthCheckResult"
-        isSystemHealthy:
-          type: boolean
     HolderCredentialRequestDto:
       type: object
       properties:
@@ -2000,7 +1631,7 @@ components:
           type: object
           additionalProperties:
             type: object
-        roles:
+        scopes:
           type: array
           items:
             type: string
@@ -2016,36 +1647,6 @@ components:
             type: object
         id:
           type: string
-    JsonObject:
-      type: object
-      additionalProperties:
-        $ref: "#/components/schemas/JsonValue"
-      properties:
-        empty:
-          type: boolean
-        valueType:
-          type: string
-          enum:
-          - ARRAY
-          - OBJECT
-          - STRING
-          - NUMBER
-          - "TRUE"
-          - "FALSE"
-          - "NULL"
-    JsonValue:
-      type: object
-      properties:
-        valueType:
-          type: string
-          enum:
-          - ARRAY
-          - OBJECT
-          - STRING
-          - NUMBER
-          - "TRUE"
-          - "FALSE"
-          - "NULL"
     KeyDescriptor:
       type: object
       properties:
@@ -2141,7 +1742,7 @@ components:
           uniqueItems: true
         participantContextId:
           type: string
-        roles:
+        scopes:
           type: array
           items:
             type: string
@@ -2200,82 +1801,6 @@ components:
             $ref: "#/components/schemas/Prohibition"
         target:
           type: string
-    PresentationDefinitionSchema:
-      type: object
-      example: |
-        {
-          "comment": "taken from https://identity.foundation/presentation-exchange/spec/v2.0.0/#presentation-definition"
-          "presentationDefinition": {
-            "id": "first simple example",
-            "input_descriptors": [
-              {
-                "id": "A specific type of VC",
-                "name": "A specific type of VC",
-                "purpose": "We want a VC of this type",
-                "constraints": {
-                  "fields": [
-                    {
-                      "path": [
-                        "$.type"
-                      ],
-                      "filter": {
-                        "type": "string",
-                        "pattern": "<the type of VC e.g. degree certificate>"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        }
-    PresentationQueryMessage:
-      type: object
-      example:
-        '@context':
-        - https://w3id.org/dspace-dcp/v1.0/dcp.jsonld
-        - https://identity.foundation/presentation-exchange/submission/v1
-        '@type': PresentationQueryMessage
-        presentationDefinition: null
-        scope:
-        - org.eclipse.dspace.dcp.vc.type:SomeCredential_0.3.5:write
-        - org.eclipse.dspace.dcp.vc.type:SomeOtherCredential:read
-        - org.eclipse.dspace.dcp.vc.type:ThirdCredential:*
-      properties:
-        '@context':
-          type: object
-        '@type':
-          type: string
-        presentationDefinition:
-          $ref: "#/components/schemas/PresentationDefinitionSchema"
-        scope:
-          type: array
-          items:
-            type: string
-      required:
-      - '@context'
-      - '@type'
-    PresentationResponseMessage:
-      type: object
-      example:
-        '@context':
-        - https://w3id.org/dspace-dcp/v1.0/dcp.jsonld
-        '@type': PresentationResponseMessage
-        presentation:
-        - dsJdh...UMetV
-      properties:
-        '@context':
-          type: object
-        presentation:
-          type: array
-          items:
-            type: object
-            anyOf:
-            - type: string
-            - $ref: "#/components/schemas/JsonObject"
-      required:
-      - '@context'
-      - presentation
     Prohibition:
       type: object
       properties:
@@ -2326,23 +1851,6 @@ components:
         serviceEndpoint:
           type: string
         type:
-          type: string
-    StsTokenErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-        error_description:
-          type: string
-    StsTokenResponse:
-      type: object
-      properties:
-        access_token:
-          type: string
-        expires_in:
-          type: integer
-          format: int64
-        token_type:
           type: string
     VerifiableCredential:
       type: object
@@ -2482,21 +1990,8 @@ components:
           type: string
         type:
           type: string
-    VersionRecord:
-      type: object
-      properties:
-        lastUpdated:
-          type: string
-          format: date-time
-        maturity:
-          type: string
-        urlPath:
-          type: string
-        version:
-          type: string
   securitySchemes:
-    Authentication:
-      bearerFormat: JWT
-      description: Self-Issued ID token containing an access_token
-      scheme: bearer
-      type: http
+    ApiKey:
+      in: header
+      name: X-Api-Key
+      type: apiKey

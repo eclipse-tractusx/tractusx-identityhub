@@ -40,8 +40,9 @@ dependencies {
 
 // Bundle the build-time-generated OpenAPI spec so the Swagger UI can serve it.
 tasks.named<ProcessResources>("processResources") {
-    from(project(":openapi:issuerservice-spec").tasks.named("resolve")) {
-        include("openapi.yaml")
+    // One spec per web context, plus the index the Swagger UI page reads to build its selector.
+    from(project(":openapi:issuerservice-spec").tasks.named("assembleSpecBundle")) {
+        into("openapi")
     }
 }
 

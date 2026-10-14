@@ -1,0 +1,3 @@
+# id|title|server
+identity|Test Identity API|http://localhost:15151/api/identity
+credentials|Test Credentials API|http://localhost:13131/api/credentials
