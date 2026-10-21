@@ -48,6 +48,49 @@ this value as their `credentialStatus.statusListCredential` endpoint — set it 
 for cluster-internal verification). A bare hostname produces broken status URLs in every
 issued credential.
 
+## EDC 1.0.0-RC1 → 1.0.0-RC4
+
+All four runtimes use the official [IdentityHub v1.0.0-RC4](https://github.com/eclipse-edc/IdentityHub/tree/e5304b43141c2059fbfde5ae3078e4ec68320934)
+and matching Eclipse EDC artifacts. The `/v1` routes, management scopes, credential
+ID scopes and ownership extensions introduced by the RC1 upgrade remain in use.
+No additional Tractus-X SQL migration is required; retain the existing migration
+files and Flyway history. Installations older than RC1 must also follow the steps
+in the next section.
+
+### Status-list representation
+
+Set `edc.iam.credential.revocation.mimetype=application/json` (environment variable
+`EDC_IAM_CREDENTIAL_REVOCATION_MIMETYPE`) in the deployment override when the
+issuer serves JSON status-list credentials. This is a runtime-wide selection:
+only the exact `application/json` value selects JSON parsing; the default `*/*`
+uses JWT parsing. A comma-separated MIME list does not enable automatic detection.
+Inventory every active issuer and test its status-list representation before
+changing this setting. Mixed JSON/JWT issuers require a compatible issuer profile
+or separate runtime configuration; the public chart defaults are unchanged.
+
+### Reissuance and rollback
+
+RC4 records `supersededBy` metadata and expires a previous Holder credential when
+a replacement for the same participant, credential object and format arrives.
+The watchdog does not renew a superseded credential again, and status checks keep
+it expired unless the issuer revokes it. Verify reissuance, presentation selection,
+revocation and suspension with the issuer before accepting an upgrade.
+
+Back up PostgreSQL and the corresponding Vault state with the old image and
+configuration before changing the runtime. Rehearse both upgrade and rollback on
+an isolated copy. RC1 does not enforce RC4's supersession behavior: after RC4 has
+processed reissuance, an image-only downgrade may reactivate old credentials.
+Review all intervening writes before restoring a backup; never overwrite new
+credentials or keys to roll back an application.
+
+### Optional credential-request compatibility setting
+
+`edc.iam.credential.request.bearer.access.scope` is an optional, deprecated
+compatibility setting for the access token embedded in credential-request SI
+tokens. Leaving it unset preserves the previous behavior. Configure an exact
+scope only when required by the issuer's agreed profile; upgrading to RC4 does
+not imply that this option is needed.
+
 ## EDC 0.18.0 → 1.0.0-RC1
 
 This upgrade targets the official [IdentityHub v1.0.0-RC1 release](https://github.com/eclipse-edc/IdentityHub/tree/v1.0.0-RC1)
