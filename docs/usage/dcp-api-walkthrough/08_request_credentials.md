@@ -9,12 +9,11 @@ Trigger the actual DCP Issuance Flow. The IdentityHub (Holder) sends a credentia
 ## Request
 
 ```bash
-curl -X POST "${IDH_IDENTITY}/v1/participants/${IDH_CONTEXT}/credentials/request" \
+curl -i -X POST "${IDH_IDENTITY}/v1/participants/${IDH_CONTEXT}/credentials/request" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${IDH_API_KEY}" \
   -d '{
     "issuerDid": "did:web:issuer-service.example.com",
-    "holderPid": "49b1cb75-30d2-4098-8f58-03c75304adc3",
     "credentials": [
       {
         "id": "tx-membershipCredential",
@@ -27,14 +26,20 @@ curl -X POST "${IDH_IDENTITY}/v1/participants/${IDH_CONTEXT}/credentials/request
 
 ## Response
 
-**201 Created**: Empty body on success.
+**201 Created**: Empty body on success. The `Location` response header contains
+the server-assigned request ID:
+
+```http
+Location: /v1/participants/<participant>/credentials/request/49b1cb75-30d2-4098-8f58-03c75304adc3
+```
+
+Do not send `holderPid` in the request body; IdentityHub rejects caller-assigned IDs.
 
 ## Request Fields
 
 | Field | Description |
 |-------|-------------|
 | `issuerDid` | The DID of the issuer to request credentials from |
-| `holderPid` | The participant ID of the holder at the issuer side. A client-assigned request ID. |
 | `credentials[].id` | Must match the `id` of the credential definition created in [Step 6](06_create_credential_definition.md) |
 | `credentials[].type` | Must match the `credentialType` of the credential definition |
 | `credentials[].format` | Must match the `format` of the credential definition |
@@ -42,7 +47,8 @@ curl -X POST "${IDH_IDENTITY}/v1/participants/${IDH_CONTEXT}/credentials/request
 > **Note**: The issuance is **asynchronous**. After the request returns 201, the credential generation and delivery happen in the background. Wait a few seconds before querying for the credential.
 
 ## Set Holder's Request ID
-Set holder's request ID in an environment variable so that we can reuse this in the next step to check the issuance status.
+Copy the final path segment from your `Location` response header into the variable
+used by the next step. Replace the example below with the ID actually returned.
 ```bash
 export IDH_REQUEST_ID="49b1cb75-30d2-4098-8f58-03c75304adc3"
 ```

@@ -19,8 +19,6 @@
 
 package org.eclipse.tractusx.store.postgresql;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dockerjava.api.model.LogConfig;
 import org.eclipse.edc.junit.annotations.PostgresqlIntegrationTest;
 import org.flywaydb.core.api.MigrationVersion;
@@ -35,6 +33,8 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.testcontainers.postgresql.PostgreSQLContainer;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.sql.SQLException;
 import java.util.Map;

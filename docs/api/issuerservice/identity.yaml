@@ -121,7 +121,8 @@ paths:
       - Participant Context
   /v1/participants/{participantContextId}:
     delete:
-      description: Delete a ParticipantContext.
+      description: "Delete a ParticipantContext. A participant can only delete its\
+        \ own ParticipantContext, deleting any other requires elevated access."
       operationId: deleteParticipant
       parameters:
       - in: path
@@ -253,8 +254,9 @@ paths:
       - Participant Context
   /v1/participants/{participantContextId}/state:
     post:
-      description: "Activates a ParticipantContext. This operation is idempotent,\
-        \ i.e. activating an already active ParticipantContext is a NOOP."
+      description: "Activates or deactivates a ParticipantContext. This operation\
+        \ is idempotent, i.e. activating an already active ParticipantContext is a\
+        \ NOOP. Requires elevated access."
       operationId: activateParticipant
       parameters:
       - in: path

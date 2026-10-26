@@ -262,7 +262,8 @@ paths:
       - Participant Context
   /v1/participants/{participantContextId}:
     delete:
-      description: Delete a ParticipantContext.
+      description: "Delete a ParticipantContext. A participant can only delete its\
+        \ own ParticipantContext, deleting any other requires elevated access."
       operationId: deleteParticipant
       parameters:
       - in: path
@@ -386,7 +387,8 @@ paths:
       tags:
       - Verifiable Credentials
     post:
-      description: Adds a new VerifiableCredential into the system.
+      description: Adds a new VerifiableCredential into the system. The participantContextId
+        in the request body must match the one in the path.
       operationId: addCredential
       parameters:
       - in: path
@@ -431,7 +433,8 @@ paths:
       tags:
       - Verifiable Credentials
     put:
-      description: Update an existing VerifiableCredential.
+      description: Update an existing VerifiableCredential. The participantContextId
+        in the request body must match the one in the path.
       operationId: updateCredential
       parameters:
       - in: path
@@ -478,7 +481,9 @@ paths:
   /v1/participants/{participantContextId}/credentials/discriminator:
     post:
       description: Define a scope discriminator mapping (=short-hand) for the fully-qualified
-        credential type
+        credential type. The mapping only applies to presentation queries of this
+        participant context and takes precedence over mappings defined in the runtime
+        configuration.
       operationId: addDiscriminatorMapping
       parameters:
       - in: path
@@ -501,6 +506,15 @@ paths:
                 items:
                   $ref: "#/components/schemas/ApiErrorDetail"
           description: "Request body was malformed, or the request could not be processed"
+        "403":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiErrorDetail"
+          description: "The request could not be completed, because either the authentication\
+            \ was missing or was not valid."
       tags:
       - Verifiable Credentials
   /v1/participants/{participantContextId}/credentials/request:
@@ -521,8 +535,9 @@ paths:
               $ref: "#/components/schemas/CredentialRequestDto"
       responses:
         "201":
-          description: The request was processed and sent to the issuer. The issuer-created
-            ID ("issuerPid") is returned in the response.
+          description: "The request was processed and sent to the issuer. Its URL,\
+            \ which ends with the \"holderPid\" that IdentityHub assigned to it, is\
+            \ returned in the Location header."
         "400":
           content:
             application/json:
@@ -530,7 +545,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ApiErrorDetail"
-          description: "Request body was malformed, or the request could not be processed"
+          description: "Request body was malformed, e.g. it contained a \"holderPid\"\
+            , or the request could not be processed"
         "403":
           content:
             application/json:
@@ -540,15 +556,6 @@ paths:
                   $ref: "#/components/schemas/ApiErrorDetail"
           description: "The request could not be completed, because either the authentication\
             \ was missing or was not valid."
-        "409":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: "Could not create a credential request, because a credential\
-            \ request with that ID already exists"
       tags:
       - Verifiable Credentials
   /v1/participants/{participantContextId}/credentials/request/{holderPid}:
@@ -1379,8 +1386,9 @@ paths:
       - Participant Context
   /v1/participants/{participantContextId}/state:
     post:
-      description: "Activates a ParticipantContext. This operation is idempotent,\
-        \ i.e. activating an already active ParticipantContext is a NOOP."
+      description: "Activates or deactivates a ParticipantContext. This operation\
+        \ is idempotent, i.e. activating an already active ParticipantContext is a\
+        \ NOOP. Requires elevated access."
       operationId: activateParticipant
       parameters:
       - in: path
@@ -1535,6 +1543,8 @@ components:
             $ref: "#/components/schemas/CredentialDescriptor"
         holderPid:
           type: string
+          deprecated: true
+          description: "Must not be set: IdentityHub assigns the holderPid"
         issuerDid:
           type: string
       required:
@@ -1723,6 +1733,8 @@ components:
           type: string
         privateKeyAlias:
           type: string
+        privateKeyManaged:
+          type: boolean
         rotationDuration:
           type: integer
           format: int64

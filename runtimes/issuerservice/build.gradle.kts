@@ -34,7 +34,6 @@ dependencies {
     runtimeOnly(libs.edc.vault.hashicorp)
     runtimeOnly(project(":extensions:store:sql:migrations"))
     runtimeOnly(project(":extensions:seed:super-user"))
-    runtimeOnly(project(":extensions:identityhub:participant-api-ownership"))
     runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
     runtimeOnly(project(":extensions:api:swagger-ui"))
     runtimeOnly(libs.postgres)

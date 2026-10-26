@@ -32,8 +32,6 @@ dependencies {
     // used for the runtime
     runtimeOnly(libs.bom.ih)
     runtimeOnly(project(":extensions:seed:super-user"))
-    runtimeOnly(project(":extensions:identityhub:participant-api-ownership"))
-    runtimeOnly(project(":extensions:identityhub:credential-api-ownership"))
     runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
     runtimeOnly(project(":extensions:api:swagger-ui"))
     runtimeOnly(project(":extensions:identityhub:initial-participant"))

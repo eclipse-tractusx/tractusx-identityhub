@@ -23,10 +23,10 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.edc.ih.api.credentials)
-    implementation(libs.edc.ih.spi)
-    implementation(libs.edc.spi.core)
-    implementation(libs.jakarta.rs)
+    testImplementation(libs.edc.ih.api.credentials)
+    testImplementation(libs.edc.ih.spi)
+    testImplementation(libs.edc.spi.core)
+    testImplementation(libs.jakarta.rs)
 
     testImplementation(libs.edc.junit)
     testImplementation(libs.edc.ih.validators.credential)

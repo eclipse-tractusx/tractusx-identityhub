@@ -71,7 +71,7 @@ class ParticipantOwnershipApiTest extends RestControllerTestBase {
 
     @Override
     protected Object additionalResource() {
-        return new TestFeature(authentication(), new ParticipantOwnershipFeature(authorizationService));
+        return new TestFeature(authentication());
     }
 
     @ParameterizedTest
@@ -83,12 +83,20 @@ class ParticipantOwnershipApiTest extends RestControllerTestBase {
     }
 
     @ParameterizedTest
-    @CsvSource({"POST,A", "POST,B", "DELETE,A", "DELETE,B"})
+    @CsvSource({"DELETE,A", "DELETE,B"})
     void allowOwner(String method, String owner) {
         request(owner, "identity-api:participants:write").request(method, mutationPath(method, owner))
                 .then().statusCode(204);
         verify(authorizationService).authorize(any(), eq(owner), eq(owner), eq(IdentityHubParticipantContext.class));
         verifyMutation(method, owner);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"A,true", "A,false", "B,true", "B,false"})
+    void stateChangesRequireAdministratorEvenForTheOwner(String owner, boolean active) {
+        request(owner, "identity-api:participants:write").post("/" + owner + "/state?isActive=" + active)
+                .then().statusCode(403);
+        verifyNoInteractions(authorizationService, participants);
     }
 
     @ParameterizedTest
@@ -124,7 +132,7 @@ class ParticipantOwnershipApiTest extends RestControllerTestBase {
     void useDecodedOpaqueParticipantId() {
         var owner = "did:web:example.test:tenant";
         request(owner, "identity-api:participants:write").pathParam("owner", owner)
-                .post("/{owner}/state?isActive=false").then().statusCode(204);
+                .delete("/{owner}").then().statusCode(204);
         verify(authorizationService).authorize(any(), eq(owner), eq(owner), eq(IdentityHubParticipantContext.class));
     }
 
@@ -159,18 +167,15 @@ class ParticipantOwnershipApiTest extends RestControllerTestBase {
 
     public static class TestFeature implements DynamicFeature {
         private final ContainerRequestFilter authentication;
-        private final DynamicFeature ownership;
 
-        TestFeature(ContainerRequestFilter authentication, DynamicFeature ownership) {
+        TestFeature(ContainerRequestFilter authentication) {
             this.authentication = authentication;
-            this.ownership = ownership;
         }
 
         @Override
         public void configure(ResourceInfo resourceInfo, FeatureContext context) {
             context.register(authentication, Priorities.AUTHENTICATION);
             new ScopeBasedAccessFeature().configure(resourceInfo, context);
-            ownership.configure(resourceInfo, context);
         }
     }
 

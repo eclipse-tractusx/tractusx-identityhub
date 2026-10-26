@@ -8,7 +8,7 @@ Check the issuance status of the verifiable credential and retrieve the issued c
 ## Check Issuance Status by Request ID
 
 You can query the status of a **specific** credential
-request directly by its request ID — the `holderPid` you set as `${IDH_REQUEST_ID}` in
+request directly by its request ID — the server-assigned ID saved from `Location` as `${IDH_REQUEST_ID}` in
 [Step 8](08_request_credentials.md). This is useful while a request is still in progress and
 hasn't produced a stored credential yet. Issuance is asynchronous — expect `REQUESTED` for a few seconds, then `ISSUED`.
 

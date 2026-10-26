@@ -495,8 +495,8 @@ paths:
       - Issuer Service Credentials Admin API
   /v1/participants/{participantContextId}/credentials/{credentialId}/resume:
     post:
-      description: Resumes a credential with the given ID for the given participant.
-        Resumed credentials will be removed from the Revocation List.
+      description: "Resuming a credential is not implemented yet, so this endpoint\
+        \ always returns 501."
       operationId: resumeCredential
       parameters:
       - in: path
@@ -510,17 +510,6 @@ paths:
         schema:
           type: string
       responses:
-        "204":
-          description: The credential was resumed successfully. Check the Revocation
-            List credential to confirm.
-        "400":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: "Request body was malformed, or the request could not be processed"
         "401":
           content:
             application/json:
@@ -530,14 +519,8 @@ paths:
                   $ref: "#/components/schemas/ApiErrorDetail"
           description: "The request could not be completed, because either the authentication\
             \ was missing or was not valid."
-        "404":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: The credential or the participant was not found.
+        "501":
+          description: Not implemented
       tags:
       - Issuer Service Credentials Admin API
   /v1/participants/{participantContextId}/credentials/{credentialId}/revoke:
@@ -635,9 +618,8 @@ paths:
       - Issuer Service Credentials Admin API
   /v1/participants/{participantContextId}/credentials/{credentialId}/suspend:
     post:
-      description: Suspends a credential with the given ID for the given participant.
-        Suspended credentials will be added to the Revocation List. Suspension is
-        reversible.
+      description: "Suspending a credential is not implemented yet, so this endpoint\
+        \ always returns 501."
       operationId: suspendCredential
       parameters:
       - in: path
@@ -651,17 +633,6 @@ paths:
         schema:
           type: string
       responses:
-        "204":
-          description: The credential was suspended successfully. Check the Revocation
-            List credential to confirm.
-        "400":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: "Request body was malformed, or the request could not be processed"
         "401":
           content:
             application/json:
@@ -671,14 +642,8 @@ paths:
                   $ref: "#/components/schemas/ApiErrorDetail"
           description: "The request could not be completed, because either the authentication\
             \ was missing or was not valid."
-        "404":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: The credential or the participant was not found.
+        "501":
+          description: Not implemented
       tags:
       - Issuer Service Credentials Admin API
   /v1/participants/{participantContextId}/holders:
@@ -1033,6 +998,10 @@ components:
           format: int64
         participantContextId:
           type: string
+        privateProperties:
+          type: object
+          additionalProperties:
+            type: object
     AttestationDefinitionRequest:
       type: object
       properties:
@@ -1044,6 +1013,10 @@ components:
             type: object
         id:
           type: string
+        privateProperties:
+          type: object
+          additionalProperties:
+            type: object
     CredentialDefinition:
       type: object
       properties:
@@ -1074,6 +1047,10 @@ components:
             $ref: "#/components/schemas/MappingDefinition"
         participantContextId:
           type: string
+        privateProperties:
+          type: object
+          additionalProperties:
+            type: object
         rules:
           type: array
           items:
@@ -1106,6 +1083,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/MappingDefinition"
+        privateProperties:
+          type: object
+          additionalProperties:
+            type: object
         rules:
           type: array
           items:

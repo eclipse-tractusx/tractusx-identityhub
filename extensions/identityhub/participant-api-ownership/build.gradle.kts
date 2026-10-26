@@ -23,9 +23,9 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.edc.ih.api.participant)
-    implementation(libs.edc.spi.core)
-    implementation(libs.jakarta.rs)
+    testImplementation(libs.edc.ih.api.participant)
+    testImplementation(libs.edc.spi.core)
+    testImplementation(libs.jakarta.rs)
 
     testImplementation(libs.edc.junit)
     testImplementation(libs.edc.ih.validators.participant)

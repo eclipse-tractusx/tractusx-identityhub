@@ -75,7 +75,7 @@ class CredentialDefinitionMigrationTest {
 
     @Test
     void emptyDatabaseAndRestart() throws SQLException {
-        assertThat(migrate(LATEST)).isEqualTo(3);
+        assertThat(migrate(LATEST)).isEqualTo(4);
         insert("definition-a", "participant-a");
         insert("definition-b", "participant-b");
         assertThat(migrate(LATEST)).isZero();
@@ -89,13 +89,13 @@ class CredentialDefinitionMigrationTest {
         assertThatThrownBy(() -> insert("definition-b", "participant-b"))
                 .isInstanceOf(SQLException.class).hasMessageContaining("credential_definitions_credential_type_key");
 
-        assertThat(migrate(LATEST)).isOne();
+        assertThat(migrate(LATEST)).isEqualTo(2);
 
         assertThat(definition()).isEqualTo(before);
         insert("definition-b", "participant-b");
         insert("definition-c", "participant-a");
-        assertThatThrownBy(() -> insert("definition-a", "participant-b"))
-                .isInstanceOf(SQLException.class).hasMessageContaining("credential_definitions_pkey");
+        assertThatThrownBy(() -> insert("definition-a", "participant-a"))
+                .isInstanceOf(SQLException.class).hasMessageContaining("credential_definitions_participant_id_pk");
         assertThat(migrate(LATEST)).isZero();
         assertThat(definition()).isEqualTo(before);
     }
@@ -125,7 +125,7 @@ class CredentialDefinitionMigrationTest {
     private String definition() throws SQLException {
         try (var connection = DATA_SOURCE.getConnection();
                 var statement = connection.createStatement();
-                var rows = statement.executeQuery("SELECT row_to_json(d)::text FROM " + schema +
+                var rows = statement.executeQuery("SELECT (to_jsonb(d) - 'private_properties')::text FROM " + schema +
                         ".credential_definitions d WHERE id = 'definition-a'")) {
             assertThat(rows.next()).isTrue();
             return rows.getString(1);

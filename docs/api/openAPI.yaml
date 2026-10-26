@@ -1464,8 +1464,13 @@ paths:
       tags: *ref_3
       parameters: []
       responses:
-        '200':
-          description: Credential request triggered successfully
+        '201':
+          description: Credential request accepted; IdentityHub assigns the request ID
+          headers:
+            Location:
+              description: URL ending with the server-assigned request ID, used for polling
+              schema:
+                type: string
         '400':
           description: Bad request
         '401':
@@ -1490,9 +1495,6 @@ paths:
                         type: string
                       type:
                         type: string
-                holderPid:
-                  type: string
-                  format: uri
                 issuerDid:
                   type: string
                   format: uri
@@ -1501,7 +1503,6 @@ paths:
                 - format: vc11-sl2021/jwt
                   id: 1f36af58-0fc0-4b24-9b1c-e37d59668089
                   type: MembershipCredential
-              holderPid: did:web:super-user
               issuerDid: did:web:super-user
   /v1/participants/{PARTICIPANT_CONTEXT_ID}/requests/{CREDENTIAL_REQUEST_ID}:
     parameters:

@@ -1717,7 +1717,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"credentials\": [\n    {\n      \"format\": \"vc11-sl2021/jwt\",\n      \"id\": \"1f36af58-0fc0-4b24-9b1c-e37d59668089\",\n      \"type\": \"MembershipCredential\"\n    }\n  ],\n  \"holderPid\": \"did:web:super-user\",\n  \"issuerDid\": \"did:web:super-user\"\n}",
+                  "raw": "{\n  \"credentials\": [\n    {\n      \"format\": \"vc11-sl2021/jwt\",\n      \"id\": \"1f36af58-0fc0-4b24-9b1c-e37d59668089\",\n      \"type\": \"MembershipCredential\"\n    }\n  ],\n  \"issuerDid\": \"did:web:super-user\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
