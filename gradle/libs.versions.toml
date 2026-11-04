@@ -1,9 +1,27 @@
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+# Copyright (c) 2026 VDBP
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0.
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 [metadata]
 format.version = "1.1"
 
 [versions]
-edc = "0.18.0"
-edc-build = "1.4.0"
+edc = "1.0.0-RC5"
+edc-build = "1.5.2"
 opentelemetry = "2.27.0"
 postgres = "42.7.8"
 flyway = "12.5.0"
@@ -15,31 +33,24 @@ rest-assured = "6.0.0"
 [libraries]
 # upstream EDC dependencies
 edc-spi-core = { module = "org.eclipse.edc:core-spi", version.ref = "edc" }
-edc-spi-auth = { module = "org.eclipse.edc:auth-spi", version.ref = "edc" }
-edc-spi-web = { module = "org.eclipse.edc:web-spi", version.ref = "edc" }
 edc-core-jersey = { module = "org.eclipse.edc:jersey-core", version.ref = "edc" }
-edc-lib-authorization = { module = "org.eclipse.edc:auth-authorization-oauth2-lib", version.ref = "edc" }
 edc-ih-api-participant = { module = "org.eclipse.edc:participant-context-api", version.ref = "edc" }
 edc-ih-api-credentials = { module = "org.eclipse.edc:verifiable-credentials-api", version.ref = "edc" }
 edc-ih-validators-participant = { module = "org.eclipse.edc:participant-context-validators", version.ref = "edc" }
 edc-ih-validators-credential = { module = "org.eclipse.edc:verifiable-credential-validators", version.ref = "edc" }
-edc-spi-boot = { module = "org.eclipse.edc:boot-spi", version.ref = "edc" }
 edc-runtime-metamodel = { module = "org.eclipse.edc:runtime-metamodel", version.ref = "edc" }
 
 # EDC modules
-edc-core-connector = { module = "org.eclipse.edc:connector-core", version.ref = "edc" }
+edc-lib-core = { module = "org.eclipse.edc:core-lib", version.ref = "edc" }
+edc-core-security = { module = "org.eclipse.edc:security-core", version.ref = "edc" }
 edc-core-sql = { module = "org.eclipse.edc:sql-core", version.ref = "edc" }
 edc-junit = { module = "org.eclipse.edc:junit", version.ref = "edc" }
-edc-lib-crypto = { module = "org.eclipse.edc:crypto-common-lib", version.ref = "edc" }
-edc-lib-keys = { module = "org.eclipse.edc:keys-lib", version.ref = "edc" }
-edc-lib-sql = { module = "org.eclipse.edc:sql-lib", version.ref = "edc" }
 edc-vault-hashicorp = { module = "org.eclipse.edc:vault-hashicorp", version.ref = "edc" }
 edc-sql-stsstore-sql = { module = "org.eclipse.edc:sts-client-store-sql", version.ref = "edc" }
 edc-build-plugin = { module = "org.eclipse.edc.edc-build:org.eclipse.edc.edc-build.gradle.plugin", version.ref = "edc-build" }
 
 # EDC SPIs
-edc-spi-transaction = { module = "org.eclipse.edc:transaction-spi", version.ref = "edc" }
-edc-spi-transaction-datasource = { module = "org.eclipse.edc:transaction-datasource-spi", version.ref = "edc" }
+edc-spi-controlplane = { module = "org.eclipse.edc:control-plane-spi", version.ref = "edc" }
 
 # BOM modules
 bom-issuer = { module = "org.eclipse.edc:issuerservice-bom", version.ref = "edc" }
@@ -48,7 +59,6 @@ bom-issuer-sql = { module = "org.eclipse.edc:issuerservice-feature-sql-bom", ver
 # IdentityHub modules
 edc-ih-core-keypairs = { module = "org.eclipse.edc:identity-hub-keypairs", version.ref = "edc" }
 edc-ih-spi = { module = "org.eclipse.edc:identity-hub-spi", version.ref = "edc" }
-edc-ih-participant-context-config-spi = { module = "org.eclipse.edc:participant-context-config-spi", version.ref = "edc" }
 edc-ih-participantcontext-config-store-sql = { module = "org.eclipse.edc:participantcontext-config-store-sql", version.ref = "edc" }
 edc-ih-spi-participant-context = { module = "org.eclipse.edc:participant-context-spi", version.ref = "edc" }
 edc-ih-spi-sts = { module = "org.eclipse.edc:sts-spi", version.ref = "edc" }
@@ -69,4 +79,4 @@ postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
 testcontainers-postgres = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
 
 [plugins]
-shadow = { id = "com.gradleup.shadow", version = "9.3.1" }
+shadow = { id = "com.gradleup.shadow", version = "9.5.1" }

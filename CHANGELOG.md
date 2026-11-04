@@ -17,6 +17,9 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 - CI workflow running the E2E Postman collection (newman) against the compose stack on every PR, for both compose profiles: the full flow on `sql` (PostgreSQL + Vault) and the health/participant-setup/cleanup folders on `memory`
 
 ### Changed
+
+- **BREAKING:** Upgrade all four runtimes to Eclipse EDC / IdentityHub `1.0.0-RC5`. Add incremental SQL migrations for participant-scoped IDs, private properties, managed-key metadata and embedded leases/versioning. Use upstream ownership checks, require administrator scope for participant state changes, and update credential-request callers to use server-assigned IDs. Document datasource mapping, preflight checks and rollback in the [migration guide](docs/admin/migration-guide.md#edc-100-rc1--rc4--100-rc5).
+- **BREAKING:** Upgrade Eclipse EDC / IdentityHub to `1.0.0-RC1`, move Identity, Issuer Admin and DCP Issuer APIs to `/v1`, and allow multiple credential definitions with the same credential type through an incremental SQL migration. Update the UI, API collections and generated specifications together. See the [migration guide](docs/admin/migration-guide.md#edc-0180--100-rc1) ([#364](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/364)).
 - **BREAKING:** Upgrade Eclipse EDC / IdentityHub to 0.18.0, adopt management API scopes and `v1beta` endpoints, and migrate stored participant roles without rewriting credentials. Update the UI, API collections and credential profile examples. See the [migration guide](docs/admin/migration-guide.md) ([#339](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/339)).
 - **BREAKING (charts):** removed the `version` and `accounts` endpoints from all chart values, templates and default ingress lists — EDC 0.17.0 never serves them; version info is at `GET <default>/api/v1/version`. See the [migration guide](docs/admin/migration-guide.md) ([#322](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/322))
 - `statuslist.callback.address` chart default is now a full URL; it must be reachable by verifiers/holders
@@ -26,6 +29,7 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 - Enforce participant state/deletion and credential manifest/request ownership through built-in Tractus-X management API extensions for the EDC 0.18.0 upgrade ([#339](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/339)).
 
 ### Fixed
+- Restore upstream RC1 DCP credential ID scope support in both IdentityHub runtimes: match the full credential ID exactly, preserve URN/URL separators, and reject blank IDs while retaining existing type scope aliases.
 - UI participant status labels use EDC's `100`/`200`/`300` state codes and show unknown values as Unknown instead of Active.
 - The configurable initial participant (`InitialParticipantExtension`) and the super-user API key override stored their X-Api-Key and STS client secret with the unscoped `Vault.storeSecret`, i.e. in the partition of the participant context in scope at boot, which is none. On a partitioned vault such as EDC's `InMemoryVault` (the `-memory` runtimes) every later lookup is scoped to the participant and missed, so the Identity API answered 500 (`NullPointerException` in `ParticipantServicePrincipalResolver`) and the STS rejected the participant's client secret. Both secrets are now stored in the participant's own partition; HashiCorp Vault deployments are unaffected
 - Chart ingress deployment failed nginx admission for `/.well-known/api` with `pathType: Prefix` ([#232](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/232))
@@ -152,3 +156,13 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 ### Fixed
 
 - Gitflow trigger dockerfile publish by @AYaoZhan in [#91](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/91)
+
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+* SPDX-License-Identifier: CC-BY-4.0
+* SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
+* SPDX-FileCopyrightText: 2026 VDBP
+* Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/CHANGELOG.md>

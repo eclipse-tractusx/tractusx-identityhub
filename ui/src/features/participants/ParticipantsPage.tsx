@@ -82,7 +82,7 @@ const formatDate = (timestamp?: number): string => {
 };
 
 const fetchParticipantsList = async (): Promise<ParticipantData[]> => {
-    const response = await httpClient.get('/api/identity/v1beta/participants');
+    const response = await httpClient.get('/api/identity/v1/participants');
     return Array.isArray(response.data) ? response.data : [];
 };
 
@@ -163,7 +163,7 @@ const ParticipantsPage: React.FC = () => {
                 scopes: ['identity-api:write'],
             };
 
-            const response = await httpClient.post('/api/identity/v1beta/participants', body);
+            const response = await httpClient.post('/api/identity/v1/participants', body);
             setCreateOpen(false);
             setNewParticipantId('');
             setNewKeyId('');
@@ -188,7 +188,7 @@ const ParticipantsPage: React.FC = () => {
 
     const handleDelete = async (participantId: string) => {
         try {
-            await httpClient.delete(`/api/identity/v1beta/participants/${encodeParticipantId(participantId)}`);
+            await httpClient.delete(`/api/identity/v1/participants/${encodeParticipantId(participantId)}`);
             setSnackbar({ message: 'Participant deleted', severity: 'success' });
             refreshAll();
         } catch (err) {
@@ -200,7 +200,7 @@ const ParticipantsPage: React.FC = () => {
     const handleActivate = async (participantId: string) => {
         try {
             await httpClient.post(
-                `/api/identity/v1beta/participants/${encodeParticipantId(participantId)}/state?isActive=true`
+                `/api/identity/v1/participants/${encodeParticipantId(participantId)}/state?isActive=true`
             );
             setSnackbar({ message: 'Participant activated', severity: 'success' });
             refreshAll();
@@ -213,7 +213,7 @@ const ParticipantsPage: React.FC = () => {
     const handleDeactivate = async (participantId: string) => {
         try {
             await httpClient.post(
-                `/api/identity/v1beta/participants/${encodeParticipantId(participantId)}/state?isActive=false`
+                `/api/identity/v1/participants/${encodeParticipantId(participantId)}/state?isActive=false`
             );
             setSnackbar({ message: 'Participant deactivated', severity: 'success' });
             refreshAll();
@@ -226,7 +226,7 @@ const ParticipantsPage: React.FC = () => {
     const handleRegenerateToken = async (participantId: string) => {
         try {
             const response = await httpClient.post(
-                `/api/identity/v1beta/participants/${encodeParticipantId(participantId)}/token`
+                `/api/identity/v1/participants/${encodeParticipantId(participantId)}/token`
             );
             const token = response.data?.token || response.data;
             if (typeof token === 'string') {
@@ -264,7 +264,7 @@ const ParticipantsPage: React.FC = () => {
         setSavingScopes(true);
         try {
             await httpClient.put(
-                `/api/identity/v1beta/participants/${encodeParticipantId(scopesParticipantId)}/scopes`,
+                `/api/identity/v1/participants/${encodeParticipantId(scopesParticipantId)}/scopes`,
                 editScopes
             );
             setScopesOpen(false);
@@ -288,7 +288,7 @@ const ParticipantsPage: React.FC = () => {
     ): Promise<ParticipantData> => {
 
         const response = await httpClient.get(
-            `/api/identity/v1beta/participants/${encodeParticipantId(participantContextId)}`
+            `/api/identity/v1/participants/${encodeParticipantId(participantContextId)}`
         );
 
         return response.data;

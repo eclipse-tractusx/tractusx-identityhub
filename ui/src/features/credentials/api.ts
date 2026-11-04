@@ -21,7 +21,7 @@ import httpClient from '../../services/HttpClient';
 import { CredentialResource } from './types';
 import { encodeParticipantId } from '../../services/participantUtils';
 
-const API_BASE = '/api/identity/v1beta';
+const API_BASE = '/api/identity/v1';
 
 function pid(participantId: string): string {
     return encodeParticipantId(participantId);
