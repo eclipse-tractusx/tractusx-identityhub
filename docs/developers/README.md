@@ -49,11 +49,11 @@ The IssuerService handles the complete credential issuance workflow, from reques
 
 ## AI Agent
 
-### [Identity Captain](./identity-captain/README.md)
+### [Identity Keeper](./identity-keeper/README.md)
 
 An AI agent for Claude Code and GitHub Copilot that knows this repository, the upstream EDC IdentityHub version it pins,
-and the DCP / DID / VC specifications. See [how to use it](./identity-captain/README.md) and
-[how its skills work](./identity-captain/skills.md).
+and the DCP / DID / VC specifications. See [how to use it](./identity-keeper/README.md) and
+[how its skills work](./identity-keeper/skills.md).
 
 ## Setup Guides
 

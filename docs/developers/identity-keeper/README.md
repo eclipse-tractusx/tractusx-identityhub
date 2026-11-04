@@ -1,15 +1,15 @@
-# Identity Captain
+# Identity Keeper
 
-<img src="../../../.github/agents/identity-captain.png" width="96" align="right" alt="Identity Captain avatar">
+<img src="../../../.github/agents/identity-keeper.png" width="96" align="right" alt="Identity Keeper avatar">
 
 > *"To boldly verify what no one has verified before."* 🖖
 
-The **Identity Captain** is an AI agent for developing and operating the Tractus-X IdentityHub and IssuerService. It
+The **Identity Keeper** is an AI agent for developing and operating the Tractus-X IdentityHub and IssuerService. It
 knows this repository, the upstream Eclipse EDC IdentityHub version it distributes, and the specifications behind both:
 DCP, W3C DIDs and Verifiable Credentials, and the Catena-X standards. It answers from **evidence it opens in the
 session**, such as source code, configuration, docs and specs, and cites `file:line`. It does not answer from memory.
 
-Its personality is a calm, Starfleet-inspired captain: composed under pressure, technically precise and mission-focused.
+Its personality is a calm, Starfleet-inspired keeper of identities: composed under pressure, technically precise and mission-focused.
 It is a member of the Tractus-X agent crew, next to the **Connector Sensei** (Tractus-X EDC), the **Umbrella Guardian**
 (tractus-x-umbrella) and the **KIT Master Builder** (eclipse-tractusx.github.io).
 
@@ -23,8 +23,8 @@ shared by both. [How the skills work](skills.md) explains the idea behind them.
 - [Using it with GitHub Copilot](#using-it-with-github-copilot)
 - [What to ask: example requests](#what-to-ask-example-requests)
 - [Using the scripts without an AI](#using-the-scripts-without-an-ai)
-- [What the Captain does and does not do](#what-the-captain-does-and-does-not-do)
-- [Maintaining the Captain](#maintaining-the-captain)
+- [What the Keeper does and does not do](#what-the-keeper-does-and-does-not-do)
+- [Maintaining the Keeper](#maintaining-the-keeper)
 - [Troubleshooting](#troubleshooting)
 <!-- TOC -->
 
@@ -32,13 +32,13 @@ shared by both. [How the skills work](skills.md) explains the idea behind them.
 
 | Path | Purpose |
 |---|---|
-| [`.claude/agents/identity-captain.md`](../../../.claude/agents/identity-captain.md) | The agent for Claude Code (subagent definition: persona, knowledge map, ground rules, playbooks) |
-| [`.github/agents/identity-captain.agent.md`](../../../.github/agents/identity-captain.agent.md) | The same agent for GitHub Copilot (custom agent), with the avatar as `icon` |
-| [`.github/copilot-instructions.md`](../../../.github/copilot-instructions.md) | Repository-wide Copilot instructions: Copilot adopts the Captain identity and its rules even when the agent is not selected |
+| [`.claude/agents/identity-keeper.md`](../../../.claude/agents/identity-keeper.md) | The agent for Claude Code (subagent definition: persona, knowledge map, ground rules, playbooks) |
+| [`.github/agents/identity-keeper.agent.md`](../../../.github/agents/identity-keeper.agent.md) | The same agent for GitHub Copilot (custom agent), with the avatar as `icon` |
+| [`.github/copilot-instructions.md`](../../../.github/copilot-instructions.md) | Repository-wide Copilot instructions: Copilot adopts the Keeper identity and its rules even when the agent is not selected |
 | [`.claude/skills/`](../../../.claude/skills/README.md) | The skills: one folder per task with `SKILL.md` (procedure) and `scripts/` (deterministic tooling). Loaded by Claude Code and Copilot |
 | [`.github/agents/REUSE.toml`](../../../.github/agents/REUSE.toml) | License information for the avatar images (CC-BY-4.0) |
-| [`.github/agents/identity-captain-profile.png`](../../../.github/agents/identity-captain-profile.png) | 256px avatar used in the GitHub comment header (`identity-captain.png` is the 128px Copilot icon, `-large.png` the 1024px source) |
-| [`comment-template.md`](comment-template.md) | The template the Captain uses on GitHub (issues, comments, PR descriptions, reviews): avatar header, AI disclosure, evidence section, sign-off |
+| [`.github/agents/identity-keeper-profile.png`](../../../.github/agents/identity-keeper-profile.png) | 256px avatar used in the GitHub comment header (`identity-keeper.png` is the 128px Copilot icon, `-large.png` the 1024px source) |
+| [`comment-template.md`](comment-template.md) | The template the Keeper uses on GitHub (issues, comments, PR descriptions, reviews): avatar header, AI disclosure, evidence section, sign-off |
 
 ## Prerequisites
 
@@ -60,13 +60,13 @@ a minute; later ones are instant.
 
 1. Open a Claude Code session in the repository root (or a worktree of it). The agent and the skills are picked up from
    `.claude/` automatically. Start a new session after pulling changes to them.
-2. Ask for the Captain by name, or run `/agents` to see it:
+2. Ask for the Keeper by name, or run `/agents` to see it:
 
    ```text
-   Ask the identity-captain: why does the connector get an empty presentation from my IdentityHub?
+   Ask the identity-keeper: why does the connector get an empty presentation from my IdentityHub?
    ```
 
-   Claude also delegates to the Captain on its own when a request matches its description (IdentityHub, IssuerService,
+   Claude also delegates to the Keeper on its own when a request matches its description (IdentityHub, IssuerService,
    DCP, DIDs, credentials, charts, settings, upgrades, debugging, extensions).
 3. Skills are loaded when a task matches their description. You can also name one explicitly:
 
@@ -76,19 +76,19 @@ a minute; later ones are instant.
 
 ## Using it with GitHub Copilot
 
-- **VS Code (Copilot Chat, agent mode):** open the repository, open the chat, and select **Identity Captain** in the
+- **VS Code (Copilot Chat, agent mode):** open the repository, open the chat, and select **Identity Keeper** in the
   agent picker. Reload the window if it does not appear yet. Copilot loads the skills from `.claude/skills/` in agent
   mode.
 - **Copilot on github.com (coding agent):** custom agents in `.github/agents/` can be selected when you hand a task or
   issue to Copilot. The repository-wide `.github/copilot-instructions.md` also applies to Copilot code review and PR
   descriptions.
-- **Without selecting the agent:** because of `.github/copilot-instructions.md`, Copilot still speaks as the Captain and
+- **Without selecting the agent:** because of `.github/copilot-instructions.md`, Copilot still speaks as the Keeper and
   follows its ground rules (verify before asserting, cite sources, guard secrets, run `bc-scan.sh` before writing a PR
   description).
 
 ## What to ask: example requests
 
-| Goal | Example request | Skill(s) the Captain uses |
+| Goal | Example request | Skill(s) the Keeper uses |
 |---|---|---|
 | Understand a flow | "Explain the DCP issuance flow between holder and issuer, with the classes involved." | `ih-upstream-sources` |
 | Find the endpoint | "Which port, path and auth do I use to request a credential for my holder in the compose stack?" | `api-surface` |
@@ -106,7 +106,7 @@ a minute; later ones are instant.
 | Dependency hygiene | "I bumped jackson; update DEPENDENCIES like CI." | `dependencies-and-dash` |
 
 Good requests name the **side** (holder IdentityHub or IssuerService), the **deployment** (compose `sql`/`memory`,
-Helm chart and version) and paste **evidence** (log excerpt, request, DID, token with secrets removed). The Captain asks
+Helm chart and version) and paste **evidence** (log excerpt, request, DID, token with secrets removed). The Keeper asks
 for them when they matter.
 
 ## Using the scripts without an AI
@@ -131,14 +131,14 @@ $S/migration-guide-and-adr/scripts/draft-migration-guide.sh
 
 The full catalog is in [`.claude/skills/README.md`](../../../.claude/skills/README.md).
 
-## What the Captain does and does not do
+## What the Keeper does and does not do
 
 **Does:**
 - Opens the code, the upstream sources at the pinned version, specs and standards before it answers, and cites them.
 - Says whether behaviour comes from Tractus-X, upstream EDC IdentityHub, a specification or a Catena-X standard.
 - Runs the skill scripts to collect facts, then gives a recommendation with the concrete next step: a request, DID
   document fix, config, command, patch or test.
-- Speaks in first person, as a calm Starfleet-inspired captain, while code and config stay exact.
+- Speaks in first person, as a calm Starfleet-inspired keeper of identities, while code and config stay exact.
 
 **Does not:**
 - Change files unless you ask it to implement something. By default it is an advisor.
@@ -147,16 +147,16 @@ The full catalog is in [`.claude/skills/README.md`](../../../.claude/skills/READ
 - Replace review. Its output is a proposal. AI-generated contributions carry the AI disclosure header (see the skill
   files) and must be reviewed and verified by the human contributor who submits them.
 
-## Maintaining the Captain
+## Maintaining the Keeper
 
-- **Keep both agent files in sync.** `.claude/agents/identity-captain.md` and `.github/agents/identity-captain.agent.md`
+- **Keep both agent files in sync.** `.claude/agents/identity-keeper.md` and `.github/agents/identity-keeper.agent.md`
   share the same body; only the front matter differs.
 - **Add a skill** by following [How the skills work → Writing a new skill](skills.md#writing-a-new-skill). Then list it
   in `.claude/skills/README.md`, in the skill table of both agent files, and in `.github/copilot-instructions.md`.
 - **License headers:** AI-generated files carry the Apache-2.0 header with the AI disclosure block (AI-generated portions
   under CC0-1.0, `SPDX-License-Identifier: Apache-2.0 AND CC0-1.0`, `Assisted-By:`). Images are covered by
   `.github/agents/REUSE.toml`.
-- **Posting on GitHub as the Captain:** use [`comment-template.md`](comment-template.md).
+- **Posting on GitHub as the Keeper:** use [`comment-template.md`](comment-template.md).
 - **After an upstream bump**, re-run the skill scripts once against the new version. They read the version from
   `gradle/libs.versions.toml`, so they normally need no change.
 - **Avatar:** the current emblem is a generated placeholder (shield, verification check, four rank pips). It can be
@@ -166,7 +166,7 @@ The full catalog is in [`.claude/skills/README.md`](../../../.claude/skills/READ
 
 | Symptom | Fix |
 |---|---|
-| The Captain or a skill does not show up | Start a new Claude Code session, or reload the VS Code window, after pulling. Check that the files are on your branch. |
+| The Keeper or a skill does not show up | Start a new Claude Code session, or reload the VS Code window, after pulling. Check that the files are on your branch. |
 | `ih-src: could not resolve any artifact` | Network access to Maven Central is needed the first time per version; or run `./gradlew compileJava` and use `IH_SRC_OFFLINE=1`. |
 | First upstream lookup is slow | Sources are downloaded once per version into `~/.cache/ih-sources`. |
 | `dcp-e2e: Docker is not running` | Start Docker. `dcp-e2e.sh folders` works without it. |

@@ -1,8 +1,8 @@
 version = 1
 
 [[annotations]]
-# Identity Captain avatar: generated programmatically (AI-assisted) and curated by the contributor.
-path = ["identity-captain.png", "identity-captain-large.png", "identity-captain-profile.png"]
+# Identity Keeper avatar: generated programmatically (AI-assisted) and curated by the contributor.
+path = ["identity-keeper.png", "identity-keeper-large.png", "identity-keeper-profile.png"]
 precedence = "closest"
 SPDX-FileCopyrightText = ["2026 Catena-X Automotive Network e.V.", "2026 Contributors to the Eclipse Foundation"]
 SPDX-License-Identifier = "CC-BY-4.0"

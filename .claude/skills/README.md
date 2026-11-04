@@ -24,15 +24,15 @@
  Assisted-By: Claude Code (claude-opus-5-5)
 -->
 
-# Identity Captain skills
+# Identity Keeper skills
 
 Agent skills for developing the Tractus-X IdentityHub and IssuerService. Each skill is a folder with a `SKILL.md` (the
 procedure, loaded on demand by Claude Code and GitHub Copilot from `.claude/skills/`) and a `scripts/` folder with
 portable, tested scripts (bash 3.2+, macOS and Linux; `node` for the JSON/JWT tools). The
-[Identity Captain agent](../agents/identity-captain.md) routes matching tasks to them.
+[Identity Keeper agent](../agents/identity-keeper.md) routes matching tasks to them.
 
-User documentation: [how to use the Captain](../../docs/developers/identity-captain/README.md) and
-[how the skills work](../../docs/developers/identity-captain/skills.md).
+User documentation: [how to use the Keeper](../../docs/developers/identity-keeper/README.md) and
+[how the skills work](../../docs/developers/identity-keeper/skills.md).
 
 Scripts run from anywhere inside the repository. They are read-only on the repository, except the explicit
 scaffolding and write commands (`scaffold-extension.sh`, `migrations.sh new`, `new-adr.sh`,

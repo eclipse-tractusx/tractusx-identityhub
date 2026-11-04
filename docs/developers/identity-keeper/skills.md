@@ -1,13 +1,13 @@
-# How the Identity Captain skills work
+# How the Identity Keeper skills work
 
-The Captain's skills split each development task into two parts:
+The Keeper's skills split each development task into two parts:
 
 1. **Deterministic scripts collect the facts.** They answer "what is true in this repository and in upstream EDC
    IdentityHub right now?": which upstream types, settings, endpoints and schemas changed between two versions, where a
    setting lives across code, charts and the compose stack, which migrations are released, which API operations the
    collections cover, what a DID document or token really contains. The same input always produces the same output.
    They can be read, reviewed, run by anyone, and run in CI.
-2. **The Captain turns the facts into recommendations.** It reads the script output together with the code, the specs
+2. **The Keeper turns the facts into recommendations.** It reads the script output together with the code, the specs
    and the project's decision records. Then it explains what the facts mean, recommends what to do, proposes concrete
    changes (code, config, migration, collection, docs), and asks for the decisions only a human can make.
 
@@ -26,7 +26,7 @@ The Captain's skills split each development task into two parts:
 
 ## Why split it this way
 
-| | Deterministic script | Captain (AI agent) |
+| | Deterministic script | Keeper (AI agent) |
 |---|---|---|
 | Good at | Exhaustive, repeatable fact-finding: diffs, inventories, cross-references, version comparisons, decoding | Interpretation, prioritisation, explaining *why*, adapting a pattern to a new case, writing prose and code |
 | Weak at | Judgement, context, "is this acceptable?" | Remembering facts precisely: upstream renames often (`v1alpha` → `v1beta`, roles → scopes, base64 → verbatim participant ids), and memory goes stale |
@@ -37,7 +37,7 @@ The Captain's skills split each development task into two parts:
 
 ```mermaid
 flowchart LR
-    D([Developer]) -->|"request: e.g. 'why is my presentation empty?'"| C[Identity Captain]
+    D([Developer]) -->|"request: e.g. 'why is my presentation empty?'"| C[Identity Keeper]
     C -->|loads matching skill| K[SKILL.md<br/>procedure + checklist]
     K -->|runs| X[[Deterministic script<br/>e.g. jwt-inspect.sh]]
     X -->|facts: report with<br/>severities and path:line| C
@@ -48,7 +48,7 @@ flowchart LR
 ```
 
 1. You describe the goal in your own words.
-2. The Captain matches it to a skill from the skill's `description` and loads its `SKILL.md`.
+2. The Keeper matches it to a skill from the skill's `description` and loads its `SKILL.md`.
 3. It runs the skill's script(s) and reads the report.
 4. It verifies and deepens the facts by opening the code the report points to, the upstream sources at the pinned
    version (`ih-upstream-sources`), the specs and the decision records.
@@ -82,7 +82,7 @@ Claude Code and GitHub Copilot both load skills from `.claude/skills/`. One copy
    `dcp-e2e.sh` mirrors `postman-e2e-test.yaml` step by step (profiles, health wait, key extraction, newman pin, folders);
    `api-inventory.sh drift` runs the `OpenAPI-Specs-Up-To-Date` job.
 4. **Honest heuristics.** Where a script guesses, it says so and grades the finding (BLOCKER, BREAKING, HIGH, WARN).
-   The Captain confirms each finding.
+   The Keeper confirms each finding.
 5. **Output for humans and agents.** Plain text tables, one finding per line, `path:line`, severities, next steps.
 6. **Portable.** bash 3.2+ (stock macOS) and Linux, standard tools plus `node` for JSON and JWTs.
 7. **Tested against real history.** For example:
@@ -102,7 +102,7 @@ Claude Code and GitHub Copilot both load skills from `.claude/skills/`. One copy
 
 1. **Facts.** `did-inspect.sh <holder DID> --probe` confirms the DID resolves and the `CredentialService` endpoint
    answers. `jwt-inspect.sh` on the VP from the connector log shows a valid presentation with zero credentials.
-2. **Recommendation.** The Captain compares the requested scope with the stored credential types, reads
+2. **Recommendation.** The Keeper compares the requested scope with the stored credential types, reads
    `TxScopeToCriterionTransformer` and the configured `tx.identityhub.scope.aliases`, and finds, for example, that the alias for the requested scope is missing.
 3. **Proposal.** The exact setting and chart value, and the E2E folder that proves it.
 
@@ -112,7 +112,7 @@ Claude Code and GitHub Copilot both load skills from `.claude/skills/`. One copy
 
 1. **Facts.** `bump-impact.sh 0.18.0 0.19.0`: changed types used by Tractus-X, settings and endpoints removed or added,
    schema deltas, and the collection/UI files that use removed paths.
-2. **Recommendation.** The Captain reads the diffs of the high-impact types (`ih-src.sh diff`), with extra care for the
+2. **Recommendation.** The Keeper reads the diffs of the high-impact types (`ih-src.sh diff`), with extra care for the
    ownership extensions and the scope transformer, and groups the work: compile fixes, behaviour changes, migrations,
    settings, collections, docs.
 3. **Guard.** `bc-scan.sh`, the test suites and `dcp-e2e.sh run sql|memory`.
@@ -123,7 +123,7 @@ Claude Code and GitHub Copilot both load skills from `.claude/skills/`. One copy
 
 1. **Facts.** `bc-scan.sh <base>` reports released migrations edited, removed settings, Helm values and ConfigMap keys,
    removed API operations, security-sensitive modules, scope-mapping changes and missing follow-ups.
-2. **Recommendation.** The Captain confirms each finding in the diff and adds what the scanner cannot see (authorization
+2. **Recommendation.** The Keeper confirms each finding in the diff and adds what the scanner cannot see (authorization
    semantics, vault partitions, credential content). It proposes fixes.
 3. **Decision for you.** Approve, request changes, or post comments (it drafts them with the comment template; you post).
 
@@ -131,7 +131,7 @@ Claude Code and GitHub Copilot both load skills from `.claude/skills/`. One copy
 
 See [`.claude/skills/README.md`](../../../.claude/skills/README.md) for every skill with its script.
 
-| Skill | Deterministic part (facts) | Captain's part (judgement) |
+| Skill | Deterministic part (facts) | Keeper's part (judgement) |
 |---|---|---|
 | `ih-upstream-sources` | Upstream class, setting, endpoint or schema at an exact version; diffs | What the upstream behaviour means for Tractus-X |
 | `upstream-edc-bump` | Changed types, settings, endpoints, schemas between versions | Upgrade plan, fixes, migrations, collection updates |
@@ -167,7 +167,7 @@ See [`.claude/skills/README.md`](../../../.claude/skills/README.md) for every sk
 - `jwt-inspect.sh` decodes but does not verify signatures; signature verification is the verifier's job (and the E2E
   flow's).
 - Some checks need Docker (E2E, Postgres) or network access (upstream sources, Eclipse Dash, DID resolution).
-- The Captain proposes. Contributors remain responsible for what they submit, including the AI disclosure and the review
+- The Keeper proposes. Contributors remain responsible for what they submit, including the AI disclosure and the review
   it attests to.
 
 ## NOTICE
