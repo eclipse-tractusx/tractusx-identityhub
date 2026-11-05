@@ -87,8 +87,8 @@ For short inline review comments, use the compact header instead of the full one
 ## Avatar URL
 
 GitHub does not resolve repository-relative paths in issues and comments, so the avatar must be an absolute URL. The
-avatar is [`.github/agents/identity-keeper-profile.png`](../../../.github/agents/identity-keeper-profile.png) (256×256,
-sharp at 88px on high-density screens), CC-BY-4.0, see [`REUSE.toml`](../../../.github/agents/REUSE.toml). The 128px
+avatar is [`.github/agents/identity-keeper-profile.png`](../../../.github/agents/identity-keeper-profile.png) (the face crop,
+256×256, sharp at 88px on high-density screens), CC-BY-4.0, see [`REUSE.toml`](../../../.github/agents/REUSE.toml). The 128px
 `identity-keeper.png` is the Copilot agent icon.
 
 - **Default:** `https://raw.githubusercontent.com/eclipse-tractusx/tractusx-identityhub/main/.github/agents/identity-keeper-profile.png`

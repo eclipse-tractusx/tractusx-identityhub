@@ -1,6 +1,6 @@
 # Identity Keeper
 
-<img src="../../../.github/agents/identity-keeper.png" width="96" align="right" alt="Identity Keeper avatar">
+<img src="../../../.github/agents/identity-keeper-large.png" width="320" align="right" alt="Identity Keeper: a white and orange Tractus-X robot at a laptop in front of an identity vault">
 
 > *"To boldly verify what no one has verified before."* 🖖
 
@@ -37,7 +37,7 @@ shared by both. [How the skills work](skills.md) explains the idea behind them.
 | [`.github/copilot-instructions.md`](../../../.github/copilot-instructions.md) | Repository-wide Copilot instructions: Copilot adopts the Keeper identity and its rules even when the agent is not selected |
 | [`.claude/skills/`](../../../.claude/skills/README.md) | The skills: one folder per task with `SKILL.md` (procedure) and `scripts/` (deterministic tooling). Loaded by Claude Code and Copilot |
 | [`.github/agents/REUSE.toml`](../../../.github/agents/REUSE.toml) | License information for the avatar images (CC-BY-4.0) |
-| [`.github/agents/identity-keeper-profile.png`](../../../.github/agents/identity-keeper-profile.png) | 256px avatar used in the GitHub comment header (`identity-keeper.png` is the 128px Copilot icon, `-large.png` the 1024px source) |
+| [`.github/agents/identity-keeper-profile.png`](../../../.github/agents/identity-keeper-profile.png) | 256px face avatar used in the GitHub comment header. `identity-keeper.png` is the same face at 128px (Copilot icon), `-face.png` the 400px face crop, `-large.png` the full 1024px portrait |
 | [`comment-template.md`](comment-template.md) | The template the Keeper uses on GitHub (issues, comments, PR descriptions, reviews): avatar header, AI disclosure, evidence section, sign-off |
 
 ## Prerequisites
@@ -159,8 +159,9 @@ The full catalog is in [`.claude/skills/README.md`](../../../.claude/skills/READ
 - **Posting on GitHub as the Keeper:** use [`comment-template.md`](comment-template.md).
 - **After an upstream bump**, re-run the skill scripts once against the new version. They read the version from
   `gradle/libs.versions.toml`, so they normally need no change.
-- **Avatar:** the current emblem is a generated placeholder (shield, verification check, four rank pips). It can be
-  replaced by any CC-BY-4.0 image with the same file names and sizes.
+- **Avatar:** `-large.png` is the full portrait. The other three files are a square crop of its face (`-face.png` 400px,
+  `-profile.png` 256px, `.png` 128px), so the face stays recognizable at icon size. A replacement must be CC-BY-4.0 and keep
+  the file names and sizes.
 
 ## Troubleshooting
 
