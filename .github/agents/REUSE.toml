@@ -1,0 +1,8 @@
+version = 1
+
+[[annotations]]
+# Identity Keeper avatar: AI-generated portrait provided and curated by the contributor; the face files are crops of it.
+path = ["identity-keeper.png", "identity-keeper-large.png", "identity-keeper-profile.png", "identity-keeper-face.png"]
+precedence = "closest"
+SPDX-FileCopyrightText = ["2026 Catena-X Automotive Network e.V.", "2026 Contributors to the Eclipse Foundation"]
+SPDX-License-Identifier = "CC-BY-4.0"
