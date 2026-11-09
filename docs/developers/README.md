@@ -47,6 +47,14 @@ The IssuerService handles the complete credential issuance workflow, from reques
 - **Credential Revocation**: Implementing BitstringStatusList for credential status management
 - **Holder Registry**: Managing entities authorized to receive credentials
 
+## AI Agent
+
+### [Identity Keeper](./identity-keeper/README.md)
+
+An AI agent for Claude Code and GitHub Copilot that knows this repository, the upstream EDC IdentityHub version it pins,
+and the DCP / DID / VC specifications. See [how to use it](./identity-keeper/README.md) and
+[how its skills work](./identity-keeper/skills.md).
+
 ## Setup Guides
 
 ### [Linux](./setup/Linux.md)
