@@ -36,18 +36,15 @@ dependencies {
     runtimeOnly(libs.edc.vault.hashicorp)
     runtimeOnly(project(":extensions:store:sql:migrations"))
     runtimeOnly(project(":extensions:seed:super-user"))
-    runtimeOnly(project(":extensions:identityhub:participant-api-ownership"))
-    runtimeOnly(project(":extensions:identityhub:credential-api-ownership"))
     runtimeOnly(project(":extensions:identityhub:initial-participant"))
     runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
     runtimeOnly(project(":extensions:api:swagger-ui"))
 
     // used for custom extensions
-    implementation(libs.edc.core.connector)
+    implementation(libs.edc.core.security)
     implementation(libs.edc.ih.spi)
 
-    testImplementation(libs.edc.lib.crypto)
-    testImplementation(libs.edc.lib.keys)
+    testImplementation(libs.edc.lib.core)
     testImplementation(libs.edc.junit)
 }
 

@@ -67,7 +67,7 @@ Four management sections covering the Identity Hub API, plus cross-cutting infra
 ## Backend Integration
 
 - **Backend host:** `ih.tx.corp.hanka.ai` (K8s deployment with ingress routing by path/port)
-- **API base path:** `/api/identity/v1beta`
+- **API base path:** `/api/identity/v1`
 - **Authentication:** Super-user API key (vault secret `super-user-apikey`), sent via `x-api-key` header
 - **Participant IDs:** URL-encoded in API path segments (for example, `BPNL00000003CRHK` remains unchanged)
 
@@ -91,3 +91,13 @@ Four management sections covering the Identity Hub API, plus cross-cutting infra
 | Tests | 400 |
 | Features | 4 |
 | API endpoints integrated | 20+ |
+
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+* SPDX-License-Identifier: CC-BY-4.0
+* SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
+* SPDX-FileCopyrightText: 2026 VDBP
+* Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/ui/docs/WORK_SUMMARY.md>

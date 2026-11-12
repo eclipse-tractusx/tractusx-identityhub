@@ -62,6 +62,7 @@ data:
 
   # HolderCredentialRequests
   edc.sql.store.credentialrequest.datasource: "credentialrequest"
+  edc.sql.store.credentialoffer.datasource: "credentialrequest"
   edc.datasource.credentialrequest.url: {{ tpl .Values.postgresql.jdbcUrl . | quote }}
   edc.datasource.credentialrequest.user: {{ .Values.postgresql.auth.username | quote }}
   edc.datasource.credentialrequest.password: {{ .Values.postgresql.auth.password | quote }}

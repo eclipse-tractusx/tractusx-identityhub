@@ -101,7 +101,7 @@ Browser
   │         Vite Proxy (development) or Direct (production)
   │           │
   │           ▼
-  │         Backend API (/api/identity/v1beta/...)
+  │         Backend API (/api/identity/v1/...)
   │           │
   │           ▼
   │         Response Interceptor: handles 401 → auto logout
@@ -211,3 +211,13 @@ Defined in `src/routes.tsx` using React Router v6:
 Legacy redirects: `/did` → `/dids`, `/identity` → `/credentials`
 
 All routes are nested under `MainLayout`, which provides the Header + Sidebar chrome.
+
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+* SPDX-License-Identifier: CC-BY-4.0
+* SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
+* SPDX-FileCopyrightText: 2026 VDBP
+* Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/ui/docs/ARCHITECTURE.md>

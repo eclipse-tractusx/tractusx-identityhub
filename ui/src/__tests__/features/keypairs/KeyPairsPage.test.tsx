@@ -235,7 +235,7 @@ describe('KeyPairsPage', () => {
 
         await waitFor(() => {
             expect(httpClient.get).toHaveBeenCalledWith(
-                '/api/identity/v1beta/participants/participant-b/keypairs'
+                '/api/identity/v1/participants/participant-b/keypairs'
             );
         });
         expect(await screen.findByText('key-b-1')).toBeInTheDocument();

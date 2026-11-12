@@ -23,15 +23,14 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.edc.ih.api.credentials)
-    implementation(libs.edc.ih.spi)
-    implementation(libs.edc.spi.auth)
-    implementation(libs.edc.spi.web)
-    implementation(libs.jakarta.rs)
+    testImplementation(libs.edc.ih.api.credentials)
+    testImplementation(libs.edc.ih.spi)
+    testImplementation(libs.edc.spi.core)
+    testImplementation(libs.jakarta.rs)
 
     testImplementation(libs.edc.junit)
     testImplementation(libs.edc.ih.validators.credential)
     testImplementation(testFixtures(libs.edc.core.jersey))
-    testImplementation(libs.edc.lib.authorization)
+    testImplementation(libs.edc.lib.core)
     testImplementation(libs.rest.assured)
 }

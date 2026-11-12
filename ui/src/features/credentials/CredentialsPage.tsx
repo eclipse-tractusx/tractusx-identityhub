@@ -73,7 +73,6 @@ const CredentialsPage: React.FC = () => {
     const [addOpen, setAddOpen] = useState(false);
     const [requestOpen, setRequestOpen] = useState(false);
     const [reqIssuerDid, setReqIssuerDid] = useState('');
-    const [reqHolderPid, setReqHolderPid] = useState('');
     const [reqCredType, setReqCredType] = useState('');
     const [reqCredentialId, setReqCredentialId] = useState('');
     const [reqCredFormat, setReqCredFormat] = useState('vc11-sl2021/jwt');
@@ -192,7 +191,6 @@ const CredentialsPage: React.FC = () => {
 
     const resetRequestForm = () => {
         setReqIssuerDid('');
-        setReqHolderPid('');
         setReqCredType('');
         setReqCredentialId('');
         setReqCredFormat('vc11-sl2021/jwt');
@@ -203,7 +201,6 @@ const CredentialsPage: React.FC = () => {
         try {
             const body = {
                 issuerDid: reqIssuerDid.trim(),
-                holderPid: reqHolderPid.trim(),
                 credentials: [
                     {
                         format: reqCredFormat.trim() || 'vc11-sl2021/jwt',
@@ -353,15 +350,9 @@ const CredentialsPage: React.FC = () => {
                         Send a credential issuance request via the DCP protocol.
                     </Typography>
                     <TextField
-                        fullWidth label="Issuer DID" value={reqIssuerDid}
+                        autoFocus fullWidth label="Issuer DID" value={reqIssuerDid}
                         onChange={(e) => setReqIssuerDid(e.target.value)}
                         placeholder="did:web:issuer.example.com"
-                        helperText="Format: did:<method>:<identifier>"
-                    />
-                    <TextField
-                        fullWidth label="Holder PID" value={reqHolderPid}
-                        onChange={(e) => setReqHolderPid(e.target.value)}
-                        placeholder="did:web:holder.example.com"
                         helperText="Format: did:<method>:<identifier>"
                     />
                     <TextField
@@ -388,7 +379,7 @@ const CredentialsPage: React.FC = () => {
                         Cancel
                     </Button>
                     <Button onClick={handleRequest}
-                        disabled={!reqIssuerDid.trim() || !reqHolderPid.trim() || !reqCredType.trim() || requesting}
+                        disabled={!reqIssuerDid.trim() || !reqCredentialId.trim() || !reqCredType.trim() || requesting}
                         variant="contained" color="primary" size="large"
                         startIcon={requesting ? <CircularProgress size={20} color="inherit" /> : undefined}
                         sx={dialogSubmitBtnSx}>

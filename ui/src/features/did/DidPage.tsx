@@ -93,7 +93,7 @@ interface DidWithState {
 
 type EndpointDialogMode = 'add' | 'replace' | null;
 
-const API_BASE = '/api/identity/v1beta';
+const API_BASE = '/api/identity/v1';
 
 const DidPage: React.FC = () => {
     const { activeParticipantId } = useParticipant();

@@ -245,7 +245,7 @@ paths:
           description: DID not found
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/dids/{DID}/endpoints:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/dids/{DID}/endpoints:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -364,7 +364,7 @@ paths:
               id: did:web:super-user#service-1
               serviceEndpoint: http://localhost:8182/api/identity
               type: Service
-  /v1beta/dids:
+  /v1/dids:
     parameters: []
     get:
       summary: >-
@@ -388,7 +388,7 @@ paths:
           description: Forbidden - requires elevated access
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/dids/state:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/dids/state:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -425,7 +425,7 @@ paths:
                   format: uri
             example:
               did: did:web:super-user
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/dids/publish:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/dids/publish:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -460,7 +460,7 @@ paths:
                   format: uri
             example:
               did: did:web:super-user
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/dids/query:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/dids/query:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -500,7 +500,7 @@ paths:
             example:
               limit: 0
               offset: 50
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/dids/unpublish:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/dids/unpublish:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -535,7 +535,7 @@ paths:
                   format: uri
             example:
               did: did:web:super-user
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/keypairs:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/keypairs:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -624,7 +624,7 @@ paths:
           description: Unauthorized
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -653,7 +653,7 @@ paths:
           description: Key pair not found
         '500':
           description: Internal server error
-  /v1beta/keypairs:
+  /v1/keypairs:
     parameters: []
     get:
       summary: >-
@@ -689,7 +689,7 @@ paths:
           description: Forbidden - requires elevated access
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}/revoke:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}/revoke:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -756,7 +756,7 @@ paths:
               publicKeyJwk: null
               publicKeyPem: null
               resourceId: resource-new-key2
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}/rotate:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}/rotate:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -829,7 +829,7 @@ paths:
               publicKeyJwk: null
               publicKeyPem: null
               resourceId: resource-new-key3
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}/activate:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/keypairs/{KEY_PAIR_ID}/activate:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -866,7 +866,7 @@ paths:
             schema:
               type: object
             example: {}
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/state:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/state:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -906,7 +906,7 @@ paths:
             schema:
               type: object
             example: {}
-  /v1beta/participants:
+  /v1/participants:
     parameters: []
     post:
       summary: Creates a new ParticipantContext object.
@@ -948,6 +948,12 @@ paths:
                       type: string
                 participantContextId:
                   type: string
+                provisionApiKey:
+                  type: boolean
+                  default: true
+                provisionStsAccount:
+                  type: boolean
+                  default: true
                 scopes:
                   type: array
                   maxItems: 2147483647
@@ -999,7 +1005,7 @@ paths:
           description: Forbidden - requires elevated access
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1038,7 +1044,7 @@ paths:
           description: Participant context not found
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/token:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/token:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1067,7 +1073,7 @@ paths:
           description: Participant context not found
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/scopes:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/scopes:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1104,7 +1110,7 @@ paths:
                 type: string
             example:
               - identity-api:write
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/credentials:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/credentials:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1349,7 +1355,7 @@ paths:
                   issuer: did:web:super-user
                   issuanceDate: '2021-06-16T18:56:59Z'
                   expirationDate: '2022-06-16T18:56:59Z'
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1391,7 +1397,7 @@ paths:
           description: Verifiable credential not found
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/credentials/request/{HOLDER_PID}:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/credentials/request/{HOLDER_PID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1420,7 +1426,7 @@ paths:
           description: Credential request not found
         '500':
           description: Internal server error
-  /v1beta/credentials:
+  /v1/credentials:
     parameters: []
     get:
       summary: >-
@@ -1444,7 +1450,7 @@ paths:
           description: Forbidden - requires elevated access
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/credentials/request:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/credentials/request:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1458,8 +1464,13 @@ paths:
       tags: *ref_3
       parameters: []
       responses:
-        '200':
-          description: Credential request triggered successfully
+        '201':
+          description: Credential request accepted; IdentityHub assigns the request ID
+          headers:
+            Location:
+              description: URL ending with the server-assigned request ID, used for polling
+              schema:
+                type: string
         '400':
           description: Bad request
         '401':
@@ -1484,9 +1495,6 @@ paths:
                         type: string
                       type:
                         type: string
-                holderPid:
-                  type: string
-                  format: uri
                 issuerDid:
                   type: string
                   format: uri
@@ -1495,9 +1503,8 @@ paths:
                 - format: vc11-sl2021/jwt
                   id: 1f36af58-0fc0-4b24-9b1c-e37d59668089
                   type: MembershipCredential
-              holderPid: did:web:super-user
               issuerDid: did:web:super-user
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/requests/{CREDENTIAL_REQUEST_ID}:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/requests/{CREDENTIAL_REQUEST_ID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1527,7 +1534,7 @@ paths:
           description: Credential request not found
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/metadata:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/metadata:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1550,7 +1557,7 @@ paths:
           description: Unauthorized
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/attestations:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/attestations:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1601,7 +1608,7 @@ paths:
                 additionalProp2: {}
                 additionalProp3: {}
               id: string
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/attestations/{ATTESTATION_DEFINITION_ID}:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/attestations/{ATTESTATION_DEFINITION_ID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1626,7 +1633,7 @@ paths:
           description: Attestation definition not found
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/attestations/query:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/attestations/query:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1659,7 +1666,7 @@ paths:
             schema:
               type: object
             example: null
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1708,7 +1715,7 @@ paths:
             schema:
               type: object
             example: null
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions/{CREDENTIAL_DEFINITION_ID}:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions/{CREDENTIAL_DEFINITION_ID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1750,7 +1757,7 @@ paths:
           description: Credential definition not found
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions/query:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/credentialdefinitions/query:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1783,7 +1790,7 @@ paths:
             schema:
               type: object
             example: null
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/status:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/status:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1820,7 +1827,7 @@ paths:
           description: Credential not found
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/credentials/query:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/credentials/query:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1853,7 +1860,7 @@ paths:
             schema:
               type: object
             example: null
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/resume:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/resume:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1882,7 +1889,7 @@ paths:
           description: Credential not found
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/revoke:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/revoke:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1911,7 +1918,7 @@ paths:
           description: Credential not found
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/suspend:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/credentials/{CREDENTIAL_ID}/suspend:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1941,7 +1948,7 @@ paths:
           description: Credential not found
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/credentials/offer:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/credentials/offer:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -1978,7 +1985,7 @@ paths:
               credentials:
                 - string
               holderId: string
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/holders:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/holders:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -2050,7 +2057,7 @@ paths:
               did: did:web:webhook.site:dbdd9b07-f1cf-4586-b2e2-fc8e8c5515da
               holderId: string
               name: string1
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/holders/query:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/holders/query:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -2083,7 +2090,7 @@ paths:
             schema:
               type: object
             example: null
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/holders/{HOLDER_ID}:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/holders/{HOLDER_ID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -2125,7 +2132,7 @@ paths:
           description: Holder not found
         '500':
           description: Internal server error
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/issuanceprocesses/query:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/issuanceprocesses/query:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path
@@ -2160,7 +2167,7 @@ paths:
             schema:
               type: object
             example: null
-  /v1beta/participants/{PARTICIPANT_CONTEXT_ID}/issuanceprocesses/{ISSUANCE_PROCESS_ID}:
+  /v1/participants/{PARTICIPANT_CONTEXT_ID}/issuanceprocesses/{ISSUANCE_PROCESS_ID}:
     parameters:
       - name: PARTICIPANT_CONTEXT_ID
         in: path

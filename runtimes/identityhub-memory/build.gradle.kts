@@ -32,18 +32,20 @@ dependencies {
     // used for the runtime
     runtimeOnly(libs.bom.ih)
     runtimeOnly(project(":extensions:seed:super-user"))
-    runtimeOnly(project(":extensions:identityhub:participant-api-ownership"))
-    runtimeOnly(project(":extensions:identityhub:credential-api-ownership"))
     runtimeOnly(project(":extensions:monitor:colored-jdk-monitor"))
     runtimeOnly(project(":extensions:api:swagger-ui"))
     runtimeOnly(project(":extensions:identityhub:initial-participant"))
 
     // used for custom extensions
-    implementation(libs.edc.core.connector)
+    implementation(libs.edc.core.security)
     implementation(libs.edc.ih.spi)
-    testImplementation(libs.edc.lib.crypto)
-    testImplementation(libs.edc.lib.keys)
+    testImplementation(libs.edc.lib.core)
     testImplementation(libs.edc.junit)
+}
+
+// Run the same regression tests against the extensions shipped in each runtime.
+sourceSets.test {
+    java.srcDir(project(":runtimes:identityhub").file("src/test/java"))
 }
 
 // Bundle the build-time-generated OpenAPI spec so the Swagger UI can serve it.

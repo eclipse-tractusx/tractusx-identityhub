@@ -1,6 +1,6 @@
 # Features
 
-The frontend provides four sections for managing the Identity Hub. Each section maps to a route and interacts with the backend API at `/api/identity/v1beta`.
+The frontend provides four sections for managing the Identity Hub. Each section maps to a route and interacts with the backend API at `/api/identity/v1`.
 
 A **participant selector** in the sidebar allows switching between participant contexts. All resource views (key pairs, DIDs, credentials) are scoped to the active participant.
 
@@ -173,3 +173,13 @@ Manage verifiable credentials across the full lifecycle: creation, issuance, sto
 - `src/features/credentials/AddCredentialDialog.tsx`
 - `src/features/credentials/api.ts`
 - `src/features/credentials/types.ts`
+
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+* SPDX-License-Identifier: CC-BY-4.0
+* SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
+* SPDX-FileCopyrightText: 2026 VDBP
+* Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/ui/docs/FEATURES.md>

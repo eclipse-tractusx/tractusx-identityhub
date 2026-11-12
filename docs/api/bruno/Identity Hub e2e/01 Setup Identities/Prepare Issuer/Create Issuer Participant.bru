@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{ISSUER_ID_API}}/v1beta/participants
+  url: {{ISSUER_ID_API}}/v1/participants
   body: json
   auth: inherit
 }
@@ -21,7 +21,7 @@ body:json {
       {
         "id": "Issuer-IssuerService", 
         "type": "IssuerService", 
-        "serviceEndpoint": "{{ISSUER_ISSUANCE_API}}/v1beta/participants/{{ISS_ID}}"
+        "serviceEndpoint": "{{ISSUER_ISSUANCE_API}}/v1/participants/{{ISS_ID}}"
       }
     ],
     "active": true,

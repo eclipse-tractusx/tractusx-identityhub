@@ -157,7 +157,7 @@ describe('SearchPage', () => {
         fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
 
         await waitFor(() => {
-            expect(httpClient.get).toHaveBeenCalledWith('/api/identity/v1beta/credentials', {
+            expect(httpClient.get).toHaveBeenCalledWith('/api/identity/v1/credentials', {
                 params: { query: 'membership' },
             });
         });
@@ -303,7 +303,7 @@ describe('SearchPage', () => {
         fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
 
         await waitFor(() => {
-            expect(httpClient.get).toHaveBeenCalledWith('/api/identity/v1beta/credentials', {
+            expect(httpClient.get).toHaveBeenCalledWith('/api/identity/v1/credentials', {
                 params: { query: 'membership' },
             });
         });
