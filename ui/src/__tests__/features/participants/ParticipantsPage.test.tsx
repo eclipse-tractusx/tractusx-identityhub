@@ -198,7 +198,7 @@ describe('ParticipantsPage', () => {
 
         await waitFor(() => {
             expect(httpClient.post).toHaveBeenCalledWith(
-                '/api/identity/v1beta/participants',
+                '/api/identity/v1/participants',
                 expect.objectContaining({
                     participantContextId: 'BPNL00000003NEW1',
                     scopes: ['identity-api:write'],
@@ -288,7 +288,7 @@ describe('ParticipantsPage', () => {
 
         await waitFor(() => {
             expect(httpClient.delete).toHaveBeenCalledWith(
-                expect.stringContaining('/api/identity/v1beta/participants/')
+                expect.stringContaining('/api/identity/v1/participants/')
             );
         });
     });
@@ -422,7 +422,7 @@ describe('ParticipantsPage', () => {
 
         await waitFor(() => {
             expect(httpClient.put).toHaveBeenCalledWith(
-                '/api/identity/v1beta/participants/did%3Aweb%3Aexample.test%253A443%3Atenant/scopes',
+                '/api/identity/v1/participants/did%3Aweb%3Aexample.test%253A443%3Atenant/scopes',
                 ['identity-api:read', 'issuer-admin-api:read']
             );
         });

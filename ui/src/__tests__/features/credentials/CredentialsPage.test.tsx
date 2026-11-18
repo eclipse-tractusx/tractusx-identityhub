@@ -316,7 +316,7 @@ describe('CredentialsPage', () => {
         });
 
         fireEvent.change(screen.getByLabelText('Issuer DID'), { target: { value: 'did:web:example.com' } });
-        fireEvent.change(screen.getByLabelText('Holder PID'), { target: { value: 'did:web:holder.example.com' } });
+        fireEvent.change(screen.getByLabelText('Credential ID'), { target: { value: 'membership-definition' } });
         fireEvent.change(screen.getByLabelText('Credential Type'), { target: { value: 'MembershipCredential' } });
 
         fireEvent.click(screen.getByText('Send Request'));
@@ -324,14 +324,14 @@ describe('CredentialsPage', () => {
         await waitFor(() => {
             expect(requestCredential).toHaveBeenCalledWith(
                 'BPNL00000003CRHK',
-                expect.objectContaining({
+                {
                     issuerDid: 'did:web:example.com',
-                    holderPid: 'did:web:holder.example.com',
-                    credentials: [expect.objectContaining({
+                    credentials: [{
+                        id: 'membership-definition',
                         format: 'vc11-sl2021/jwt',
                         type: 'MembershipCredential',
-                    })],
-                })
+                    }],
+                }
             );
         });
     });
@@ -352,7 +352,7 @@ describe('CredentialsPage', () => {
         });
 
         fireEvent.change(screen.getByLabelText('Issuer DID'), { target: { value: 'did:web:example.com' } });
-        fireEvent.change(screen.getByLabelText('Holder PID'), { target: { value: 'did:web:holder.example.com' } });
+        fireEvent.change(screen.getByLabelText('Credential ID'), { target: { value: 'membership-definition' } });
         fireEvent.change(screen.getByLabelText('Credential Type'), { target: { value: 'MembershipCredential' } });
 
         fireEvent.click(screen.getByText('Send Request'));
@@ -376,8 +376,9 @@ describe('CredentialsPage', () => {
             expect(screen.getByText('Request Credential')).toBeInTheDocument();
         });
 
-        // Only fill Issuer DID, leave Holder PID and Credential Type empty
+        expect(screen.queryByLabelText('Holder PID')).not.toBeInTheDocument();
         fireEvent.change(screen.getByLabelText('Issuer DID'), { target: { value: 'did:web:example.com' } });
+        fireEvent.change(screen.getByLabelText('Credential Type'), { target: { value: 'MembershipCredential' } });
 
         const sendButton = screen.getByText('Send Request');
         expect(sendButton).toBeDisabled();

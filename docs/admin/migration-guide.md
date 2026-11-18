@@ -48,6 +48,190 @@ this value as their `credentialStatus.statusListCredential` endpoint — set it 
 for cluster-internal verification). A bare hostname produces broken status URLs in every
 issued credential.
 
+## EDC 1.0.0-RC1 / RC4 → 1.0.0-RC5
+
+All four runtimes use the official [IdentityHub v1.0.0-RC5](https://github.com/eclipse-edc/IdentityHub/tree/f3bbaf90468472e646f0929b72d42d33f7641fc6)
+and matching Eclipse EDC artifacts. The comparison for this increment is
+[RC4 to RC5](https://github.com/eclipse-edc/IdentityHub/compare/v1.0.0-RC4...v1.0.0-RC5);
+the release page also lists changes from older releases. Installations upgrading
+from RC1 must additionally follow the status-list and supersession guidance below.
+
+### API callers and authorization
+
+- Keep the `/v1` routes and existing credential ID scopes.
+- Omit `holderPid` when posting a credential request. IdentityHub generates the
+  request ID and returns it in `Location`; use its final path segment for polling.
+  Supply a non-empty issuer DID and at least one credential with `id` and `format`.
+- Participant activation/deactivation requires `identity-api:admin`, even for the
+  participant's own context. Deletion retains ownership authorization.
+- RC5 provides manifest/path matching and participant-scoped request lookup in
+  its controllers. The local ownership providers are removed after HTTP regression
+  verification; their modules remain as tests. See the [ownership regressions](../../extensions/identityhub/README.md).
+
+### SQL configuration and migration
+
+RC5 selects the credential-offer datasource with
+`edc.sql.store.credentialoffer.datasource`. Set it to the same named datasource
+as `edc.sql.store.credentialrequest.datasource`. The shipped chart and Compose
+configuration use `credentialrequest`; the local runtime defaults use `default`.
+The existing `credentialrequest` Flyway history still owns both tables. Do not
+rename that history or configure a separate offer database without a separate
+data migration. Keep Holder and Issuer databases separate as in the shipped deployment.
+
+Stop every old writer before starting RC5. Eight incremental migrations add:
+
+| Store | Change |
+| --- | --- |
+| Credentials | Required participant ownership; primary key `(participant_context_id, id)` and participant/usage/state index |
+| Attestation and credential definitions | `private_properties` JSON and participant-scoped primary keys |
+| Holders | Participant-scoped primary key and unique DID per participant where existing data permits |
+| Key pairs | `private_key_managed=false` for existing keys; participant index and unique active key ID where existing data permits |
+| Credential requests and offers | Embedded lease fields and optimistic-lock `version=0` |
+| Issuance processes | Embedded lease fields, `version=0` and unique holder request ID per participant |
+| JTI validation | Expiry index |
+
+Old migration files and checksums remain unchanged. Existing signed credentials,
+keys, IDs and Vault references are not rewritten. `private_key_managed=false`
+preserves externally managed private-key ownership. The obsolete `edc_lease`
+table is retained; RC5 uses embedded leases. Never run RC1/RC4 and RC5 writers
+concurrently against these stores.
+
+Before the maintenance window, check each relevant database:
+
+```sql
+SELECT id FROM credential_resource WHERE participant_context_id IS NULL;
+SELECT participant_context_id, holder_pid, count(*) FROM edc_issuance_process
+GROUP BY participant_context_id, holder_pid HAVING count(*) > 1;
+SELECT participant_context_id, key_id, count(*) FROM keypair_resource
+WHERE state IN (100, 200) GROUP BY participant_context_id, key_id HAVING count(*) > 1;
+SELECT participant_context_id, did, count(*) FROM holders
+GROUP BY participant_context_id, did HAVING count(*) > 1;
+```
+
+Missing credential owners and duplicate issuance request IDs stop migration
+without discarding rows. Resolve ownership from authoritative records before
+retrying. Legacy duplicate active key IDs or holder DIDs are preserved with a
+warning and the corresponding unique index is not installed, matching upstream
+behavior. Reconcile such duplicates explicitly; do not delete identities to
+force the upgrade through.
+
+### Acceptance and rollback
+
+Back up PostgreSQL, Vault and the old runtime/configuration as one recoverable
+set. Rehearse an upgrade, restart and restoration on an isolated copy first.
+Verify row counts and original payloads, Flyway history, API keys, DID documents,
+existing key references, issuance and presentation. RC5 excludes credentials in
+`ERROR`, `SUSPENDED` and `EXPIRED` states from presentation; investigate status-list
+or issuer failures instead of changing states merely to make a presentation pass.
+
+Use a matching database/Vault backup and old image for rollback. An image-only
+downgrade is unsafe after participant-scoped duplicate IDs or RC5 state-machine
+writes have been introduced. Account for every post-backup write before restoring;
+do not overwrite newly issued credentials or keys.
+
+## EDC 1.0.0-RC1 → 1.0.0-RC4
+
+All four runtimes use the official [IdentityHub v1.0.0-RC4](https://github.com/eclipse-edc/IdentityHub/tree/e5304b43141c2059fbfde5ae3078e4ec68320934)
+and matching Eclipse EDC artifacts. The `/v1` routes, management scopes, credential
+ID scopes and ownership extensions introduced by the RC1 upgrade remain in use.
+No additional Tractus-X SQL migration is required; retain the existing migration
+files and Flyway history. Installations older than RC1 must also follow the steps
+in the next section.
+
+### Status-list representation
+
+Set `edc.iam.credential.revocation.mimetype=application/json` (environment variable
+`EDC_IAM_CREDENTIAL_REVOCATION_MIMETYPE`) in the deployment override when the
+issuer serves JSON status-list credentials. This is a runtime-wide selection:
+only the exact `application/json` value selects JSON parsing; the default `*/*`
+uses JWT parsing. A comma-separated MIME list does not enable automatic detection.
+Inventory every active issuer and test its status-list representation before
+changing this setting. Mixed JSON/JWT issuers require a compatible issuer profile
+or separate runtime configuration; the public chart defaults are unchanged.
+
+### Reissuance and rollback
+
+RC4 records `supersededBy` metadata and expires a previous Holder credential when
+a replacement for the same participant, credential object and format arrives.
+The watchdog does not renew a superseded credential again, and status checks keep
+it expired unless the issuer revokes it. Verify reissuance, presentation selection,
+revocation and suspension with the issuer before accepting an upgrade.
+
+Back up PostgreSQL and the corresponding Vault state with the old image and
+configuration before changing the runtime. Rehearse both upgrade and rollback on
+an isolated copy. RC1 does not enforce RC4's supersession behavior: after RC4 has
+processed reissuance, an image-only downgrade may reactivate old credentials.
+Review all intervening writes before restoring a backup; never overwrite new
+credentials or keys to roll back an application.
+
+### Optional credential-request compatibility setting
+
+`edc.iam.credential.request.bearer.access.scope` is an optional, deprecated
+compatibility setting for the access token embedded in credential-request SI
+tokens. Leaving it unset preserves the previous behavior. Configure an exact
+scope only when required by the issuer's agreed profile; upgrading to RC4 does
+not imply that this option is needed.
+
+## EDC 0.18.0 → 1.0.0-RC1
+
+This upgrade targets the official [IdentityHub v1.0.0-RC1 release](https://github.com/eclipse-edc/IdentityHub/tree/v1.0.0-RC1)
+and matching Eclipse EDC artifacts. Tractus-X application and chart versions remain independent.
+
+### API clients and DID service endpoints
+
+Identity, Issuer Admin and DCP Issuer API paths change from `/v1beta` to `/v1`.
+Update external clients, reverse-proxy rules and issuer DID service endpoints as well as
+the runtime. Existing persisted issuer DID documents are not rewritten automatically:
+update their issuance service endpoint through the DID management API and republish them.
+Presentation and STS retain their existing `/v1` paths. Kubernetes `v1beta1` API versions
+are unrelated to this change.
+
+Also verify that persisted public DID documents declare the verification relationships
+used by DCP: `authentication` and `capabilityInvocation` must reference the appropriate
+existing verification methods. Update and republish documents that lack these references;
+retain their participant IDs, keys, credentials and unrelated service endpoints.
+
+The shipped UI, Bruno/Postman collections and generated OpenAPI specifications use the
+new routes. Participant IDs remain plain IDs encoded once as URL path segments; API key
+format and stored management scopes are unchanged. Keep the existing participant and
+credential ownership extensions enabled. No broader scopes are required for the upgrade.
+
+### DCP credential ID scopes
+
+Both IdentityHub runtimes now accept `org.eclipse.dspace.dcp.vc.id:<credentialId>`,
+matching the upstream RC1 scope format. Everything after the alias separator is the
+credential ID, including colons in URNs or URLs; do not append `:read`. The query
+matches the credential's ID exactly, within the participant and authorized scopes.
+Blank IDs are rejected.
+
+Use the normalized credential ID returned by the management API. For JWT credentials,
+EDC prefers the JWT `jti` claim over the nested `vc.id`; those two values can differ in
+existing credentials.
+
+The existing type scopes and `tx.identityhub.scope.aliases` configuration remain
+supported. That setting controls type aliases; the standard DCP ID alias is always
+available.
+
+### PostgreSQL migration and rollback
+
+Stop writers and back up PostgreSQL together with the corresponding Vault state before
+starting the RC1 SQL runtimes. Retain the old runtime image and configuration with this
+backup, and rehearse restoration on an isolated copy.
+
+The new `credentialdefinitions/V0_0_3__Allow_Shared_Credential_Types.sql` migration drops
+the `credential_definitions_credential_type_key` constraint created by `V0_0_1`. Multiple
+definitions may now share a credential type, including across participants. Definition IDs
+remain unique; stored definitions, credentials, keys, participant contexts and permissions
+are preserved. Previous migration files and their Flyway checksums remain unchanged.
+If an installation manually renamed this constraint, reconcile that schema customization
+before upgrading; do not edit a previously applied migration.
+
+Verify existing API keys, participants, DID documents, key references, credentials and
+issuance/presentation after migration, then restart and verify persistence again.
+RC1 can create duplicate credential types that the old schema disallowed. Rolling back
+therefore requires restoring the matching pre-upgrade database/Vault backup and old
+runtime/configuration, rather than merely selecting the old image.
+
 ## EDC 0.17.0 → 0.18.0
 
 This upgrade uses the official Eclipse IdentityHub and Connector `v0.18.0` releases.
@@ -542,4 +726,5 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 * SPDX-License-Identifier: CC-BY-4.0
 * SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
 * SPDX-FileCopyrightText: 2026 Technovative Solutions
+* SPDX-FileCopyrightText: 2026 VDBP
 * Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/docs/admin/migration-guide.md>

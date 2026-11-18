@@ -1,7 +1,9 @@
 /*
+ *   Copyright (c) 2024 Metaform Systems, Inc.
  *   Copyright (c) 2025 Cofinity-X
  *   Copyright (c) 2026 Technovative Solutions
  *   Copyright (c) 2025 Contributors to the Eclipse Foundation
+ *   Copyright (c) 2026 VDBP
  *
  *   See the NOTICE file(s) distributed with this work for additional
  *   information regarding copyright ownership.
@@ -43,6 +45,8 @@ import static org.eclipse.edc.spi.result.Result.success;
 public class TxScopeToCriterionTransformer implements ScopeToCriterionTransformer {
 
     public static final String TYPE_OPERAND = "verifiableCredential.credential.type";
+    public static final String ID_OPERAND = "verifiableCredential.credential.id";
+    public static final String DCP_ID_ALIAS_LITERAL = "org.eclipse.dspace.dcp.vc.id";
     public static final String DEFAULT_ALIAS_LITERAL = "org.eclipse.tractusx.vc.type";
     // EDC 0.17.0 replaced the upstream DCP scope alias org.eclipse.edc.vc.type with this one.
     // Accepted by default alongside the Tractus-X alias so external 0.17.0 connectors interoperate.
@@ -75,6 +79,16 @@ public class TxScopeToCriterionTransformer implements ScopeToCriterionTransforme
 
     @Override
     public Result<List<Criterion>> transformScope(String scope) {
+        var idScopePrefix = DCP_ID_ALIAS_LITERAL + SCOPE_SEPARATOR;
+        if (scope != null && scope.regionMatches(true, 0, idScopePrefix, 0, idScopePrefix.length())) {
+            // ID scopes have no operation suffix; keep URNs and URLs intact.
+            var credentialId = scope.substring(idScopePrefix.length());
+            if (credentialId.isBlank()) {
+                return failure("Scope string cannot be converted: credential ID was blank");
+            }
+            return success(List.of(new Criterion(ID_OPERAND, "=", credentialId)));
+        }
+
         var tokens = tokenize(scope);
         if (tokens.failed()) {
             return failure("Scope string cannot be converted: %s".formatted(tokens.getFailureDetail()));

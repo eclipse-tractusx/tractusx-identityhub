@@ -82,7 +82,7 @@ const SearchPage: React.FC = () => {
 
         try {
             // Search credentials (cross-participant)
-            const credResponse = await httpClient.get('/api/identity/v1beta/credentials', {
+            const credResponse = await httpClient.get('/api/identity/v1/credentials', {
                 params: { query: query.trim() },
             });
             const credentials: CredentialResource[] = Array.isArray(credResponse.data) ? credResponse.data : [];
@@ -105,7 +105,7 @@ const SearchPage: React.FC = () => {
             if (activeParticipantId) {
                 try {
                     const pid = encodeParticipantId(activeParticipantId);
-                    const kpResponse = await httpClient.get(`/api/identity/v1beta/participants/${pid}/keypairs`);
+                    const kpResponse = await httpClient.get(`/api/identity/v1/participants/${pid}/keypairs`);
                     const keypairs = Array.isArray(kpResponse.data) ? kpResponse.data : [];
                     for (const kp of keypairs) {
                         const keyId = kp.keyId || kp.id || '';
@@ -129,7 +129,7 @@ const SearchPage: React.FC = () => {
                 // Search DIDs (for active participant)
                 try {
                     const pid = encodeParticipantId(activeParticipantId);
-                    const didResponse = await httpClient.post(`/api/identity/v1beta/participants/${pid}/dids/query`, {});
+                    const didResponse = await httpClient.post(`/api/identity/v1/participants/${pid}/dids/query`, {});
                     const dids = Array.isArray(didResponse.data) ? didResponse.data : [];
                     for (const doc of dids) {
                         const didId = doc.id || '';

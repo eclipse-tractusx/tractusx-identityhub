@@ -56,7 +56,7 @@ describe('credentials api', () => {
         vi.mocked(httpClient.get).mockResolvedValue({ data: mockCredentials });
         const result = await getCredentials('BPNL00000003CRHK');
         expect(httpClient.get).toHaveBeenCalledWith(
-            expect.stringContaining('/api/identity/v1beta/participants/')
+            expect.stringContaining('/api/identity/v1/participants/')
         );
         expect(httpClient.get).toHaveBeenCalledWith(
             expect.stringContaining('/credentials')
@@ -81,7 +81,7 @@ describe('credentials api', () => {
     it('getAllCredentials should call credentials endpoint', async () => {
         vi.mocked(httpClient.get).mockResolvedValue({ data: mockCredentials });
         const result = await getAllCredentials();
-        expect(httpClient.get).toHaveBeenCalledWith('/api/identity/v1beta/credentials');
+        expect(httpClient.get).toHaveBeenCalledWith('/api/identity/v1/credentials');
         expect(result).toEqual(mockCredentials);
     });
 
