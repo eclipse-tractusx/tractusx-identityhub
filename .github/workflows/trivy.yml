@@ -43,7 +43,7 @@ permissions:
 
 jobs:
   trivy-config:
-    uses: eclipse-tractusx/sig-infra/.github/workflows/reusable-trivy.yaml@main
+    uses: eclipse-tractusx/sig-infra/.github/workflows/reusable-trivy.yaml@1a2be9d3b599c081a4a307d8124f33d209f7c54e # main
     permissions:
       actions: read
       contents: read
