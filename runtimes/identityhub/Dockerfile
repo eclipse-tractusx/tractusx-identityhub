@@ -19,7 +19,7 @@
 #  SPDX-License-Identifier: Apache-2.0
 #################################################################################
 
-FROM eclipse-temurin:23_37-jre-alpine
+FROM eclipse-temurin:25.0.5_8-jre-alpine
 ARG JAR=build/libs/identityhub.jar
 ARG OTEL_JAR
 ARG ADDITIONAL_FILES
@@ -53,6 +53,8 @@ HEALTHCHECK NONE
 ENTRYPOINT ["java", \
 #     "-javaagent:/app/opentelemetry-javaagent.jar", \
 #     "-Dotel.javaagent.configuration-file=/app/opentelemetry.properties", \
+#     Java4Shell (CVE-2026-114938) mitigation, until proper new temurin version exists
+     "-XX:-UseBASE64Intrinsics", \
      "-Djava.util.logging.config.file=/app/logging.properties", \
      "-Dedc.fs.config=/app/configuration.properties", \
      "-Djava.security.egd=file:/dev/urandom", \
