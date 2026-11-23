@@ -4,6 +4,11 @@ This migration guide is based on the `chartVersion` of the chart. If you don't r
 
 ## 0.3.2 → 0.5.0
 
+This section covers upgrades from any `v0.3.2` or `v0.4.x` chart. Topics 1–3 already shipped
+with chart `v0.4.0`, topics 4 and 5 with chart `v0.4.2`; if you upgrade from a later chart,
+skip the topics your current chart already includes. The upstream upgrade to EDC 0.18.0
+in this release is described in [EDC 0.17.0 → 0.18.0](#edc-0170--0180) below.
+
 ### 1. Chart values — `version` and `accounts` endpoints removed ([#322](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/322))
 
 EDC 0.17.0 never binds a dedicated `version` web context (version info is served on the
@@ -47,6 +52,58 @@ this value as their `credentialStatus.statusListCredential` endpoint — set it 
 **verifiers and holders can reach** (public ingress URL, or the in-cluster service address
 for cluster-internal verification). A bare hostname produces broken status URLs in every
 issued credential.
+
+### 4. Chart values — bundled PostgreSQL: `primary` / `readReplicas` removed, persistence off by default ([#356](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/356))
+
+The persistence charts (`tractusx-identityhub`, `tractusx-issuerservice`) bundle the
+cloudpirates `postgres` chart, which has no `primary` or `readReplicas` sections. Before
+chart `v0.4.2` these Bitnami-style keys were silently ignored, so the bundled database was
+installed **with** a PersistentVolumeClaim although the chart defaults said
+`persistence.enabled: false`. The values now follow the cloudpirates chart
+([#359](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/359)), and the default
+`persistence.enabled: false` takes effect:
+
+| Old value | New value | Charts |
+|---|---|---|
+| `postgresql.primary.persistence.*` | `postgresql.persistence.*` | `tractusx-identityhub`, `tractusx-issuerservice` |
+| `postgresql.primary.resources` | `postgresql.resources` | `tractusx-identityhub`, `tractusx-issuerservice` |
+| `postgresql.readReplicas.*` | removed (not supported by the cloudpirates chart) | `tractusx-identityhub`, `tractusx-issuerservice` |
+
+**Action required** if you use the bundled PostgreSQL (`install.postgresql: true`):
+
+- If the database holds data you need to keep, back it up and set
+  `postgresql.persistence.enabled: true` in your values **before** upgrading. With the new
+  default the bundled database is no longer stored on a persistent volume.
+- Move custom `postgresql.primary.persistence.*` and `postgresql.primary.resources` values
+  one level up, and remove `postgresql.readReplicas`.
+- Deployments with an external database (`install.postgresql: false`) are not affected.
+
+### 5. Logging — `ColorfulFormatter` class renamed
+
+The colored log formatter moved to `org.eclipse.tractusx.monitor.formatter.ColorfulFormatter`.
+The old class `org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter` is no longer part
+of the images. All four charts' logging defaults (`<identityhub|issuerservice>.logging.*`
+handlers, the `logging.formatters` key and the default `logging.properties`) use the new name.
+
+| Old class | New class | Charts |
+|---|---|---|
+| `org.eclipse.tractusx.identityhub.monitor.ColorfulFormatter` | `org.eclipse.tractusx.monitor.formatter.ColorfulFormatter` | all four |
+
+**Action required** if your values or a mounted `logging.properties` override the logging
+configuration: replace the old class name everywhere, including the key under
+`logging.formatters` and the `<class>.format` property.
+
+### 6. New, no action required — Swagger UI, Gateway API routes, ingress `pathType`
+
+- All four runtimes serve a Swagger UI on the **default** web context at `<default-path>/swagger`
+  (e.g. `http://<host>:8081/api/swagger` with the `tractusx-identityhub` chart defaults), with one
+  OpenAPI specification per web context ([#328](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/328)).
+  The default context is not part of the default ingresses. To switch the page off, set
+  `edc.tractusx.swagger.ui.enabled=false`, e.g. through `<identityhub|issuerservice>.env`
+  as `EDC_TRACTUSX_SWAGGER_UI_ENABLED: "false"`. See [openapi/README.md](../../openapi/README.md).
+- All four charts can create Gateway API `HTTPRoute`s (`<identityhub|issuerservice>.httpRoutes`,
+  disabled by default).
+- The ingress `pathType` is configurable per endpoint (default `Prefix`).
 
 ## EDC 0.17.0 → 0.18.0
 
