@@ -8,7 +8,7 @@ A Helm chart for Kubernetes
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../tractusx-identityhub | backend(tractusx-identityhub) | v0.4.2 |
+| file://../tractusx-identityhub | backend(tractusx-identityhub) | v0.5.0 |
 
 ## Values
 

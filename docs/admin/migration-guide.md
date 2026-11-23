@@ -2,7 +2,7 @@
 
 This migration guide is based on the `chartVersion` of the chart. If you don't rely on the provided helm chart, consider the changes of the chart as mentioned below manually.
 
-## 0.3.2 → Unreleased
+## 0.3.2 → 0.5.0
 
 ### 1. Chart values — `version` and `accounts` endpoints removed ([#322](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/322))
 

@@ -9,6 +9,10 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 
 ## [Unreleased]
 
+## [0.5.0]
+
+Release candidate `v0.5.0-rc1` was published on 2026-10-12.
+
 ### Added
 - OpenAPI specifications generated at build time from the EDC API controllers, plus a Swagger UI page served by all four runtimes on the default web context at `/api/swagger`. One specification is generated per web context, each carrying the `servers` entry for the port and base path that context is actually served on, and the page offers them in a selector. A single merged document could not do this: OpenAPI attaches `servers` to the document, so Swagger UI sent every request to the page's own origin and every operation outside that one context returned 404. Reference copies are committed under `docs/api/identityhub/` and `docs/api/issuerservice/`, and CI fails when they drift from the generated output. The page can be switched off with `edc.tractusx.swagger.ui.enabled=false` and named per runtime with `edc.tractusx.swagger.ui.title`. See [openapi/README.md](openapi/README.md) ([#328](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/328))
 - Self-contained E2E Postman collection `docs/api/postman/Tractus-X_IdentityHub_Local_E2E.json` covering the full DCP flow (issuance → presentation → revocation) against the Docker Compose stack; runs unattended via newman ([#321](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/321), [#197](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/197))
