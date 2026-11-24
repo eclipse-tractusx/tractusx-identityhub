@@ -388,7 +388,7 @@ Six Flyway V0_0_2 migration scripts are required. These run automatically on sta
 
 Additionally, a new `edc_participant_context_config` table is required by the upstream `participantcontext-config-store-sql` module, which replaces the previous in-memory config store with a persistent PostgreSQL-backed implementation.
 
-#### 3.1 `edc_participant_context_config` — new table
+#### 3.1 `edc_participant_context_config` — new table and backfill
 
 ```sql
 CREATE TABLE IF NOT EXISTS edc_participant_context_config
@@ -399,9 +399,20 @@ CREATE TABLE IF NOT EXISTS edc_participant_context_config
     entries               JSON DEFAULT '{}',
     private_entries       JSON DEFAULT '{}'
 );
+
+-- For in-place upgrades: backfill default configuration rows for existing participant contexts
+INSERT INTO edc_participant_context_config
+  (participant_context_id, created_date, last_modified_date, entries, private_entries)
+SELECT participant_context_id,
+       COALESCE(created_date, (extract(epoch from now())*1000)::bigint),
+       COALESCE(last_modified_date, (extract(epoch from now())*1000)::bigint),
+       '{}'::json,
+       '{}'::json
+FROM participant_context
+ON CONFLICT (participant_context_id) DO NOTHING;
 ```
 
-> **Note:** This table stores per-participant configuration entries that were previously held in an in-memory store and lost on restart. With this migration, configuration now persists across restarts.
+> **Note:** This table stores per-participant configuration entries that were previously held in an in-memory store and lost on restart. With this migration, configuration now persists across restarts. When upgrading an existing database, the backfill ensures pre-existing participants (such as `super-user`) have configuration entries so authenticated Identity API calls succeed without throwing `EdcException`.
 
 #### 3.2 `credential_resource` — new `usage` column
 
