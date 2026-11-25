@@ -20,11 +20,18 @@ both charts use the standard KV v2 layout and `vault kv get secret/<alias>` work
 **Who is affected:** upgrades of an existing `tractusx-issuerservice` release that uses the
 default value and keeps its Vault data. Fresh installs, releases that set
 `vault.hashicorp.paths.secret` explicitly, the `-memory` charts (no Vault) and the
-`tractusx-identityhub` chart are not affected.
+`tractusx-identityhub` chart are not affected. Neither are participants that carry their own
+Vault configuration (`edc.vault.hashicorp.config` in their participant context configuration):
+their secret path comes from that configuration, not from the chart.
 
 **Action required** before upgrading such a release. Otherwise the runtime no longer finds the
-secrets stored so far (participant API keys, STS client secrets, private keys): participants
-fail to authenticate and their signing keys cannot be resolved.
+secrets stored so far (participant API keys, STS client secrets, private keys): the Identity API
+answers every API-key request with HTTP 500 (`NullPointerException` in
+`ParticipantServicePrincipalResolver`) and the STS rejects client secrets with 401. The failure
+can appear later than the upgrade: the chart does not restart the pod when only its ConfigMap
+changes, so the new path takes effect at the next pod restart. The steps below restart it on
+purpose. The resource names assume the chart defaults; adjust them if you set
+`fullnameOverride` or rename the Vault subchart.
 
 1. Stop the IssuerService so that no secret is written during the copy:
    `kubectl scale deployment/<release>-tractusx-issuerservice --replicas=0`
@@ -33,6 +40,7 @@ fail to authenticate and their signing keys cannot be resolved.
    read and write the `secret` mount, and run:
 
    ```shell
+   set -f  # aliases may contain '*': never glob-expand them
    copy() {
      for entry in $(vault kv list -format=yaml "secret/data/$1" | sed 's/^- //'); do
        case "$entry" in
