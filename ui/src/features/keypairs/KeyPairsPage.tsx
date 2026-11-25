@@ -88,7 +88,7 @@ const KEY_STATE_MAP: Record<number, { label: string; color: string; bg: string }
     ])
 );
 
-const API_BASE = '/api/identity/v1beta';
+const API_BASE = '/api/identity/v1';
 
 const KeyPairsPage: React.FC = () => {
     const { activeParticipantId } = useParticipant();

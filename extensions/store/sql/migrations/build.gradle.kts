@@ -25,9 +25,7 @@ plugins {
 
 dependencies {
     implementation(libs.edc.spi.core)
-    implementation(libs.edc.spi.transaction)
-    implementation(libs.edc.spi.transaction.datasource)
-    implementation(libs.edc.lib.sql)
+    implementation(libs.edc.lib.core)
     implementation(libs.edc.core.sql)
 
     implementation(libs.flyway.core)

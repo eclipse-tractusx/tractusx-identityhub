@@ -239,7 +239,6 @@ val generateBaseSpecs = tasks.register("generateBaseSpecs") {
 
 // The plugin registers its own single-document tasks; this module generates one per context.
 tasks.named("resolve") { enabled = false }
-tasks.named("openapi") { enabled = false }
 
 val resolveTasks = contexts.map { ctx ->
     tasks.register<ResolveTask>("resolveSpec${ctx.id.replaceFirstChar(Char::titlecase)}") {
@@ -277,6 +276,7 @@ val resolveTasks = contexts.map { ctx ->
         val desc = ctx.description
         val version = specVersion
         val expected = ctx.controllers.size
+        val header = licenceHeader
         doLast {
             jsonFile.delete()
             require(specFile.exists()) { "Spec generation produced no file for context '${ctx.id}'" }
@@ -286,6 +286,8 @@ val resolveTasks = contexts.map { ctx ->
                     "controller classes still exist upstream."
             }
             rewriteInfoBlock(specFile, title, desc, version)
+            // Swagger drops comments from the base document, including its license header.
+            specFile.writeText("$header\n\n${specFile.readText()}")
         }
     }
 }

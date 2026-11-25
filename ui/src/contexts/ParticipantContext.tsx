@@ -54,7 +54,7 @@ export function useParticipant() {
 }
 
 const fetchParticipantsList = async (): Promise<ParticipantData[]> => {
-    const response = await httpClient.get('/api/identity/v1beta/participants');
+    const response = await httpClient.get('/api/identity/v1/participants');
     return Array.isArray(response.data) ? response.data : [];
 };
 

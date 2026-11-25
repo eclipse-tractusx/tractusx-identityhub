@@ -48,13 +48,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -69,6 +74,7 @@ class CredentialOwnershipApiTest extends RestControllerTestBase {
     private final VerifiableCredentialManifestValidator validator = mock();
     private final TypeTransformerRegistry transformers = mock();
     private final CredentialRequestManager requests = mock();
+    private final DiscriminatorMappingRegistry discriminators = mock();
 
     @BeforeEach
     void setup() {
@@ -82,12 +88,12 @@ class CredentialOwnershipApiTest extends RestControllerTestBase {
 
     @Override
     protected Object controller() {
-        return new VerifiableCredentialsApiController(credentials, authorizationService, validator, transformers, requests, mock(DiscriminatorMappingRegistry.class));
+        return new VerifiableCredentialsApiController(credentials, authorizationService, validator, transformers, requests, discriminators);
     }
 
     @Override
     protected Object additionalResource() {
-        return new TestFeature(authentication(), new CredentialOwnershipFeature(authorizationService, requests));
+        return new TestFeature(authentication());
     }
 
     @ParameterizedTest
@@ -187,6 +193,63 @@ class CredentialOwnershipApiTest extends RestControllerTestBase {
         verifyNoInteractions(authorizationService, requests);
     }
 
+    @Test
+    void assignsUniqueRequestIdsAndReturnsTheirLocation() {
+        when(requests.initiateRequest(eq("A"), eq("did:web:issuer.example"), anyString(), anyList()))
+                .thenAnswer(call -> ServiceResult.success(call.getArgument(2, String.class)));
+        var first = request("A", scope("A")).body(validRequest()).post("/A/credentials/request")
+                .then().statusCode(201).extract().header("Location");
+        var second = request("A", scope("A")).body(validRequest()).post("/A/credentials/request")
+                .then().statusCode(201).extract().header("Location");
+        assertThat(first).contains("/v1/participants/A/credentials/request/").isNotEqualTo(second);
+        UUID.fromString(first.substring(first.lastIndexOf('/') + 1));
+        UUID.fromString(second.substring(second.lastIndexOf('/') + 1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"request-id", "", " "})
+    void rejectsCallerChosenRequestIds(String holderPid) {
+        var body = validRequest();
+        body.put("holderPid", holderPid);
+        request("A", scope("A")).body(body).post("/A/credentials/request").then().statusCode(400);
+        verifyNoInteractions(requests);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"issuerDid", "credentials", "id", "format"})
+    void rejectsMissingRequestFieldsBeforeIssuance(String field) {
+        var body = validRequest();
+        if ("id".equals(field) || "format".equals(field)) {
+            var entry = new HashMap<>(Map.of("id", "definition", "format", "vc11-sl2021/jwt"));
+            entry.remove(field);
+            body.put("credentials", List.of(entry));
+        } else {
+            body.remove(field);
+        }
+        request("A", scope("A")).body(body).post("/A/credentials/request").then().statusCode(400);
+        verifyNoInteractions(requests);
+    }
+
+    @Test
+    void cannotInitiateAnotherParticipantsRequest() {
+        request("A", scope("A")).body(validRequest()).post("/B/credentials/request").then().statusCode(403);
+        verifyNoInteractions(requests);
+    }
+
+    @Test
+    void discriminatorMappingsAreScopedToTheirParticipant() {
+        request("A", scope("A")).body(Map.of("alias", "TypeA")).post("/A/credentials/discriminator").then().statusCode(204);
+        request("B", scope("B")).body(Map.of("alias", "TypeB")).post("/B/credentials/discriminator").then().statusCode(204);
+        verify(discriminators).addMapping("A", "alias", "TypeA");
+        verify(discriminators).addMapping("B", "alias", "TypeB");
+        request("A", scope("A")).body(Map.of("alias", "TypeA")).post("/B/credentials/discriminator").then().statusCode(403);
+    }
+
+    private Map<String, Object> validRequest() {
+        return new HashMap<>(Map.of("issuerDid", "did:web:issuer.example", "credentials",
+                List.of(Map.of("id", "definition", "format", "vc11-sl2021/jwt"))));
+    }
+
     private HolderCredentialRequest holderRequest(String owner) {
         var result = mock(HolderCredentialRequest.class);
         when(result.getParticipantContextId()).thenReturn(owner);
@@ -207,23 +270,20 @@ class CredentialOwnershipApiTest extends RestControllerTestBase {
     }
 
     private String baseUri() {
-        return "http://localhost:" + port + "/v1beta/participants";
+        return "http://localhost:" + port + "/v1/participants";
     }
 
     public static class TestFeature implements DynamicFeature {
         private final ContainerRequestFilter authentication;
-        private final DynamicFeature ownership;
 
-        TestFeature(ContainerRequestFilter authentication, DynamicFeature ownership) {
+        TestFeature(ContainerRequestFilter authentication) {
             this.authentication = authentication;
-            this.ownership = ownership;
         }
 
         @Override
         public void configure(ResourceInfo resourceInfo, FeatureContext context) {
             context.register(authentication, Priorities.AUTHENTICATION);
             new ScopeBasedAccessFeature().configure(resourceInfo, context);
-            ownership.configure(resourceInfo, context);
         }
     }
 

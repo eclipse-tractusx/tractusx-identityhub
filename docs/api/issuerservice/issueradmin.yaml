@@ -1,3 +1,23 @@
+#################################################################################
+#  Copyright (c) 2026 Technovative Solutions
+#  Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+#  See the NOTICE file(s) distributed with this work for additional
+#  information regarding copyright ownership.
+#
+#  This program and the accompanying materials are made available under the
+#  terms of the Apache License, Version 2.0 which is available at
+#  https://www.apache.org/licenses/LICENSE-2.0.
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#  License for the specific language governing permissions and limitations
+#  under the License.
+#
+#  SPDX-License-Identifier: Apache-2.0
+#################################################################################
+
 openapi: 3.0.1
 info:
   title: "IssuerService Admin API"
@@ -9,7 +29,7 @@ servers:
 security:
 - ApiKey: []
 paths:
-  /v1beta/participants/{participantContextId}/attestations:
+  /v1/participants/{participantContextId}/attestations:
     post:
       description: Creates an attestation definition in the runtime.
       operationId: createAttestation
@@ -63,7 +83,7 @@ paths:
             \ exists"
       tags:
       - Issuer Service Attestation Admin API
-  /v1beta/participants/{participantContextId}/attestations/query:
+  /v1/participants/{participantContextId}/attestations/query:
     post:
       description: Query attestation definitions
       operationId: queryAttestations
@@ -106,7 +126,7 @@ paths:
             \ was missing or was not valid."
       tags:
       - Issuer Service Attestation Admin API
-  /v1beta/participants/{participantContextId}/attestations/{attestationDefinitionId}:
+  /v1/participants/{participantContextId}/attestations/{attestationDefinitionId}:
     delete:
       description: Deletes an attestation definition.
       operationId: deleteAttestation
@@ -151,7 +171,7 @@ paths:
           description: The attestation or the participant was not found.
       tags:
       - Issuer Service Attestation Admin API
-  /v1beta/participants/{participantContextId}/credentialdefinitions:
+  /v1/participants/{participantContextId}/credentialdefinitions:
     post:
       description: Adds a new credential definition.
       operationId: createCredentialDefinition
@@ -241,7 +261,7 @@ paths:
           description: Can't update the credential definition because it was not found.
       tags:
       - Issuer Service Credential Definition Admin API
-  /v1beta/participants/{participantContextId}/credentialdefinitions/query:
+  /v1/participants/{participantContextId}/credentialdefinitions/query:
     post:
       description: Gets all credential definitions for a certain query.
       operationId: queryCredentialDefinitions
@@ -284,7 +304,7 @@ paths:
             \ was missing or was not valid."
       tags:
       - Issuer Service Credential Definition Admin API
-  /v1beta/participants/{participantContextId}/credentialdefinitions/{credentialDefinitionId}:
+  /v1/participants/{participantContextId}/credentialdefinitions/{credentialDefinitionId}:
     delete:
       description: Deletes a credential definition by its ID.
       operationId: deleteCredentialDefinitionById
@@ -381,7 +401,7 @@ paths:
           description: The credential definition was not found.
       tags:
       - Issuer Service Credential Definition Admin API
-  /v1beta/participants/{participantContextId}/credentials/offer:
+  /v1/participants/{participantContextId}/credentials/offer:
     post:
       description: Triggers a DCP CredentialOffer message being sent to the holder.
       operationId: sendCredentialOffer
@@ -429,7 +449,7 @@ paths:
             with the specified holder.
       tags:
       - Issuer Service Credentials Admin API
-  /v1beta/participants/{participantContextId}/credentials/query:
+  /v1/participants/{participantContextId}/credentials/query:
     post:
       description: "Query credentials, possibly across multiple participants."
       operationId: queryCredentials
@@ -473,10 +493,10 @@ paths:
             \ was missing or was not valid."
       tags:
       - Issuer Service Credentials Admin API
-  /v1beta/participants/{participantContextId}/credentials/{credentialId}/resume:
+  /v1/participants/{participantContextId}/credentials/{credentialId}/resume:
     post:
-      description: Resumes a credential with the given ID for the given participant.
-        Resumed credentials will be removed from the Revocation List.
+      description: "Resuming a credential is not implemented yet, so this endpoint\
+        \ always returns 501."
       operationId: resumeCredential
       parameters:
       - in: path
@@ -490,17 +510,6 @@ paths:
         schema:
           type: string
       responses:
-        "204":
-          description: The credential was resumed successfully. Check the Revocation
-            List credential to confirm.
-        "400":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: "Request body was malformed, or the request could not be processed"
         "401":
           content:
             application/json:
@@ -510,17 +519,11 @@ paths:
                   $ref: "#/components/schemas/ApiErrorDetail"
           description: "The request could not be completed, because either the authentication\
             \ was missing or was not valid."
-        "404":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: The credential or the participant was not found.
+        "501":
+          description: Not implemented
       tags:
       - Issuer Service Credentials Admin API
-  /v1beta/participants/{participantContextId}/credentials/{credentialId}/revoke:
+  /v1/participants/{participantContextId}/credentials/{credentialId}/revoke:
     post:
       description: Revokes a credential with the given ID for the given participant.
         Revoked credentials will be added to the Revocation List
@@ -567,7 +570,7 @@ paths:
           description: The credential or the participant was not found.
       tags:
       - Issuer Service Credentials Admin API
-  /v1beta/participants/{participantContextId}/credentials/{credentialId}/status:
+  /v1/participants/{participantContextId}/credentials/{credentialId}/status:
     get:
       description: Checks the revocation status of a credential with the given ID
         for the given participant.
@@ -613,11 +616,10 @@ paths:
           description: The credential or the participant was not found.
       tags:
       - Issuer Service Credentials Admin API
-  /v1beta/participants/{participantContextId}/credentials/{credentialId}/suspend:
+  /v1/participants/{participantContextId}/credentials/{credentialId}/suspend:
     post:
-      description: Suspends a credential with the given ID for the given participant.
-        Suspended credentials will be added to the Revocation List. Suspension is
-        reversible.
+      description: "Suspending a credential is not implemented yet, so this endpoint\
+        \ always returns 501."
       operationId: suspendCredential
       parameters:
       - in: path
@@ -631,17 +633,6 @@ paths:
         schema:
           type: string
       responses:
-        "204":
-          description: The credential was suspended successfully. Check the Revocation
-            List credential to confirm.
-        "400":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: "Request body was malformed, or the request could not be processed"
         "401":
           content:
             application/json:
@@ -651,17 +642,11 @@ paths:
                   $ref: "#/components/schemas/ApiErrorDetail"
           description: "The request could not be completed, because either the authentication\
             \ was missing or was not valid."
-        "404":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApiErrorDetail"
-          description: The credential or the participant was not found.
+        "501":
+          description: Not implemented
       tags:
       - Issuer Service Credentials Admin API
-  /v1beta/participants/{participantContextId}/holders:
+  /v1/participants/{participantContextId}/holders:
     post:
       description: Adds a new holder.
       operationId: addHolder
@@ -751,7 +736,7 @@ paths:
           description: Can't update the holder because it was not found.
       tags:
       - Issuer Service Holder Admin API
-  /v1beta/participants/{participantContextId}/holders/query:
+  /v1/participants/{participantContextId}/holders/query:
     post:
       description: Gets all holders for a certain query.
       operationId: queryHolders
@@ -802,7 +787,7 @@ paths:
           description: The holder was not found.
       tags:
       - Issuer Service Holder Admin API
-  /v1beta/participants/{participantContextId}/holders/{holderId}:
+  /v1/participants/{participantContextId}/holders/{holderId}:
     delete:
       description: Delete a holder.
       operationId: deleteHolder
@@ -889,7 +874,7 @@ paths:
           description: The holder was not found.
       tags:
       - Issuer Service Holder Admin API
-  /v1beta/participants/{participantContextId}/issuanceprocesses/query:
+  /v1/participants/{participantContextId}/issuanceprocesses/query:
     post:
       description: Gets all issuance processes for a certain query.
       operationId: queryIssuanceProcesses
@@ -932,7 +917,7 @@ paths:
             \ was missing or was not valid."
       tags:
       - Issuer Service Issuance Process Admin API
-  /v1beta/participants/{participantContextId}/issuanceprocesses/{issuanceProcessId}:
+  /v1/participants/{participantContextId}/issuanceprocesses/{issuanceProcessId}:
     get:
       description: Gets an issuance process by its ID.
       operationId: getIssuanceProcessById
@@ -1013,6 +998,10 @@ components:
           format: int64
         participantContextId:
           type: string
+        privateProperties:
+          type: object
+          additionalProperties:
+            type: object
     AttestationDefinitionRequest:
       type: object
       properties:
@@ -1024,6 +1013,10 @@ components:
             type: object
         id:
           type: string
+        privateProperties:
+          type: object
+          additionalProperties:
+            type: object
     CredentialDefinition:
       type: object
       properties:
@@ -1054,6 +1047,10 @@ components:
             $ref: "#/components/schemas/MappingDefinition"
         participantContextId:
           type: string
+        privateProperties:
+          type: object
+          additionalProperties:
+            type: object
         rules:
           type: array
           items:
@@ -1064,6 +1061,10 @@ components:
     CredentialDefinitionDto:
       type: object
       properties:
+        additionalContext:
+          type: array
+          items:
+            type: string
         attestations:
           type: array
           items:
@@ -1082,6 +1083,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/MappingDefinition"
+        privateProperties:
+          type: object
+          additionalProperties:
+            type: object
         rules:
           type: array
           items:
@@ -1097,6 +1102,8 @@ components:
           items:
             type: string
         holderId:
+          type: string
+        offerReason:
           type: string
       required:
       - credentials

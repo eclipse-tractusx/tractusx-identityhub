@@ -15,7 +15,7 @@ This step:
 ## Request
 
 ```bash
-curl -X POST "${ISSUER_IDENTITY}/v1beta/participants" \
+curl -X POST "${ISSUER_IDENTITY}/v1/participants" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${ISSUER_ADMIN_KEY}" \
   -d '{
@@ -36,7 +36,7 @@ curl -X POST "${ISSUER_IDENTITY}/v1beta/participants" \
       {
         "id": "https://issuer-service.example.com#credential-service",
         "type": "IssuerService",
-        "serviceEndpoint": "https://issuer-service.example.com/api/issuance/v1beta/participants/issuer-participant"
+        "serviceEndpoint": "https://issuer-service.example.com/api/issuance/v1/participants/issuer-participant"
       }
     ],
     "apiKeyAlias": "issuer-api-key-alias"

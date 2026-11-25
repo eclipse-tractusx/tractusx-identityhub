@@ -12,7 +12,7 @@ Each service generates **one specification per web context**, not one per servic
 A runtime serves its APIs on several web contexts, and each context is a different port and base
 path. OpenAPI attaches `servers` to the document rather than to an operation, so a single document
 covering several contexts has no way to say that `/check/health` is on `:8181` while
-`/v1beta/participants` is on `:15151`. Swagger UI would resolve every request against whichever
+`/v1/participants` is on `:15151`. Swagger UI would resolve every request against whichever
 origin happened to serve the page, and every operation outside that one context would return 404.
 
 | Service | Contexts | Paths |
@@ -63,3 +63,13 @@ API has to commit the regenerated specs.
 Add an `ApiContext` to the `contexts` list in the relevant module's `build.gradle.kts` with its id,
 title, description, server URL, controller classes and auth mode (`apikey`, `dcp` or none). The
 resolve task, the bundled index and the `docs/api` copy follow automatically.
+
+
+## NOTICE
+
+This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+
+* SPDX-License-Identifier: CC-BY-4.0
+* SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
+* SPDX-FileCopyrightText: 2026 VDBP
+* Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/openapi/README.md>

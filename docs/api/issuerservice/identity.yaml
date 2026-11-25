@@ -1,3 +1,23 @@
+#################################################################################
+#  Copyright (c) 2026 Technovative Solutions
+#  Copyright (c) 2025 Contributors to the Eclipse Foundation
+#
+#  See the NOTICE file(s) distributed with this work for additional
+#  information regarding copyright ownership.
+#
+#  This program and the accompanying materials are made available under the
+#  terms of the Apache License, Version 2.0 which is available at
+#  https://www.apache.org/licenses/LICENSE-2.0.
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#  License for the specific language governing permissions and limitations
+#  under the License.
+#
+#  SPDX-License-Identifier: Apache-2.0
+#################################################################################
+
 openapi: 3.0.1
 info:
   title: "IssuerService Identity API"
@@ -9,7 +29,7 @@ servers:
 security:
 - ApiKey: []
 paths:
-  /v1beta/participants:
+  /v1/participants:
     get:
       description: Get all DID documents across all Participant Contexts. Requires
         elevated access.
@@ -99,9 +119,10 @@ paths:
             \ the same ID already exists"
       tags:
       - Participant Context
-  /v1beta/participants/{participantContextId}:
+  /v1/participants/{participantContextId}:
     delete:
-      description: Delete a ParticipantContext.
+      description: "Delete a ParticipantContext. A participant can only delete its\
+        \ own ParticipantContext, deleting any other requires elevated access."
       operationId: deleteParticipant
       parameters:
       - in: path
@@ -182,7 +203,7 @@ paths:
           description: A ParticipantContext with the given ID does not exist.
       tags:
       - Participant Context
-  /v1beta/participants/{participantContextId}/scopes:
+  /v1/participants/{participantContextId}/scopes:
     put:
       description: "Updates a ParticipantContext's scopes. Note that this is an absolute\
         \ update, that means all scopes that the Participant should have must be submitted\
@@ -231,10 +252,11 @@ paths:
           description: A ParticipantContext with the given ID does not exist.
       tags:
       - Participant Context
-  /v1beta/participants/{participantContextId}/state:
+  /v1/participants/{participantContextId}/state:
     post:
-      description: "Activates a ParticipantContext. This operation is idempotent,\
-        \ i.e. activating an already active ParticipantContext is a NOOP."
+      description: "Activates or deactivates a ParticipantContext. This operation\
+        \ is idempotent, i.e. activating an already active ParticipantContext is a\
+        \ NOOP. Requires elevated access."
       operationId: activateParticipant
       parameters:
       - in: path
@@ -281,7 +303,7 @@ paths:
           description: A ParticipantContext with the given ID does not exist.
       tags:
       - Participant Context
-  /v1beta/participants/{participantContextId}/token:
+  /v1/participants/{participantContextId}/token:
     post:
       description: Regenerates the API token for a ParticipantContext and returns
         the new token.
@@ -433,6 +455,10 @@ components:
           uniqueItems: true
         participantContextId:
           type: string
+        provisionApiKey:
+          type: boolean
+        provisionStsAccount:
+          type: boolean
         scopes:
           type: array
           items:
