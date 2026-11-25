@@ -30,6 +30,7 @@ Release candidate `v0.5.0-rc1` was published on 2026-10-12.
 - Docker Compose SQL profile uses distinct super-user IDs per runtime (`ih-super-user`/`is-super-user`) to avoid overwriting each other's secrets in the shared dev Vault ([#321](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/321))
 
 ### Security
+- Runtime images move from the end-of-life `eclipse-temurin:23_37-jre-alpine` to the Temurin 25 LTS line (`25.0.5_8-jre-alpine`) and start the JVM with `-XX:-UseBASE64Intrinsics` to mitigate CVE-2026-114938 ("Java4Shell"); the flag can be dropped once a fixed Temurin build is published ([#374](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/374))
 - Enforce participant state/deletion and credential manifest/request ownership through built-in Tractus-X management API extensions for the EDC 0.18.0 upgrade ([#339](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/339)).
 
 ### Fixed
