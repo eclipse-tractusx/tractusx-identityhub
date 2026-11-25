@@ -105,6 +105,22 @@ configuration: replace the old class name everywhere, including the key under
   disabled by default).
 - The ingress `pathType` is configurable per endpoint (default `Prefix`).
 
+### 7. Security — Java4Shell (CVE-2026-114938) mitigation in the runtime images ([#374](https://github.com/eclipse-tractusx/tractusx-identityhub/pull/374))
+
+All four runtime images move from the end-of-life `eclipse-temurin:23_37-jre-alpine` to the
+Temurin 25 LTS line (`eclipse-temurin:25.0.5_8-jre-alpine`). No fixed Temurin build is published
+yet, so the images start the JVM with `-XX:-UseBASE64Intrinsics`, which is what mitigates
+CVE-2026-114938. The flag will be dropped once a fixed Temurin build is available.
+
+**Action required** only if you do not run the published images unchanged:
+
+- If you build your own images from the runtime `Dockerfile`s or override the container
+  `command`/`entrypoint`, keep `-XX:-UseBASE64Intrinsics` on the `java` command line
+  (or set it through `JAVA_TOOL_OPTIONS`).
+- If you use your own base image, move it to a Java runtime that is fixed or apply the same flag.
+
+See the [Adoptium advisory](https://adoptium.net/news/2026/11/temurin-november-2026-cspu-java4shell).
+
 ## EDC 0.17.0 → 0.18.0
 
 This upgrade uses the official Eclipse IdentityHub and Connector `v0.18.0` releases.
