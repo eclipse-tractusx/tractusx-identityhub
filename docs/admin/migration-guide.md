@@ -2,6 +2,69 @@
 
 This migration guide is based on the `chartVersion` of the chart. If you don't rely on the provided helm chart, consider the changes of the chart as mentioned below manually.
 
+## 0.5.0 → Unreleased
+
+### 1. Chart values — issuerservice Vault secrets move from `secret/data/<alias>` to `secret/<alias>` ([#323](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/323))
+
+The `tractusx-issuerservice` chart defaulted `vault.hashicorp.paths.secret` (rendered as
+`edc.vault.hashicorp.api.secret.path`) to `/v1/secret/data`. The EDC Vault client inserts the
+KV v2 `data/` segment itself, so every secret was stored at the doubled logical path
+`secret/data/<alias>` (`vault kv list secret` showed only `data/`), whereas the
+`tractusx-identityhub` chart stores at `secret/<alias>`. The default is now `/v1/secret`, so
+both charts use the standard KV v2 layout and `vault kv get secret/<alias>` works for either.
+
+| Value | Chart | Old default | New default |
+|---|---|---|---|
+| `vault.hashicorp.paths.secret` | `tractusx-issuerservice` | `/v1/secret/data` | `/v1/secret` |
+
+**Who is affected:** upgrades of an existing `tractusx-issuerservice` release that uses the
+default value and keeps its Vault data. Fresh installs, releases that set
+`vault.hashicorp.paths.secret` explicitly, the `-memory` charts (no Vault) and the
+`tractusx-identityhub` chart are not affected. Neither are participants that carry their own
+Vault configuration (`edc.vault.hashicorp.config` in their participant context configuration):
+their secret path comes from that configuration, not from the chart.
+
+**Action required** before upgrading such a release. Otherwise the runtime no longer finds the
+secrets stored so far (participant API keys, STS client secrets, private keys): the Identity API
+answers every API-key request with HTTP 500 (`NullPointerException` in
+`ParticipantServicePrincipalResolver`) and the STS rejects client secrets with 401. The failure
+can appear later than the upgrade: the chart does not restart the pod when only its ConfigMap
+changes, so the new path takes effect at the next pod restart. The steps below restart it on
+purpose. The resource names assume the chart defaults; adjust them if you set
+`fullnameOverride` or rename the Vault subchart.
+
+1. Stop the IssuerService so that no secret is written during the copy:
+   `kubectl scale deployment/<release>-tractusx-issuerservice --replicas=0`
+2. Copy every entry from `secret/data/` to `secret/`. Open a shell on the Vault pod
+   (`kubectl exec -it <release>-vault-0 -- sh`), set `VAULT_ADDR` and a `VAULT_TOKEN` that can
+   read and write the `secret` mount, and run:
+
+   ```shell
+   set -f  # aliases may contain '*': never glob-expand them
+   copy() {
+     for entry in $(vault kv list -format=yaml "secret/data/$1" | sed 's/^- //'); do
+       case "$entry" in
+         */) copy "$1$entry" ;;
+         *) vault kv get -field=content "secret/data/$1$entry" | vault kv put "secret/$1$entry" content=- ;;
+       esac
+     done
+   }
+   copy ""
+   ```
+
+   The loop descends into nested aliases and copies the `content` field that EDC stores,
+   byte for byte. Afterwards `vault kv list secret` lists the aliases next to `data/`.
+3. `helm upgrade` the release. Helm restores `issuerservice.replicaCount`; with
+   `issuerservice.autoscaling.enabled` scale the Deployment back up yourself, because the
+   HorizontalPodAutoscaler does not scale up from 0.
+4. Verify that `vault kv get -field=content secret/<super-user-id>-apikey` (default
+   `secret/super-user-apikey`) returns the super-user API key and that the IssuerService
+   accepts it. The old entries under `secret/data/` are no longer read and can be deleted.
+
+Vault policies written for the old layout (`secret/data/data/*`, `secret/metadata/data/*`) must
+grant the new paths (`secret/data/*`, `secret/metadata/*`). To keep the old layout instead (not
+recommended), set `vault.hashicorp.paths.secret: /v1/secret/data` explicitly in your values.
+
 ## 0.3.2 → 0.5.0
 
 This section covers upgrades from any `v0.3.2` or `v0.4.x` chart. Topics 1–3 already shipped

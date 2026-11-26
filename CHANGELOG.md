@@ -9,6 +9,9 @@ For changes in other Tractus-X components, see the [Eclipse Tractus-X Changelog]
 
 ## [Unreleased]
 
+### Changed
+- **BREAKING (charts):** the `tractusx-issuerservice` chart stored Vault secrets at the doubled KV v2 path `secret/data/<alias>`, because `vault.hashicorp.paths.secret` defaulted to `/v1/secret/data` while the EDC Vault client adds the `data/` segment itself. The default is now `/v1/secret`, so secrets live at `secret/<alias>` as with the `tractusx-identityhub` chart. Existing releases on the default must copy their secrets before upgrading. See the [migration guide](docs/admin/migration-guide.md) ([#323](https://github.com/eclipse-tractusx/tractusx-identityhub/issues/323))
+
 ## [0.5.0]
 
 Release candidate `v0.5.0-rc1` was published on 2026-10-12.

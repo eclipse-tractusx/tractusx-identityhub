@@ -188,7 +188,7 @@ helm install issuerservice tractusx-dev/tractusx-issuerservice
 | vault.hashicorp.healthCheck.enabled | bool | `true` |  |
 | vault.hashicorp.healthCheck.standbyOk | bool | `true` |  |
 | vault.hashicorp.paths.health | string | `"/v1/sys/health"` |  |
-| vault.hashicorp.paths.secret | string | `"/v1/secret/data"` |  |
+| vault.hashicorp.paths.secret | string | `"/v1/secret"` | API path of the KV v2 secrets engine mount, e.g. `/v1/secret`. Do not append `/data`: the EDC Vault client inserts the KV v2 `data/` segment itself, so `/v1/secret` stores an alias at the logical path `secret/<alias>` (same layout as the identityhub chart). |
 | vault.hashicorp.timeout | int | `30` |  |
 | vault.hashicorp.token | string | `"root"` |  |
 | vault.hashicorp.url | string | `"http://{{ .Release.Name }}-vault:8200"` |  |
@@ -206,4 +206,5 @@ This work is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses
 
 * SPDX-License-Identifier: CC-BY-4.0
 * SPDX-FileCopyrightText: 2025 Contributors to the Eclipse Foundation
+* SPDX-FileCopyrightText: 2026 Technovative Solutions
 * Source URL: <https://github.com/eclipse-tractusx/tractusx-identityhub/blob/main/charts/tractusx-issuerservice/README.md>

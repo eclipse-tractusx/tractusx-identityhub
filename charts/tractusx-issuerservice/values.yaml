@@ -452,7 +452,10 @@ vault:
       enabled: true
       standbyOk: true
     paths:
-      secret: /v1/secret/data
+      # -- API path of the KV v2 secrets engine mount, e.g. `/v1/secret`. Do not append `/data`: the EDC
+      # Vault client inserts the KV v2 `data/` segment itself, so `/v1/secret` stores an alias at the
+      # logical path `secret/<alias>` (same layout as the identityhub chart).
+      secret: /v1/secret
       health: /v1/sys/health
 
 statuslist:
